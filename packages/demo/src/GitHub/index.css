@@ -1,0 +1,43 @@
+body.pipeline-editor-github {
+  /* panels not shown in readOnly mode */
+  /* --color-panel-bg: unset; */
+  /* --color-panel-border: unset; */
+
+  --color-comment-text: var(--color-text-secondary);
+  --color-comment-link: var(--color-border-primary);
+  --color-comment-bg: var(--color-bg-primary);
+  --color-comment-border: var(--color-border-secondary);
+
+  --color-node-text: var(--color-text-primary);
+  --color-node-link: var(--color-text-link);
+  --color-node-bg: var(--color-btn-bg);
+  --color-node-border: var(--color-btn-border);
+  --color-node-hover-bg: var(--color-btn-hover-bg);
+  --color-node-hover-border: var(--color-btn-hover-border);
+
+  /* no errors in readOnly mode */
+  /* --color-text-error: unset; */
+  /* --color-error-border: unset; */
+
+  --color-tooltip-text: var(--color-text-secondary) !important;
+  --color-tooltip-text-bold: var(--color-border-primary) !important;
+  --color-tooltip-bg: var(--color-bg-overlay) !important;
+  --color-tooltip-border: var(--color-border-primary) !important;
+
+  /* the ellipse color, not shown in readOnly mode */
+  /* --color-icon: unset; */
+
+  --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-weight-sans: normal;
+  --font-size-sans: 14px;
+
+  --font-family-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+    monospace;
+  --font-weight-mono: normal;
+  --font-size-mono: 12px;
+}
+
+body.pipeline-editor-github {
+  background-color: var(--color-bg-canvas);
+}

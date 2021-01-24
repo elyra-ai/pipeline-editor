@@ -1,0 +1,74 @@
+body.pipeline-editor-vscode {
+  --color-panel-bg: var(--vscode-editor-background);
+  --color-panel-border: var(--vscode-panel-border);
+
+  --color-comment-text: var(--vscode-editor-foreground);
+  --color-comment-link: var(--vscode-panel-border);
+  --color-comment-bg: var(--vscode-editor-background);
+  --color-comment-border: var(--vscode-panel-border);
+
+  --color-node-text: var(--vscode-editor-foreground);
+  --color-node-link: var(--vscode-textLink-foreground);
+  --color-node-bg: var(--vscode-notifications-background);
+  --color-node-border: transparent;
+  --color-node-hover-bg: var(--vscode-notifications-background);
+  --color-node-hover-border: transparent;
+
+  --color-text-error: var(--vscode-errorForeground);
+  --color-error-border: var(--vscode-inputValidation-errorBorder);
+
+  --color-tooltip-text: var(--vscode-editorSuggestWidget-foreground);
+  --color-tooltip-text-bold: var(--vscode-foreground);
+  --color-tooltip-bg: var(--vscode-editorSuggestWidget-background);
+  --color-tooltip-border: var(--vscode-editorSuggestWidget-border);
+
+  --color-icon: var(--vscode-icon-foreground);
+
+  --font-family-sans: var(--vscode-font-family);
+  --font-weight-sans: var(--vscode-font-weight);
+  --font-size-sans: var(--vscode-font-size);
+
+  --font-family-mono: var(--vscode-editor-font-family);
+  --font-weight-mono: var(--vscode-editor-font-weight);
+  --font-size-mono: var(--vscode-editor-font-size);
+}
+
+body.pipeline-editor-vscode {
+  background-color: var(--vscode-editor-background);
+}
+
+body.pipeline-editor-vscode
+  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  > .properties-control-panel
+  > .properties-control-item {
+  position: relative;
+}
+
+body.pipeline-editor-vscode
+  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  > .properties-control-panel
+  > .properties-control-item
+  > .error::before {
+  display: block;
+  content: " ";
+  position: absolute;
+  width: 6px;
+  border-left-width: 2px;
+  border-left-style: solid;
+  left: 5px;
+  top: 15px;
+  bottom: 18px;
+  border-color: var(--color-error-border);
+}
+
+.properties-input-control.error input:not([disabled]) {
+  box-shadow: none;
+}
+
+.properties-dropdown.error .bx--list-box__field:not([disabled]) {
+  box-shadow: none;
+}
+
+.properties-required-indicator {
+  display: none;
+}

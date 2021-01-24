@@ -1,0 +1,24 @@
+{
+  "name": "@elyra/pipeline-editor",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w --preserveWatchOutput"
+  },
+  "dependencies": {
+    "@elyra/canvas": "9.2.7",
+    "react-intl": "^5.0.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-intl": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

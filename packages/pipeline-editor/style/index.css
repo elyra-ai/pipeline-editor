@@ -1,0 +1,304 @@
+.elyra-tooltipError {
+  color: var(--color-text-error);
+}
+
+.common-canvas-tooltip[data-id^="node_tip"] {
+  max-width: unset;
+  background-color: var(--color-tooltip-bg);
+  border: 1px solid var(--color-tooltip-border);
+  font-weight: normal;
+  opacity: 100%;
+  color: var(--color-tooltip-text);
+  border-radius: 0;
+  transition: opacity 0.1s ease-in-out, visibility 0.1s ease-in-out;
+
+  padding: 11px 7px 4px 7px;
+  line-height: 1.5;
+
+  font-family: var(--font-family-sans);
+  font-weight: var(--font-weight-sans);
+  font-size: var(--font-size-sans);
+}
+
+.common-canvas-tooltip #tipArrow polyline {
+  fill: var(--color-tooltip-bg);
+  stroke-width: 0;
+}
+
+.common-canvas-tooltip #tipArrow polygon {
+  fill: var(--color-tooltip-border);
+}
+
+.elyra-PipelineNodeTooltip {
+  text-align: left;
+}
+
+.elyra-PipelineNodeTooltip .elyra-tooltipKey {
+  color: var(--color-tooltip-text-bold);
+  font-weight: 600;
+}
+
+.elyra-PipelineNodeTooltip .elyra-tooltipValue {
+  margin-left: 7px;
+  margin-bottom: 7px;
+  white-space: pre-wrap;
+}
+
+/* properties */
+
+.properties-wrapper,
+.properties-wrapper * {
+  outline: none !important;
+}
+
+.properties-category {
+  padding: 0;
+}
+
+.properties-wrapper {
+  margin-top: 14px;
+}
+
+.properties-wrapper .properties-textfield {
+  margin-top: 9px;
+}
+
+.properties-wrapper input[type="text" i] {
+  padding: 4px;
+  background-color: var(--vscode-settings-textInputBackground);
+  color: var(--vscode-settings-textInputForeground);
+  border: 1px solid var(--vscode-settings-textInputBorder);
+  width: 100%;
+  max-width: 500px;
+}
+
+.properties-wrapper .bx--list-box__field {
+  background-color: var(--vscode-settings-dropdownBackground);
+  color: var(--vscode-settings-dropdownForeground);
+  border: 1px solid var(--vscode-settings-dropdownBorder);
+  width: 100%;
+  max-width: 320px;
+
+  /* TODO */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 26px;
+}
+
+.properties-control-panel[data-id="properties-nodeGroupInfo"]
+  > .properties-control-panel {
+  padding-left: 33px;
+  padding-right: 24px;
+  max-width: 1000px;
+}
+
+.properties-control-panel[data-id="properties-nodeGroupInfo"]
+  > .properties-control-panel
+  > .properties-control-item {
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-top: 12px;
+  padding-bottom: 18px;
+}
+
+.properties-label-container {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  padding-bottom: 0;
+}
+
+.properties-wrapper .properties-control-label {
+  font-family: var(--font-family-sans);
+  font-weight: 600;
+  font-size: var(--font-size-sans);
+  color: var(--vscode-settings-headerForeground);
+  line-height: 1.4em !important;
+  letter-spacing: normal;
+}
+
+.properties-wrapper .properties-control-description {
+  margin-top: -1px;
+  font-family: var(--font-family-sans);
+  font-weight: var(--font-weight-sans);
+  font-size: var(--font-size-sans);
+  color: var(--vscode-foreground);
+  line-height: 1.4em !important;
+  letter-spacing: normal;
+  padding: 0;
+  opacity: 0.9;
+}
+
+.properties-wrapper .properties-checkbox {
+  flex-shrink: 0;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  font-size: 16px;
+  height: 18px;
+  width: 18px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  margin-right: 9px;
+  margin-left: 0;
+  padding: 0;
+  background-color: var(--vscode-settings-checkboxBackground) !important;
+  color: var(--vscode-settings-checkboxForeground) !important;
+  border-color: var(--vscode-settings-checkboxBorder) !important;
+}
+
+.properties-wrapper .properties-checkbox::before {
+  content: "X";
+  opacity: 0;
+}
+
+.properties-wrapper .properties-checkbox.checked::before {
+  opacity: 1;
+}
+
+.properties-wrapper .bx--visually-hidden,
+.properties-wrapper .properties-validation-message {
+  display: none;
+}
+
+/* --vscode-settings-headerForeground: #e7e7e7;
+--vscode-settings-modifiedItemIndicator: #0c7d9d;
+--vscode-settings-dropdownBackground: #353b45;
+--vscode-settings-dropdownForeground: #f0f0f0;
+--vscode-settings-dropdownBorder: #181a1f;
+--vscode-settings-dropdownListBorder: #3a3f4b;
+--vscode-settings-checkboxBackground: #353b45;
+--vscode-settings-checkboxForeground: #f0f0f0;
+--vscode-settings-checkboxBorder: #181a1f;
+--vscode-settings-textInputBackground: #1b1d23;
+--vscode-settings-textInputForeground: #cccccc;
+--vscode-settings-textInputBorder: #181a1f;
+--vscode-settings-numberInputBackground: #1b1d23;
+--vscode-settings-numberInputForeground: #cccccc;
+--vscode-settings-numberInputBorder: #181a1f;
+--vscode-settings-focusedRowBackground: rgba(128, 128, 128, 0.14); */
+
+/* canvas */
+
+.common-canvas {
+  overflow: hidden;
+}
+
+.d3-svg-canvas-div {
+  background-color: transparent;
+}
+
+.d3-svg-background {
+  fill: transparent;
+}
+
+.d3-node-body-outline {
+  stroke: var(--color-node-border);
+  stroke-width: 1;
+  fill: var(--color-node-bg);
+  filter: none !important;
+}
+
+.d3-node-body-outline[hover="yes"] {
+  stroke: var(--color-node-hover-border);
+  stroke-width: 1;
+  fill: var(--color-node-hover-bg);
+}
+
+.d3-data-link {
+  stroke: var(--color-node-link) !important;
+  stroke-width: 2;
+}
+
+.d3-data-link-error {
+  stroke: var(--color-error-border) !important;
+  stroke-width: 2;
+  stroke-dasharray: 13;
+}
+
+.d3-comment-link {
+  stroke: var(--color-comment-link) !important;
+  stroke-width: 2 !important;
+  stroke-dasharray: 7.3 !important;
+}
+
+.d3-comment-rect {
+  fill: var(--color-comment-bg);
+  stroke: var(--color-comment-border) !important;
+  stroke-width: 1;
+  rx: 6;
+}
+
+.d3-node-label {
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-mono);
+  font-size: var(--font-size-mono);
+  fill: var(--color-node-text);
+}
+
+.d3-comment-text-tspan {
+  font-family: var(--font-family-sans) !important;
+  font-weight: var(--font-weight-sans) !important;
+  font-size: var(--font-size-sans) !important;
+  fill: var(--color-comment-text) !important;
+}
+
+.d3-comment-entry {
+  background-color: var(--color-comment-bg);
+  font-family: var(--font-family-sans) !important;
+  font-weight: var(--font-weight-sans) !important;
+  font-size: var(--font-size-sans) !important;
+  color: var(--color-comment-text) !important;
+  box-sizing: border-box; /* very important! */
+}
+
+.d3-node-port-input,
+.d3-node-port-output,
+.d3-node-port-input[connected="yes"],
+.d3-node-port-output[connected="yes"] {
+  stroke: var(--color-comment-text);
+  fill: var(--color-comment-text);
+  stroke-width: 4;
+}
+
+.d3-node-port-input:hover,
+.d3-node-port-output:hover,
+.d3-node-port-input[connected="yes"]:hover,
+.d3-node-port-output[connected="yes"]:hover {
+  stroke: var(--color-node-text);
+  fill: var(--color-node-text);
+  stroke-width: 4;
+}
+
+.d3-node-selection-highlight[data-selected="yes"] {
+  stroke: var(--color-node-link);
+}
+
+.d3-comment-selection-highlight[data-selected="yes"] {
+  stroke: var(--color-node-link);
+  rx: 6;
+}
+
+.d3-node-ellipsis-group .d3-node-ellipsis {
+  fill: var(--color-icon);
+}
+
+.d3-node-ellipsis-group:hover .d3-node-ellipsis-background {
+  fill: transparent;
+}
+
+.pipeline-read-only .d3-comment-sizing,
+.pipeline-read-only .d3-comment-port-circle,
+.pipeline-read-only .d3-node-selection-highlight,
+.pipeline-read-only .d3-comment-selection-highlight,
+.pipeline-read-only .d3-node-port-input,
+.pipeline-read-only .d3-node-port-output,
+.d3-node-port-input-arrow,
+.pipeline-read-only .d3-node-ellipsis-group,
+.pipeline-read-only .d3-new-connection-line,
+.pipeline-read-only .d3-new-connection-start,
+.pipeline-read-only .d3-new-connection-guide {
+  display: none;
+}
