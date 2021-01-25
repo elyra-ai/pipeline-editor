@@ -6,12 +6,13 @@ import { nanoid } from "nanoid";
 import { BooleanControl, StringArrayControl } from "../CustomFormControls";
 import { toCommonProperties } from "./properties-utils";
 
-function PropertiesPanel({
-  selectedNodes,
-  nodes,
-  canvasController,
-  onChange,
-}: any) {
+interface Props {
+  selectedNodes?: any[];
+  nodes: any[];
+  onChange?: (nodeID: string, data: any) => any;
+}
+
+function PropertiesPanel({ selectedNodes, nodes, onChange }: Props) {
   const controller = useRef<any>();
 
   // always be validating
@@ -53,13 +54,7 @@ function PropertiesPanel({
           controller.current = e;
         },
         applyPropertyChanges: (e: any) => {
-          canvasController.setNodeProperties(
-            selectedNode.id,
-            { app_data: e },
-            canvasController.getPrimaryPipelineId()
-          );
-
-          onChange();
+          onChange?.(selectedNode.id, e);
         },
         closePropertiesDialog: () => {},
       }}
