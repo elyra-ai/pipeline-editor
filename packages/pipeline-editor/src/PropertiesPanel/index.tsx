@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { CommonProperties } from "@elyra/canvas";
 import { nanoid } from "nanoid";
 
-import { BooleanControl, StringArrayControl } from "./CustomFormControls";
+import { BooleanControl, StringArrayControl } from "../CustomFormControls";
 import { toCommonProperties } from "./properties-utils";
 
 function PropertiesContent({
