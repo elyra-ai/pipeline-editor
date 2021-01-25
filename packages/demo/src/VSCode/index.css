@@ -63,14 +63,40 @@ body.pipeline-editor-vscode
   border-color: var(--elyra-color-error-border);
 }
 
-.properties-input-control.error input:not([disabled]) {
+body.pipeline-editor-vscode
+  .properties-input-control.error
+  input:not([disabled]) {
   box-shadow: none;
 }
 
-.properties-dropdown.error .bx--list-box__field:not([disabled]) {
+body.pipeline-editor-vscode
+  .properties-dropdown.error
+  .bx--list-box__field:not([disabled]) {
   box-shadow: none;
 }
 
-.properties-required-indicator {
+body.pipeline-editor-vscode .properties-required-indicator {
+  display: none;
+}
+
+body.pipeline-editor-vscode .d3-node-port-input,
+body.pipeline-editor-vscode .d3-node-port-output,
+body.pipeline-editor-vscode .d3-node-port-input[connected="yes"],
+body.pipeline-editor-vscode .d3-node-port-output[connected="yes"] {
+  stroke: var(--elyra-color-comment-text);
+  fill: var(--elyra-color-comment-text);
+  stroke-width: 4;
+}
+
+body.pipeline-editor-vscode .d3-node-port-input:hover,
+body.pipeline-editor-vscode .d3-node-port-output:hover,
+body.pipeline-editor-vscode .d3-node-port-input[connected="yes"]:hover,
+body.pipeline-editor-vscode .d3-node-port-output[connected="yes"]:hover {
+  stroke: var(--elyra-color-node-text);
+  fill: var(--elyra-color-node-text);
+  stroke-width: 4;
+}
+
+body.pipeline-editor-vscode .d3-node-port-input-arrow {
   display: none;
 }

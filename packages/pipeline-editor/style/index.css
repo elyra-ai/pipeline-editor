@@ -237,24 +237,6 @@
   box-sizing: border-box; /* very important! */
 }
 
-.d3-node-port-input,
-.d3-node-port-output,
-.d3-node-port-input[connected="yes"],
-.d3-node-port-output[connected="yes"] {
-  stroke: var(--elyra-color-comment-text);
-  fill: var(--elyra-color-comment-text);
-  stroke-width: 4;
-}
-
-.d3-node-port-input:hover,
-.d3-node-port-output:hover,
-.d3-node-port-input[connected="yes"]:hover,
-.d3-node-port-output[connected="yes"]:hover {
-  stroke: var(--elyra-color-node-text);
-  fill: var(--elyra-color-node-text);
-  stroke-width: 4;
-}
-
 .d3-node-selection-highlight[data-selected="yes"] {
   stroke: var(--elyra-color-node-link);
 }
@@ -278,7 +260,7 @@
 .pipeline-read-only .d3-comment-selection-highlight,
 .pipeline-read-only .d3-node-port-input,
 .pipeline-read-only .d3-node-port-output,
-.d3-node-port-input-arrow,
+.pipeline-read-only .d3-node-port-input-arrow,
 .pipeline-read-only .d3-node-ellipsis-group,
 .pipeline-read-only .d3-new-connection-line,
 .pipeline-read-only .d3-new-connection-start,
