@@ -164,8 +164,8 @@ const properties: CommonPropertiesSchema = {
         label: {
           default: "File Dependencies",
         },
-        control: "custom",
-        custom_control_id: "pipeline-editor-string-array-control",
+        // control: "custom",
+        // custom_control_id: "pipeline-editor-string-array-control",
         description: {
           default:
             "Local file dependencies that need to be copied to remote execution environment.\nOne filename or expression (e.g. *.py) per line. Supported patterns: ? and *.",
@@ -192,8 +192,8 @@ const properties: CommonPropertiesSchema = {
         label: {
           default: "Environment Variables",
         },
-        control: "custom",
-        custom_control_id: "elyra-string-array-input",
+        // control: "custom",
+        // custom_control_id: "elyra-string-array-input",
         description: {
           default:
             "Environment variables to be set on the execution environment.\nOne variable per line in the format ENV_VAR=value.",
@@ -209,8 +209,8 @@ const properties: CommonPropertiesSchema = {
         label: {
           default: "Output Files",
         },
-        control: "custom",
-        custom_control_id: "pipeline-editor-string-array-control",
+        // control: "custom",
+        // custom_control_id: "pipeline-editor-string-array-control",
         description: {
           default:
             "Files generated during execution that will become available to all subsequent pipeline steps.\n One filename or expression (e.g. *.csv) per line. Supported patterns: ? and *.",
@@ -422,9 +422,6 @@ export function toCommonProperties(items: ISchemaItem[], app_data: any) {
           parameter_refs: [item.id],
         });
         break;
-      default:
-        console.log("none!");
-        console.log(item);
     }
   }
 
