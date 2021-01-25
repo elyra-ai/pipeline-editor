@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useImperativeHandle,
   useRef,
+  useState,
 } from "react";
 
 import { CommonCanvas } from "@elyra/canvas";
@@ -79,7 +80,7 @@ const PipelineEditor = forwardRef(
 
     // TODO: only show "Open Files" if it's a file based node.
     const handleContextMenu = useCallback(
-      (e: IContextMenuEvent, defaultMenu: IContextMenu): IContextMenu => {
+      (e: IContextMenuEvent, defaultMenu: IContextMenu) => {
         // If not a node use default menu
         if (e.type !== "node") {
           return defaultMenu;
@@ -113,7 +114,7 @@ const PipelineEditor = forwardRef(
       []
     );
 
-    const handleClickAction = useCallback((e: ICanvasClickEvent): void => {
+    const handleClickAction = useCallback((e: ICanvasClickEvent) => {
       if (e.clickType === "DOUBLE_CLICK" && e.objectType === "node") {
         for (const selectedObject of e.selectedObjectIds) {
           // TODO: open a file or properties or something, to discuss...
@@ -121,8 +122,13 @@ const PipelineEditor = forwardRef(
       }
     }, []);
 
+    const [selectedNodes, setSelectedNodes] = useState();
+    const handleSelectionChange = useCallback((e: any) => {
+      setSelectedNodes(e.selectedNodes);
+    }, []);
+
     const handleEditAction = useCallback(
-      async (e: ICanvasEditEvent): Promise<void> => {
+      async (e: ICanvasEditEvent) => {
         switch (e.editType) {
           case "run": {
             onAction?.("run");
@@ -153,10 +159,18 @@ const PipelineEditor = forwardRef(
             break;
           }
         }
+        // I can't remember if validating now breaks anything?
+        controller.current.validate();
         onChange?.(controller.current.getPipelineFlow());
       },
       [onAction, onChange]
     );
+
+    const handlePropertiesChange = useCallback(() => {
+      // I can't remember if validating now breaks anything?
+      controller.current.validate();
+      onChange?.(controller.current.getPipelineFlow());
+    }, [onChange]);
 
     const handleTooltip = (
       tipType: string,
@@ -210,6 +224,7 @@ const PipelineEditor = forwardRef(
               contextMenuHandler={handleContextMenu}
               clickActionHandler={handleClickAction}
               editActionHandler={handleEditAction}
+              selectionChangeHandler={handleSelectionChange}
               tipHandler={handleTooltip}
               toolbarConfig={[]}
               config={{
@@ -229,7 +244,12 @@ const PipelineEditor = forwardRef(
               }}
               canvasController={controller.current}
             />
-            <PropertiesPanel schema={nodes[1].properties} />
+            <PropertiesPanel
+              selectedNodes={selectedNodes}
+              nodes={nodes}
+              canvasController={controller.current}
+              onPropertiesChange={handlePropertiesChange}
+            />
           </IntlProvider>
         </div>
       );
@@ -261,7 +281,12 @@ const PipelineEditor = forwardRef(
             }}
             canvasController={controller.current}
           />
-          <PropertiesPanel schema={nodes[1].properties} />
+          <PropertiesPanel
+            selectedNodes={selectedNodes}
+            nodes={nodes}
+            canvasController={controller.current}
+            onPropertiesChange={handlePropertiesChange}
+          />
         </IntlProvider>
       </div>
     );

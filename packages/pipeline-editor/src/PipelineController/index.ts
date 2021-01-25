@@ -193,23 +193,26 @@ class PipelineController extends CanvasController {
     }
   }
 
+  // TODO: we shouldn't set anything without using the actual setters.
   private _checkEachNode() {
+    const pipelineID = this.getPrimaryPipelineId();
     const nodes = this.getNodes();
     for (const node of nodes) {
       const nodeDef = this.nodes.find((n) => n.op === node.op);
       if (nodeDef) {
         const error = validateProperties(nodeDef, node);
         node.app_data.invalidNodeError = error;
+        node.description = nodeDef.description;
+        node.image = nodeDef.image;
 
-        node.label =
+        const newLabel =
           nodeDef.labelField && node.app_data[nodeDef.labelField]
             ? node.app_data[nodeDef.labelField]
             : nodeDef.label;
-        node.description = nodeDef.description;
-        node.image = nodeDef.image;
+
+        this.setNodeLabel(node.id, newLabel, pipelineID);
       } else {
         node.app_data.invalidNodeError = `"${node.op}" is an unsupported node type`;
-        node.label = "unsupported node";
         node.description = undefined;
 
         const image =
@@ -227,6 +230,8 @@ class PipelineController extends CanvasController {
         </text>
       </svg>`);
         node.image = image;
+
+        this.setNodeLabel(node.id, "unsupported node", pipelineID);
       }
       this._styleNode(node);
     }

@@ -78,6 +78,12 @@
   border: 1px solid var(--vscode-settings-dropdownBorder);
   width: 100%;
   max-width: 320px;
+
+  /* TODO */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 26px;
 }
 
 .properties-control-panel[data-id="properties-nodeGroupInfo"]

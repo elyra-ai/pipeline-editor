@@ -265,7 +265,9 @@ const properties: CommonPropertiesSchema = {
   resources: {},
 };
 
-export function toCommonProperties(items: ISchemaItem[]) {
+export function toCommonProperties(items: ISchemaItem[], app_data: any) {
+  console.log(app_data);
+
   let commonProperties: CommonPropertiesSchema = {
     current_parameters: {},
     parameters: [],
@@ -287,7 +289,8 @@ export function toCommonProperties(items: ISchemaItem[]) {
   for (const item of items) {
     switch (item.type) {
       case "boolean":
-        commonProperties.current_parameters[item.id] = item.default ?? false;
+        commonProperties.current_parameters[item.id] =
+          app_data[item.id] ?? item.default ?? false;
         commonProperties.parameters.push({
           id: item.id,
           type: "cboolean",
@@ -311,7 +314,8 @@ export function toCommonProperties(items: ISchemaItem[]) {
         });
         break;
       case "file":
-        commonProperties.current_parameters[item.id] = item.default ?? "";
+        commonProperties.current_parameters[item.id] =
+          app_data[item.id] ?? item.default ?? "";
         commonProperties.parameters.push({
           id: item.id,
           type: "string",
@@ -336,7 +340,8 @@ export function toCommonProperties(items: ISchemaItem[]) {
         });
         break;
       case "string":
-        commonProperties.current_parameters[item.id] = item.default ?? "";
+        commonProperties.current_parameters[item.id] =
+          app_data[item.id] ?? item.default ?? "";
         if ((item as IStringSelectItem).enum) {
           commonProperties.parameters.push({
             id: item.id,
@@ -386,7 +391,8 @@ export function toCommonProperties(items: ISchemaItem[]) {
         });
         break;
       case "string[]":
-        commonProperties.current_parameters[item.id] = item.default ?? [];
+        commonProperties.current_parameters[item.id] =
+          app_data[item.id] ?? item.default ?? [];
         commonProperties.parameters.push({
           id: item.id,
           type: "array[string]",

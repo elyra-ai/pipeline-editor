@@ -35,10 +35,10 @@ export class BooleanControl {
   }
 
   constructor(propertyId: any, controller: any, data: any, tableInfo: any) {
-    console.log("propertyId", propertyId);
-    console.log("controller", controller);
-    console.log("data", data);
-    console.log("tableInfo", tableInfo);
+    // console.log("propertyId", propertyId);
+    // console.log("controller", controller);
+    // console.log("data", data);
+    // console.log("tableInfo", tableInfo);
     this.helperText = data.helperText;
   }
 

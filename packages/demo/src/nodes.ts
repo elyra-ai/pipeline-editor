@@ -65,13 +65,76 @@ const deployWMLNode = {
   ],
 };
 
+const fileProperties = [
+  {
+    id: "filename",
+    label: "File",
+    helperText: "The path to the notebook file.",
+    type: "file",
+    extension: ".ipynb",
+    required: true,
+  },
+  {
+    id: "runtime_image",
+    label: "Runtime Image",
+    helperText: "Docker image used as execution environment.",
+    type: "string",
+    enum: [
+      {
+        label: "continuumio/anaconda3:2020.07",
+      },
+      {
+        label: "amancevice/pandas:1.0.3",
+      },
+    ],
+    required: true,
+  },
+  {
+    id: "dependencies",
+    label: "File Dependencies",
+    placeholder: "*.py",
+    type: "string[]",
+    helperText:
+      "Local file dependencies that need to be copied to remote execution environment.",
+    default: "",
+  },
+  {
+    id: "include_subdirectories",
+    label: "Include Subdirectories",
+    helperText:
+      "Wether or not to include recursively include subdirectories when submitting a pipeline (This may increase submission time).",
+    type: "boolean",
+    default: false,
+  },
+  {
+    id: "env_vars",
+    label: "Environment Variables",
+    placeholder: "ENV_VAR=value",
+    type: "string[]",
+    helperText: "Environment variables to be set on the execution environment.",
+    default: "",
+  },
+  {
+    id: "outputs",
+    label: "Output Files",
+    placeholder: "*.csv",
+    type: "string[]",
+    helperText:
+      "Files generated during execution that will become available to all subsequent pipeline steps.",
+    default: "",
+  },
+];
+
 const pythonNode = {
   op: "execute-python-node",
   description: "Python file",
   label: "Python",
+  labelField: "filename",
+  fileField: "filename",
   fileBased: true,
   extension: ".py",
   image: "data:image/svg+xml;utf8," + encodeURIComponent(pythonSVG),
+  properties: fileProperties,
 };
 
 const notebookNode = {
@@ -83,68 +146,7 @@ const notebookNode = {
   fileBased: true,
   extension: ".ipynb",
   image: "data:image/svg+xml;utf8," + encodeURIComponent(jupyterSVG),
-  properties: [
-    {
-      id: "filename",
-      label: "File",
-      helperText: "The path to the notebook file.",
-      type: "file",
-      extension: ".ipynb",
-      required: true,
-    },
-    {
-      id: "runtime_image",
-      label: "Runtime Image",
-      helperText: "Docker image used as execution environment.",
-      type: "string",
-      enum: [
-        {
-          label: "Image One",
-          value: "image_one",
-        },
-        {
-          label: "Image Two",
-          value: "image_two",
-        },
-      ],
-      required: true,
-    },
-    {
-      id: "dependencies",
-      label: "File Dependencies",
-      placeholder: "*.py",
-      type: "string[]",
-      helperText:
-        "Local file dependencies that need to be copied to remote execution environment.",
-      default: "",
-    },
-    {
-      id: "include_subdirectories",
-      label: "Include Subdirectories",
-      helperText:
-        "Wether or not to include recursively include subdirectories when submitting a pipeline (This may increase submission time).",
-      type: "boolean",
-      default: false,
-    },
-    {
-      id: "env_vars",
-      label: "Environment Variables",
-      placeholder: "ENV_VAR=value",
-      type: "string[]",
-      helperText:
-        "Environment variables to be set on the execution environment.",
-      default: "",
-    },
-    {
-      id: "outputs",
-      label: "Output Files",
-      placeholder: "*.csv",
-      type: "string[]",
-      helperText:
-        "Files generated during execution that will become available to all subsequent pipeline steps.",
-      default: "",
-    },
-  ],
+  properties: fileProperties,
 };
 
 const nodes = [pythonNode, notebookNode, deployWMLNode];

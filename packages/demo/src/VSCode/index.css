@@ -68,3 +68,7 @@ body.pipeline-editor-vscode
 .properties-dropdown.error .bx--list-box__field:not([disabled]) {
   box-shadow: none;
 }
+
+.properties-required-indicator {
+  display: none;
+}
