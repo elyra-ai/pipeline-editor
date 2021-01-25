@@ -1,32 +1,32 @@
 .elyra-tooltipError {
-  color: var(--color-text-error);
+  color: var(--elyra-color-text-error);
 }
 
 .common-canvas-tooltip[data-id^="node_tip"] {
   max-width: unset;
-  background-color: var(--color-tooltip-bg);
-  border: 1px solid var(--color-tooltip-border);
+  background-color: var(--elyra-color-tooltip-bg);
+  border: 1px solid var(--elyra-color-tooltip-border);
   font-weight: normal;
   opacity: 100%;
-  color: var(--color-tooltip-text);
+  color: var(--elyra-color-tooltip-text);
   border-radius: 0;
   transition: opacity 0.1s ease-in-out, visibility 0.1s ease-in-out;
 
   padding: 11px 7px 4px 7px;
   line-height: 1.5;
 
-  font-family: var(--font-family-sans);
-  font-weight: var(--font-weight-sans);
-  font-size: var(--font-size-sans);
+  font-family: var(--elyra-font-family-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-size: var(--elyra-font-size-sans);
 }
 
 .common-canvas-tooltip #tipArrow polyline {
-  fill: var(--color-tooltip-bg);
+  fill: var(--elyra-color-tooltip-bg);
   stroke-width: 0;
 }
 
 .common-canvas-tooltip #tipArrow polygon {
-  fill: var(--color-tooltip-border);
+  fill: var(--elyra-color-tooltip-border);
 }
 
 .elyra-PipelineNodeTooltip {
@@ -34,7 +34,7 @@
 }
 
 .elyra-PipelineNodeTooltip .elyra-tooltipKey {
-  color: var(--color-tooltip-text-bold);
+  color: var(--elyra-color-tooltip-text-bold);
   font-weight: 600;
 }
 
@@ -111,9 +111,9 @@
 }
 
 .properties-wrapper .properties-control-label {
-  font-family: var(--font-family-sans);
+  font-family: var(--elyra-font-family-sans);
   font-weight: 600;
-  font-size: var(--font-size-sans);
+  font-size: var(--elyra-font-size-sans);
   color: var(--vscode-settings-headerForeground);
   line-height: 1.4em !important;
   letter-spacing: normal;
@@ -121,9 +121,9 @@
 
 .properties-wrapper .properties-control-description {
   margin-top: -1px;
-  font-family: var(--font-family-sans);
-  font-weight: var(--font-weight-sans);
-  font-size: var(--font-size-sans);
+  font-family: var(--elyra-font-family-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-size: var(--elyra-font-size-sans);
   color: var(--vscode-foreground);
   line-height: 1.4em !important;
   letter-spacing: normal;
@@ -163,23 +163,6 @@
   display: none;
 }
 
-/* --vscode-settings-headerForeground: #e7e7e7;
---vscode-settings-modifiedItemIndicator: #0c7d9d;
---vscode-settings-dropdownBackground: #353b45;
---vscode-settings-dropdownForeground: #f0f0f0;
---vscode-settings-dropdownBorder: #181a1f;
---vscode-settings-dropdownListBorder: #3a3f4b;
---vscode-settings-checkboxBackground: #353b45;
---vscode-settings-checkboxForeground: #f0f0f0;
---vscode-settings-checkboxBorder: #181a1f;
---vscode-settings-textInputBackground: #1b1d23;
---vscode-settings-textInputForeground: #cccccc;
---vscode-settings-textInputBorder: #181a1f;
---vscode-settings-numberInputBackground: #1b1d23;
---vscode-settings-numberInputForeground: #cccccc;
---vscode-settings-numberInputBorder: #181a1f;
---vscode-settings-focusedRowBackground: rgba(128, 128, 128, 0.14); */
-
 /* canvas */
 
 .common-canvas {
@@ -195,62 +178,62 @@
 }
 
 .d3-node-body-outline {
-  stroke: var(--color-node-border);
+  stroke: var(--elyra-color-node-border);
   stroke-width: 1;
-  fill: var(--color-node-bg);
+  fill: var(--elyra-color-node-bg);
   filter: none !important;
 }
 
 .d3-node-body-outline[hover="yes"] {
-  stroke: var(--color-node-hover-border);
+  stroke: var(--elyra-color-node-hover-border);
   stroke-width: 1;
-  fill: var(--color-node-hover-bg);
+  fill: var(--elyra-color-node-hover-bg);
 }
 
 .d3-data-link {
-  stroke: var(--color-node-link) !important;
+  stroke: var(--elyra-color-node-link) !important;
   stroke-width: 2;
 }
 
 .d3-data-link-error {
-  stroke: var(--color-error-border) !important;
+  stroke: var(--elyra-color-error-border) !important;
   stroke-width: 2;
   stroke-dasharray: 13;
 }
 
 .d3-comment-link {
-  stroke: var(--color-comment-link) !important;
+  stroke: var(--elyra-color-comment-link) !important;
   stroke-width: 2 !important;
   stroke-dasharray: 7.3 !important;
 }
 
 .d3-comment-rect {
-  fill: var(--color-comment-bg);
-  stroke: var(--color-comment-border) !important;
+  fill: var(--elyra-color-comment-bg);
+  stroke: var(--elyra-color-comment-border) !important;
   stroke-width: 1;
-  rx: 6;
+  rx: var(--elyra-border-radius);
 }
 
 .d3-node-label {
-  font-family: var(--font-family-mono);
-  font-weight: var(--font-weight-mono);
-  font-size: var(--font-size-mono);
-  fill: var(--color-node-text);
+  font-family: var(--elyra-font-family-mono);
+  font-weight: var(--elyra-font-weight-mono);
+  font-size: var(--elyra-font-size-mono);
+  fill: var(--elyra-color-node-text);
 }
 
 .d3-comment-text-tspan {
-  font-family: var(--font-family-sans) !important;
-  font-weight: var(--font-weight-sans) !important;
-  font-size: var(--font-size-sans) !important;
-  fill: var(--color-comment-text) !important;
+  font-family: var(--elyra-font-family-sans) !important;
+  font-weight: var(--elyra-font-weight-sans) !important;
+  font-size: var(--elyra-font-size-sans) !important;
+  fill: var(--elyra-color-comment-text) !important;
 }
 
 .d3-comment-entry {
-  background-color: var(--color-comment-bg);
-  font-family: var(--font-family-sans) !important;
-  font-weight: var(--font-weight-sans) !important;
-  font-size: var(--font-size-sans) !important;
-  color: var(--color-comment-text) !important;
+  background-color: var(--elyra-color-comment-bg);
+  font-family: var(--elyra-font-family-sans) !important;
+  font-weight: var(--elyra-font-weight-sans) !important;
+  font-size: var(--elyra-font-size-sans) !important;
+  color: var(--elyra-color-comment-text) !important;
   box-sizing: border-box; /* very important! */
 }
 
@@ -258,8 +241,8 @@
 .d3-node-port-output,
 .d3-node-port-input[connected="yes"],
 .d3-node-port-output[connected="yes"] {
-  stroke: var(--color-comment-text);
-  fill: var(--color-comment-text);
+  stroke: var(--elyra-color-comment-text);
+  fill: var(--elyra-color-comment-text);
   stroke-width: 4;
 }
 
@@ -267,22 +250,22 @@
 .d3-node-port-output:hover,
 .d3-node-port-input[connected="yes"]:hover,
 .d3-node-port-output[connected="yes"]:hover {
-  stroke: var(--color-node-text);
-  fill: var(--color-node-text);
+  stroke: var(--elyra-color-node-text);
+  fill: var(--elyra-color-node-text);
   stroke-width: 4;
 }
 
 .d3-node-selection-highlight[data-selected="yes"] {
-  stroke: var(--color-node-link);
+  stroke: var(--elyra-color-node-link);
 }
 
 .d3-comment-selection-highlight[data-selected="yes"] {
-  stroke: var(--color-node-link);
-  rx: 6;
+  stroke: var(--elyra-color-node-link);
+  rx: var(--elyra-border-radius);
 }
 
 .d3-node-ellipsis-group .d3-node-ellipsis {
-  fill: var(--color-icon);
+  fill: var(--elyra-color-icon);
 }
 
 .d3-node-ellipsis-group:hover .d3-node-ellipsis-background {

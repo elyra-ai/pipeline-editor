@@ -118,7 +118,7 @@ function PropertiesPanel({
           position: "absolute",
           top: 0,
           bottom: 0,
-          background: "var(--color-panel-border)",
+          background: "var(--elyra-color-panel-border)",
           width: "1px",
           right: `${width}px`,
         }}
@@ -129,7 +129,7 @@ function PropertiesPanel({
           position: "absolute",
           top: 0,
           bottom: 0,
-          background: "var(--color-panel-bg)",
+          background: "var(--elyra-color-panel-bg)",
           width: `${width}px`,
           right: 0,
         }}

@@ -1,36 +1,38 @@
 body.pipeline-editor-vscode {
-  --color-panel-bg: var(--vscode-editor-background);
-  --color-panel-border: var(--vscode-panel-border);
+  --elyra-border-radius: 0;
 
-  --color-comment-text: var(--vscode-editor-foreground);
-  --color-comment-link: var(--vscode-panel-border);
-  --color-comment-bg: var(--vscode-editor-background);
-  --color-comment-border: var(--vscode-panel-border);
+  --elyra-color-panel-bg: var(--vscode-editor-background);
+  --elyra-color-panel-border: var(--vscode-panel-border);
 
-  --color-node-text: var(--vscode-editor-foreground);
-  --color-node-link: var(--vscode-textLink-foreground);
-  --color-node-bg: var(--vscode-notifications-background);
-  --color-node-border: transparent;
-  --color-node-hover-bg: var(--vscode-notifications-background);
-  --color-node-hover-border: transparent;
+  --elyra-color-comment-text: var(--vscode-editor-foreground);
+  --elyra-color-comment-link: var(--vscode-panel-border);
+  --elyra-color-comment-bg: var(--vscode-editor-background);
+  --elyra-color-comment-border: var(--vscode-panel-border);
 
-  --color-text-error: var(--vscode-errorForeground);
-  --color-error-border: var(--vscode-inputValidation-errorBorder);
+  --elyra-color-node-text: var(--vscode-editor-foreground);
+  --elyra-color-node-link: var(--vscode-textLink-foreground);
+  --elyra-color-node-bg: var(--vscode-notifications-background);
+  --elyra-color-node-border: transparent;
+  --elyra-color-node-hover-bg: var(--vscode-notifications-background);
+  --elyra-color-node-hover-border: transparent;
 
-  --color-tooltip-text: var(--vscode-editorSuggestWidget-foreground);
-  --color-tooltip-text-bold: var(--vscode-foreground);
-  --color-tooltip-bg: var(--vscode-editorSuggestWidget-background);
-  --color-tooltip-border: var(--vscode-editorSuggestWidget-border);
+  --elyra-color-text-error: var(--vscode-errorForeground);
+  --elyra-color-error-border: var(--vscode-inputValidation-errorBorder);
 
-  --color-icon: var(--vscode-icon-foreground);
+  --elyra-color-tooltip-text: var(--vscode-editorSuggestWidget-foreground);
+  --elyra-color-tooltip-text-bold: var(--vscode-foreground);
+  --elyra-color-tooltip-bg: var(--vscode-editorSuggestWidget-background);
+  --elyra-color-tooltip-border: var(--vscode-editorSuggestWidget-border);
 
-  --font-family-sans: var(--vscode-font-family);
-  --font-weight-sans: var(--vscode-font-weight);
-  --font-size-sans: var(--vscode-font-size);
+  --elyra-color-icon: var(--vscode-icon-foreground);
 
-  --font-family-mono: var(--vscode-editor-font-family);
-  --font-weight-mono: var(--vscode-editor-font-weight);
-  --font-size-mono: var(--vscode-editor-font-size);
+  --elyra-font-family-sans: var(--vscode-font-family);
+  --elyra-font-weight-sans: var(--vscode-font-weight);
+  --elyra-font-size-sans: var(--vscode-font-size);
+
+  --elyra-font-family-mono: var(--vscode-editor-font-family);
+  --elyra-font-weight-mono: var(--vscode-editor-font-weight);
+  --elyra-font-size-mono: var(--vscode-editor-font-size);
 }
 
 body.pipeline-editor-vscode {
@@ -58,7 +60,7 @@ body.pipeline-editor-vscode
   left: 5px;
   top: 15px;
   bottom: 18px;
-  border-color: var(--color-error-border);
+  border-color: var(--elyra-color-error-border);
 }
 
 .properties-input-control.error input:not([disabled]) {

@@ -1,36 +1,38 @@
 body.pipeline-editor-jupyter {
-  --color-panel-bg: var(--ui-01);
-  --color-panel-border: var(--ui-03);
+  --elyra-border-radius: 0;
 
-  --color-comment-text: var(--text-02);
-  --color-comment-link: var(--ui-04);
-  --color-comment-bg: var(--ui-01);
-  --color-comment-border: var(--ui-04);
+  --elyra-color-panel-bg: var(--ui-01);
+  --elyra-color-panel-border: var(--ui-03);
 
-  --color-node-text: var(--text-01);
-  --color-node-link: #78a9ff;
-  --color-node-bg: var(--ui-02);
-  --color-node-border: var(--ui-04);
-  --color-node-hover-bg: var(--ui-03);
-  --color-node-hover-border: var(--ui-03);
+  --elyra-color-comment-text: var(--text-02);
+  --elyra-color-comment-link: var(--ui-04);
+  --elyra-color-comment-bg: var(--ui-01);
+  --elyra-color-comment-border: var(--ui-04);
 
-  --color-text-error: var(--jp-error-color1);
-  --color-error-border: var(--jp-error-color1);
+  --elyra-color-node-text: var(--text-01);
+  --elyra-color-node-link: #78a9ff;
+  --elyra-color-node-bg: var(--ui-02);
+  --elyra-color-node-border: var(--ui-04);
+  --elyra-color-node-hover-bg: var(--ui-03);
+  --elyra-color-node-hover-border: var(--ui-03);
 
-  --color-tooltip-text: var(--text-01);
-  --color-tooltip-text-bold: var(--text-01);
-  --color-tooltip-bg: var(--ui-02);
-  --color-tooltip-border: var(--ui-03);
+  --elyra-color-text-error: var(--jp-error-color1);
+  --elyra-color-error-border: var(--jp-error-color1);
 
-  --color-icon: var(--icon-01);
+  --elyra-color-tooltip-text: var(--text-01);
+  --elyra-color-tooltip-text-bold: var(--text-01);
+  --elyra-color-tooltip-bg: var(--ui-02);
+  --elyra-color-tooltip-border: var(--ui-03);
 
-  --font-family-sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
-  --font-weight-sans: normal;
-  --font-size-sans: 12px;
+  --elyra-color-icon: var(--icon-01);
 
-  --font-family-mono: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
-  --font-weight-mono: normal;
-  --font-size-mono: 12px;
+  --elyra-font-family-sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --elyra-font-weight-sans: normal;
+  --elyra-font-size-sans: 12px;
+
+  --elyra-font-family-mono: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --elyra-font-weight-mono: normal;
+  --elyra-font-size-mono: 12px;
 }
 
 body.pipeline-editor-jupyter {
@@ -91,34 +93,8 @@ body.pipeline-editor-jupyter .d3-node-port-input-arrow {
   display: unset;
 }
 
-body.pipeline-editor-jupyter .d3-comment-rect {
-  rx: unset;
-}
-
-body.pipeline-editor-jupyter
-  .d3-comment-selection-highlight[data-selected="yes"] {
-  rx: unset;
-}
-
 body.pipeline-editor-jupyter .d3-comment-link {
   stroke-width: 1 !important;
-}
-
-body.pipeline-editor-jupyter .d3-node-port-input,
-body.pipeline-editor-jupyter .d3-node-port-input[connected="yes"] {
-}
-
-body.pipeline-editor-jupyter .d3-node-port-output {
-  stroke: #393939;
-  fill: #fff;
-  stroke-width: 1.25;
-}
-
-body.pipeline-editor-jupyter .d3-node-port-output[connected="yes"],
-body.pipeline-editor-jupyter .d3-node-port-output[connected="yes"]:hover {
-  stroke: #393939;
-  fill: #393939;
-  stroke-width: 2;
 }
 
 body.pipeline-editor-jupyter .d3-node-port-input,
@@ -135,8 +111,21 @@ body.pipeline-editor-jupyter .d3-node-port-input[connected="yes"]:hover {
   stroke-width: 1;
 }
 
+body.pipeline-editor-jupyter .d3-node-port-output {
+  stroke: #393939;
+  fill: #fff;
+  stroke-width: 1.25;
+}
+
 body.pipeline-editor-jupyter .d3-node-port-output:hover {
   stroke: #393939;
   fill: #393939;
   stroke-width: 1.25;
+}
+
+body.pipeline-editor-jupyter .d3-node-port-output[connected="yes"],
+body.pipeline-editor-jupyter .d3-node-port-output[connected="yes"]:hover {
+  stroke: #393939;
+  fill: #393939;
+  stroke-width: 2;
 }
