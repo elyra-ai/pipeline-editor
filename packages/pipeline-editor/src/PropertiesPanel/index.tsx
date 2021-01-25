@@ -1,17 +1,18 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { CommonProperties } from "@elyra/canvas";
 import { nanoid } from "nanoid";
 
-import { BooleanControl, StringArrayControl } from "./CustomFormControls";
+import { BooleanControl, StringArrayControl } from "../CustomFormControls";
 import { toCommonProperties } from "./properties-utils";
 
-function PropertiesContent({
-  selectedNodes,
-  nodes,
-  canvasController,
-  onChange,
-}: any) {
+interface Props {
+  selectedNodes?: any[];
+  nodes: any[];
+  onChange?: (nodeID: string, data: any) => any;
+}
+
+function PropertiesPanel({ selectedNodes, nodes, onChange }: Props) {
   const controller = useRef<any>();
 
   // always be validating
@@ -53,55 +54,12 @@ function PropertiesContent({
           controller.current = e;
         },
         applyPropertyChanges: (e: any) => {
-          canvasController.setNodeProperties(
-            selectedNode.id,
-            { app_data: e },
-            canvasController.getPrimaryPipelineId()
-          );
-
-          onChange();
+          onChange?.(selectedNode.id, e);
         },
         closePropertiesDialog: () => {},
       }}
       customControls={[StringArrayControl, BooleanControl]}
     />
-  );
-}
-
-function PropertiesPanel({
-  selectedNodes,
-  nodes,
-  canvasController,
-  onPropertiesChange,
-}: any) {
-  return (
-    <React.Fragment>
-      <div>
-        <div style={{ display: "flex" }}>
-          <div>NODE PROPERTIES</div>
-          <div>PALETTE</div>
-        </div>
-        <div>
-          <div className="codicon codicon-close"></div>
-        </div>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          top: "35px",
-          bottom: 0,
-          overflow: "scroll",
-          width: "100%",
-        }}
-      >
-        <PropertiesContent
-          selectedNodes={selectedNodes}
-          nodes={nodes}
-          canvasController={canvasController}
-          onChange={onPropertiesChange}
-        />
-      </div>
-    </React.Fragment>
   );
 }
 
