@@ -15,9 +15,55 @@ function Jupyter() {
     };
   }, []);
 
+  const toolbar = [
+    {
+      action: "run",
+      label: "Run Pipeline",
+      enable: true,
+    },
+    {
+      action: "save",
+      label: "Save Pipeline",
+      enable: true,
+    },
+    {
+      action: "export",
+      label: "Export Pipeline",
+      enable: true,
+    },
+    {
+      action: "clear",
+      label: "Clear Pipeline",
+      enable: true,
+    },
+    {
+      action: "openRuntimes",
+      label: "Open Runtimes",
+      enable: true,
+    },
+    { divider: true },
+    { action: "undo", label: "Undo" },
+    { action: "redo", label: "Redo" },
+    { action: "cut", label: "Cut" },
+    { action: "copy", label: "Copy" },
+    { action: "paste", label: "Paste" },
+    { action: "createAutoComment", label: "Add Comment", enable: true },
+    { action: "deleteSelectedObjects", label: "Delete" },
+    {
+      action: "arrangeHorizontally",
+      label: "Arrange Horizontally",
+      enable: true,
+    },
+    {
+      action: "arrangeVertically",
+      label: "Arrange Vertically",
+      enable: true,
+    },
+  ];
+
   return (
     <div style={{ height: "100vh" }}>
-      <PipelineEditor nodes={nodes} mode="jupyter" pipeline={pipeline} />
+      <PipelineEditor nodes={nodes} toolbar={toolbar} pipeline={pipeline} />
     </div>
   );
 }
