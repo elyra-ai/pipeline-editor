@@ -1,19 +1,3 @@
-/*
- * Copyright 2018-2020 IBM Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import { CanvasController } from "@elyra/canvas";
 import { nanoid } from "nanoid";
 
@@ -203,19 +187,31 @@ class PipelineController extends CanvasController {
       const nodeDef = this.nodes.find((n) => n.op === node.op);
       if (nodeDef) {
         const error = validateProperties(nodeDef, node);
-        node.app_data.invalidNodeError = error;
-        node.description = nodeDef.description;
-        node.image = nodeDef.image;
+        // node.app_data.invalidNodeError = error;
+        // node.description = nodeDef.description;
+        // node.image = nodeDef.image;
 
         const newLabel =
           nodeDef.labelField && node.app_data[nodeDef.labelField]
             ? node.app_data[nodeDef.labelField]
             : nodeDef.label;
 
+        this.setNodeProperties(
+          node.id,
+          {
+            app_data: {
+              ...node.app_data,
+              invalidNodeError: error,
+            },
+            description: nodeDef.description,
+            image: nodeDef.image,
+          },
+          pipelineID
+        );
         this.setNodeLabel(node.id, newLabel, pipelineID);
       } else {
-        node.app_data.invalidNodeError = `"${node.op}" is an unsupported node type`;
-        node.description = undefined;
+        // node.app_data.invalidNodeError = `"${node.op}" is an unsupported node type`;
+        // node.description = undefined;
 
         const image =
           "data:image/svg+xml;utf8," +
@@ -231,11 +227,23 @@ class PipelineController extends CanvasController {
           ?
         </text>
       </svg>`);
-        node.image = image;
+        // node.image = image;
 
+        this.setNodeProperties(
+          node.id,
+          {
+            app_data: {
+              ...node.app_data,
+              invalidNodeError: `"${node.op}" is an unsupported node type`,
+            },
+            description: undefined,
+            image: image,
+          },
+          pipelineID
+        );
         this.setNodeLabel(node.id, "unsupported node", pipelineID);
       }
-      this._styleNode(node);
+      this._styleNode(this._getNode(node.id));
     }
   }
 
@@ -274,12 +282,14 @@ class PipelineController extends CanvasController {
     const node = this._getNode(nodeID);
     const nodeDef = this.nodes.find((n) => n.op === node.op);
 
-    const properties = (nodeDef?.properties ?? []).map((p) => {
-      return {
-        label: p.label,
-        value: node.app_data[p.id],
-      };
-    });
+    const properties = (nodeDef?.properties?.uihints.parameter_info ?? []).map(
+      (p) => {
+        return {
+          label: p.label.default,
+          value: node.app_data[p.parameter_ref],
+        };
+      }
+    );
 
     return properties;
   }

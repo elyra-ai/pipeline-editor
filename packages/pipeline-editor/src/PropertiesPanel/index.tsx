@@ -4,7 +4,7 @@ import { CommonProperties } from "@elyra/canvas";
 import { nanoid } from "nanoid";
 
 import { BooleanControl, StringArrayControl } from "../CustomFormControls";
-import { toCommonProperties } from "./properties-utils";
+import { fillPropertiesWithSavedData } from "./properties-utils";
 
 interface Props {
   selectedNodes?: any[];
@@ -36,8 +36,8 @@ function PropertiesPanel({ selectedNodes, nodes, onChange }: Props) {
   return (
     <CommonProperties
       propertiesInfo={{
-        parameterDef: toCommonProperties(
-          nodePropertiesSchema.properties ?? [],
+        parameterDef: fillPropertiesWithSavedData(
+          nodePropertiesSchema.properties,
           selectedNode.app_data
         ),
         appData: { id: nanoid() },
