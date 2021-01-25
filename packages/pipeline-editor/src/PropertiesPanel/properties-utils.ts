@@ -165,7 +165,7 @@ const properties: CommonPropertiesSchema = {
           default: "File Dependencies",
         },
         // control: "custom",
-        // custom_control_id: "elyra-string-array-input",
+        // custom_control_id: "pipeline-editor-string-array-control",
         description: {
           default:
             "Local file dependencies that need to be copied to remote execution environment.\nOne filename or expression (e.g. *.py) per line. Supported patterns: ? and *.",
@@ -210,7 +210,7 @@ const properties: CommonPropertiesSchema = {
           default: "Output Files",
         },
         // control: "custom",
-        // custom_control_id: "elyra-string-array-input",
+        // custom_control_id: "pipeline-editor-string-array-control",
         description: {
           default:
             "Files generated during execution that will become available to all subsequent pipeline steps.\n One filename or expression (e.g. *.csv) per line. Supported patterns: ? and *.",
@@ -286,6 +286,7 @@ export function toCommonProperties(items: ISchemaItem[], app_data: any) {
     resources: {},
   };
 
+  console.log(items);
   for (const item of items) {
     switch (item.type) {
       case "boolean":
@@ -411,6 +412,9 @@ export function toCommonProperties(items: ISchemaItem[], app_data: any) {
                 placement: "on_panel",
               }
             : undefined,
+          data: {
+            placeholder: item.placeholder,
+          },
         });
         commonProperties.uihints.group_info[0].group_info.push({
           id: item.id,

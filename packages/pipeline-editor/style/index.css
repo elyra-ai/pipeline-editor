@@ -163,6 +163,10 @@
   display: none;
 }
 
+.elyra-StringArrayControl-entry {
+  display: flex;
+}
+
 /* canvas */
 
 .common-canvas {
