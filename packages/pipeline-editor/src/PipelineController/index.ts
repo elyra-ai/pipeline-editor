@@ -144,8 +144,10 @@ class PipelineController extends CanvasController {
     };
 
     const errorStyle = {
-      body: { default: "stroke: var(--color-error-border);" },
-      selection_outline: { default: "stroke: var(--color-error-border);" },
+      body: { default: "stroke: var(--elyra-color-error-border);" },
+      selection_outline: {
+        default: "stroke: var(--elyra-color-error-border);",
+      },
     };
 
     const image =
