@@ -264,6 +264,7 @@
 .pipeline-read-only .d3-node-ellipsis-group,
 .pipeline-read-only .d3-new-connection-line,
 .pipeline-read-only .d3-new-connection-start,
-.pipeline-read-only .d3-new-connection-guide {
+.pipeline-read-only .d3-new-connection-guide,
+.pipeline-read-only .d3-comment-entry {
   display: none;
 }
