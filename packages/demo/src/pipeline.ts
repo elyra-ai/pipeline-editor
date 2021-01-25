@@ -244,7 +244,7 @@ const pipeline = {
               height: 51,
               class_name: "d3-comment-rect",
               content:
-                "Download the JFK Weather dataset archive and extract it\n\ndfsdf\n\n\nfdsfsdfssddsd",
+                "Download the JFK Weather dataset archive and extract it",
               associated_id_refs: [
                 {
                   node_ref: "c88d9c0b-a5d5-45ab-88d6-eb6ce24ffdbb",

@@ -216,45 +216,6 @@ const PipelineEditor = forwardRef(
       );
     }
 
-    if (mode === "vscode") {
-      return (
-        <div style={{ height: "100%" }} ref={blockingRef}>
-          <IntlProvider locale="en">
-            <CommonCanvas
-              contextMenuHandler={handleContextMenu}
-              clickActionHandler={handleClickAction}
-              editActionHandler={handleEditAction}
-              selectionChangeHandler={handleSelectionChange}
-              tipHandler={handleTooltip}
-              toolbarConfig={[]}
-              config={{
-                enableInternalObjectModel: true,
-                // emptyCanvasContent: <EmptyCanvas />,
-                enablePaletteLayout: "None", // 'Flyout', 'None', 'Modal'
-                enableNodeFormatType: "Horizontal",
-                enableToolbarLayout: "None",
-              }}
-              notificationConfig={{ enable: false }}
-              contextMenuConfig={{
-                enableCreateSupernodeNonContiguous: true,
-                defaultMenuEntries: {
-                  saveToPalette: false,
-                  createSupernode: true,
-                },
-              }}
-              canvasController={controller.current}
-            />
-            <PropertiesPanel
-              selectedNodes={selectedNodes}
-              nodes={nodes}
-              canvasController={controller.current}
-              onPropertiesChange={handlePropertiesChange}
-            />
-          </IntlProvider>
-        </div>
-      );
-    }
-
     return (
       <div style={{ height: "100%" }} ref={blockingRef}>
         <IntlProvider locale="en">
@@ -262,6 +223,7 @@ const PipelineEditor = forwardRef(
             contextMenuHandler={handleContextMenu}
             clickActionHandler={handleClickAction}
             editActionHandler={handleEditAction}
+            selectionChangeHandler={handleSelectionChange}
             tipHandler={handleTooltip}
             toolbarConfig={[]}
             config={{
