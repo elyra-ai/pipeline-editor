@@ -20,7 +20,7 @@ import "../style/index.css";
 
 interface Props {
   pipeline: any;
-  mode?: "vscode" | "jupyter";
+  toolbar?: any[];
   nodes?: any;
   onAction?: (type: string) => any;
   onChange?: (pipeline: any) => any;
@@ -41,7 +41,7 @@ const PipelineEditor = forwardRef(
     {
       pipeline,
       nodes,
-      mode,
+      toolbar,
       onAction,
       onChange,
       onError,
@@ -216,52 +216,6 @@ const PipelineEditor = forwardRef(
       );
     }
 
-    const toolbarConfig = [
-      {
-        action: "run",
-        label: "Run Pipeline",
-        enable: true,
-      },
-      {
-        action: "save",
-        label: "Save Pipeline",
-        enable: true,
-      },
-      {
-        action: "export",
-        label: "Export Pipeline",
-        enable: true,
-      },
-      {
-        action: "clear",
-        label: "Clear Pipeline",
-        enable: true,
-      },
-      {
-        action: "openRuntimes",
-        label: "Open Runtimes",
-        enable: true,
-      },
-      { divider: true },
-      { action: "undo", label: "Undo" },
-      { action: "redo", label: "Redo" },
-      { action: "cut", label: "Cut" },
-      { action: "copy", label: "Copy" },
-      { action: "paste", label: "Paste" },
-      { action: "createAutoComment", label: "Add Comment", enable: true },
-      { action: "deleteSelectedObjects", label: "Delete" },
-      {
-        action: "arrangeHorizontally",
-        label: "Arrange Horizontally",
-        enable: true,
-      },
-      {
-        action: "arrangeVertically",
-        label: "Arrange Vertically",
-        enable: true,
-      },
-    ];
-
     return (
       <div style={{ height: "100%" }} ref={blockingRef}>
         <IntlProvider locale="en">
@@ -271,13 +225,13 @@ const PipelineEditor = forwardRef(
             editActionHandler={handleEditAction}
             selectionChangeHandler={handleSelectionChange}
             tipHandler={handleTooltip}
-            toolbarConfig={mode === "vscode" ? [] : toolbarConfig}
+            toolbarConfig={toolbar ?? []}
             config={{
               enableInternalObjectModel: true,
               // emptyCanvasContent: <EmptyCanvas />,
               enablePaletteLayout: "None", // 'Flyout', 'None', 'Modal'
               enableNodeFormatType: "Horizontal",
-              enableToolbarLayout: mode === "vscode" ? "None" : "Top",
+              enableToolbarLayout: toolbar === undefined ? "None" : "Top",
             }}
             notificationConfig={{ enable: false }}
             contextMenuConfig={{
