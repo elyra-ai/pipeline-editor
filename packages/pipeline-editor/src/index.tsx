@@ -13,6 +13,7 @@ import { IntlProvider } from "react-intl";
 import { NodeTooltip } from "./NodeTooltip";
 import PipelineController from "./PipelineController";
 import PropertiesPanel from "./PropertiesPanel";
+import SplitPanelLayout from "./SplitPanelLayout";
 import useBlockEvents from "./useBlockEvents";
 
 import "../node_modules/@elyra/canvas/dist/styles/common-canvas.min.css";
@@ -130,34 +131,17 @@ const PipelineEditor = forwardRef(
     const handleEditAction = useCallback(
       async (e: ICanvasEditEvent) => {
         switch (e.editType) {
-          case "run": {
-            onAction?.("run");
-            break;
-          }
-          case "export": {
-            onAction?.("export");
-            break;
-          }
+          case "run":
+          case "export":
+          case "openRuntimes":
+          case "openFile":
           case "save": {
-            onAction?.("save");
+            onAction?.(e.editType);
             break;
           }
-          case "clear": {
-            onAction?.("clear");
-            break;
-          }
-          case "openRuntimes": {
-            onAction?.("openRuntimes");
-            break;
-          }
-          case "openFile": {
-            onAction?.("openFile");
-            break;
-          }
-          case "properties": {
-            // common properties
-            break;
-          }
+          // We should be able to handle these cases:
+          // - "properties"
+          // - "clear"
         }
         // I can't remember if validating now breaks anything?
         controller.current.validate();
@@ -219,35 +203,41 @@ const PipelineEditor = forwardRef(
     return (
       <div style={{ height: "100%" }} ref={blockingRef}>
         <IntlProvider locale="en">
-          <CommonCanvas
-            contextMenuHandler={handleContextMenu}
-            clickActionHandler={handleClickAction}
-            editActionHandler={handleEditAction}
-            selectionChangeHandler={handleSelectionChange}
-            tipHandler={handleTooltip}
-            toolbarConfig={toolbar ?? []}
-            config={{
-              enableInternalObjectModel: true,
-              // emptyCanvasContent: <EmptyCanvas />,
-              enablePaletteLayout: "None", // 'Flyout', 'None', 'Modal'
-              enableNodeFormatType: "Horizontal",
-              enableToolbarLayout: toolbar === undefined ? "None" : "Top",
-            }}
-            notificationConfig={{ enable: false }}
-            contextMenuConfig={{
-              enableCreateSupernodeNonContiguous: true,
-              defaultMenuEntries: {
-                saveToPalette: false,
-                createSupernode: true,
-              },
-            }}
-            canvasController={controller.current}
-          />
-          <PropertiesPanel
-            selectedNodes={selectedNodes}
-            nodes={nodes}
-            canvasController={controller.current}
-            onPropertiesChange={handlePropertiesChange}
+          <SplitPanelLayout
+            left={
+              <CommonCanvas
+                canvasController={controller.current}
+                contextMenuHandler={handleContextMenu}
+                clickActionHandler={handleClickAction}
+                editActionHandler={handleEditAction}
+                selectionChangeHandler={handleSelectionChange}
+                tipHandler={handleTooltip}
+                toolbarConfig={toolbar ?? []}
+                config={{
+                  enableInternalObjectModel: true,
+                  // emptyCanvasContent: <EmptyCanvas />,
+                  enablePaletteLayout: "None", // 'Flyout', 'None', 'Modal'
+                  enableNodeFormatType: "Horizontal",
+                  enableToolbarLayout: toolbar === undefined ? "None" : "Top",
+                }}
+                notificationConfig={{ enable: false }}
+                contextMenuConfig={{
+                  enableCreateSupernodeNonContiguous: true,
+                  defaultMenuEntries: {
+                    saveToPalette: false,
+                    createSupernode: true,
+                  },
+                }}
+              />
+            }
+            right={
+              <PropertiesPanel
+                selectedNodes={selectedNodes}
+                nodes={nodes}
+                canvasController={controller.current}
+                onPropertiesChange={handlePropertiesChange}
+              />
+            }
           />
         </IntlProvider>
       </div>
