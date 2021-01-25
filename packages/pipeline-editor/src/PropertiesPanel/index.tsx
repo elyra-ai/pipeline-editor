@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { CommonProperties } from "@elyra/canvas";
 import { nanoid } from "nanoid";
@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 import { BooleanControl, StringArrayControl } from "../CustomFormControls";
 import { toCommonProperties } from "./properties-utils";
 
-function PropertiesContent({
+function PropertiesPanel({
   selectedNodes,
   nodes,
   canvasController,
@@ -65,43 +65,6 @@ function PropertiesContent({
       }}
       customControls={[StringArrayControl, BooleanControl]}
     />
-  );
-}
-
-function PropertiesPanel({
-  selectedNodes,
-  nodes,
-  canvasController,
-  onPropertiesChange,
-}: any) {
-  return (
-    <React.Fragment>
-      <div>
-        <div style={{ display: "flex" }}>
-          <div>NODE PROPERTIES</div>
-          <div>PALETTE</div>
-        </div>
-        <div>
-          <div className="codicon codicon-close"></div>
-        </div>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          top: "35px",
-          bottom: 0,
-          overflow: "scroll",
-          width: "100%",
-        }}
-      >
-        <PropertiesContent
-          selectedNodes={selectedNodes}
-          nodes={nodes}
-          canvasController={canvasController}
-          onChange={onPropertiesChange}
-        />
-      </div>
-    </React.Fragment>
   );
 }
 
