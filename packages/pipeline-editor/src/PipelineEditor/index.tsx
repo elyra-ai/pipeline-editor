@@ -14,6 +14,7 @@ import NodeTooltip from "../NodeTooltip";
 import PipelineController from "../PipelineController";
 import PropertiesPanel from "../PropertiesPanel";
 import SplitPanelLayout from "../SplitPanelLayout";
+import TabbedPanelLayout from "../TabbedPanelLayout";
 import useBlockEvents from "./useBlockEvents";
 
 interface Props {
@@ -224,11 +225,26 @@ const PipelineEditor = forwardRef(
               />
             }
             right={
-              <PropertiesPanel
-                selectedNodes={selectedNodes}
-                nodes={nodes}
-                canvasController={controller.current}
-                onPropertiesChange={handlePropertiesChange}
+              <TabbedPanelLayout
+                tabs={[
+                  {
+                    id: "properties",
+                    label: "NODE PROPERTIES",
+                    content: (
+                      <PropertiesPanel
+                        selectedNodes={selectedNodes}
+                        nodes={nodes}
+                        canvasController={controller.current}
+                        onPropertiesChange={handlePropertiesChange}
+                      />
+                    ),
+                  },
+                  {
+                    id: "palette",
+                    label: "PALETTE",
+                    content: <div>i am a palette, nice to meet you</div>,
+                  },
+                ]}
               />
             }
           />
