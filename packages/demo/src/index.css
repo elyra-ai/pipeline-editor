@@ -3,6 +3,44 @@ body {
   padding: 0;
 }
 
+body.pipeline-editor-jupyter {
+  --md-red-500: #f44336;
+  --jp-error-color1: var(--md-red-500);
+
+  --interactive-01: #3d70b2;
+  --ui-background: #f4f7fb;
+  --ui-01: #ffffff;
+  --ui-02: #f4f7fb;
+  --ui-03: #dfe3e6;
+  --ui-04: #8897a2;
+  --ui-05: #5a6872;
+  --text-01: #152935;
+  --text-02: #5a6872;
+  --text-03: #cdd1d4;
+  --icon-01: #3d70b2;
+  --link-01: #3d70b2;
+  --inverse-01: #ffffff;
+  --inverse-02: #161616;
+  --inverse-link: #5596e6;
+  --highlight: #f4f7fb;
+
+  /* --ui-background: #161616;
+  --ui-01: #262626;
+  --ui-02: #393939;
+  --ui-03: #6f6f6f;
+  --ui-04: #c6c6c6;
+  --ui-05: #f4f4f4;
+  --text-01: #f4f4f4;
+  --text-02: #c6c6c6;
+  --text-03: #6f6f6f;
+  --icon-01: #f4f4f4;
+  --link-01: #78a9ff;
+  --inverse-01: #161616;
+  --inverse-02: #ffffff;
+  --inverse-link: #0f62fe;
+  --highlight: #002d9c; */
+}
+
 body.pipeline-editor-vscode {
   -webkit-locale: "en";
   --vscode-font-family: -apple-system, BlinkMacSystemFont, sans-serif;
