@@ -254,6 +254,12 @@
   fill: transparent;
 }
 
+.d3-new-connection-line,
+.d3-new-connection-start,
+.d3-new-connection-guide {
+  stroke: var(--elyra-color-node-link) !important;
+}
+
 .pipeline-read-only .d3-comment-sizing,
 .pipeline-read-only .d3-comment-port-circle,
 .pipeline-read-only .d3-node-selection-highlight,
