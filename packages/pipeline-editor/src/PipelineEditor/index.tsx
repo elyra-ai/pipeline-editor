@@ -144,11 +144,19 @@ const PipelineEditor = forwardRef(
       [onAction, onChange]
     );
 
-    const handlePropertiesChange = useCallback(() => {
-      // I can't remember if validating now breaks anything?
-      controller.current.validate();
-      onChange?.(controller.current.getPipelineFlow());
-    }, [onChange]);
+    const handlePropertiesChange = useCallback(
+      (nodeID, data) => {
+        controller.current.setNodeProperties(
+          nodeID,
+          { app_data: data },
+          controller.current.getPrimaryPipelineId()
+        );
+        // I can't remember if validating now breaks anything?
+        controller.current.validate();
+        onChange?.(controller.current.getPipelineFlow());
+      },
+      [onChange]
+    );
 
     const handleTooltip = (tipType: string, e: ITipEvent) => {
       function isNodeTipEvent(type: string, _e: ITipEvent): _e is ITipNode {
@@ -234,8 +242,7 @@ const PipelineEditor = forwardRef(
                       <PropertiesPanel
                         selectedNodes={selectedNodes}
                         nodes={nodes}
-                        canvasController={controller.current}
-                        onPropertiesChange={handlePropertiesChange}
+                        onChange={handlePropertiesChange}
                       />
                     ),
                   },
