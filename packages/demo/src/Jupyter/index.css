@@ -89,43 +89,6 @@ body.pipeline-editor-jupyter .bx--btn--ghost {
   border: none;
 }
 
-body.pipeline-editor-jupyter .d3-node-port-input-arrow {
-  display: unset;
-}
-
 body.pipeline-editor-jupyter .d3-comment-link {
   stroke-width: 1 !important;
-}
-
-body.pipeline-editor-jupyter .d3-node-port-input,
-body.pipeline-editor-jupyter .d3-node-port-input:hover {
-  stroke: #393939;
-  fill: #fff;
-  stroke-width: 1.25;
-}
-
-body.pipeline-editor-jupyter .d3-node-port-input[connected="yes"],
-body.pipeline-editor-jupyter .d3-node-port-input[connected="yes"]:hover {
-  stroke: #fff;
-  fill: #fff;
-  stroke-width: 1;
-}
-
-body.pipeline-editor-jupyter .d3-node-port-output {
-  stroke: #393939;
-  fill: #fff;
-  stroke-width: 1.25;
-}
-
-body.pipeline-editor-jupyter .d3-node-port-output:hover {
-  stroke: #393939;
-  fill: #393939;
-  stroke-width: 1.25;
-}
-
-body.pipeline-editor-jupyter .d3-node-port-output[connected="yes"],
-body.pipeline-editor-jupyter .d3-node-port-output[connected="yes"]:hover {
-  stroke: #393939;
-  fill: #393939;
-  stroke-width: 2;
 }
