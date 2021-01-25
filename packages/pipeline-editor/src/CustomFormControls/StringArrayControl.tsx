@@ -1,6 +1,4 @@
-import React from "react";
-
-export class StringArrayControl extends React.Component {
+export class StringArrayControl {
   parameter: string;
   controller: any;
   values: string[];
@@ -13,8 +11,6 @@ export class StringArrayControl extends React.Component {
   }
 
   constructor(parameters: any, controller: any, data: any) {
-    super({});
-    console.log(parameters);
     if (data) {
       this.singleItemLabel = data.single_item_label;
       this.placeholder = data.placeholder;
@@ -27,7 +23,6 @@ export class StringArrayControl extends React.Component {
       this.controller.updatePropertyValue(this.parameter, []);
       this.values = [];
     }
-    console.log(this.values);
 
     this.deleteHandler = this.deleteHandler.bind(this);
     this.onTextAreaChange = this.onTextAreaChange.bind(this);
