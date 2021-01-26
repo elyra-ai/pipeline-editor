@@ -42,6 +42,7 @@ interface Props {
   onError?: () => any;
   onFileRequested?: () => any;
   readOnly?: boolean;
+  children?: React.ReactNode;
 }
 
 const NODE_SVG_PATH =
@@ -58,6 +59,7 @@ const PipelineEditor = forwardRef(
       onError,
       onFileRequested,
       readOnly,
+      children,
     }: Props,
     ref
   ) => {
@@ -204,6 +206,7 @@ const PipelineEditor = forwardRef(
               toolbarConfig={[]}
               config={{
                 enableInternalObjectModel: false,
+                emptyCanvasContent: children,
                 enablePaletteLayout: "None",
                 enableNodeFormatType: "Horizontal",
                 enableToolbarLayout: "None",
@@ -233,7 +236,7 @@ const PipelineEditor = forwardRef(
                 toolbarConfig={toolbar ?? []}
                 config={{
                   enableInternalObjectModel: true,
-                  // emptyCanvasContent: <EmptyCanvas />,
+                  emptyCanvasContent: children,
                   enablePaletteLayout: "None", // 'Flyout', 'None', 'Modal'
                   enableNodeFormatType: "Horizontal",
                   enableToolbarLayout: toolbar === undefined ? "None" : "Top",

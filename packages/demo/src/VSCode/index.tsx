@@ -33,7 +33,9 @@ function VSCode() {
 
   return (
     <div style={{ height: "100vh" }}>
-      <PipelineEditor nodes={nodes} pipeline={pipeline} />
+      <PipelineEditor nodes={nodes} pipeline={pipeline}>
+        <div>Hello there</div>
+      </PipelineEditor>
     </div>
   );
 }
