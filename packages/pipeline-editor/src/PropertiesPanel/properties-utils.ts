@@ -25,7 +25,7 @@ export interface CommonPropertiesSchema {
   resources: any;
 }
 
-export namespace CommonPropertiesSchema {
+declare namespace CommonPropertiesSchema {
   export interface UIHints {
     id: string;
     parameter_info: any[];
