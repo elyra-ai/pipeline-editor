@@ -37,6 +37,17 @@ import {
 
 const PIPELINE_CURRENT_VERSION = 3;
 
+enum ContentType {
+  notebook = "notebook",
+  python = "python",
+  other = "other",
+}
+
+const CONTENT_TYPE_MAPPER: Map<string, ContentType> = new Map([
+  [".py", ContentType.python],
+  [".ipynb", ContentType.notebook],
+]);
+
 class PipelineController extends CanvasController {
   private nodes: INode[] = [];
 
@@ -95,12 +106,40 @@ class PipelineController extends CanvasController {
     this.setPipelineFlowPalette(palette);
   }
 
-  addNode(op: string): void {
-    const nodeTemplate = this.getPaletteNode(op);
+  private static getNodeType(filepath: string): string {
+    var re = /(?:\.([^.]+))?$/;
+    const extension: string = re.exec(filepath)?.toString() || "";
+    const type: string = CONTENT_TYPE_MAPPER.get(extension)!;
+
+    // TODO: throw error when file extension is not supported?
+    return type;
+  }
+
+  /**
+   * Check if a given file is allowed to be added to the pipeline
+   * @param item
+   */
+  isSupportedNode(file: any): boolean {
+    if (PipelineController.getNodeType(file.path)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  addNode(item: any, x?: number, y?: number): void {
+    if (!this.isSupportedNode(item)) {
+      return;
+    }
+    // read the file contents
+    // create a notebook widget to get a string with the node content then dispose of it
+    // let itemContent = item.content.model.toString();
+
+    const nodeTemplate = this.getPaletteNode("bloop");
     const data = {
       editType: "createNode",
-      offsetX: 40,
-      offsetY: 40,
+      offsetX: x || 40,
+      offsetY: y || 40,
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
     };
     this.editActionHandler(data);
