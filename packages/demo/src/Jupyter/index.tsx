@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { PipelineEditor } from "@elyra/pipeline-editor";
 
@@ -31,55 +31,90 @@ function Jupyter() {
     };
   }, []);
 
-  const toolbar = [
-    {
-      action: "run",
-      label: "Run Pipeline",
-      enable: true,
+  const [panelOpen, setPanelOpen] = useState(true);
+
+  const onAction = useCallback(
+    (type: string) => {
+      switch (type) {
+        case "toggleOpenPanel":
+          setPanelOpen(!panelOpen);
+          break;
+        case "properties":
+          setPanelOpen(true);
+          break;
+        case "closePanel":
+          setPanelOpen(false);
+          break;
+      }
     },
-    {
-      action: "save",
-      label: "Save Pipeline",
-      enable: true,
-    },
-    {
-      action: "export",
-      label: "Export Pipeline",
-      enable: true,
-    },
-    {
-      action: "clear",
-      label: "Clear Pipeline",
-      enable: true,
-    },
-    {
-      action: "openRuntimes",
-      label: "Open Runtimes",
-      enable: true,
-    },
-    { divider: true },
-    { action: "undo", label: "Undo" },
-    { action: "redo", label: "Redo" },
-    { action: "cut", label: "Cut" },
-    { action: "copy", label: "Copy" },
-    { action: "paste", label: "Paste" },
-    { action: "createAutoComment", label: "Add Comment", enable: true },
-    { action: "deleteSelectedObjects", label: "Delete" },
-    {
-      action: "arrangeHorizontally",
-      label: "Arrange Horizontally",
-      enable: true,
-    },
-    {
-      action: "arrangeVertically",
-      label: "Arrange Vertically",
-      enable: true,
-    },
-  ];
+    [panelOpen]
+  );
+
+  const toolbar = {
+    leftBar: [
+      {
+        action: "run",
+        label: "Run Pipeline",
+        enable: true,
+      },
+      {
+        action: "save",
+        label: "Save Pipeline",
+        enable: true,
+      },
+      {
+        action: "export",
+        label: "Export Pipeline",
+        enable: true,
+      },
+      {
+        action: "clear",
+        label: "Clear Pipeline",
+        enable: true,
+      },
+      {
+        action: "openRuntimes",
+        label: "Open Runtimes",
+        enable: true,
+      },
+      { divider: true },
+      { action: "undo", label: "Undo" },
+      { action: "redo", label: "Redo" },
+      { action: "cut", label: "Cut" },
+      { action: "copy", label: "Copy" },
+      { action: "paste", label: "Paste" },
+      { action: "createAutoComment", label: "Add Comment", enable: true },
+      { action: "deleteSelectedObjects", label: "Delete" },
+      {
+        action: "arrangeHorizontally",
+        label: "Arrange Horizontally",
+        enable: true,
+      },
+      {
+        action: "arrangeVertically",
+        label: "Arrange Vertically",
+        enable: true,
+      },
+    ],
+    rightBar: [
+      {
+        action: "toggleOpenPanel",
+        label: panelOpen ? "Close panel" : "Open panel",
+        enable: true,
+        iconTypeOverride: panelOpen ? "paletteOpen" : "paletteClose",
+      },
+    ],
+  };
 
   return (
     <div style={{ height: "100vh" }}>
-      <PipelineEditor nodes={nodes} toolbar={toolbar} pipeline={pipeline} />
+      <PipelineEditor
+        nodes={nodes}
+        toolbar={toolbar}
+        pipeline={pipeline}
+        panelOpen={panelOpen}
+        onAction={onAction}
+      />
     </div>
   );
 }

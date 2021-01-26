@@ -35,13 +35,14 @@ import useBlockEvents from "./useBlockEvents";
 
 interface Props {
   pipeline: any;
-  toolbar?: any[];
+  toolbar?: any;
   nodes?: any;
   onAction?: (type: string) => any;
   onChange?: (pipeline: any) => any;
   onError?: () => any;
   onFileRequested?: () => any;
   readOnly?: boolean;
+  panelOpen?: boolean;
   children?: React.ReactNode;
 }
 
@@ -59,6 +60,7 @@ const PipelineEditor = forwardRef(
       onError,
       onFileRequested,
       readOnly,
+      panelOpen,
       children,
     }: Props,
     ref
@@ -142,24 +144,12 @@ const PipelineEditor = forwardRef(
 
     const handleEditAction = useCallback(
       async (e: ICanvasEditEvent) => {
-        switch (e.editType) {
-          case "run":
-          case "export":
-          case "openRuntimes":
-          case "openFile":
-          case "save": {
-            onAction?.(e.editType);
-            break;
-          }
-          // We should be able to handle these cases:
-          // - "properties"
-          // - "clear"
-        }
+        onAction?.(e.editType);
         // I can't remember if validating now breaks anything?
         controller.current.validate();
         onChange?.(controller.current.getPipelineFlow());
       },
-      [onAction, onChange]
+      [onAction, onChange, panelOpen]
     );
 
     const handlePropertiesChange = useCallback(
@@ -271,8 +261,12 @@ const PipelineEditor = forwardRef(
                     content: <div>i am a palette, nice to meet you</div>,
                   },
                 ]}
+                onClose={() => {
+                  onAction?.("closePanel");
+                }}
               />
             }
+            rightOpen={panelOpen}
           />
         </IntlProvider>
       </div>

@@ -22,12 +22,17 @@ const MIN_PANEL_WIDTH = 300;
 interface Props {
   left: React.ReactNode;
   right: React.ReactNode;
+  rightOpen?: boolean;
 }
 
-function SplitPanelLayout({ left, right }: Props) {
-  const [width, setWidth] = useState(DEFAULT_PANEL_WIDTH);
+function SplitPanelLayout({ left, right, rightOpen }: Props) {
+  const [width, setWidth] = useState(rightOpen ? DEFAULT_PANEL_WIDTH : 0);
 
   const dragging = useRef(false);
+
+  useEffect(() => {
+    setWidth(rightOpen ? DEFAULT_PANEL_WIDTH : 0);
+  }, [rightOpen]);
 
   useEffect(() => {
     function handleMouseMove(e: MouseEvent) {
@@ -76,42 +81,46 @@ function SplitPanelLayout({ left, right }: Props) {
       >
         {left}
       </div>
-      <div
-        style={{
-          // zIndex: 10000,
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          background: "var(--elyra-color-panel-border)",
-          width: "1px",
-          right: `${width}px`,
-        }}
-      />
-      <div
-        style={{
-          // zIndex: 10000,
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          background: "var(--elyra-color-panel-bg)",
-          width: `${width}px`,
-          right: 0,
-        }}
-      >
-        {right}
-      </div>
-      <div
-        style={{
-          // zIndex: 10000,
-          position: "absolute",
-          cursor: "col-resize",
-          top: 0,
-          bottom: 0,
-          width: "8px",
-          right: `${width - 4}px`,
-        }}
-        onMouseDown={handleMouseDown}
-      />
+      {rightOpen ? (
+        <div>
+          <div
+            style={{
+              // zIndex: 10000,
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              background: "var(--elyra-color-panel-border)",
+              width: "1px",
+              right: `${width}px`,
+            }}
+          />
+          <div
+            style={{
+              // zIndex: 10000,
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              background: "var(--elyra-color-panel-bg)",
+              width: `${width}px`,
+              right: 0,
+            }}
+          >
+            {right}
+          </div>
+          <div
+            style={{
+              // zIndex: 10000,
+              position: "absolute",
+              cursor: "col-resize",
+              top: 0,
+              bottom: 0,
+              width: "8px",
+              right: `${width - 4}px`,
+            }}
+            onMouseDown={handleMouseDown}
+          />
+        </div>
+      ) : null}
     </React.Fragment>
   );
 }
