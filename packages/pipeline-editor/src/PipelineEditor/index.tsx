@@ -281,7 +281,6 @@ const PipelineEditor = forwardRef(
                 ]}
                 togglePanelOpen={() => {
                   if (togglePanelOpen) {
-                    console.log("worked!");
                     togglePanelOpen();
                   }
                 }}
