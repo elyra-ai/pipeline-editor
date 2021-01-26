@@ -138,9 +138,7 @@ const PipelineEditor = forwardRef(
             break;
           }
           case "toggleOpenPanel":
-            console.log("toggleOpenPanel");
             if (togglePanelOpen) {
-              console.log("worked here as well!");
               togglePanelOpen();
             }
           // We should be able to handle these cases:
@@ -151,7 +149,7 @@ const PipelineEditor = forwardRef(
         controller.current.validate();
         onChange?.(controller.current.getPipelineFlow());
       },
-      [onAction, onChange]
+      [onAction, onChange, panelOpen]
     );
 
     const handlePropertiesChange = useCallback(

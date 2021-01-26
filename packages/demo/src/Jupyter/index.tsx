@@ -17,7 +17,6 @@ function Jupyter() {
 
   const [panelOpen, setPanelOpen] = useState(false);
   const togglePanelOpen = () => {
-    console.log(panelOpen);
     setPanelOpen(!panelOpen);
   };
 

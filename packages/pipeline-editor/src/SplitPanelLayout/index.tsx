@@ -10,12 +10,13 @@ interface Props {
 }
 
 function SplitPanelLayout({ left, right, rightOpen }: Props) {
-  const [width, setWidth] = useState(rightOpen ? 0 : DEFAULT_PANEL_WIDTH);
+  const [width, setWidth] = useState(rightOpen ? DEFAULT_PANEL_WIDTH : 0);
 
   const dragging = useRef(false);
 
-  console.log("toggled and made it here");
-  console.log(rightOpen ? 0 : DEFAULT_PANEL_WIDTH);
+  useEffect(() => {
+    setWidth(rightOpen ? DEFAULT_PANEL_WIDTH : 0);
+  }, [rightOpen]);
 
   useEffect(() => {
     function handleMouseMove(e: MouseEvent) {
