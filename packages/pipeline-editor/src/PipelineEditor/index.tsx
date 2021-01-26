@@ -245,7 +245,7 @@ const PipelineEditor = forwardRef(
                 tabs={[
                   {
                     id: "properties",
-                    label: "NODE PROPERTIES",
+                    label: "Node Properties",
                     content: (
                       <PropertiesPanel
                         selectedNodes={selectedNodes}
@@ -256,7 +256,7 @@ const PipelineEditor = forwardRef(
                   },
                   {
                     id: "palette",
-                    label: "PALETTE",
+                    label: "Palette",
                     content: <div>i am a palette, nice to meet you</div>,
                   },
                 ]}

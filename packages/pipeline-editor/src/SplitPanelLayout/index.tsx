@@ -66,7 +66,7 @@ function SplitPanelLayout({ left, right, rightOpen }: Props) {
         {left}
       </div>
       {rightOpen === undefined || rightOpen === true ? (
-        <div>
+        <div key="elyra-rightPanel">
           <div
             style={{
               // zIndex: 10000,

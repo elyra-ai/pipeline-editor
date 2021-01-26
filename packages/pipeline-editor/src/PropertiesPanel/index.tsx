@@ -23,11 +23,15 @@ function PropertiesPanel({ selectedNodes, nodes, onChange }: Props) {
   });
 
   if (selectedNodes === undefined || selectedNodes.length === 0) {
-    return <div>no nodes selected</div>;
+    return (
+      <div className="elyra-pipeline-propertiesEmpty">
+        <h1>No nodes selected. </h1>
+      </div>
+    );
   }
 
   if (selectedNodes.length > 1) {
-    return <div>more than 1 node selected</div>;
+    return <div>More than one node selected.</div>;
   }
 
   const selectedNode = selectedNodes[0];
@@ -41,7 +45,7 @@ function PropertiesPanel({ selectedNodes, nodes, onChange }: Props) {
           selectedNode.app_data
         ),
         appData: { id: nanoid() },
-        labelEditable: false,
+        labelEditable: true,
       }}
       propertiesConfig={{
         containerType: "Custom",

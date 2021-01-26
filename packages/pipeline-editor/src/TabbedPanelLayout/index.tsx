@@ -17,9 +17,13 @@ function TabbedPanelLayout({ tabs, togglePanelOpen }: Props) {
   return (
     <React.Fragment>
       <div>
-        <div style={{ display: "flex" }}>
+        <div className="elyra-pipeline-tabBar">
           {tabs.map((t) => (
             <div
+              className={
+                "elyra-pipeline-tab" +
+                (currentTab === t.id ? " elyra-pipeline-tab-active" : "")
+              }
               onClick={() => {
                 setCurrentTab(t.id);
               }}
@@ -28,19 +32,11 @@ function TabbedPanelLayout({ tabs, togglePanelOpen }: Props) {
             </div>
           ))}
         </div>
-        <div>
-          <div onClick={togglePanelOpen}>X</div>
+        <div className="elyra-pipeline-closePanel" onClick={togglePanelOpen}>
+          X
         </div>
       </div>
-      <div
-        style={{
-          position: "absolute",
-          top: "35px",
-          bottom: 0,
-          overflow: "scroll",
-          width: "100%",
-        }}
-      >
+      <div className="elyra-tabContent">
         {tabs.find((t) => t.id === currentTab)?.content}
       </div>
     </React.Fragment>

@@ -70,41 +70,26 @@ export class StringArrayControl {
             >
               <input
                 key={this.parameter + index + "InputGroup"}
-                className="jp-InputGroup"
                 defaultValue={value}
                 placeholder={this.placeholder}
                 onChange={(event: any): void => {
                   this.onInputChange(event, index);
                 }}
               />
-              <div
-                className="jp-Button"
-                onClick={(): void => {
-                  const actionHandler = this.controller.getHandlers()
-                    .actionHandler;
-                  if (typeof actionHandler === "function") {
-                    actionHandler(
-                      "add_dependencies",
-                      this.controller.getAppData(),
-                      { parameter_ref: "dependencies", index: index }
-                    );
-                  }
-                }}
-              ></div>
-              <div
+              <button
+                className="elyra-StringArrayControl-entryDeleteButton"
                 onClick={(): void => {
                   this.deleteHandler(index);
                 }}
               >
-                {" "}
-                X{" "}
-              </div>
+                X
+              </button>
             </div>
           ))}
         </div>
         <div style={{ display: "flex" }}>
           <div
-            className="jp-Button"
+            className="elyra-StringArrayControl-addEntryButton"
             onClick={this.addHandler}
             style={{ marginTop: 8 }}
           >
