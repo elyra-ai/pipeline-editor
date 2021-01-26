@@ -262,7 +262,7 @@ const PipelineEditor = forwardRef(
                   },
                 ]}
                 onClose={() => {
-                  onAction?.("toggleOpenPanel");
+                  onAction?.("closePanel");
                 }}
               />
             }

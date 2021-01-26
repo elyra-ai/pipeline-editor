@@ -42,6 +42,9 @@ function VSCode() {
         case "togglePanelOpen":
           setPanelOpen(!panelOpen);
           break;
+        case "closePanel":
+          setPanelOpen(false);
+          break;
       }
     },
     [panelOpen]

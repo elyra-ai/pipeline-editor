@@ -41,6 +41,10 @@ function Jupyter() {
           break;
         case "properties":
           setPanelOpen(true);
+          break;
+        case "closePanel":
+          setPanelOpen(false);
+          break;
       }
     },
     [panelOpen]
