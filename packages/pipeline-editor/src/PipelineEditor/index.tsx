@@ -19,13 +19,15 @@ import useBlockEvents from "./useBlockEvents";
 
 interface Props {
   pipeline: any;
-  toolbar?: any[];
+  toolbar?: any;
   nodes?: any;
   onAction?: (type: string) => any;
   onChange?: (pipeline: any) => any;
   onError?: () => any;
   onFileRequested?: () => any;
   readOnly?: boolean;
+  panelOpen?: boolean;
+  togglePanelOpen?: () => void;
 }
 
 const NODE_SVG_PATH =
@@ -42,6 +44,8 @@ const PipelineEditor = forwardRef(
       onError,
       onFileRequested,
       readOnly,
+      panelOpen,
+      togglePanelOpen,
     }: Props,
     ref
   ) => {
@@ -133,6 +137,12 @@ const PipelineEditor = forwardRef(
             onAction?.(e.editType);
             break;
           }
+          case "toggleOpenPanel":
+            console.log("toggleOpenPanel");
+            if (togglePanelOpen) {
+              console.log("worked here as well!");
+              togglePanelOpen();
+            }
           // We should be able to handle these cases:
           // - "properties"
           // - "clear"
@@ -252,8 +262,15 @@ const PipelineEditor = forwardRef(
                     content: <div>i am a palette, nice to meet you</div>,
                   },
                 ]}
+                togglePanelOpen={() => {
+                  if (togglePanelOpen) {
+                    console.log("worked!");
+                    togglePanelOpen();
+                  }
+                }}
               />
             }
+            rightOpen={panelOpen}
           />
         </IntlProvider>
       </div>

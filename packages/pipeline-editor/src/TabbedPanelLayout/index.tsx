@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 interface Props {
   tabs: Tab[];
+  togglePanelOpen: () => void;
 }
 
 interface Tab {
@@ -10,7 +11,7 @@ interface Tab {
   content: React.ReactNode;
 }
 
-function TabbedPanelLayout({ tabs }: Props) {
+function TabbedPanelLayout({ tabs, togglePanelOpen }: Props) {
   const [currentTab, setCurrentTab] = useState(tabs[0].id);
 
   return (
@@ -28,7 +29,7 @@ function TabbedPanelLayout({ tabs }: Props) {
           ))}
         </div>
         <div>
-          <div>X</div>
+          <div onClick={togglePanelOpen}>X</div>
         </div>
       </div>
       <div
