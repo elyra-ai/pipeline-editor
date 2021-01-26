@@ -20,3 +20,11 @@ watch:
 .PHONY: start
 start:
 	FORCE_COLOR=true yarn lerna run start --scope demo --stream
+
+.PHONY: fix
+fix:
+	yarn eslint . --fix --ignore-path .gitignore --ext .ts,.tsx
+
+.PHONY: lint
+lint:
+	yarn eslint . --ignore-path .gitignore --ext .ts,.tsx
