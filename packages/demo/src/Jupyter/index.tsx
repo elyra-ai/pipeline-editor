@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { PipelineEditor } from "@elyra/pipeline-editor";
 
@@ -31,10 +31,20 @@ function Jupyter() {
     };
   }, []);
 
-  const [panelOpen, setPanelOpen] = useState(false);
-  const togglePanelOpen = () => {
-    setPanelOpen(!panelOpen);
-  };
+  const [panelOpen, setPanelOpen] = useState(true);
+
+  const onAction = useCallback(
+    (type: string) => {
+      switch (type) {
+        case "toggleOpenPanel":
+          setPanelOpen(!panelOpen);
+          break;
+        case "properties":
+          setPanelOpen(true);
+      }
+    },
+    [panelOpen]
+  );
 
   const toolbar = {
     leftBar: [
@@ -99,7 +109,7 @@ function Jupyter() {
         toolbar={toolbar}
         pipeline={pipeline}
         panelOpen={panelOpen}
-        togglePanelOpen={togglePanelOpen}
+        onAction={onAction}
       />
     </div>
   );

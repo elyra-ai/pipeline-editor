@@ -43,7 +43,6 @@ interface Props {
   onFileRequested?: () => any;
   readOnly?: boolean;
   panelOpen?: boolean;
-  togglePanelOpen?: () => void;
   children?: React.ReactNode;
 }
 
@@ -62,7 +61,6 @@ const PipelineEditor = forwardRef(
       onFileRequested,
       readOnly,
       panelOpen,
-      togglePanelOpen,
       children,
     }: Props,
     ref
@@ -146,23 +144,7 @@ const PipelineEditor = forwardRef(
 
     const handleEditAction = useCallback(
       async (e: ICanvasEditEvent) => {
-        switch (e.editType) {
-          case "run":
-          case "export":
-          case "openRuntimes":
-          case "openFile":
-          case "save": {
-            onAction?.(e.editType);
-            break;
-          }
-          case "toggleOpenPanel":
-            if (togglePanelOpen) {
-              togglePanelOpen();
-            }
-          // We should be able to handle these cases:
-          // - "properties"
-          // - "clear"
-        }
+        onAction?.(e.editType);
         // I can't remember if validating now breaks anything?
         controller.current.validate();
         onChange?.(controller.current.getPipelineFlow());
@@ -279,10 +261,8 @@ const PipelineEditor = forwardRef(
                     content: <div>i am a palette, nice to meet you</div>,
                   },
                 ]}
-                togglePanelOpen={() => {
-                  if (togglePanelOpen) {
-                    togglePanelOpen();
-                  }
+                onClose={() => {
+                  onAction?.("toggleOpenPanel");
                 }}
               />
             }

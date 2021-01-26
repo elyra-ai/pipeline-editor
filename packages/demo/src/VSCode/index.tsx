@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { PipelineEditor } from "@elyra/pipeline-editor";
 
@@ -31,9 +31,30 @@ function VSCode() {
     };
   }, []);
 
+  const [panelOpen, setPanelOpen] = useState(false);
+
+  const onAction = useCallback(
+    (type: string) => {
+      switch (type) {
+        case "properties":
+          setPanelOpen(true);
+          break;
+        case "togglePanelOpen":
+          setPanelOpen(!panelOpen);
+          break;
+      }
+    },
+    [panelOpen]
+  );
+
   return (
     <div style={{ height: "100vh" }}>
-      <PipelineEditor nodes={nodes} pipeline={pipeline}>
+      <PipelineEditor
+        nodes={nodes}
+        pipeline={pipeline}
+        panelOpen={panelOpen}
+        onAction={onAction}
+      >
         <div>Hello there</div>
       </PipelineEditor>
     </div>
