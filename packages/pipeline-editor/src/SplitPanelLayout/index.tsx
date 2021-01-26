@@ -81,7 +81,7 @@ function SplitPanelLayout({ left, right, rightOpen }: Props) {
       >
         {left}
       </div>
-      {rightOpen === undefined || rightOpen === true ? (
+      {rightOpen ? (
         <div>
           <div
             style={{
