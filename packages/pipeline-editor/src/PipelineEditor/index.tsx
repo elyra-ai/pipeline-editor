@@ -65,7 +65,7 @@ const PipelineEditor = forwardRef(
     }: Props,
     ref
   ) => {
-    const controller = useRef(new PipelineController());
+    const controller = useRef(new PipelineController(nodes));
 
     const blockingRef = useBlockEvents({
       wheel: true,

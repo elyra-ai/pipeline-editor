@@ -16,6 +16,7 @@
 
 import { CanvasController } from "@elyra/canvas";
 import { nanoid } from "nanoid";
+import path from "path";
 
 import { createPalette } from "./create-palette";
 import {
@@ -50,6 +51,13 @@ const CONTENT_TYPE_MAPPER: Map<string, ContentType> = new Map([
 
 class PipelineController extends CanvasController {
   private nodes: INode[] = [];
+
+  constructor(nodes?: INode[]) {
+    super();
+    if (nodes) {
+      this.setNodes(nodes);
+    }
+  }
 
   open(pipelineJson: any) {
     // if pipeline is null create a new one from scratch.
@@ -108,7 +116,7 @@ class PipelineController extends CanvasController {
 
   private static getNodeType(filepath: string): string {
     var re = /(?:\.([^.]+))?$/;
-    const extension: string = re.exec(filepath)?.toString() || "";
+    const extension: string = path.parse(filepath).ext;
     const type: string = CONTENT_TYPE_MAPPER.get(extension)!;
 
     // TODO: throw error when file extension is not supported?
@@ -131,17 +139,20 @@ class PipelineController extends CanvasController {
     if (!this.isSupportedNode(item)) {
       return;
     }
-    // read the file contents
-    // create a notebook widget to get a string with the node content then dispose of it
-    // let itemContent = item.content.model.toString();
 
-    const nodeTemplate = this.getPaletteNode("bloop");
+    const nodeTemplate = this.getPaletteNode("execute-notebook-node");
     const data = {
       editType: "createNode",
       offsetX: x || 40,
       offsetY: y || 40,
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
     };
+    let env_vars: any;
+    data.nodeTemplate.label = path.parse(item.path).base;
+    data.nodeTemplate.app_data["filename"] = item.path;
+    data.nodeTemplate.app_data["runtime_image"] = "";
+    data.nodeTemplate.app_data["env_vars"] = env_vars;
+    data.nodeTemplate.app_data["include_subdirectories"] = false;
     this.editActionHandler(data);
   }
 
