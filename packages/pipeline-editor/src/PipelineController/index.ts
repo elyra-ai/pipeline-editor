@@ -52,13 +52,6 @@ const CONTENT_TYPE_MAPPER: Map<string, ContentType> = new Map([
 class PipelineController extends CanvasController {
   private nodes: INode[] = [];
 
-  constructor(nodes?: INode[]) {
-    super();
-    if (nodes) {
-      this.setNodes(nodes);
-    }
-  }
-
   open(pipelineJson: any) {
     // if pipeline is null create a new one from scratch.
     if (pipelineJson === null) {
