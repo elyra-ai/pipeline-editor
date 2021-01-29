@@ -246,9 +246,9 @@ class PipelineController extends CanvasController {
       const nodeDef = this.nodes.find((n) => n.op === node.op);
       if (nodeDef) {
         const error = validateProperties(nodeDef, node);
-        // node.app_data.invalidNodeError = error;
-        // node.description = nodeDef.description;
-        // node.image = nodeDef.image;
+        node.app_data.invalidNodeError = error;
+        node.description = nodeDef.description;
+        node.image = nodeDef.image;
 
         const newLabel =
           nodeDef.labelField && node.app_data[nodeDef.labelField]
