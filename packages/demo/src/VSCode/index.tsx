@@ -33,22 +33,19 @@ function VSCode() {
 
   const [panelOpen, setPanelOpen] = useState(false);
 
-  const onAction = useCallback(
-    (type: string) => {
-      switch (type) {
-        case "properties":
-          setPanelOpen(true);
-          break;
-        case "togglePanelOpen":
-          setPanelOpen(!panelOpen);
-          break;
-        case "closePanel":
-          setPanelOpen(false);
-          break;
-      }
-    },
-    [panelOpen]
-  );
+  const onAction = useCallback((type: string) => {
+    switch (type) {
+      case "properties":
+        setPanelOpen(true);
+        break;
+      case "openPanel":
+        setPanelOpen(true);
+        break;
+      case "closePanel":
+        setPanelOpen(false);
+        break;
+    }
+  }, []);
 
   return (
     <div style={{ height: "100vh" }}>

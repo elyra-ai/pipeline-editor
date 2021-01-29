@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-import React, { useState } from "react";
+import React from "react";
 
 interface Props {
   tabs: Tab[];
-  onClose: () => void;
+  open?: boolean;
+  experimental?: boolean;
+  currentTab?: string;
+  onClose?: () => any;
+  onTabClick?: (id: string) => any;
 }
 
 interface Tab {
@@ -27,26 +31,70 @@ interface Tab {
   content: React.ReactNode;
 }
 
-function TabbedPanelLayout({ tabs, onClose }: Props) {
-  const [currentTab, setCurrentTab] = useState(tabs[0].id);
+function TabbedPanelLayout({
+  currentTab,
+  onTabClick,
+  tabs,
+  experimental,
+  open,
+  onClose,
+}: Props) {
+  if (open !== true) {
+    return (
+      <div
+        style={{
+          marginTop: "16px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        {tabs.map((t) => (
+          <div
+            style={{
+              width: "20px",
+              height: "20px",
+              border: "1px solid red",
+              marginBottom: "8px",
+            }}
+            onClick={() => {
+              onTabClick?.(t.id);
+            }}
+          >
+            {/* TODO: some kind of icon */}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  let resolvedCurrentTab = currentTab === undefined ? tabs[0].id : currentTab;
 
   return (
     <React.Fragment>
-      <div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div style={{ display: "flex" }}>
           {tabs.map((t) => (
             <div
               onClick={() => {
-                setCurrentTab(t.id);
+                onTabClick?.(t.id);
               }}
             >
               {t.label}
             </div>
           ))}
         </div>
-        <div>
-          <div onClick={onClose}>X</div>
-        </div>
+        {experimental ? (
+          <div>
+            <div
+              onClick={() => {
+                onClose?.();
+              }}
+            >
+              X
+            </div>
+          </div>
+        ) : null}
       </div>
       <div
         style={{
@@ -57,7 +105,7 @@ function TabbedPanelLayout({ tabs, onClose }: Props) {
           width: "100%",
         }}
       >
-        {tabs.find((t) => t.id === currentTab)?.content}
+        {tabs.find((t) => t.id === resolvedCurrentTab)?.content}
       </div>
     </React.Fragment>
   );
