@@ -36,11 +36,28 @@ function PalettePanel({ nodes }: Props) {
     <React.Fragment>
       {nodes.map((n) => (
         <div
+          style={{
+            display: "flex",
+            height: "40px",
+            backgroundColor: "red",
+            margin: "16px",
+            alignItems: "center",
+            cursor: "grab",
+          }}
           draggable="true"
           onDragStart={(e) => {
             handleDragStart(e, n.op);
           }}
         >
+          <img
+            style={{
+              height: "26px",
+              margin: "0 7px",
+            }}
+            draggable="false"
+            src={n.image}
+            alt=""
+          />
           {n.label}
         </div>
       ))}
