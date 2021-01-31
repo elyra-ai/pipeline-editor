@@ -200,6 +200,10 @@ class PipelineController extends CanvasController {
     const pipelineID = this.getPrimaryPipelineId();
     const nodes = this.getNodes();
     for (const node of nodes) {
+      if (node.op === undefined) {
+        // NOTE: supernode or binding, don't know if we need to validate anything?
+        continue;
+      }
       const nodeDef = this.nodes.find((n) => n.op === node.op);
       if (nodeDef) {
         const error = validateProperties(nodeDef, node);
