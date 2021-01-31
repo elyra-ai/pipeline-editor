@@ -47,6 +47,12 @@ function PropertiesPanel({ selectedNodes, nodes, onChange }: Props) {
   }
 
   const selectedNode = selectedNodes[0];
+
+  if (selectedNode.op === undefined) {
+    // supernode
+    return <div>no available properties</div>;
+  }
+
   const nodePropertiesSchema = nodes.find((n: any) => n.op === selectedNode.op);
 
   return (
