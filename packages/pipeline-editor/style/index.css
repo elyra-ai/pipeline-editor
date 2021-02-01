@@ -72,6 +72,10 @@
   max-width: 500px;
 }
 
+.properties-wrapper input[type="text" i]:focus {
+  outline: 1px solid var(--elyra-color-focus) !important;
+}
+
 .properties-wrapper .bx--list-box__field {
   background-color: var(--elyra-color-dropdown-bg);
   color: var(--elyra-color-dropdown-text);
