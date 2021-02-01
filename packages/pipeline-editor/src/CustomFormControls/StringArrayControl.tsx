@@ -30,7 +30,7 @@ export class StringArrayControl {
     if (data) {
       this.singleItemLabel = data.single_item_label;
       this.placeholder = data.placeholder;
-      this.fileBrowser = data.filebrowser;
+      this.fileBrowser = data.fileBrowser;
     }
     this.parameter = parameters["name"];
     this.controller = controller;
@@ -93,6 +93,26 @@ export class StringArrayControl {
                   this.onInputChange(event, index);
                 }}
               />
+              {this.fileBrowser ? (
+                <button
+                  className="jp-Button"
+                  onClick={(): void => {
+                    const actionHandler = this.controller.getHandlers()
+                      .actionHandler;
+                    if (typeof actionHandler === "function") {
+                      actionHandler(
+                        "add_dependencies",
+                        this.controller.getAppData(),
+                        { parameter_ref: "dependencies", index: index }
+                      );
+                    }
+                  }}
+                >
+                  B
+                </button>
+              ) : (
+                <div></div>
+              )}
               <div
                 className="jp-Button"
                 onClick={(): void => {

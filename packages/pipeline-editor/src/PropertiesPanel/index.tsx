@@ -25,10 +25,16 @@ import { fillPropertiesWithSavedData } from "./properties-utils";
 interface Props {
   selectedNodes?: any[];
   nodes: any[];
+  actionHandler?: (id: string, appData: any, data: any) => string | undefined;
   onChange?: (nodeID: string, data: any) => any;
 }
 
-function PropertiesPanel({ selectedNodes, nodes, onChange }: Props) {
+function PropertiesPanel({
+  selectedNodes,
+  nodes,
+  actionHandler,
+  onChange,
+}: Props) {
   const controller = useRef<any>();
 
   // always be validating
@@ -65,7 +71,25 @@ function PropertiesPanel({ selectedNodes, nodes, onChange }: Props) {
         applyOnBlur: true,
       }}
       callbacks={{
-        actionHandler: (e: any) => {},
+        actionHandler: async (
+          id: string,
+          appData: any,
+          data: any
+        ): Promise<void> => {
+          if (data.parameter_ref) {
+            console.log(data.parameter_ref);
+            data.propertyValue = controller.current?.getPropertyValue({
+              name: `${data.parameter_ref}`,
+            });
+          }
+          const newValue = await actionHandler?.(id, appData, data);
+          if (newValue && data.parameter_ref) {
+            controller.current?.updatePropertyValue(
+              data.parameter_ref,
+              newValue
+            );
+          }
+        },
         controllerHandler: (e: any) => {
           controller.current = e;
         },

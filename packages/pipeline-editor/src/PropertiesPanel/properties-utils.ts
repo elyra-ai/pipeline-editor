@@ -41,6 +41,7 @@ declare namespace CommonPropertiesSchema {
     id: string;
     type: "array[string]";
     required: boolean;
+    data?: any;
   }
   export interface BooleanParameter {
     id: string;
