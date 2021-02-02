@@ -25,16 +25,11 @@ import { fillPropertiesWithSavedData } from "./properties-utils";
 interface Props {
   selectedNodes?: any[];
   nodes: any[];
-  actionHandler?: (id: string, appData: any, data: any) => any;
+  onAction?: (id: string, appData: any, data: any) => any;
   onChange?: (nodeID: string, data: any) => any;
 }
 
-function PropertiesPanel({
-  selectedNodes,
-  nodes,
-  actionHandler,
-  onChange,
-}: Props) {
+function PropertiesPanel({ selectedNodes, nodes, onAction, onChange }: Props) {
   const controller = useRef<any>();
 
   // always be validating
@@ -71,7 +66,7 @@ function PropertiesPanel({
         applyOnBlur: true,
       }}
       callbacks={{
-        actionHandler: async (
+        onAction: async (
           id: string,
           appData: any,
           data: any
@@ -81,7 +76,7 @@ function PropertiesPanel({
               name: data.parameter_ref,
             });
           }
-          const newValue = await actionHandler?.(id, appData, data);
+          const newValue = await onAction?.(id, appData, data);
           if (newValue && data.parameter_ref) {
             if (data.index !== undefined) {
               // If multiple files are selected, replace the given index in the dependencies list

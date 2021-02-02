@@ -204,7 +204,7 @@ const PipelineEditor = forwardRef(
       return null;
     };
 
-    const propertiesActionHandler = (
+    const handlePropertiesAction = (
       id: string,
       appData: any,
       data: any
@@ -298,7 +298,7 @@ const PipelineEditor = forwardRef(
                       <PropertiesPanel
                         selectedNodes={selectedNodes}
                         nodes={nodes}
-                        actionHandler={propertiesActionHandler}
+                        onAction={handlePropertiesAction}
                         onChange={handlePropertiesChange}
                       />
                     ),
