@@ -1,3 +1,30 @@
+/* palette */
+.elyra-palette {
+  margin-top: 14px;
+}
+
+.elyra-paletteItem {
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  height: 40px;
+  margin: 0 22px 8px;
+  background-color: var(--elyra-color-palette-bg);
+  border: 1px solid var(--elyra-color-palette-border);
+  color: var(--elyra-color-palette-text);
+}
+
+.elyra-paletteItemIcon {
+  height: 26px;
+  margin: 0 7px;
+}
+
+.elyra-paletteItemLabel {
+  font-family: var(--elyra-font-family-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-size: var(--elyra-font-size-sans);
+}
+
 /* tab panel */
 .elyra-tabPanel > .elyra-actionBar {
   display: flex;
@@ -9,7 +36,8 @@
 }
 
 .elyra-noContentMessage {
-  padding: 10px 22px 0;
+  margin-top: 14px;
+  padding: 0 22px;
   font-family: var(--elyra-font-family-sans);
   font-weight: var(--elyra-font-weight-sans);
   font-size: var(--elyra-font-size-sans);

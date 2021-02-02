@@ -104,7 +104,7 @@ function TabbedPanelLayout({
           position: "absolute",
           top: "35px",
           bottom: 0,
-          overflow: "scroll",
+          overflow: "auto",
           width: "100%",
         }}
       >
