@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-import { CanvasController } from "@elyra/canvas";
 import { nanoid } from "nanoid";
+
 import path from "path";
+
+import { CanvasController } from "@elyra/canvas";
 
 import { createPalette } from "./create-palette";
 import {
@@ -37,17 +39,6 @@ import {
 } from "./validation";
 
 const PIPELINE_CURRENT_VERSION = 3;
-
-enum ContentType {
-  notebook = "notebook",
-  python = "python",
-  other = "other",
-}
-
-const CONTENT_TYPE_MAPPER: Map<string, ContentType> = new Map([
-  [".py", ContentType.python],
-  [".ipynb", ContentType.notebook],
-]);
 
 interface AddNodeOptions {
   x?: number;

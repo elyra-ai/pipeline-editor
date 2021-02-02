@@ -149,7 +149,7 @@ const PipelineEditor = forwardRef(
         controller.current.validate();
         onChange?.(controller.current.getPipelineFlow());
       },
-      [onAction, onChange, panelOpen]
+      [onAction, onChange]
     );
 
     const handlePropertiesChange = useCallback(
