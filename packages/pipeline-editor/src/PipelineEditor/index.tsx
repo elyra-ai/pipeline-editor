@@ -27,6 +27,7 @@ import { CommonCanvas } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
 
 import NodeTooltip from "../NodeTooltip";
+import PalettePanel from "../PalettePanel";
 import PipelineController from "../PipelineController";
 import PropertiesPanel from "../PropertiesPanel";
 import SplitPanelLayout from "../SplitPanelLayout";
@@ -40,7 +41,7 @@ interface Props {
   onAction?: (type: string) => any;
   onChange?: (pipeline: any) => any;
   onError?: (error: string) => any;
-  onFileRequested?: () => any;
+  onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
   readOnly?: boolean;
   panelOpen?: boolean;
   children?: React.ReactNode;
@@ -66,6 +67,8 @@ const PipelineEditor = forwardRef(
     ref
   ) => {
     const controller = useRef(new PipelineController());
+
+    const [currentTab, setCurrentTab] = useState<string | undefined>();
 
     const blockingRef = useBlockEvents({
       wheel: true,
@@ -131,9 +134,9 @@ const PipelineEditor = forwardRef(
 
     const handleClickAction = useCallback((e: ICanvasClickEvent) => {
       if (e.clickType === "DOUBLE_CLICK" && e.objectType === "node") {
-        for (const selectedObject of e.selectedObjectIds) {
-          // TODO: open a file or properties or something, to discuss...
-        }
+        // TODO: callback to let parent decide what to do instead.
+        setCurrentTab("properties");
+        controller.current.editActionHandler({ editType: "properties" });
       }
     }, []);
 
@@ -145,6 +148,29 @@ const PipelineEditor = forwardRef(
     const handleEditAction = useCallback(
       async (e: ICanvasEditEvent) => {
         onAction?.(e.editType);
+
+        if (e.editType === "properties") {
+          setCurrentTab("properties");
+        }
+
+        if (e.editType === "createExternalNode") {
+          console.log(e);
+          const nodeTemplate = controller.current.getPaletteNode(e.op);
+          if (nodeTemplate) {
+            const convertedTemplate = controller.current.convertNodeTemplate(
+              nodeTemplate
+            );
+            const action = {
+              editType: "createNode",
+              nodeTemplate: convertedTemplate,
+              pipelineId: e.pipelineId,
+              offsetX: e.offsetX,
+              offsetY: e.offsetY,
+            };
+            controller.current.editActionHandler(action);
+          }
+        }
+
         // I can't remember if validating now breaks anything?
         controller.current.validate();
         onChange?.(controller.current.getPipelineFlow());
@@ -176,6 +202,22 @@ const PipelineEditor = forwardRef(
         return <NodeTooltip error={error} properties={properties} />;
       }
       return null;
+    };
+
+    const handlePropertiesAction = (
+      id: string,
+      appData: any,
+      data: any
+    ): any => {
+      if (id === "browse_file") {
+        let filename = "";
+        if (data.index === undefined) {
+          filename = data.propertyValue;
+        } else if (data.propertyValue !== undefined) {
+          filename = data.propertyValue[data.index];
+        }
+        return onFileRequested?.(filename, data.index !== undefined);
+      }
     };
 
     if (readOnly) {
@@ -243,6 +285,11 @@ const PipelineEditor = forwardRef(
             }
             right={
               <TabbedPanelLayout
+                currentTab={currentTab}
+                onTabClick={(id) => {
+                  setCurrentTab(id);
+                  onAction?.("openPanel");
+                }}
                 tabs={[
                   {
                     id: "properties",
@@ -251,6 +298,7 @@ const PipelineEditor = forwardRef(
                       <PropertiesPanel
                         selectedNodes={selectedNodes}
                         nodes={nodes}
+                        onAction={handlePropertiesAction}
                         onChange={handlePropertiesChange}
                       />
                     ),
@@ -258,14 +306,17 @@ const PipelineEditor = forwardRef(
                   {
                     id: "palette",
                     label: "PALETTE",
-                    content: <div>i am a palette, nice to meet you</div>,
+                    content: <PalettePanel nodes={nodes} />,
                   },
                 ]}
+                open={panelOpen}
+                experimental={toolbar === undefined}
                 onClose={() => {
                   onAction?.("closePanel");
                 }}
               />
             }
+            experimental={toolbar === undefined}
             rightOpen={panelOpen}
           />
         </IntlProvider>

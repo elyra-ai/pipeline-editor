@@ -22,17 +22,16 @@ const MIN_PANEL_WIDTH = 300;
 interface Props {
   left: React.ReactNode;
   right: React.ReactNode;
+  experimental?: boolean;
   rightOpen?: boolean;
 }
 
-function SplitPanelLayout({ left, right, rightOpen }: Props) {
-  const [width, setWidth] = useState(rightOpen ? DEFAULT_PANEL_WIDTH : 0);
+function SplitPanelLayout({ left, right, rightOpen, experimental }: Props) {
+  const [dragPosition, setDragPosition] = useState<number | undefined>(
+    undefined
+  );
 
   const dragging = useRef(false);
-
-  useEffect(() => {
-    setWidth(rightOpen ? DEFAULT_PANEL_WIDTH : 0);
-  }, [rightOpen]);
 
   useEffect(() => {
     function handleMouseMove(e: MouseEvent) {
@@ -44,7 +43,7 @@ function SplitPanelLayout({ left, right, rightOpen }: Props) {
           Math.min(document.body.clientWidth - MIN_PANEL_WIDTH, rawPanelWidth),
           MIN_PANEL_WIDTH
         );
-        setWidth(panelWidth);
+        setDragPosition(panelWidth);
       }
     }
 
@@ -65,16 +64,16 @@ function SplitPanelLayout({ left, right, rightOpen }: Props) {
     dragging.current = true;
   }, []);
 
+  const width = rightOpen ? dragPosition ?? DEFAULT_PANEL_WIDTH : 0;
+
   return (
     <React.Fragment>
       <div
         style={{
-          // zIndex: 10000,
           position: "absolute",
           top: 0,
           bottom: 0,
           background: "var(--elyra-color-panel-bg)",
-          // width: `${width}px`,
           left: 0,
           right: `${width}px`,
         }}
@@ -85,22 +84,11 @@ function SplitPanelLayout({ left, right, rightOpen }: Props) {
         <div>
           <div
             style={{
-              // zIndex: 10000,
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              background: "var(--elyra-color-panel-border)",
-              width: "1px",
-              right: `${width}px`,
-            }}
-          />
-          <div
-            style={{
-              // zIndex: 10000,
               position: "absolute",
               top: 0,
               bottom: 0,
               background: "var(--elyra-color-panel-bg)",
+              borderLeft: "1px solid var(--elyra-color-panel-border)",
               width: `${width}px`,
               right: 0,
             }}
@@ -109,7 +97,6 @@ function SplitPanelLayout({ left, right, rightOpen }: Props) {
           </div>
           <div
             style={{
-              // zIndex: 10000,
               position: "absolute",
               cursor: "col-resize",
               top: 0,
@@ -119,6 +106,21 @@ function SplitPanelLayout({ left, right, rightOpen }: Props) {
             }}
             onMouseDown={handleMouseDown}
           />
+        </div>
+      ) : experimental ? (
+        <div>
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              background: "var(--vscode-statusBar-background)",
+              width: `${40}px`,
+              right: 0,
+            }}
+          >
+            {right}
+          </div>
         </div>
       ) : null}
     </React.Fragment>
