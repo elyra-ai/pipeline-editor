@@ -18,12 +18,22 @@ import React, { useState } from "react";
 
 interface Props {
   helperText: string;
+  propertyId: string;
+  controller: any;
 }
 
-function BooleanComponent({ helperText }: Props) {
-  const [isChecked, setIsChecked] = useState(false);
+function BooleanComponent({ helperText, propertyId, controller }: Props) {
+  const [isChecked, setIsChecked] = useState(
+    controller.getPropertyValue(propertyId)
+  );
   return (
-    <div style={{ display: "flex" }} onClick={() => setIsChecked(!isChecked)}>
+    <div
+      style={{ display: "flex" }}
+      onClick={() => {
+        controller.updatePropertyValue({ name: propertyId }, !isChecked);
+        setIsChecked(!isChecked);
+      }}
+    >
       <div
         className={
           isChecked ? "properties-checkbox checked" : "properties-checkbox"
@@ -45,21 +55,27 @@ function BooleanComponent({ helperText }: Props) {
 
 export class BooleanControl {
   helperText: string;
+  propertyId: string;
+  controller: string;
 
   static id(): string {
     return "pipeline-editor-boolean-control";
   }
 
   constructor(propertyId: any, controller: any, data: any, tableInfo: any) {
-    // console.log("propertyId", propertyId);
-    // console.log("controller", controller);
-    // console.log("data", data);
-    // console.log("tableInfo", tableInfo);
+    this.propertyId = propertyId.name;
+    this.controller = controller;
     this.helperText = data.helperText;
   }
 
   renderControl() {
-    return <BooleanComponent helperText={this.helperText} />;
+    return (
+      <BooleanComponent
+        helperText={this.helperText}
+        propertyId={this.propertyId}
+        controller={this.controller}
+      />
+    );
   }
 }
 
