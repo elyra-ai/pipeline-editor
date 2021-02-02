@@ -107,33 +107,8 @@ class PipelineController extends CanvasController {
     this.setPipelineFlowPalette(palette);
   }
 
-  private static getNodeType(filepath: string): string {
-    var re = /(?:\.([^.]+))?$/;
-    const extension: string = path.parse(filepath).ext;
-    const type: string = CONTENT_TYPE_MAPPER.get(extension)!;
-
-    // TODO: throw error when file extension is not supported?
-    return type;
-  }
-
-  /**
-   * Check if a given file is allowed to be added to the pipeline
-   * @param item
-   */
-  isSupportedNode(file: any): boolean {
-    if (PipelineController.getNodeType(file.path)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   addNode(item: any, x?: number, y?: number): void {
-    if (!this.isSupportedNode(item)) {
-      return;
-    }
-
-    const nodeTemplate = this.getPaletteNode("execute-notebook-node");
+    const nodeTemplate = this.getPaletteNode(item.op);
     const data = {
       editType: "createNode",
       offsetX: x || 40,
@@ -246,9 +221,6 @@ class PipelineController extends CanvasController {
       const nodeDef = this.nodes.find((n) => n.op === node.op);
       if (nodeDef) {
         const error = validateProperties(nodeDef, node);
-        node.app_data.invalidNodeError = error;
-        node.description = nodeDef.description;
-        node.image = nodeDef.image;
 
         const newLabel =
           nodeDef.labelField && node.app_data[nodeDef.labelField]

@@ -63,7 +63,7 @@ export class BooleanControl {
   }
 
   constructor(propertyId: any, controller: any, data: any, tableInfo: any) {
-    this.propertyId = propertyId["name"];
+    this.propertyId = propertyId.name;
     this.controller = controller;
     this.helperText = data.helperText;
   }
