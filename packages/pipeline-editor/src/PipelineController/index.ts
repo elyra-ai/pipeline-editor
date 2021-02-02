@@ -49,6 +49,11 @@ const CONTENT_TYPE_MAPPER: Map<string, ContentType> = new Map([
   [".ipynb", ContentType.notebook],
 ]);
 
+interface AddNodeOptions {
+  x?: number;
+  y?: number;
+}
+
 class PipelineController extends CanvasController {
   private nodes: INode[] = [];
 
@@ -107,7 +112,7 @@ class PipelineController extends CanvasController {
     this.setPipelineFlowPalette(palette);
   }
 
-  addNode(item: any, x?: number, y?: number): void {
+  addNode(item: any, { x, y }: AddNodeOptions = {}): void {
     const nodeTemplate = this.getPaletteNode(item.op);
     const data = {
       editType: "createNode",
@@ -115,12 +120,12 @@ class PipelineController extends CanvasController {
       offsetY: y || 40,
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
     };
-    let env_vars: any;
+    let env_vars = item.env_vars || [];
     data.nodeTemplate.label = path.parse(item.path).base;
-    data.nodeTemplate.app_data["filename"] = item.path;
-    data.nodeTemplate.app_data["runtime_image"] = "";
-    data.nodeTemplate.app_data["env_vars"] = env_vars;
-    data.nodeTemplate.app_data["include_subdirectories"] = false;
+    data.nodeTemplate.app_data.filename = item.path;
+    data.nodeTemplate.app_data.runtime_image = "";
+    data.nodeTemplate.app_data.env_vars = env_vars;
+    data.nodeTemplate.app_data.include_subdirectories = false;
     this.editActionHandler(data);
   }
 
