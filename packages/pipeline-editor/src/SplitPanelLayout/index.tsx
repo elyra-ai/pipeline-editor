@@ -115,7 +115,7 @@ function SplitPanelLayout({ left, right, rightOpen, experimental }: Props) {
               top: 0,
               bottom: 0,
               background: "var(--vscode-statusBar-background)",
-              width: `${40}px`,
+              width: `${32}px`,
               right: 0,
             }}
           >

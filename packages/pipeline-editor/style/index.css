@@ -1,3 +1,13 @@
+/* tab panel */
+.elyra-tabPanel > .elyra-actionBar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.elyra-tabPanel > .elyra-actionBar > .elyra-tabGroup {
+  display: flex;
+}
+
 .elyra-tooltipError {
   color: var(--elyra-color-text-error);
 }

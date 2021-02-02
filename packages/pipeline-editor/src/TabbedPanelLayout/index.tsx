@@ -42,26 +42,23 @@ function TabbedPanelLayout({
   if (open !== true) {
     return (
       <div
+        className="elyra-verticalTabGroup"
         style={{
-          marginTop: "16px",
+          padding: "7px 0",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
         {tabs.map((t) => (
-          <div
-            style={{
-              width: "20px",
-              height: "20px",
-              border: "1px solid red",
-              marginBottom: "8px",
-            }}
-            onClick={() => {
-              onTabClick?.(t.id);
-            }}
-          >
-            {/* TODO: some kind of icon */}
+          <div className="elyra-actionItem">
+            <div
+              title={t.label}
+              className={`elyra-actionItemIcon ${t.id}`}
+              onClick={() => {
+                onTabClick?.(t.id);
+              }}
+            />
           </div>
         ))}
       </div>
@@ -71,28 +68,34 @@ function TabbedPanelLayout({
   let resolvedCurrentTab = currentTab === undefined ? tabs[0].id : currentTab;
 
   return (
-    <React.Fragment>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div style={{ display: "flex" }}>
+    <div className="elyra-tabPanel">
+      <div className="elyra-actionBar">
+        <div className="elyra-tabGroup">
           {tabs.map((t) => (
-            <div
-              onClick={() => {
-                onTabClick?.(t.id);
-              }}
-            >
-              {t.label}
+            <div className="elyra-tab">
+              <div
+                className={
+                  resolvedCurrentTab === t.id
+                    ? "elyra-tabText activeTab"
+                    : "elyra-tabText"
+                }
+                onClick={() => {
+                  onTabClick?.(t.id);
+                }}
+              >
+                {t.label}
+              </div>
             </div>
           ))}
         </div>
         {experimental ? (
-          <div>
+          <div className="elyra-actionItem">
             <div
+              className="elyra-actionItemIcon elyra-panel-close"
               onClick={() => {
                 onClose?.();
               }}
-            >
-              X
-            </div>
+            />
           </div>
         ) : null}
       </div>
@@ -107,7 +110,7 @@ function TabbedPanelLayout({
       >
         {tabs.find((t) => t.id === resolvedCurrentTab)?.content}
       </div>
-    </React.Fragment>
+    </div>
   );
 }
 
