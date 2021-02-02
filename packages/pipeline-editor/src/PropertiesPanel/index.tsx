@@ -40,18 +40,31 @@ function PropertiesPanel({ selectedNodes, nodes, onAction, onChange }: Props) {
   });
 
   if (selectedNodes === undefined || selectedNodes.length === 0) {
-    return <div>no nodes selected</div>;
+    return (
+      <div className="elyra-noContentMessage">
+        Select a node to edit its properties.
+      </div>
+    );
   }
 
   if (selectedNodes.length > 1) {
-    return <div>more than 1 node selected</div>;
+    return (
+      <div className="elyra-noContentMessage">
+        Too many nodes are selected. Select a single node to edit its
+        properties.
+      </div>
+    );
   }
 
   const selectedNode = selectedNodes[0];
 
   if (selectedNode.op === undefined) {
     // supernode
-    return <div>no available properties</div>;
+    return (
+      <div className="elyra-noContentMessage">
+        This node type doesn't have any editable properties.
+      </div>
+    );
   }
 
   const nodePropertiesSchema = nodes.find((n: any) => n.op === selectedNode.op);

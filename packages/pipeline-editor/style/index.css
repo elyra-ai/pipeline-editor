@@ -8,6 +8,15 @@
   display: flex;
 }
 
+.elyra-noContentMessage {
+  padding: 10px 22px 0;
+  font-family: var(--elyra-font-family-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-size: var(--elyra-font-size-sans);
+  color: var(--elyra-color-text-primary);
+  opacity: 0.5;
+}
+
 .elyra-tooltipError {
   color: var(--elyra-color-text-error);
 }
