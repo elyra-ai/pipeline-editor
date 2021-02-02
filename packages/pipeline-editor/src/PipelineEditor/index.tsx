@@ -40,7 +40,7 @@ interface Props {
   nodes?: any;
   onAction?: (type: string) => any;
   onChange?: (pipeline: any) => any;
-  onError?: () => any;
+  onError?: (error: string) => any;
   onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
   readOnly?: boolean;
   panelOpen?: boolean;
@@ -85,14 +85,14 @@ const PipelineEditor = forwardRef(
           controller.current.clearErrors();
         }
         // don't call to persist change because it will cause an infinate loop
-      } catch {
-        onError?.();
+      } catch (error: any) {
+        onError?.(error);
       }
     }, [nodes, onChange, onError, pipeline, readOnly]);
 
     useImperativeHandle(ref, () => ({
-      addFile: () => {
-        console.log("add file");
+      addFile: (item: any, x?: number, y?: number) => {
+        controller.current.addNode(item, { x, y });
       },
     }));
 
