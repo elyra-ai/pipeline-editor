@@ -25,7 +25,7 @@ import { fillPropertiesWithSavedData } from "./properties-utils";
 interface Props {
   selectedNodes?: any[];
   nodes: any[];
-  actionHandler?: (id: string, appData: any, data: any) => string | undefined;
+  actionHandler?: (id: string, appData: any, data: any) => any;
   onChange?: (nodeID: string, data: any) => any;
 }
 
@@ -76,17 +76,33 @@ function PropertiesPanel({
           appData: any,
           data: any
         ): Promise<void> => {
-          if (data.parameter_ref) {
-            console.log(data.parameter_ref);
+          if (data.parameter_ref && data.index === undefined) {
             data.propertyValue = controller.current?.getPropertyValue({
-              name: `${data.parameter_ref}`,
+              name: data.parameter_ref,
             });
           }
           const newValue = await actionHandler?.(id, appData, data);
           if (newValue && data.parameter_ref) {
+            if (data.index !== undefined) {
+              // If multiple files are selected, replace the given index in the dependencies list
+              // and insert the rest of the values after that index.
+              if (typeof newValue === "string") {
+                data.propertyValue[data.index] = newValue;
+              } else {
+                newValue.forEach((val: any, i: number) => {
+                  if (i === 0) {
+                    data.propertyValue[data.index] = val;
+                  } else {
+                    data.propertyValue.splice(data.index, 0, val);
+                  }
+                });
+              }
+            } else {
+              data.propertyValue = newValue;
+            }
             controller.current?.updatePropertyValue(
               data.parameter_ref,
-              newValue
+              data.propertyValue[0]
             );
           }
         },

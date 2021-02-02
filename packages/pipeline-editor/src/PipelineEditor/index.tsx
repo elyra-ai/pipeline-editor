@@ -41,7 +41,7 @@ interface Props {
   onAction?: (type: string) => any;
   onChange?: (pipeline: any) => any;
   onError?: () => any;
-  onFileRequested?: (startPath: string) => any;
+  onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
   readOnly?: boolean;
   panelOpen?: boolean;
   children?: React.ReactNode;
@@ -209,10 +209,14 @@ const PipelineEditor = forwardRef(
       appData: any,
       data: any
     ): any => {
-      const propertyId = { name: data.parameter_ref };
       if (id === "browse_file") {
-        const filename = data.propertyValue;
-        return onFileRequested?.(filename);
+        let filename = "";
+        if (data.index === undefined) {
+          filename = data.propertyValue;
+        } else if (data.propertyValue !== undefined) {
+          filename = data.propertyValue[data.index];
+        }
+        return onFileRequested?.(filename, data.index !== undefined);
       }
     };
 
