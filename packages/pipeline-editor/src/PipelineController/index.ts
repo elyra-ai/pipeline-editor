@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-import { CanvasController } from "@elyra/canvas";
 import { nanoid } from "nanoid";
+
+import path from "path";
+
+import { CanvasController } from "@elyra/canvas";
 
 import { createPalette } from "./create-palette";
 import {
@@ -36,6 +39,11 @@ import {
 } from "./validation";
 
 const PIPELINE_CURRENT_VERSION = 3;
+
+interface AddNodeOptions {
+  x?: number;
+  y?: number;
+}
 
 class PipelineController extends CanvasController {
   private nodes: INode[] = [];
@@ -95,14 +103,20 @@ class PipelineController extends CanvasController {
     this.setPipelineFlowPalette(palette);
   }
 
-  addNode(op: string): void {
-    const nodeTemplate = this.getPaletteNode(op);
+  addNode(item: any, { x, y }: AddNodeOptions = {}): void {
+    const nodeTemplate = this.getPaletteNode(item.op);
     const data = {
       editType: "createNode",
-      offsetX: 40,
-      offsetY: 40,
+      offsetX: x || 40,
+      offsetY: y || 40,
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
     };
+    let env_vars = item.env_vars || [];
+    data.nodeTemplate.label = path.parse(item.path).base;
+    data.nodeTemplate.app_data.filename = item.path;
+    data.nodeTemplate.app_data.runtime_image = "";
+    data.nodeTemplate.app_data.env_vars = env_vars;
+    data.nodeTemplate.app_data.include_subdirectories = false;
     this.editActionHandler(data);
   }
 
@@ -207,9 +221,6 @@ class PipelineController extends CanvasController {
       const nodeDef = this.nodes.find((n) => n.op === node.op);
       if (nodeDef) {
         const error = validateProperties(nodeDef, node);
-        // node.app_data.invalidNodeError = error;
-        // node.description = nodeDef.description;
-        // node.image = nodeDef.image;
 
         const newLabel =
           nodeDef.labelField && node.app_data[nodeDef.labelField]
