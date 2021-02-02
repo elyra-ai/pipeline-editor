@@ -1,6 +1,7 @@
 {
   "name": "@elyra/pipeline-editor",
   "version": "0.0.1",
+  "module": "src/index.tsx",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
