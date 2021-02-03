@@ -56,7 +56,7 @@ const reducer = produce((draft: Item[], action) => {
     }
     case "UPSERT_ITEMS": {
       const index = draft.findIndex((i) => i.id === payload.id);
-      if (index !== -1) {
+      if (index !== -1 && payload.values.length > 0) {
         // Update value of the selected input with the first value in the array.
         draft[index].value = payload.values[0];
 
@@ -121,7 +121,7 @@ function StringArrayComponent({
         {items.map((item) => (
           <div key={item.id}>
             <input
-              value={item.value}
+              value={item.value ?? ""}
               placeholder={placeholder}
               onChange={(e) => {
                 handleAction({

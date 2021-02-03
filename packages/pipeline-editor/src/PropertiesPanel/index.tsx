@@ -19,7 +19,11 @@ import { useEffect, useRef } from "react";
 import { CommonProperties } from "@elyra/canvas";
 import { nanoid } from "nanoid";
 
-import { BooleanControl, StringArrayControl } from "../CustomFormControls";
+import {
+  BooleanControl,
+  FileControl,
+  StringArrayControl,
+} from "../CustomFormControls";
 import { fillPropertiesWithSavedData } from "./properties-utils";
 
 interface Props {
@@ -103,7 +107,7 @@ function PropertiesPanel({
         },
         closePropertiesDialog: () => {},
       }}
-      customControls={[StringArrayControl, BooleanControl]}
+      customControls={[StringArrayControl, BooleanControl, FileControl]}
     />
   );
 }
