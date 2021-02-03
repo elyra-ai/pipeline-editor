@@ -16,6 +16,7 @@
 
 import React, { useCallback, useRef } from "react";
 
+import produce from "immer";
 import { nanoid } from "nanoid";
 import { useSelector } from "react-redux";
 
@@ -26,6 +27,35 @@ interface Props {
   singleItemLabel?: string;
   fileBrowser?: boolean;
 }
+
+interface Item {
+  value: string;
+  id: string;
+}
+
+const reducer = produce((draft: Item[], action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case "ADD_ITEM": {
+      draft.push({ value: "", id: nanoid() });
+      break;
+    }
+    case "DELETE_ITEM": {
+      const index = draft.findIndex((i) => i.id === payload.id);
+      if (index !== -1) {
+        draft.splice(index, 1);
+      }
+      break;
+    }
+    case "UPDATE_ITEM": {
+      const index = draft.findIndex((i) => i.id === payload.id);
+      if (index !== -1) {
+        draft[index].value = payload.value;
+      }
+      break;
+    }
+  }
+});
 
 // NOTE: This uses IDs which is a breaking change to pipeline spec. Would
 // require a migration.
@@ -38,39 +68,19 @@ function StringArrayComponent({
 }: Props) {
   const controllerRef = useRef(controller);
 
-  const items: { value: string; id: string }[] = useSelector(
+  const items: Item[] = useSelector(
     (state: any) => state.propertiesReducer[name]
   );
 
-  const handleAddItem = useCallback(() => {
-    controllerRef.current.updatePropertyValue({ name }, [
-      ...items,
-      { value: "", id: nanoid() },
-    ]);
-  }, [items, name]);
-
-  const handleDeleteItem = useCallback(
-    (id) => {
-      const newValues = items.filter((item) => item.id !== id);
-      controllerRef.current.updatePropertyValue({ name }, newValues);
+  const handleAction = useCallback(
+    (action) => {
+      const newItems = reducer(items, action);
+      controllerRef.current.updatePropertyValue({ name }, newItems);
     },
     [items, name]
   );
 
-  const handleInputChange = useCallback(
-    (e, id) => {
-      const newValues = items.map((item) => {
-        if (item.id === id) {
-          return { ...item, value: e.target.value };
-        }
-        return item;
-      });
-      controllerRef.current.updatePropertyValue({ name }, newValues);
-    },
-    [items, name]
-  );
-
-  const handleChooseFile = useCallback((index) => {
+  const handleChooseFile = useCallback((id) => {
     //   const actionHandler = this.controller.getHandlers().actionHandler;
     //   if (typeof actionHandler === "function") {
     //     const newValue = await actionHandler(
@@ -94,7 +104,10 @@ function StringArrayComponent({
               value={item.value}
               placeholder={placeholder}
               onChange={(e) => {
-                handleInputChange(e, item.id);
+                handleAction({
+                  type: "UPDATE_ITEM",
+                  payload: { id: item.id, value: e.target.value },
+                });
               }}
             />
             {fileBrowser ? (
@@ -108,7 +121,10 @@ function StringArrayComponent({
             ) : null}
             <div
               onClick={() => {
-                handleDeleteItem(item.id);
+                handleAction({
+                  type: "DELETE_ITEM",
+                  payload: { id: item.id },
+                });
               }}
             >
               X
@@ -117,7 +133,14 @@ function StringArrayComponent({
         ))}
       </div>
       <div style={{ display: "flex" }}>
-        <div onClick={handleAddItem} style={{ marginTop: 8 }}>
+        <div
+          onClick={() => {
+            handleAction({
+              type: "ADD_ITEM",
+            });
+          }}
+          style={{ marginTop: 8 }}
+        >
           Add {singleItemLabel ?? "item"}
         </div>
       </div>
