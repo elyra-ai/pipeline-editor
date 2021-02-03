@@ -90,40 +90,9 @@ function PropertiesPanel({
         applyOnBlur: true,
       }}
       callbacks={{
-        actionHandler: async (id: string, appData: any, data: any) => {
-          if (data.parameter_ref && data.index === undefined) {
-            const propertyValue = controller.current?.getPropertyValue({
-              name: data.parameter_ref,
-            });
-          }
-
-          // browse_file {id: "PWEWO2RTYZnjIEp0Zl7Hy"} {parameter_ref: "filename"}
-          console.log(id, appData, data);
+        actionHandler: async (id: string, _appData: any, data: any) => {
           if (id === "browse_file") {
-            const newValue = await onFileRequested?.({});
-            // if (newValue && data.parameter_ref) {
-            //   if (data.index !== undefined) {
-            //     // If multiple files are selected, replace the given index in the dependencies list
-            //     // and insert the rest of the values after that index.
-            //     if (typeof newValue === "string") {
-            //       data.propertyValue[data.index] = newValue;
-            //     } else {
-            //       newValue.forEach((val: any, i: number) => {
-            //         if (i === 0) {
-            //           data.propertyValue[data.index] = val;
-            //         } else {
-            //           data.propertyValue.splice(data.index, 0, val);
-            //         }
-            //       });
-            //     }
-            //   } else {
-            //     data.propertyValue = newValue;
-            //   }
-            //   controller.current?.updatePropertyValue(
-            //     data.parameter_ref,
-            //     data.propertyValue[0]
-            //   );
-            // }
+            return await onFileRequested?.(data);
           }
         },
         controllerHandler: (e: any) => {

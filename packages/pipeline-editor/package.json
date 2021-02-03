@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "watch": "tsc -w --preserveWatchOutput"
+    "watch": "tsc -w --preserveWatchOutput",
+    "link": "yarn link"
   },
   "dependencies": {
     "@elyra/canvas": "9.2.7",
@@ -17,7 +18,7 @@
     "react-redux": "^7.0.0"
   },
   "devDependencies": {
-    "@types/react": "^17.0.0",
+    "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
     "@types/react-intl": "^3.0.0",
     "@types/react-redux": "^7.1.16"

@@ -204,10 +204,6 @@ const PipelineEditor = forwardRef(
       return null;
     };
 
-    const handleFileRequested = (options: any) => {
-      return onFileRequested?.(options);
-    };
-
     if (readOnly) {
       return (
         <div
@@ -286,7 +282,7 @@ const PipelineEditor = forwardRef(
                       <PropertiesPanel
                         selectedNodes={selectedNodes}
                         nodes={nodes}
-                        onFileRequested={handleFileRequested}
+                        onFileRequested={onFileRequested}
                         onChange={handlePropertiesChange}
                       />
                     ),

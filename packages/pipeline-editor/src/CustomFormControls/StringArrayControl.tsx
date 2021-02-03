@@ -54,6 +54,26 @@ const reducer = produce((draft: Item[], action) => {
       }
       break;
     }
+    case "UPSERT_ITEMS": {
+      const index = draft.findIndex((i) => i.id === payload.id);
+      if (index !== -1) {
+        // Update value of the selected input with the first value in the array.
+        draft[index].value = payload.values[0];
+
+        // Give all the values an ID.
+        const items = payload.values.map((v: string) => ({
+          value: v,
+          id: nanoid(),
+        }));
+
+        // Remove the first item since it has already been set.
+        items.shift();
+
+        // Insert the remaining items.
+        draft.splice(index + 1, 0, ...items);
+      }
+      break;
+    }
   }
 });
 
@@ -80,20 +100,20 @@ function StringArrayComponent({
     [items, name]
   );
 
-  const handleChooseFile = useCallback((id) => {
-    //   const actionHandler = this.controller.getHandlers().actionHandler;
-    //   if (typeof actionHandler === "function") {
-    //     const newValue = await actionHandler(
-    //       "browse_file",
-    //       this.controller.getAppData(),
-    //       {
-    //         parameter_ref: "browse_file",
-    //         propertyValue: this.values,
-    //         index: index,
-    //       }
-    //     );
-    //   }
-  }, []);
+  const handleChooseFile = useCallback(
+    async (id) => {
+      const { actionHandler } = controllerRef.current.getHandlers();
+      const values = await actionHandler?.("browse_file", undefined, {
+        canSelectMany: true,
+        defaultUri: items.find((i) => i.id === id)?.value,
+      });
+      handleAction({
+        type: "UPSERT_ITEMS",
+        payload: { id: id, values },
+      });
+    },
+    [handleAction, items]
+  );
 
   return (
     <div>
