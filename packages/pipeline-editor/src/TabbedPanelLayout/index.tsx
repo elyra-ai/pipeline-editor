@@ -51,7 +51,7 @@ function TabbedPanelLayout({
         }}
       >
         {tabs.map((t) => (
-          <div className="elyra-actionItem">
+          <div key={t.id} className="elyra-actionItem">
             <div
               title={t.label}
               className={`elyra-actionItemIcon ${t.id}`}
@@ -72,7 +72,7 @@ function TabbedPanelLayout({
       <div className="elyra-actionBar">
         <div className="elyra-tabGroup">
           {tabs.map((t) => (
-            <div className="elyra-tab">
+            <div key={t.id} className="elyra-tab">
               <div
                 className={
                   resolvedCurrentTab === t.id

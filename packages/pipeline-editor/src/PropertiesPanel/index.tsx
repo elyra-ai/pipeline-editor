@@ -17,7 +17,6 @@
 import { useEffect, useRef } from "react";
 
 import { CommonProperties } from "@elyra/canvas";
-import { nanoid } from "nanoid";
 
 import {
   BooleanControl,
@@ -80,18 +79,17 @@ function PropertiesPanel({
 
   return (
     <CommonProperties
+      key={selectedNode.id}
       propertiesInfo={{
         parameterDef: fillPropertiesWithSavedData(
           nodePropertiesSchema.properties,
           selectedNode.app_data
         ),
-        appData: { id: nanoid() },
         labelEditable: false,
       }}
       propertiesConfig={{
         containerType: "Custom",
         rightFlyout: false,
-        applyOnBlur: true,
       }}
       callbacks={{
         actionHandler: async (id: string, _appData: any, data: any) => {
@@ -102,10 +100,12 @@ function PropertiesPanel({
         controllerHandler: (e: any) => {
           controller.current = e;
         },
-        applyPropertyChanges: (e: any) => {
-          onChange?.(selectedNode.id, e);
+        applyPropertyChanges: () => {},
+        propertyListener: (e: any) => {
+          if (e.action === "UPDATE_PROPERTY") {
+            onChange?.(selectedNode.id, controller.current.getPropertyValues());
+          }
         },
-        closePropertiesDialog: () => {},
       }}
       customControls={[StringArrayControl, BooleanControl, FileControl]}
     />
