@@ -16,7 +16,7 @@
 
 export const toPrettyString = (o: any): string => {
   if (Array.isArray(o)) {
-    return o.join("\n");
+    return o.map((v) => v.value ?? v).join("\n");
   }
 
   if (typeof o === "boolean") {

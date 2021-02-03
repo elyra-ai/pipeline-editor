@@ -16,6 +16,7 @@
 
 import React, { useCallback, useRef } from "react";
 
+import { nanoid } from "nanoid";
 import { useSelector } from "react-redux";
 
 interface Props {
@@ -26,6 +27,8 @@ interface Props {
   fileBrowser?: boolean;
 }
 
+// NOTE: This uses IDs which is a breaking change to pipeline spec. Would
+// require a migration.
 function StringArrayComponent({
   name,
   controller,
@@ -35,27 +38,32 @@ function StringArrayComponent({
 }: Props) {
   const controllerRef = useRef(controller);
 
-  const items: string[] = useSelector(
+  const items: { value: string; id: string }[] = useSelector(
     (state: any) => state.propertiesReducer[name]
   );
 
+  console.log(items);
+
   const handleAddItem = useCallback(() => {
-    controllerRef.current.updatePropertyValue({ name }, [...items, ""]);
+    controllerRef.current.updatePropertyValue({ name }, [
+      ...items,
+      { value: "", id: nanoid() },
+    ]);
   }, [items, name]);
 
   const handleDeleteItem = useCallback(
-    (index) => {
-      const newValues = items.filter((_, i) => i !== index);
+    (id) => {
+      const newValues = items.filter((item) => item.id !== id);
       controllerRef.current.updatePropertyValue({ name }, newValues);
     },
     [items, name]
   );
 
   const handleInputChange = useCallback(
-    (e, index) => {
-      const newValues = items.map((item, i) => {
-        if (i === index) {
-          return e.target.value;
+    (e, id) => {
+      const newValues = items.map((item) => {
+        if (item.id === id) {
+          return { ...item, value: e.target.value };
         }
         return item;
       });
@@ -82,19 +90,19 @@ function StringArrayComponent({
   return (
     <div>
       <div>
-        {items.map((item, i) => (
-          <div key={i}>
+        {items.map((item) => (
+          <div key={item.id}>
             <input
-              defaultValue={item}
+              value={item.value}
               placeholder={placeholder}
               onChange={(e) => {
-                handleInputChange(e, i);
+                handleInputChange(e, item.id);
               }}
             />
             {fileBrowser ? (
               <button
                 onClick={() => {
-                  handleChooseFile(i);
+                  handleChooseFile(item.id);
                 }}
               >
                 B
@@ -102,7 +110,7 @@ function StringArrayComponent({
             ) : null}
             <div
               onClick={() => {
-                handleDeleteItem(i);
+                handleDeleteItem(item.id);
               }}
             >
               X
