@@ -42,8 +42,6 @@ function StringArrayComponent({
     (state: any) => state.propertiesReducer[name]
   );
 
-  console.log(items);
-
   const handleAddItem = useCallback(() => {
     controllerRef.current.updatePropertyValue({ name }, [
       ...items,
