@@ -204,20 +204,8 @@ const PipelineEditor = forwardRef(
       return null;
     };
 
-    const handlePropertiesAction = (
-      id: string,
-      appData: any,
-      data: any
-    ): any => {
-      if (id === "browse_file") {
-        let filename = "";
-        if (data.index === undefined) {
-          filename = data.propertyValue;
-        } else if (data.propertyValue !== undefined) {
-          filename = data.propertyValue[data.index];
-        }
-        return onFileRequested?.(filename, data.index !== undefined);
-      }
+    const handleFileRequested = (options: any) => {
+      return onFileRequested?.(options);
     };
 
     if (readOnly) {
@@ -298,7 +286,7 @@ const PipelineEditor = forwardRef(
                       <PropertiesPanel
                         selectedNodes={selectedNodes}
                         nodes={nodes}
-                        onAction={handlePropertiesAction}
+                        onFileRequested={handleFileRequested}
                         onChange={handlePropertiesChange}
                       />
                     ),

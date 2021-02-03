@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-import React, { useState } from "react";
+import React, { useCallback, useRef } from "react";
+
+import { useSelector } from "react-redux";
 
 interface Props {
-  helperText: string;
-  propertyId: string;
+  name: string;
   controller: any;
+  helperText: string;
 }
 
-function BooleanComponent({ helperText, propertyId, controller }: Props) {
-  const [isChecked, setIsChecked] = useState(
-    controller.getPropertyValue(propertyId)
-  );
+function BooleanComponent({ name, controller, helperText }: Props) {
+  const controllerRef = useRef(controller);
+
+  const isChecked = useSelector((state: any) => state.propertiesReducer[name]);
+
+  const handleToggle = useCallback(() => {
+    controllerRef.current.updatePropertyValue({ name }, !isChecked);
+  }, [isChecked, name]);
+
   return (
-    <div
-      style={{ display: "flex" }}
-      onClick={() => {
-        controller.updatePropertyValue({ name: propertyId }, !isChecked);
-        setIsChecked(!isChecked);
-      }}
-    >
+    <div style={{ display: "flex" }} onClick={handleToggle}>
       <div
         className={
           isChecked ? "properties-checkbox checked" : "properties-checkbox"
@@ -54,26 +55,22 @@ function BooleanComponent({ helperText, propertyId, controller }: Props) {
 }
 
 export class BooleanControl {
-  helperText: string;
-  propertyId: string;
-  controller: string;
-
-  static id(): string {
+  static id() {
     return "pipeline-editor-boolean-control";
   }
 
-  constructor(propertyId: any, controller: any, data: any, tableInfo: any) {
-    this.propertyId = propertyId.name;
-    this.controller = controller;
-    this.helperText = data.helperText;
-  }
+  constructor(
+    private propertyId: { name: string },
+    private controller: any,
+    private data: any
+  ) {}
 
   renderControl() {
     return (
       <BooleanComponent
-        helperText={this.helperText}
-        propertyId={this.propertyId}
+        name={this.propertyId.name}
         controller={this.controller}
+        {...this.data}
       />
     );
   }
