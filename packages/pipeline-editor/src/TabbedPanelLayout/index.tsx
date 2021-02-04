@@ -41,15 +41,7 @@ function TabbedPanelLayout({
 }: Props) {
   if (open !== true) {
     return (
-      <div
-        className="elyra-verticalTabGroup"
-        style={{
-          padding: "7px 0",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
+      <div className="elyra-verticalTabGroup">
         {tabs.map((t) => (
           <div key={t.id} className="elyra-actionItem">
             <div
@@ -100,6 +92,7 @@ function TabbedPanelLayout({
         ) : null}
       </div>
       <div
+        className="elyra-tabContent"
         style={{
           position: "absolute",
           top: "35px",

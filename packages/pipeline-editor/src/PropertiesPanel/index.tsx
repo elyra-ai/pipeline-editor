@@ -58,7 +58,7 @@ function PropertiesPanel({
   if (selectedNodes.length > 1) {
     return (
       <div className="elyra-noContentMessage">
-        Too many nodes are selected. Select a single node to edit its
+        Multiple nodes are selected. Select a single node to edit its
         properties.
       </div>
     );
