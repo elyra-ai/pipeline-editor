@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { nanoid } from "nanoid";
-
 import path from "path";
 
 import { CanvasController } from "@elyra/canvas";
+import { nanoid } from "nanoid";
 
 import { createPalette } from "./create-palette";
 import {

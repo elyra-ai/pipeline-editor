@@ -1,3 +1,65 @@
+.elyra-verticalTabGroup {
+  padding: 7px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.elyra-tabContent {
+  position: absolute;
+  top: 35px;
+  bottom: 0;
+  overflow: auto;
+  width: 100%;
+}
+
+/* palette */
+.elyra-palette {
+  margin-top: 14px;
+}
+
+.elyra-paletteItem {
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  height: 40px;
+  margin: 0 22px 8px;
+  background-color: var(--elyra-color-palette-bg);
+  border: 1px solid var(--elyra-color-palette-border);
+  color: var(--elyra-color-palette-text);
+}
+
+.elyra-paletteItemIcon {
+  height: 26px;
+  margin: 0 7px;
+}
+
+.elyra-paletteItemLabel {
+  font-family: var(--elyra-font-family-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-size: var(--elyra-font-size-sans);
+}
+
+/* tab panel */
+.elyra-tabPanel > .elyra-actionBar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.elyra-tabPanel > .elyra-actionBar > .elyra-tabGroup {
+  display: flex;
+}
+
+.elyra-noContentMessage {
+  margin-top: 14px;
+  padding: 0 22px;
+  font-family: var(--elyra-font-family-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-size: var(--elyra-font-size-sans);
+  color: var(--elyra-color-text-primary);
+  opacity: 0.5;
+}
+
 .elyra-tooltipError {
   color: var(--elyra-color-text-error);
 }
@@ -65,17 +127,21 @@
 
 .properties-wrapper input[type="text" i] {
   padding: 4px;
-  background-color: var(--vscode-settings-textInputBackground);
-  color: var(--vscode-settings-textInputForeground);
-  border: 1px solid var(--vscode-settings-textInputBorder);
+  background-color: var(--elyra-color-textInput-bg);
+  color: var(--elyra-color-textInput-text);
+  border: 1px solid var(--elyra-color-textInput-border);
   width: 100%;
   max-width: 500px;
 }
 
+.properties-wrapper input[type="text" i]:focus {
+  outline: 1px solid var(--elyra-color-focus) !important;
+}
+
 .properties-wrapper .bx--list-box__field {
-  background-color: var(--vscode-settings-dropdownBackground);
-  color: var(--vscode-settings-dropdownForeground);
-  border: 1px solid var(--vscode-settings-dropdownBorder);
+  background-color: var(--elyra-color-dropdown-bg);
+  color: var(--elyra-color-dropdown-text);
+  border: 1px solid var(--elyra-color-dropdown-border);
   width: 100%;
   max-width: 320px;
 
@@ -114,7 +180,7 @@
   font-family: var(--elyra-font-family-sans);
   font-weight: 600;
   font-size: var(--elyra-font-size-sans);
-  color: var(--vscode-settings-headerForeground);
+  color: var(--elyra-color-formLabel-text);
   line-height: 1.4em !important;
   letter-spacing: normal;
 }
@@ -124,7 +190,7 @@
   font-family: var(--elyra-font-family-sans);
   font-weight: var(--elyra-font-weight-sans);
   font-size: var(--elyra-font-size-sans);
-  color: var(--vscode-foreground);
+  color: var(--elyra-color-formDescription-text);
   line-height: 1.4em !important;
   letter-spacing: normal;
   padding: 0;
@@ -144,9 +210,9 @@
   margin-right: 9px;
   margin-left: 0;
   padding: 0;
-  background-color: var(--vscode-settings-checkboxBackground) !important;
-  color: var(--vscode-settings-checkboxForeground) !important;
-  border-color: var(--vscode-settings-checkboxBorder) !important;
+  background-color: var(--elyra-color-checkbox-bg) !important;
+  color: var(--elyra-color-checkbox-text) !important;
+  border-color: var(--elyra-color-checkbox-border) !important;
 }
 
 .properties-wrapper .properties-checkbox::before {

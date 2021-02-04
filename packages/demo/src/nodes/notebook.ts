@@ -36,7 +36,7 @@ const notebook = {
     current_parameters: {
       filename: "",
       runtime_image: "",
-      dependencies: "",
+      dependencies: [],
       include_subdirectories: false,
       env_vars: [],
       outputs: [],
