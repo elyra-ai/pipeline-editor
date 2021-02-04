@@ -14,132 +14,178 @@
  * limitations under the License.
  */
 
-export class StringArrayControl {
-  parameter: string;
-  controller: any;
-  values: string[];
-  fileBrowser?: boolean;
-  singleItemLabel?: string;
-  placeholder?: string;
+import React, { useCallback, useRef } from "react";
 
-  static id(): string {
+import produce from "immer";
+import { nanoid } from "nanoid";
+import { useSelector } from "react-redux";
+
+interface Props {
+  name: string;
+  controller: any;
+  placeholder?: string;
+  singleItemLabel?: string;
+  fileBrowser?: boolean;
+}
+
+interface Item {
+  value: string;
+  id: string;
+}
+
+const reducer = produce((draft: Item[], action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case "ADD_ITEM": {
+      draft.push({ value: "", id: nanoid() });
+      break;
+    }
+    case "DELETE_ITEM": {
+      const index = draft.findIndex((i) => i.id === payload.id);
+      if (index !== -1) {
+        draft.splice(index, 1);
+      }
+      break;
+    }
+    case "UPDATE_ITEM": {
+      const index = draft.findIndex((i) => i.id === payload.id);
+      if (index !== -1) {
+        draft[index].value = payload.value;
+      }
+      break;
+    }
+    case "UPSERT_ITEMS": {
+      const index = draft.findIndex((i) => i.id === payload.id);
+      if (index !== -1 && payload.values.length > 0) {
+        // Update value of the selected input with the first value in the array.
+        draft[index].value = payload.values[0];
+
+        // Give all the values an ID.
+        const items = payload.values.map((v: string) => ({
+          value: v,
+          id: nanoid(),
+        }));
+
+        // Remove the first item since it has already been set.
+        items.shift();
+
+        // Insert the remaining items.
+        draft.splice(index + 1, 0, ...items);
+      }
+      break;
+    }
+  }
+});
+
+// NOTE: This uses IDs which is a breaking change to pipeline spec. Would
+// require a migration.
+function StringArrayComponent({
+  name,
+  controller,
+  placeholder,
+  singleItemLabel,
+  fileBrowser,
+}: Props) {
+  const controllerRef = useRef(controller);
+
+  const items: Item[] = useSelector(
+    (state: any) => state.propertiesReducer[name]
+  );
+
+  const handleAction = useCallback(
+    (action) => {
+      const newItems = reducer(items, action);
+      controllerRef.current.updatePropertyValue({ name }, newItems);
+    },
+    [items, name]
+  );
+
+  const handleChooseFile = useCallback(
+    async (id) => {
+      const { actionHandler } = controllerRef.current.getHandlers();
+      const values = await actionHandler?.("browse_file", undefined, {
+        canSelectMany: true,
+        defaultUri: items.find((i) => i.id === id)?.value,
+      });
+      handleAction({
+        type: "UPSERT_ITEMS",
+        payload: { id: id, values },
+      });
+    },
+    [handleAction, items]
+  );
+
+  return (
+    <div>
+      <div>
+        {items.map((item) => (
+          <div key={item.id}>
+            <input
+              value={item.value ?? ""}
+              placeholder={placeholder}
+              onChange={(e) => {
+                handleAction({
+                  type: "UPDATE_ITEM",
+                  payload: { id: item.id, value: e.target.value },
+                });
+              }}
+            />
+            {fileBrowser ? (
+              <button
+                onClick={() => {
+                  handleChooseFile(item.id);
+                }}
+              >
+                B
+              </button>
+            ) : null}
+            <div
+              onClick={() => {
+                handleAction({
+                  type: "DELETE_ITEM",
+                  payload: { id: item.id },
+                });
+              }}
+            >
+              X
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex" }}>
+        <div
+          onClick={() => {
+            handleAction({
+              type: "ADD_ITEM",
+            });
+          }}
+          style={{ marginTop: 8 }}
+        >
+          Add {singleItemLabel ?? "item"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export class StringArrayControl {
+  static id() {
     return "pipeline-editor-string-array-control";
   }
 
-  constructor(parameters: any, controller: any, data: any) {
-    if (data) {
-      this.singleItemLabel = data.single_item_label;
-      this.placeholder = data.placeholder;
-      this.fileBrowser = data.fileBrowser;
-    }
-    this.parameter = parameters["name"];
-    this.controller = controller;
-    this.values = this.controller.getPropertyValue(this.parameter);
-    if (!this.values) {
-      this.controller.updatePropertyValue(this.parameter, []);
-      this.values = [];
-    }
+  constructor(
+    private propertyId: { name: string },
+    private controller: any,
+    private data: any
+  ) {}
 
-    this.deleteHandler = this.deleteHandler.bind(this);
-    this.onTextAreaChange = this.onTextAreaChange.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
-    this.addHandler = this.addHandler.bind(this);
-    this.browserHandler = this.browserHandler.bind(this);
-  }
-
-  deleteHandler = (index: number): void => {
-    delete this.values[index];
-    this.controller.updatePropertyValue({ name: this.parameter }, this.values);
-  };
-
-  onTextAreaChange = (props: any): void => {
-    this.values = props.value.split("\n");
-  };
-
-  onInputChange = (event: any, index: number): void => {
-    event.target.value
-      .split("\n")
-      .forEach((element: string, valueIndex: number): void => {
-        if (valueIndex === 0) {
-          this.values[index] = element;
-        } else {
-          this.values.splice(index, 0, element);
-        }
-      });
-    this.values[index] = event.target.value;
-    this.controller.updatePropertyValue({ name: this.parameter }, this.values);
-  };
-
-  addHandler = (): void => {
-    this.values.push("");
-    this.controller.updatePropertyValue({ name: this.parameter }, this.values);
-  };
-
-  browserHandler = async (value: any, index: number): Promise<void> => {
-    const actionHandler = this.controller.getHandlers().actionHandler;
-    if (typeof actionHandler === "function") {
-      const newValue = await actionHandler(
-        "browse_file",
-        this.controller.getAppData(),
-        {
-          parameter_ref: "browse_file",
-          propertyValue: this.values,
-          index: index,
-        }
-      );
-    }
-  };
-
-  renderControl(): any {
-    this.values = this.controller.getPropertyValue(this.parameter);
+  renderControl() {
     return (
-      <div>
-        <div id={this.parameter}>
-          {this.values.map((value: any, index: number) => (
-            <div
-              key={this.parameter + index + "ControlGroup"}
-              className={"elyra-StringArrayControl-entry"}
-            >
-              <input
-                key={this.parameter + index + "InputGroup"}
-                className="jp-InputGroup"
-                defaultValue={value}
-                placeholder={this.placeholder}
-                onChange={(event: any): void => {
-                  this.onInputChange(event, index);
-                }}
-              />
-              {this.fileBrowser ? (
-                <button
-                  className="jp-Button"
-                  onClick={() => this.browserHandler(value, index)}
-                >
-                  B
-                </button>
-              ) : (
-                <div></div>
-              )}
-              <div
-                onClick={(): void => {
-                  this.deleteHandler(index);
-                }}
-              >
-                {" "}
-                X{" "}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: "flex" }}>
-          <div
-            className="jp-Button"
-            onClick={this.addHandler}
-            style={{ marginTop: 8 }}
-          >
-            Add {this.singleItemLabel ? this.singleItemLabel : "item"}
-          </div>
-        </div>
-      </div>
+      <StringArrayComponent
+        name={this.propertyId.name}
+        controller={this.controller}
+        {...this.data}
+      />
     );
   }
 }

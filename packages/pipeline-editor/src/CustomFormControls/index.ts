@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 
+export { default as FileControl } from "./FileControl";
 export { default as StringArrayControl } from "./StringArrayControl";
 export { default as BooleanControl } from "./BooleanControl";

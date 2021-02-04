@@ -15,53 +15,86 @@
  */
 
 import React, { useCallback } from "react";
+import ReactDOM from "react-dom";
 
 interface Props {
   nodes: any[];
 }
 
+function Node({ image, label }: any) {
+  return (
+    <svg className="svg-area" width="172px" height="40px" x="0" y="0">
+      <g className="d3-canvas-group">
+        <g className="d3-nodes-links-group">
+          <g className="d3-node-group" transform="translate(6, 0)">
+            <path
+              className="d3-node-body-outline"
+              d="M 0 0 L 160 0  L 160 14 A 6 6 180 0 1 160 26 L 160 40 L 0 40 L 0 26 A 6 6 180 0 1 0 14 Z"
+            />
+            <image
+              className="node-image"
+              xlinkHref={image}
+              x="6"
+              y="7"
+              width="26"
+              height="26"
+            />
+            <text className="d3-node-label" x="38" y="24.5">
+              {label}
+            </text>
+            <circle className="d3-node-port-input" r="3" cx="0" cy="20" />
+            <path
+              className="d3-node-port-input-arrow"
+              d="M -2 17 L 2 20 -2 23"
+            />
+            <circle className="d3-node-port-output" r="3" cx="160" cy="20" />
+          </g>
+        </g>
+      </g>
+    </svg>
+  );
+}
+
 function PalettePanel({ nodes }: Props) {
-  const handleDragStart = useCallback((e, op) => {
+  const handleDragStart = useCallback((e, node) => {
     const evData = {
       operation: "addToCanvas",
       data: {
         editType: "createExternalNode",
-        op,
+        op: node.op,
       },
     };
+
+    const nodeGhost = document.createElement("div");
+    nodeGhost.style.position = "absolute";
+    nodeGhost.style.top = "-100px";
+    document.body.appendChild(nodeGhost);
+    ReactDOM.render(<Node {...node} />, nodeGhost);
+
+    e.dataTransfer.setDragImage(nodeGhost, 86, 20);
     e.dataTransfer.setData("text", JSON.stringify(evData));
   }, []);
 
   return (
-    <React.Fragment>
+    <div className="elyra-palette">
       {nodes.map((n) => (
         <div
-          style={{
-            display: "flex",
-            height: "40px",
-            backgroundColor: "red",
-            margin: "16px",
-            alignItems: "center",
-            cursor: "grab",
-          }}
+          className="elyra-paletteItem"
           draggable="true"
           onDragStart={(e) => {
-            handleDragStart(e, n.op);
+            handleDragStart(e, n);
           }}
         >
           <img
-            style={{
-              height: "26px",
-              margin: "0 7px",
-            }}
+            className="elyra-paletteItemIcon"
             draggable="false"
             src={n.image}
             alt=""
           />
-          {n.label}
+          <div className="elyra-paletteItemLabel">{n.label}</div>
         </div>
       ))}
-    </React.Fragment>
+    </div>
   );
 }
 
