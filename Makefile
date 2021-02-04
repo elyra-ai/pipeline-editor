@@ -31,4 +31,4 @@ lint:
 
 .PHONY: test
 test:
-	jest packages/pipeline-editor
+	npm run test

@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "watch": "tsc -w --preserveWatchOutput"
+    "watch": "tsc -w --preserveWatchOutput",
+    "test": "jest"
   },
   "dependencies": {
     "@elyra/canvas": "9.2.7",
