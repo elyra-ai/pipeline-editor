@@ -28,3 +28,7 @@ fix:
 .PHONY: lint
 lint:
 	yarn eslint . --ignore-path .gitignore --ext .ts,.tsx
+
+.PHONY: test
+test:
+	jest packages/pipeline-editor
