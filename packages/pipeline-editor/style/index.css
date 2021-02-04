@@ -1,19 +1,6 @@
-.elyra-verticalTabGroup {
-  padding: 7px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.elyra-tabContent {
-  position: absolute;
-  top: 35px;
-  bottom: 0;
-  overflow: auto;
-  width: 100%;
-}
-
-/* palette */
+/* ========================================================================== */
+/* PALETTE */
+/* ========================================================================== */
 .elyra-palette {
   margin-top: 14px;
 }
@@ -40,7 +27,24 @@
   font-size: var(--elyra-font-size-sans);
 }
 
-/* tab panel */
+/* ========================================================================== */
+/* TAB PANEL */
+/* ========================================================================== */
+.elyra-verticalTabGroup {
+  padding: 7px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.elyra-tabContent {
+  position: absolute;
+  top: 35px;
+  bottom: 0;
+  overflow: auto;
+  width: 100%;
+}
+
 .elyra-tabPanel > .elyra-actionBar {
   display: flex;
   justify-content: space-between;
@@ -60,6 +64,9 @@
   opacity: 0.5;
 }
 
+/* ========================================================================== */
+/* CANVAS TOOLTIP */
+/* ========================================================================== */
 .elyra-tooltipError {
   color: var(--elyra-color-text-error);
 }
@@ -106,8 +113,9 @@
   white-space: pre-wrap;
 }
 
-/* properties */
-
+/* ========================================================================== */
+/* COMMON PROPERTIES */
+/* ========================================================================== */
 .properties-wrapper,
 .properties-wrapper * {
   outline: none !important;
@@ -237,12 +245,9 @@
   display: none;
 }
 
-.elyra-StringArrayControl-entry {
-  display: flex;
-}
-
-/* canvas */
-
+/* ========================================================================== */
+/* CANVAS */
+/* ========================================================================== */
 .common-canvas {
   overflow: hidden;
 }
