@@ -85,8 +85,8 @@ const PipelineEditor = forwardRef(
           controller.current.clearErrors();
         }
         // don't call to persist change because it will cause an infinate loop
-      } catch (error: any) {
-        onError?.(error);
+      } catch (e) {
+        onError?.(e);
       }
     }, [nodes, onChange, onError, pipeline, readOnly]);
 
@@ -154,7 +154,6 @@ const PipelineEditor = forwardRef(
         }
 
         if (e.editType === "createExternalNode") {
-          console.log(e);
           const nodeTemplate = controller.current.getPaletteNode(e.op);
           if (nodeTemplate) {
             const convertedTemplate = controller.current.convertNodeTemplate(
