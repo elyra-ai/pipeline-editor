@@ -129,39 +129,6 @@
   margin-top: 14px;
 }
 
-.properties-wrapper .properties-textfield {
-  margin-top: 9px;
-}
-
-.properties-wrapper input[type="text" i] {
-  box-sizing: border-box;
-  padding: 4px;
-  background-color: var(--elyra-color-textInput-bg);
-  color: var(--elyra-color-textInput-text);
-  border: 1px solid var(--elyra-color-textInput-border);
-  width: 100%;
-  max-width: 500px;
-}
-
-.properties-wrapper input[type="text" i]:focus {
-  outline: 1px solid var(--elyra-color-focus) !important;
-  outline-offset: -1px;
-}
-
-.properties-wrapper .bx--list-box__field {
-  background-color: var(--elyra-color-dropdown-bg);
-  color: var(--elyra-color-dropdown-text);
-  border: 1px solid var(--elyra-color-dropdown-border);
-  width: 100%;
-  max-width: 320px;
-
-  /* TODO */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 26px;
-}
-
 .properties-control-panel[data-id="properties-nodeGroupInfo"]
   > .properties-control-panel {
   padding-left: 33px;
@@ -207,6 +174,47 @@
   opacity: 0.9;
 }
 
+.properties-wrapper .bx--visually-hidden,
+.properties-wrapper .properties-validation-message {
+  display: none;
+}
+
+/* text input */
+.properties-wrapper .properties-textfield {
+  margin-top: 9px;
+}
+
+.properties-wrapper input[type="text" i] {
+  box-sizing: border-box;
+  padding: 4px;
+  background-color: var(--elyra-color-textInput-bg);
+  color: var(--elyra-color-textInput-text);
+  border: 1px solid var(--elyra-color-textInput-border);
+  width: 100%;
+  max-width: 500px;
+}
+
+.properties-wrapper input[type="text" i]:focus {
+  outline: 1px solid var(--elyra-color-focus) !important;
+  outline-offset: -1px;
+}
+
+/* select */
+.properties-wrapper .bx--list-box__field {
+  background-color: var(--elyra-color-dropdown-bg);
+  color: var(--elyra-color-dropdown-text);
+  border: 1px solid var(--elyra-color-dropdown-border);
+  width: 100%;
+  max-width: 320px;
+
+  /* TODO */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 26px;
+}
+
+/* checkbox */
 .properties-wrapper .properties-checkbox {
   box-sizing: border-box;
   flex-shrink: 0;
@@ -238,11 +246,6 @@
 
 .properties-wrapper .properties-checkbox.checked::before {
   opacity: 1;
-}
-
-.properties-wrapper .bx--visually-hidden,
-.properties-wrapper .properties-validation-message {
-  display: none;
 }
 
 /* ========================================================================== */
