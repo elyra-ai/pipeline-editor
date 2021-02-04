@@ -61,6 +61,7 @@ jobs:
         npm install -g rimraf@3.0.0
         npm install -g typescript@3.7.3
         npm install -g yarn@1.21.0
+        npm install -g jest@26.6.3
     - name: Build
       run: |
         export PATH=~/.npm-global/bin:$PATH
