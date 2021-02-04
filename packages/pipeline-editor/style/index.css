@@ -126,6 +126,7 @@
 }
 
 .properties-wrapper input[type="text" i] {
+  box-sizing: border-box;
   padding: 4px;
   background-color: var(--elyra-color-textInput-bg);
   color: var(--elyra-color-textInput-text);
@@ -136,6 +137,7 @@
 
 .properties-wrapper input[type="text" i]:focus {
   outline: 1px solid var(--elyra-color-focus) !important;
+  outline-offset: -1px;
 }
 
 .properties-wrapper .bx--list-box__field {
@@ -198,6 +200,7 @@
 }
 
 .properties-wrapper .properties-checkbox {
+  box-sizing: border-box;
   flex-shrink: 0;
   cursor: pointer;
   display: inline-block;
@@ -213,6 +216,11 @@
   background-color: var(--elyra-color-checkbox-bg) !important;
   color: var(--elyra-color-checkbox-text) !important;
   border-color: var(--elyra-color-checkbox-border) !important;
+}
+
+.properties-wrapper .properties-checkbox:focus {
+  outline: 1px solid var(--elyra-color-focus) !important;
+  outline-offset: -1px;
 }
 
 .properties-wrapper .properties-checkbox::before {
