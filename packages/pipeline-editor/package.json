@@ -10,12 +10,14 @@
   },
   "dependencies": {
     "@elyra/canvas": "9.2.7",
-    "react-intl": "^5.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-intl": "^5.0.0",
     "react-redux": "^7.0.0"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.12.13",
+    "@types/jest": "^26.0.20",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-intl": "^3.0.0"
