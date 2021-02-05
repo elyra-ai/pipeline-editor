@@ -116,8 +116,8 @@ function StringArrayComponent({
   );
 
   return (
-    <div>
-      <div>
+    <div style={{ marginTop: "9px" }}>
+      <div style={{ padding: "1px", marginBottom: "1px" }}>
         {items.map((item) => (
           <div key={item.id}>
             <input
@@ -153,16 +153,16 @@ function StringArrayComponent({
         ))}
       </div>
       <div style={{ display: "flex" }}>
-        <div
+        <button
           onClick={() => {
             handleAction({
               type: "ADD_ITEM",
             });
           }}
-          style={{ marginTop: 8 }}
+          style={{ marginTop: "4px", marginRight: "4px" }}
         >
-          Add {singleItemLabel ?? "item"}
-        </div>
+          Add {singleItemLabel ?? "Item"}
+        </button>
       </div>
     </div>
   );
