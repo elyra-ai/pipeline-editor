@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { nanoid } from "nanoid";
-
 import path from "path";
 
 import { CanvasController } from "@elyra/canvas";
+import { nanoid } from "nanoid";
 
 import { createPalette } from "./create-palette";
 import {
@@ -50,7 +49,7 @@ class PipelineController extends CanvasController {
 
   open(pipelineJson: any) {
     // if pipeline is null create a new one from scratch.
-    if (pipelineJson === null) {
+    if (pipelineJson === undefined) {
       const emptyPipeline = this.getPipelineFlow();
       emptyPipeline.pipelines[0].app_data.version = PIPELINE_CURRENT_VERSION;
       this.setPipelineFlow(emptyPipeline);

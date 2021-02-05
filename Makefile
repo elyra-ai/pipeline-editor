@@ -8,6 +8,10 @@ install:
 	yarn install
 	yarn lerna bootstrap
 
+.PHONY: link
+link:
+	yarn lerna run link
+
 .PHONY: build
 build:
 	yarn lerna run build --stream

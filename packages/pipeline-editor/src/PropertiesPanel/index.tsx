@@ -17,19 +17,27 @@
 import { useEffect, useRef } from "react";
 
 import { CommonProperties } from "@elyra/canvas";
-import { nanoid } from "nanoid";
 
-import { BooleanControl, StringArrayControl } from "../CustomFormControls";
+import {
+  BooleanControl,
+  FileControl,
+  StringArrayControl,
+} from "../CustomFormControls";
 import { fillPropertiesWithSavedData } from "./properties-utils";
 
 interface Props {
   selectedNodes?: any[];
   nodes: any[];
-  onAction?: (id: string, appData: any, data: any) => any;
+  onFileRequested?: (options: any) => any;
   onChange?: (nodeID: string, data: any) => any;
 }
 
-function PropertiesPanel({ selectedNodes, nodes, onAction, onChange }: Props) {
+function PropertiesPanel({
+  selectedNodes,
+  nodes,
+  onFileRequested,
+  onChange,
+}: Props) {
   const controller = useRef<any>();
 
   // always be validating
@@ -40,82 +48,66 @@ function PropertiesPanel({ selectedNodes, nodes, onAction, onChange }: Props) {
   });
 
   if (selectedNodes === undefined || selectedNodes.length === 0) {
-    return <div>no nodes selected</div>;
+    return (
+      <div className="elyra-noContentMessage">
+        Select a node to edit its properties.
+      </div>
+    );
   }
 
   if (selectedNodes.length > 1) {
-    return <div>more than 1 node selected</div>;
+    return (
+      <div className="elyra-noContentMessage">
+        Multiple nodes are selected. Select a single node to edit its
+        properties.
+      </div>
+    );
   }
 
   const selectedNode = selectedNodes[0];
 
   if (selectedNode.op === undefined) {
     // supernode
-    return <div>no available properties</div>;
+    return (
+      <div className="elyra-noContentMessage">
+        This node type doesn't have any editable properties.
+      </div>
+    );
   }
 
   const nodePropertiesSchema = nodes.find((n: any) => n.op === selectedNode.op);
 
   return (
     <CommonProperties
+      key={selectedNode.id}
       propertiesInfo={{
         parameterDef: fillPropertiesWithSavedData(
           nodePropertiesSchema.properties,
           selectedNode.app_data
         ),
-        appData: { id: nanoid() },
         labelEditable: false,
       }}
       propertiesConfig={{
         containerType: "Custom",
         rightFlyout: false,
-        applyOnBlur: true,
       }}
       callbacks={{
-        onAction: async (
-          id: string,
-          appData: any,
-          data: any
-        ): Promise<void> => {
-          if (data.parameter_ref && data.index === undefined) {
-            data.propertyValue = controller.current?.getPropertyValue({
-              name: data.parameter_ref,
-            });
-          }
-          const newValue = await onAction?.(id, appData, data);
-          if (newValue && data.parameter_ref) {
-            if (data.index !== undefined) {
-              // If multiple files are selected, replace the given index in the dependencies list
-              // and insert the rest of the values after that index.
-              if (typeof newValue === "string") {
-                data.propertyValue[data.index] = newValue;
-              } else {
-                newValue.forEach((val: any, i: number) => {
-                  if (i === 0) {
-                    data.propertyValue[data.index] = val;
-                  } else {
-                    data.propertyValue.splice(data.index, 0, val);
-                  }
-                });
-              }
-            } else {
-              data.propertyValue = newValue;
-            }
-            controller.current?.updatePropertyValue(
-              data.parameter_ref,
-              data.propertyValue[0]
-            );
+        actionHandler: async (id: string, _appData: any, data: any) => {
+          if (id === "browse_file") {
+            return await onFileRequested?.(data);
           }
         },
         controllerHandler: (e: any) => {
           controller.current = e;
         },
-        applyPropertyChanges: (e: any) => {
-          onChange?.(selectedNode.id, e);
+        applyPropertyChanges: () => {},
+        propertyListener: (e: any) => {
+          if (e.action === "UPDATE_PROPERTY") {
+            onChange?.(selectedNode.id, controller.current.getPropertyValues());
+          }
         },
-        closePropertiesDialog: () => {},
       }}
-      customControls={[StringArrayControl, BooleanControl]}
+      customControls={[StringArrayControl, BooleanControl, FileControl]}
     />
   );
 }
