@@ -31,6 +31,10 @@ function FileComponent({ name, controller, placeholder }: Props) {
     (state: any) => state.propertiesReducer[name]
   );
 
+  const isError: boolean = useSelector(
+    (state: any) => state.errorMessagesReducer[name]?.type === "error"
+  );
+
   const handleChooseFile = useCallback(async () => {
     const { actionHandler } = controllerRef.current.getHandlers();
     const values = await actionHandler?.("browse_file", undefined, {
@@ -45,14 +49,19 @@ function FileComponent({ name, controller, placeholder }: Props) {
   }, [name, path]);
 
   return (
-    <div>
-      <input value={path ?? ""} placeholder={placeholder} disabled />
+    <div className={isError ? "elyra-fileControl error" : "elyra-fileControl"}>
+      <input
+        type="text"
+        value={path ?? ""}
+        placeholder={placeholder}
+        disabled
+      />
       <button
         onClick={() => {
           handleChooseFile();
         }}
       >
-        B
+        Browse
       </button>
     </div>
   );

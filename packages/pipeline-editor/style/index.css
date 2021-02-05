@@ -192,11 +192,18 @@
   border: 1px solid var(--elyra-color-textInput-border);
   width: 100%;
   max-width: 500px;
+  font-size: var(--elyra-font-size-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-family: var(--elyra-font-family-sans);
 }
 
 .properties-wrapper input[type="text" i]:focus {
   outline: 1px solid var(--elyra-color-focus) !important;
   outline-offset: -1px;
+}
+
+.properties-wrapper input[type="text" i]:disabled {
+  color: var(--elyra-color-textInput-disabled-text);
 }
 
 /* select */
@@ -246,6 +253,31 @@
 
 .properties-wrapper .properties-checkbox.checked::before {
   opacity: 1;
+}
+
+/* file control */
+.properties-wrapper .elyra-fileControl {
+  margin-top: 9px;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+}
+
+/* button */
+.properties-wrapper button {
+  color: var(--elyra-color-primaryButton-text);
+  background-color: var(--elyra-color-primaryButton-bg);
+  border: 1px solid var(--elyra-color-primaryButton-border);
+  font-size: var(--elyra-font-size-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-family: var(--elyra-font-family-sans);
+  padding: 2px 14px;
+  cursor: pointer;
+}
+
+.properties-wrapper button:hover {
+  background-color: var(--elyra-color-primaryButton-hover-bg);
+  border: 1px solid var(--elyra-color-primaryButton-hover-border);
 }
 
 /* ========================================================================== */
