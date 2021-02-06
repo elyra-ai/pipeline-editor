@@ -50,6 +50,22 @@ interface Props {
 const NODE_SVG_PATH =
   "M 0 0 h 160 a 6 6 0 0 1 6 6 v 28 a 6 6 0 0 1 -6 6 h -160 a 6 6 0 0 1 -6 -6 v -28 a 6 6 0 0 1 6 -6 z";
 
+function isMenuItemEnabled(menu: IContextMenu, action: string) {
+  const item = menu.find((m) => {
+    if (m.menu === undefined) {
+      return m.action === action;
+    }
+    // If there is a sub menu, search it as well.
+    return m.menu.find((mm) => mm.action === action);
+  });
+
+  if (item === undefined) {
+    return false;
+  }
+
+  return item.enable !== false;
+}
+
 const PipelineEditor = forwardRef(
   (
     {
@@ -99,31 +115,214 @@ const PipelineEditor = forwardRef(
     // TODO: only show "Open Files" if it's a file based node.
     const handleContextMenu = useCallback(
       (e: IContextMenuEvent, defaultMenu: IContextMenu) => {
-        // If not a node use default menu
-        if (e.type !== "node") {
-          return defaultMenu;
-        }
+        console.log(JSON.stringify(defaultMenu, null, 2));
 
-        // multiple nodes selected
-        if (e.selectedObjectIds.length > 1) {
-          return defaultMenu.concat({
-            action: "openFile",
-            label: "Open Files",
-          });
-        }
+        console.log(e);
 
-        // single EXECUTION node selected (not super node)
-        if (e.targetObject.type === "execution_node") {
-          return defaultMenu.concat(
+        const canPaste = isMenuItemEnabled(defaultMenu, "paste");
+
+        const canDisconnect = isMenuItemEnabled(defaultMenu, "disconnectNode");
+
+        const canExpand = isMenuItemEnabled(
+          defaultMenu,
+          "expandSuperNodeInPlace"
+        );
+
+        if (e.type === "canvas") {
+          return [
             {
-              action: "openFile",
-              label: "Open File",
+              action: "createComment",
+              label: "New Comment",
             },
             {
-              action: "properties",
-              label: "Properties",
+              divider: true,
+            },
+            {
+              action: "paste",
+              label: "Paste",
+              enable: canPaste,
+            },
+          ];
+        }
+
+        if (e.selectedObjectIds.length > 1) {
+          return [
+            {
+              action: "createSuperNode",
+              label: "Create Supernode",
+              // NOTE: There is a bug if you try to create a supernode with only
+              // a comment selected. This will disable creating supernodes when
+              // the comment is right clicked on even if other nodes are
+              // selected, which is allowed. Just too lazy to loop through all
+              // selected items to determine if non comments are also selected.
+              enable: e.type !== "comment",
+            },
+            {
+              divider: true,
+            },
+            {
+              action: "cut",
+              label: "Cut",
+            },
+            {
+              action: "copy",
+              label: "Copy",
+            },
+            {
+              divider: true,
+            },
+            {
+              action: "disconnectNode",
+              label: "Disconnect",
+              enable: canDisconnect,
+            },
+            {
+              action: "deleteSelectedObjects",
+              label: "Delete",
+            },
+          ];
+        }
+
+        switch (e.type) {
+          case "canvas":
+            return [
+              {
+                action: "createComment",
+                label: "New Comment",
+              },
+              {
+                divider: true,
+              },
+              {
+                action: "paste",
+                label: "Paste",
+                enable: canPaste,
+              },
+            ];
+          case "node":
+            if (e.targetObject.type === "execution_node") {
+              return [
+                {
+                  action: "openFile",
+                  label: "Open File",
+                },
+                {
+                  action: "properties",
+                  label: "Open Properties",
+                },
+                {
+                  divider: true,
+                },
+                {
+                  action: "createSuperNode",
+                  label: "Create Supernode",
+                },
+                {
+                  divider: true,
+                },
+                {
+                  action: "cut",
+                  label: "Cut",
+                },
+                {
+                  action: "copy",
+                  label: "Copy",
+                },
+                {
+                  divider: true,
+                },
+                {
+                  action: "disconnectNode",
+                  label: "Disconnect",
+                  enable: canDisconnect,
+                },
+                {
+                  action: "deleteSelectedObjects",
+                  label: "Delete",
+                },
+              ];
             }
-          );
+            if (e.targetObject.type === "super_node") {
+              return [
+                {
+                  action: canExpand
+                    ? "expandSuperNodeInPlace"
+                    : "collapseSuperNodeInPlace",
+                  label: canExpand ? "Expand Supernode" : "Collapse Supernode",
+                },
+                {
+                  divider: true,
+                },
+                {
+                  action: "createSuperNode",
+                  label: "Create Supernode",
+                },
+                {
+                  divider: true,
+                },
+                {
+                  action: "cut",
+                  label: "Cut",
+                },
+                {
+                  action: "copy",
+                  label: "Copy",
+                },
+                {
+                  divider: true,
+                },
+                {
+                  action: "disconnectNode",
+                  label: "Disconnect",
+                  enable: canDisconnect,
+                },
+                {
+                  action: "deleteSelectedObjects",
+                  label: "Delete",
+                },
+              ];
+            }
+            break;
+          case "link":
+            return [
+              {
+                action: "deleteLink",
+                label: "Delete",
+              },
+            ];
+          case "comment":
+            return [
+              {
+                action: "createSuperNode",
+                label: "Create Supernode",
+                // NOTE: There is a bug if you try to create a supernode with only
+                // a comment selected.
+                enable: false,
+              },
+              {
+                divider: true,
+              },
+              {
+                action: "cut",
+                label: "Cut",
+              },
+              {
+                action: "copy",
+                label: "Copy",
+              },
+              {
+                divider: true,
+              },
+              {
+                action: "disconnectNode",
+                label: "Disconnect",
+                enable: canDisconnect,
+              },
+              {
+                action: "deleteSelectedObjects",
+                label: "Delete",
+              },
+            ];
         }
 
         // anything else

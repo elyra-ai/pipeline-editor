@@ -75,6 +75,8 @@ type IContextMenu = IContextMenuItem[];
 interface IContextMenuItem {
   action: string;
   label: string;
+  menu?: IContextMenuItem[];
+  enable?: boolean;
 }
 
 interface IContextMenuEvent {

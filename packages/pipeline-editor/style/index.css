@@ -293,6 +293,11 @@
 
 .d3-svg-background {
   fill: transparent;
+  cursor: default !important;
+}
+
+.d3-link-group {
+  cursor: pointer;
 }
 
 .d3-node-body-outline {
