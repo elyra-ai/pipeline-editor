@@ -66,6 +66,35 @@ function isMenuItemEnabled(menu: IContextMenu, action: string) {
   return item.enable !== false;
 }
 
+function useCloseContextMenu(controller: React.MutableRefObject<any>) {
+  useEffect(() => {
+    function handleMouseDown(e: MouseEvent) {
+      const el = document.getElementById("context-menu-popover");
+      // Do nothing if clicking ref's element or descendent elements
+      if (el === null || el.contains(e.target as Node)) {
+        return;
+      }
+      controller.current.closeContextMenu();
+    }
+
+    function handleFocusChange() {
+      if (!document.hasFocus()) {
+        controller.current.closeContextMenu();
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleFocusChange);
+    window.addEventListener("blur", handleFocusChange);
+    document.addEventListener("mousedown", handleMouseDown);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleFocusChange);
+      window.removeEventListener("blur", handleFocusChange);
+      document.removeEventListener("mousedown", handleMouseDown);
+    };
+  }, [controller]);
+}
+
 const PipelineEditor = forwardRef(
   (
     {
@@ -85,6 +114,8 @@ const PipelineEditor = forwardRef(
     const controller = useRef(new PipelineController());
 
     const [currentTab, setCurrentTab] = useState<string | undefined>();
+
+    useCloseContextMenu(controller);
 
     const blockingRef = useBlockEvents({
       wheel: true,
