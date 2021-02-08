@@ -29,11 +29,13 @@ interface Props {
 }
 
 interface ListItemProps {
-  value: string;
+  value?: string;
   isEditing?: boolean;
   placeholder?: string;
   onSubmit?: (value: string) => any;
   onCancel?: () => any;
+  onDelete?: () => any;
+  onEdit?: () => any;
 }
 
 interface Item {
@@ -55,7 +57,7 @@ const reducer = produce((draft: Item[], action) => {
       }
       break;
     }
-    case "UPDATE_ITEM": {
+    case "UPSERT_ITEM": {
       const index = draft.findIndex((i) => i.id === payload.id);
       if (index !== -1) {
         // If the item is empty remove it.
@@ -64,6 +66,8 @@ const reducer = produce((draft: Item[], action) => {
         } else {
           draft[index].value = payload.value;
         }
+      } else if (payload.value.trim() !== "") {
+        draft.push({ value: payload.value, id: payload.id });
       }
       break;
     }
@@ -96,6 +100,8 @@ function ListItem({
   placeholder,
   onSubmit,
   onCancel,
+  onDelete,
+  onEdit,
 }: ListItemProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   if (isEditing) {
@@ -129,10 +135,20 @@ function ListItem({
       <div className="elyra-stringArrayControl-listItem">{value}</div>
       <div className="elyra-stringArrayControl-listActions">
         <div className="elyra-actionItem">
-          <div className="elyra-icon elyra-actionItemIcon elyra-item-edit" />
+          <div
+            className="elyra-icon elyra-actionItemIcon elyra-item-edit"
+            onClick={() => {
+              onEdit?.();
+            }}
+          />
         </div>
         <div className="elyra-actionItem">
-          <div className="elyra-icon elyra-actionItemIcon elyra-item-delete" />
+          <div
+            className="elyra-icon elyra-actionItemIcon elyra-item-delete"
+            onClick={() => {
+              onDelete?.();
+            }}
+          />
         </div>
       </div>
     </div>
@@ -179,6 +195,8 @@ function StringArrayComponent({
     [handleAction, items]
   );
 
+  const actualItem = items.find((i) => editingID === i.id);
+
   return (
     <div style={{ marginTop: "9px" }}>
       <div style={{ padding: "1px", marginBottom: "1px" }}>
@@ -191,61 +209,54 @@ function StringArrayComponent({
             onSubmit={(value) => {
               setEditingID(undefined);
               handleAction({
-                type: "UPDATE_ITEM",
+                type: "UPSERT_ITEM",
                 payload: { id: item.id, value },
               });
             }}
             onCancel={() => {
               setEditingID(undefined);
-              // delete the current item, since we canceled.
+            }}
+            onDelete={() => {
               handleAction({
                 type: "DELETE_ITEM",
                 payload: { id: item.id },
               });
             }}
+            onEdit={() => {
+              setEditingID(item.id);
+            }}
           />
-          // <div key={item.id}>
-          //   <input
-          //     value={item.value ?? ""}
-          //     placeholder={placeholder}
-          //     onChange={(e) => {
-          //       handleAction({
-          //         type: "UPDATE_ITEM",
-          //         payload: { id: item.id, value: e.target.value },
-          //       });
-          //     }}
-          //   />
-          //   {fileBrowser ? (
-          //     <button
-          //       onClick={() => {
-          //         handleChooseFile(item.id);
-          //       }}
-          //     >
-          //       B
-          //     </button>
-          //   ) : null}
-          //   <button
-          //     onClick={() => {
-          //       handleAction({
-          //         type: "DELETE_ITEM",
-          //         payload: { id: item.id },
-          //       });
-          //     }}
-          //   >
-          //     X
-          //   </button>
-          // </div>
         ))}
+        {/* This feels a bit hacky */}
+        {editingID !== undefined && actualItem === undefined ? (
+          <ListItem
+            placeholder={placeholder}
+            isEditing
+            onSubmit={(value) => {
+              setEditingID(undefined);
+              handleAction({
+                type: "UPSERT_ITEM",
+                payload: { id: editingID, value },
+              });
+            }}
+            onCancel={() => {
+              setEditingID(undefined);
+            }}
+          />
+        ) : null}
       </div>
-      <div style={{ display: "flex" }}>
+      <div
+        style={{
+          display:
+            editingID !== undefined && actualItem === undefined
+              ? "none"
+              : "flex",
+        }}
+      >
         <button
           onClick={() => {
             const id = nanoid();
             setEditingID(id);
-            handleAction({
-              type: "ADD_ITEM",
-              payload: { id },
-            });
           }}
           style={{ marginTop: "4px", marginRight: "4px" }}
         >
