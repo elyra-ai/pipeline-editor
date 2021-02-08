@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 
 import produce from "immer";
 import { nanoid } from "nanoid";
@@ -28,6 +28,14 @@ interface Props {
   fileBrowser?: boolean;
 }
 
+interface ListItemProps {
+  value: string;
+  isEditing?: boolean;
+  placeholder?: string;
+  onSubmit?: (value: string) => any;
+  onCancel?: () => any;
+}
+
 interface Item {
   value: string;
   id: string;
@@ -37,7 +45,7 @@ const reducer = produce((draft: Item[], action) => {
   const { type, payload } = action;
   switch (type) {
     case "ADD_ITEM": {
-      draft.push({ value: "", id: nanoid() });
+      draft.push({ value: "", id: payload.id });
       break;
     }
     case "DELETE_ITEM": {
@@ -50,7 +58,12 @@ const reducer = produce((draft: Item[], action) => {
     case "UPDATE_ITEM": {
       const index = draft.findIndex((i) => i.id === payload.id);
       if (index !== -1) {
-        draft[index].value = payload.value;
+        // If the item is empty remove it.
+        if (payload.value.trim() === "") {
+          draft.splice(index, 1);
+        } else {
+          draft[index].value = payload.value;
+        }
       }
       break;
     }
@@ -77,6 +90,55 @@ const reducer = produce((draft: Item[], action) => {
   }
 });
 
+function ListItem({
+  value,
+  isEditing,
+  placeholder,
+  onSubmit,
+  onCancel,
+}: ListItemProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  if (isEditing) {
+    return (
+      <div>
+        <input
+          ref={inputRef}
+          defaultValue={value ?? ""}
+          placeholder={placeholder}
+        />
+        <button
+          onClick={() => {
+            console.log("submit", inputRef.current?.value);
+            onSubmit?.(inputRef.current?.value ?? "");
+          }}
+        >
+          OK
+        </button>
+        <button
+          onClick={() => {
+            onCancel?.();
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    );
+  }
+  return (
+    <div className="elyra-stringArrayControl-listRow">
+      <div className="elyra-stringArrayControl-listItem">{value}</div>
+      <div className="elyra-stringArrayControl-listActions">
+        <div className="elyra-actionItem">
+          <div className="elyra-icon elyra-actionItemIcon elyra-item-edit" />
+        </div>
+        <div className="elyra-actionItem">
+          <div className="elyra-icon elyra-actionItemIcon elyra-item-delete" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // NOTE: This uses IDs which is a breaking change to pipeline spec. Would
 // require a migration.
 function StringArrayComponent({
@@ -87,6 +149,8 @@ function StringArrayComponent({
   fileBrowser,
 }: Props) {
   const controllerRef = useRef(controller);
+
+  const [editingID, setEditingID] = useState<string>();
 
   const items: Item[] = useSelector(
     (state: any) => state.propertiesReducer[name]
@@ -119,44 +183,68 @@ function StringArrayComponent({
     <div style={{ marginTop: "9px" }}>
       <div style={{ padding: "1px", marginBottom: "1px" }}>
         {items.map((item) => (
-          <div key={item.id}>
-            <input
-              value={item.value ?? ""}
-              placeholder={placeholder}
-              onChange={(e) => {
-                handleAction({
-                  type: "UPDATE_ITEM",
-                  payload: { id: item.id, value: e.target.value },
-                });
-              }}
-            />
-            {fileBrowser ? (
-              <button
-                onClick={() => {
-                  handleChooseFile(item.id);
-                }}
-              >
-                B
-              </button>
-            ) : null}
-            <div
-              onClick={() => {
-                handleAction({
-                  type: "DELETE_ITEM",
-                  payload: { id: item.id },
-                });
-              }}
-            >
-              X
-            </div>
-          </div>
+          <ListItem
+            key={item.id}
+            value={item.value}
+            placeholder={placeholder}
+            isEditing={item.id === editingID}
+            onSubmit={(value) => {
+              setEditingID(undefined);
+              handleAction({
+                type: "UPDATE_ITEM",
+                payload: { id: item.id, value },
+              });
+            }}
+            onCancel={() => {
+              setEditingID(undefined);
+              // delete the current item, since we canceled.
+              handleAction({
+                type: "DELETE_ITEM",
+                payload: { id: item.id },
+              });
+            }}
+          />
+          // <div key={item.id}>
+          //   <input
+          //     value={item.value ?? ""}
+          //     placeholder={placeholder}
+          //     onChange={(e) => {
+          //       handleAction({
+          //         type: "UPDATE_ITEM",
+          //         payload: { id: item.id, value: e.target.value },
+          //       });
+          //     }}
+          //   />
+          //   {fileBrowser ? (
+          //     <button
+          //       onClick={() => {
+          //         handleChooseFile(item.id);
+          //       }}
+          //     >
+          //       B
+          //     </button>
+          //   ) : null}
+          //   <button
+          //     onClick={() => {
+          //       handleAction({
+          //         type: "DELETE_ITEM",
+          //         payload: { id: item.id },
+          //       });
+          //     }}
+          //   >
+          //     X
+          //   </button>
+          // </div>
         ))}
       </div>
       <div style={{ display: "flex" }}>
         <button
           onClick={() => {
+            const id = nanoid();
+            setEditingID(id);
             handleAction({
               type: "ADD_ITEM",
+              payload: { id },
             });
           }}
           style={{ marginTop: "4px", marginRight: "4px" }}

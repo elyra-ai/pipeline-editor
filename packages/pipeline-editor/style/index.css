@@ -133,7 +133,8 @@
   > .properties-control-panel {
   padding-left: 33px;
   padding-right: 24px;
-  max-width: 1000px;
+  /* 765 + 33 + 24 */
+  max-width: 822px;
 }
 
 .properties-control-panel[data-id="properties-nodeGroupInfo"]
@@ -292,7 +293,7 @@
 }
 
 .d3-svg-background {
-  fill: transparent;
+  fill: var(--elyra-color-panel-bg);
   cursor: default !important;
 }
 
@@ -335,6 +336,13 @@
   stroke: var(--elyra-color-comment-border) !important;
   stroke-width: 1;
   rx: var(--elyra-border-radius);
+}
+
+.d3-supernode-label {
+  font-family: var(--elyra-font-family-mono);
+  font-weight: var(--elyra-font-weight-mono);
+  font-size: var(--elyra-font-size-mono);
+  fill: var(--elyra-color-node-text);
 }
 
 .d3-node-label {
