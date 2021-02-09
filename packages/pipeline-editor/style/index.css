@@ -71,7 +71,7 @@
   color: var(--elyra-color-text-error);
 }
 
-.common-canvas-tooltip[data-id^="node_tip"] {
+.common-canvas-tooltip {
   max-width: unset;
   background-color: var(--elyra-color-tooltip-bg);
   border: 1px solid var(--elyra-color-tooltip-border);
@@ -81,12 +81,16 @@
   border-radius: 0;
   transition: opacity 0.1s ease-in-out, visibility 0.1s ease-in-out;
 
-  padding: 11px 7px 4px 7px;
+  padding: 4px 7px;
   line-height: 1.5;
 
   font-family: var(--elyra-font-family-sans);
   font-weight: var(--elyra-font-weight-sans);
   font-size: var(--elyra-font-size-sans);
+}
+
+.common-canvas-tooltip[data-id^="node_tip"] {
+  padding: 11px 7px 4px 7px;
 }
 
 .common-canvas-tooltip #tipArrow polyline {
