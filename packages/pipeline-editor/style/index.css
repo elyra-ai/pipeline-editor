@@ -1,3 +1,38 @@
+.d3-node-super-expand-icon-background {
+  cursor: pointer !important;
+  fill: transparent !important;
+}
+
+.d3-node-super-expand-icon {
+  cursor: pointer !important;
+  fill: var(--elyra-color-icon) !important;
+}
+
+.d3-back-to-previous-flow-box {
+  transform: translate(13px, 9px);
+  height: 38px;
+  width: 148px;
+  fill: var(--elyra-color-button-bg);
+  stroke: none;
+}
+
+.d3-back-to-previous-flow-box[data-pointer-hover="yes"] {
+  fill: var(--elyra-color-button-hover-bg);
+  stroke: none;
+}
+
+.d3-back-to-previous-flow-text svg {
+  display: none;
+}
+
+.d3-back-to-previous-flow-text {
+  font-size: var(--elyra-font-size-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-family: var(--elyra-font-family-sans);
+  fill: var(--elyra-color-button-text);
+  transform: translate(-17px, 9px);
+}
+
 /* ========================================================================== */
 /* PALETTE */
 /* ========================================================================== */
@@ -270,8 +305,8 @@
 
 /* button */
 .properties-wrapper button {
-  color: var(--elyra-color-primaryButton-text);
-  background-color: var(--elyra-color-primaryButton-bg);
+  color: var(--elyra-color-formButton-text);
+  background-color: var(--elyra-color-formButton-bg);
   font-size: var(--elyra-font-size-sans);
   font-weight: var(--elyra-font-weight-sans);
   font-family: var(--elyra-font-family-sans);
@@ -282,7 +317,7 @@
 }
 
 .properties-wrapper button:hover {
-  background-color: var(--elyra-color-primaryButton-hover-bg);
+  background-color: var(--elyra-color-formButton-hover-bg);
 }
 
 /* TODO: colors */

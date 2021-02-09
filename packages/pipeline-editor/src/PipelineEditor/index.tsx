@@ -401,6 +401,8 @@ const PipelineEditor = forwardRef(
           case "properties":
           case "openFile":
           case "copy": // NOTE: "cut" deletes an item so needs a save.
+          case "displaySubPipeline":
+          case "displayPreviousPipeline":
             return;
         }
 
