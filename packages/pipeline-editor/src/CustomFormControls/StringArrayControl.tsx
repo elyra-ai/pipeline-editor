@@ -15,6 +15,7 @@
  */
 
 import React, { useCallback, useRef, useState } from "react";
+import { useEffect } from "react";
 
 import produce from "immer";
 import { nanoid } from "nanoid";
@@ -104,17 +105,28 @@ function ListItem({
   onEdit,
 }: ListItemProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // We want this to be called anytime isEditing becomes true.
+    if (isEditing) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [isEditing]);
+
   if (isEditing) {
     return (
-      <div>
-        <input
-          ref={inputRef}
-          defaultValue={value ?? ""}
-          placeholder={placeholder}
-        />
+      <div style={{ display: "flex" }}>
+        <div className="elyra-stringArrayControl-input">
+          <input
+            ref={inputRef}
+            defaultValue={value ?? ""}
+            placeholder={placeholder}
+          />
+        </div>
         <button
+          style={{ margin: "0 4px" }}
           onClick={() => {
-            console.log("submit", inputRef.current?.value);
             onSubmit?.(inputRef.current?.value ?? "");
           }}
         >
@@ -131,7 +143,12 @@ function ListItem({
     );
   }
   return (
-    <div className="elyra-stringArrayControl-listRow">
+    <div
+      className="elyra-stringArrayControl-listRow"
+      onDoubleClick={() => {
+        onEdit?.();
+      }}
+    >
       <div className="elyra-stringArrayControl-listItem">{value}</div>
       <div className="elyra-stringArrayControl-listActions">
         <div className="elyra-actionItem">

@@ -146,10 +146,6 @@ const PipelineEditor = forwardRef(
     // TODO: only show "Open Files" if it's a file based node.
     const handleContextMenu = useCallback(
       (e: IContextMenuEvent, defaultMenu: IContextMenu) => {
-        console.log(JSON.stringify(defaultMenu, null, 2));
-
-        console.log(e);
-
         const canPaste = isMenuItemEnabled(defaultMenu, "paste");
 
         const canDisconnect = isMenuItemEnabled(defaultMenu, "disconnectNode");
@@ -398,6 +394,14 @@ const PipelineEditor = forwardRef(
             };
             controller.current.editActionHandler(action);
           }
+        }
+
+        // Catch any events where a save isn't necessary.
+        switch (e.editType) {
+          case "properties":
+          case "openFile":
+          case "copy": // NOTE: "cut" deletes an item so needs a save.
+            return;
         }
 
         // I can't remember if validating now breaks anything?
