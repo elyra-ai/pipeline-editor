@@ -26,16 +26,18 @@ interface Props {
   controller: any;
   placeholder?: string;
   singleItemLabel?: string;
-  fileBrowser?: boolean;
+  canBrowseFiles?: boolean;
 }
 
 interface ListItemProps {
   value?: string;
+  canBrowseFiles?: boolean;
   isEditing?: boolean;
   placeholder?: string;
   onSubmit?: (value: string) => any;
   onCancel?: () => any;
   onDelete?: () => any;
+  onChooseFiles?: () => any;
   onEdit?: () => any;
 }
 
@@ -74,21 +76,12 @@ const reducer = produce((draft: Item[], action) => {
     }
     case "UPSERT_ITEMS": {
       const index = draft.findIndex((i) => i.id === payload.id);
-      if (index !== -1 && payload.values.length > 0) {
+      if (index !== -1 && payload.items.length > 0) {
         // Update value of the selected input with the first value in the array.
-        draft[index].value = payload.values[0];
-
-        // Give all the values an ID.
-        const items = payload.values.map((v: string) => ({
-          value: v,
-          id: nanoid(),
-        }));
-
-        // Remove the first item since it has already been set.
-        items.shift();
+        draft[index].value = payload.items[0].value;
 
         // Insert the remaining items.
-        draft.splice(index + 1, 0, ...items);
+        draft.splice(index + 1, 0, ...payload.items.slice(1));
       }
       break;
     }
@@ -99,9 +92,11 @@ function ListItem({
   value,
   isEditing,
   placeholder,
+  canBrowseFiles,
   onSubmit,
   onCancel,
   onDelete,
+  onChooseFiles,
   onEdit,
 }: ListItemProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -159,6 +154,16 @@ function ListItem({
             }}
           />
         </div>
+        {canBrowseFiles ? (
+          <div className="elyra-actionItem">
+            <div
+              className="elyra-icon elyra-actionItemIcon elyra-item-folder"
+              onClick={() => {
+                onChooseFiles?.();
+              }}
+            />
+          </div>
+        ) : null}
         <div className="elyra-actionItem">
           <div
             className="elyra-icon elyra-actionItemIcon elyra-item-delete"
@@ -179,7 +184,7 @@ function StringArrayComponent({
   controller,
   placeholder,
   singleItemLabel,
-  fileBrowser,
+  canBrowseFiles,
 }: Props) {
   const controllerRef = useRef(controller);
 
@@ -197,16 +202,23 @@ function StringArrayComponent({
     [items, name]
   );
 
-  const handleChooseFile = useCallback(
+  const handleChooseFiles = useCallback(
     async (id) => {
       const { actionHandler } = controllerRef.current.getHandlers();
       const values = await actionHandler?.("browse_file", undefined, {
         canSelectMany: true,
         defaultUri: items.find((i) => i.id === id)?.value,
       });
+
       handleAction({
         type: "UPSERT_ITEMS",
-        payload: { id: id, values },
+        payload: {
+          id: id,
+          items: values.map((v: string) => ({
+            value: v,
+            id: nanoid(),
+          })),
+        },
       });
     },
     [handleAction, items]
@@ -222,6 +234,7 @@ function StringArrayComponent({
             key={item.id}
             value={item.value}
             placeholder={placeholder}
+            canBrowseFiles={canBrowseFiles}
             isEditing={item.id === editingID}
             onSubmit={(value) => {
               setEditingID(undefined);
@@ -238,6 +251,9 @@ function StringArrayComponent({
                 type: "DELETE_ITEM",
                 payload: { id: item.id },
               });
+            }}
+            onChooseFiles={() => {
+              handleChooseFiles(item.id);
             }}
             onEdit={() => {
               setEditingID(item.id);
