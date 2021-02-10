@@ -440,7 +440,6 @@ const PipelineEditor = forwardRef(
     );
 
     const handleTooltip = (tipType: string, e: ITipEvent) => {
-      console.log(tipType, e);
       function isNodeTipEvent(type: string, _e: ITipEvent): _e is ITipNode {
         return type === "tipTypeNode";
       }
