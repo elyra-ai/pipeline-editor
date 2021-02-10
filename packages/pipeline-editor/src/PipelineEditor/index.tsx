@@ -235,12 +235,15 @@ const PipelineEditor = forwardRef(
             ];
           case "node":
             if (e.targetObject.type === "execution_node") {
-              // TODO: only show "Open File" for file based nodes and if the
-              // file exists.
               return [
                 {
                   action: "openFile",
                   label: "Open File",
+                  // NOTE: This only checks if the string is empty, but we
+                  // should verify the file exists.
+                  enable:
+                    e.targetObject?.app_data?.filename !== undefined &&
+                    e.targetObject?.app_data?.filename.trim() !== "",
                 },
                 {
                   action: "properties",
