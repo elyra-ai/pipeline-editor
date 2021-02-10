@@ -428,6 +428,7 @@ const PipelineEditor = forwardRef(
     );
 
     const handleTooltip = (tipType: string, e: ITipEvent) => {
+      console.log(tipType, e);
       function isNodeTipEvent(type: string, _e: ITipEvent): _e is ITipNode {
         return type === "tipTypeNode";
       }
@@ -435,6 +436,10 @@ const PipelineEditor = forwardRef(
         const error = e.node.app_data.invalidNodeError;
         const properties = controller.current.properties(e.node.id);
         return <NodeTooltip error={error} properties={properties} />;
+      }
+      if (isNodeTipEvent(tipType, e) && e.node.type === "super_node") {
+        // TODO: Can we can sub node errors propagated up?
+        return "Supernode";
       }
       return null;
     };
