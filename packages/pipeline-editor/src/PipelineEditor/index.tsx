@@ -43,7 +43,6 @@ interface Props {
   onError?: (error: Error) => any;
   onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
   readOnly?: boolean;
-  panelOpen?: boolean;
   children?: React.ReactNode;
 }
 
@@ -106,7 +105,6 @@ const PipelineEditor = forwardRef(
       onError,
       onFileRequested,
       readOnly,
-      panelOpen,
       children,
     }: Props,
     ref
@@ -114,6 +112,7 @@ const PipelineEditor = forwardRef(
     const controller = useRef(new PipelineController());
 
     const [currentTab, setCurrentTab] = useState<string | undefined>();
+    const [panelOpen, setPanelOpen] = useState(false);
 
     useCloseContextMenu(controller);
 
@@ -377,6 +376,11 @@ const PipelineEditor = forwardRef(
 
         if (e.editType === "properties") {
           setCurrentTab("properties");
+          setPanelOpen(true);
+        }
+
+        if (e.editType === "toggleOpenPanel") {
+          setPanelOpen((prev) => !prev);
         }
 
         if (e.editType === "createExternalNode") {
@@ -400,6 +404,7 @@ const PipelineEditor = forwardRef(
         switch (e.editType) {
           case "properties":
           case "openFile":
+          case "toggleOpenPanel":
           case "copy": // NOTE: "cut" deletes an item so needs a save.
           case "displaySubPipeline":
           case "displayPreviousPipeline":
@@ -513,6 +518,7 @@ const PipelineEditor = forwardRef(
                 onTabClick={(id) => {
                   setCurrentTab(id);
                   onAction?.("openPanel");
+                  setPanelOpen(true);
                 }}
                 tabs={[
                   {
@@ -537,6 +543,7 @@ const PipelineEditor = forwardRef(
                 experimental={toolbar === undefined}
                 onClose={() => {
                   onAction?.("closePanel");
+                  setPanelOpen(false);
                 }}
               />
             }
