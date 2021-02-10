@@ -38,7 +38,7 @@ interface Props {
   pipeline: any;
   toolbar?: any;
   nodes?: any;
-  onAction?: (type: string) => any;
+  onAction?: (action: { type: string; payload?: any }) => any;
   onChange?: (pipeline: any) => any;
   onError?: (error: Error) => any;
   onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
@@ -235,6 +235,8 @@ const PipelineEditor = forwardRef(
             ];
           case "node":
             if (e.targetObject.type === "execution_node") {
+              // TODO: only show "Open File" for file based nodes and if the
+              // file exists.
               return [
                 {
                   action: "openFile",
@@ -380,7 +382,11 @@ const PipelineEditor = forwardRef(
 
     const handleEditAction = useCallback(
       async (e: ICanvasEditEvent) => {
-        onAction?.(e.editType);
+        let payload;
+        if (e.editType === "openFile") {
+          payload = e.targetObject?.app_data?.filename;
+        }
+        onAction?.({ type: e.editType, payload });
 
         if (e.editType === "properties") {
           setCurrentTab("properties");
@@ -523,7 +529,7 @@ const PipelineEditor = forwardRef(
                 currentTab={currentTab}
                 onTabClick={(id) => {
                   setCurrentTab(id);
-                  onAction?.("openPanel");
+                  onAction?.({ type: "openPanel" });
                   setPanelOpen(true);
                 }}
                 tabs={[
@@ -548,7 +554,7 @@ const PipelineEditor = forwardRef(
                 open={panelOpen}
                 experimental={toolbar === undefined}
                 onClose={() => {
-                  onAction?.("closePanel");
+                  onAction?.({ type: "closePanel" });
                   setPanelOpen(false);
                 }}
               />
