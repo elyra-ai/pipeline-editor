@@ -134,13 +134,21 @@ const PipelineEditor = forwardRef(
       } catch (e) {
         onError?.(e);
       }
-    }, [nodes, onChange, onError, pipeline, readOnly]);
+    }, [nodes, onError, pipeline, readOnly]);
 
-    useImperativeHandle(ref, () => ({
-      addFile: (item: any, x?: number, y?: number) => {
-        controller.current.addNode(item, { x, y });
-      },
-    }));
+    useImperativeHandle(
+      ref,
+      () => ({
+        addFile: (item: any, x?: number, y?: number) => {
+          controller.current.addNode(item, { x, y });
+        },
+        migrate: () => {
+          controller.current.migrate();
+          onChange?.(controller.current.getPipelineFlow());
+        },
+      }),
+      [onChange]
+    );
 
     // TODO: only show "Open Files" if it's a file based node.
     const handleContextMenu = useCallback(
@@ -411,7 +419,6 @@ const PipelineEditor = forwardRef(
             return;
         }
 
-        // I can't remember if validating now breaks anything?
         controller.current.validate();
         onChange?.(controller.current.getPipelineFlow());
       },
@@ -425,7 +432,7 @@ const PipelineEditor = forwardRef(
           { app_data: data },
           controller.current.getPrimaryPipelineId()
         );
-        // I can't remember if validating now breaks anything?
+
         controller.current.validate();
         onChange?.(controller.current.getPipelineFlow());
       },

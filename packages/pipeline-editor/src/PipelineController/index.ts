@@ -19,12 +19,12 @@ import path from "path";
 import { CanvasController } from "@elyra/canvas";
 import { nanoid } from "nanoid";
 
-import { createPalette } from "./create-palette";
 import {
   ElyraOutOfDateError,
   PipelineOutOfDateError,
   UnknownVersionError,
-} from "./errors";
+} from "./../errors";
+import { createPalette } from "./create-palette";
 import {
   convertPipelineV0toV1,
   convertPipelineV1toV2,
@@ -48,6 +48,11 @@ class PipelineController extends CanvasController {
   private nodes: INode[] = [];
 
   open(pipelineJson: any) {
+    if (this.lastOpened === pipelineJson) {
+      return;
+    }
+    this.lastOpened = pipelineJson;
+
     // if pipeline is null create a new one from scratch.
     if (pipelineJson === undefined) {
       const emptyPipeline = this.getPipelineFlow();
@@ -133,10 +138,7 @@ class PipelineController extends CanvasController {
     if (version < 2) {
       // adding relative path on the pipeline filenames
       console.info("Migrating pipeline to version 2.");
-      convertedPipeline = convertPipelineV1toV2(
-        convertedPipeline,
-        this.context.path
-      );
+      convertedPipeline = convertPipelineV1toV2(convertedPipeline);
     }
     if (version < 3) {
       // Adding python script support
@@ -326,6 +328,5 @@ class PipelineController extends CanvasController {
 }
 
 export * from "./types";
-export * from "./errors";
 
 export default PipelineController;
