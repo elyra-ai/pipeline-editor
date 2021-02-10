@@ -40,7 +40,7 @@ interface Props {
   nodes?: any;
   onAction?: (type: string) => any;
   onChange?: (pipeline: any) => any;
-  onError?: (error: string) => any;
+  onError?: (error: Error) => any;
   onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
   readOnly?: boolean;
   panelOpen?: boolean;
