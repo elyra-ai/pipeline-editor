@@ -18,4 +18,5 @@ import "@elyra/canvas/dist/styles/common-canvas.min.css";
 import "../style/index.css";
 
 export * from "./errors";
+export { default as migrate } from "./migrate";
 export { default as PipelineEditor } from "./PipelineEditor";

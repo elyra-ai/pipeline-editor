@@ -142,12 +142,8 @@ const PipelineEditor = forwardRef(
         addFile: (item: any, x?: number, y?: number) => {
           controller.current.addNode(item, { x, y });
         },
-        migrate: () => {
-          controller.current.migrate();
-          onChange?.(controller.current.getPipelineFlow());
-        },
       }),
-      [onChange]
+      []
     );
 
     // TODO: only show "Open Files" if it's a file based node.
