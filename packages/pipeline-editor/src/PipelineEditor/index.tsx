@@ -85,8 +85,8 @@ const PipelineEditor = forwardRef(
           controller.current.clearErrors();
         }
         // don't call to persist change because it will cause an infinate loop
-      } catch (error: any) {
-        onError?.(error);
+      } catch (e) {
+        onError?.(e);
       }
     }, [nodes, onChange, onError, pipeline, readOnly]);
 
@@ -154,7 +154,6 @@ const PipelineEditor = forwardRef(
         }
 
         if (e.editType === "createExternalNode") {
-          console.log(e);
           const nodeTemplate = controller.current.getPaletteNode(e.op);
           if (nodeTemplate) {
             const convertedTemplate = controller.current.convertNodeTemplate(
@@ -202,22 +201,6 @@ const PipelineEditor = forwardRef(
         return <NodeTooltip error={error} properties={properties} />;
       }
       return null;
-    };
-
-    const handlePropertiesAction = (
-      id: string,
-      appData: any,
-      data: any
-    ): any => {
-      if (id === "browse_file") {
-        let filename = "";
-        if (data.index === undefined) {
-          filename = data.propertyValue;
-        } else if (data.propertyValue !== undefined) {
-          filename = data.propertyValue[data.index];
-        }
-        return onFileRequested?.(filename, data.index !== undefined);
-      }
     };
 
     if (readOnly) {
@@ -293,19 +276,19 @@ const PipelineEditor = forwardRef(
                 tabs={[
                   {
                     id: "properties",
-                    label: "NODE PROPERTIES",
+                    label: "Node Properties",
                     content: (
                       <PropertiesPanel
                         selectedNodes={selectedNodes}
                         nodes={nodes}
-                        onAction={handlePropertiesAction}
+                        onFileRequested={onFileRequested}
                         onChange={handlePropertiesChange}
                       />
                     ),
                   },
                   {
                     id: "palette",
-                    label: "PALETTE",
+                    label: "Palette",
                     content: <PalettePanel nodes={nodes} />,
                   },
                 ]}

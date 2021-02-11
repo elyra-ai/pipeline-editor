@@ -21,42 +21,46 @@ import { useSelector } from "react-redux";
 interface Props {
   name: string;
   controller: any;
-  helperText: string;
+  placeholder?: string;
 }
 
-function BooleanComponent({ name, controller, helperText }: Props) {
+function FileComponent({ name, controller, placeholder }: Props) {
   const controllerRef = useRef(controller);
 
-  const isChecked = useSelector((state: any) => state.propertiesReducer[name]);
+  const path: string = useSelector(
+    (state: any) => state.propertiesReducer[name]
+  );
 
-  const handleToggle = useCallback(() => {
-    controllerRef.current.updatePropertyValue({ name }, !isChecked);
-  }, [isChecked, name]);
+  const handleChooseFile = useCallback(async () => {
+    const { actionHandler } = controllerRef.current.getHandlers();
+    const values = await actionHandler?.("browse_file", undefined, {
+      canSelectMany: false,
+      defaultUri: path,
+      filters: { Notebook: ["ipynb"] }, // TODO: this should be specified via node definition
+    });
+    //  Don't set if nothing was chosen.
+    if (values.length > 0) {
+      controllerRef.current.updatePropertyValue({ name }, values[0]);
+    }
+  }, [name, path]);
 
   return (
-    <div style={{ display: "flex" }} onClick={handleToggle}>
-      <div
-        className={
-          isChecked ? "properties-checkbox checked" : "properties-checkbox"
-        }
-        tabIndex={0}
-        role="checkbox"
-        aria-checked={isChecked ? "true" : "false"}
-        aria-label=""
-      />
-      <div
-        className="properties-control-description"
-        style={{ userSelect: "none" }}
+    <div>
+      <input value={path ?? ""} placeholder={placeholder} disabled />
+      <button
+        onClick={() => {
+          handleChooseFile();
+        }}
       >
-        {helperText}
-      </div>
+        B
+      </button>
     </div>
   );
 }
 
-export class BooleanControl {
+export class FileControl {
   static id() {
-    return "pipeline-editor-boolean-control";
+    return "pipeline-editor-file-control";
   }
 
   constructor(
@@ -67,7 +71,7 @@ export class BooleanControl {
 
   renderControl() {
     return (
-      <BooleanComponent
+      <FileComponent
         name={this.propertyId.name}
         controller={this.controller}
         {...this.data}
@@ -75,5 +79,4 @@ export class BooleanControl {
     );
   }
 }
-
-export default BooleanControl;
+export default FileControl;
