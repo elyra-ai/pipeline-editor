@@ -138,6 +138,7 @@
 }
 
 .elyra-PipelineNodeTooltip {
+  padding-top: 7px;
   text-align: left;
 }
 
@@ -212,6 +213,7 @@
   letter-spacing: normal;
   padding: 0;
   opacity: 0.9;
+  user-select: none;
 }
 
 .properties-wrapper .bx--visually-hidden,
@@ -270,6 +272,12 @@
   padding: 2px 8px;
 }
 
+.bx--list-box__label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .bx--list-box__menu-icon {
   display: flex;
   align-items: center;
@@ -306,6 +314,12 @@
   line-height: 18px;
   padding-left: 3.5px;
   color: var(--elyra-color-text-primary);
+}
+
+.bx--list-box__menu-item__option {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .properties-wrapper .bx--list-box__menu-item:hover {
@@ -386,20 +400,30 @@
   background-color: var(--elyra-color-formButton-hover-bg);
 }
 
-/* TODO: colors */
+.elyra-stringArrayControl {
+  margin-top: 9px;
+}
+
+.elyra-stringArrayControl-inputWrapper {
+  display: flex;
+}
+
+.elyra-stringArrayControl-inputWrapper button:first-of-type {
+  margin: 0 4px;
+}
+
 .elyra-stringArrayControl-input {
-  background-color: var(--vscode-settings-dropdownBackground);
-  border: 1px solid var(--vscode-settings-dropdownBorder);
+  background-color: var(--elyra-color-arrayInput-bg);
+  border: 1px solid var(--elyra-color-arrayInput-border);
   height: 24px;
   max-width: 320px;
   margin-right: 4px;
   box-sizing: border-box;
 }
 
-/* TODO: colors */
 .elyra-stringArrayControl-input input {
   background-color: inherit;
-  color: var(--vscode-settings-textInputForeground);
+  color: var(--elyra-color-arrayInput-text);
   display: inline-block;
   box-sizing: border-box;
   width: 100%;
@@ -415,6 +439,45 @@
 .elyra-stringArrayControl-input input:focus {
   outline: 1px solid var(--elyra-color-focus) !important;
   outline-offset: 0px;
+}
+
+.elyra-stringArrayControl-listItem {
+  display: block;
+  margin-right: 47px;
+  margin-left: 2px;
+  line-height: 24px;
+  max-width: 90%;
+  font-family: var(--elyra-font-family-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-size: var(--elyra-font-size-sans);
+  color: var(--elyra-color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.elyra-stringArrayControl-listActions {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.elyra-stringArrayControl-listRow:hover .elyra-stringArrayControl-listActions {
+  display: flex;
+}
+
+.elyra-stringArrayControl-buttonGroup {
+  margin-top: 4px;
+}
+
+.elyra-stringArrayControl-listGroup {
+  padding: 1px;
+  margin-bottom: 1px;
+}
+
+.elyra-stringArrayControl-buttonGroup button {
+  margin-right: 4px;
 }
 
 /* ========================================================================== */

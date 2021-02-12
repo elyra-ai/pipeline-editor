@@ -16,41 +16,58 @@
 
 import { useEffect, useRef } from "react";
 
+interface Options {
+  wheel?: boolean;
+  contextmenu?: boolean;
+}
+
 function blockEvent(e: Event) {
   e.stopPropagation();
 }
 
-function useBlockEvents(events: { [key: string]: boolean | undefined }) {
+// Setting `capture` to `true` will capture the event before drilling
+// through the DOM nodes to our target. This is what allows us to block the
+// event. Since we are stoping propagation, we must have `passive` set to
+// `false`.
+const options = { passive: false, capture: true };
+
+function useBlockEvents(events: Options) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = ref.current;
-
-    // Setting `capture` to `true` will capture the event before drilling
-    // through the DOM nodes to our target. This is what allows us to block the
-    // event. Since we are stoping propagation, we must have `passive` set to
-    // `false`.
-    const options = { passive: false, capture: true };
-
-    for (const [key, val] of Object.entries(events)) {
-      if (val) {
-        el?.addEventListener(key, blockEvent, options);
-      }
-    }
-
     // The canvas steals focus on mount, which causes a jarring scroll to the
     // element. Scrolling to (0, 0) seems to prevent that, but this is really
     // just a bandaid on the issue and could have unintended effects.
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    const el = ref.current;
+
+    if (events.wheel) {
+      el?.addEventListener("wheel", blockEvent, options);
+    }
 
     return () => {
-      for (const [key, val] of Object.entries(events)) {
-        if (val) {
-          el?.removeEventListener(key, blockEvent);
-        }
+      if (events.wheel) {
+        el?.removeEventListener("wheel", blockEvent, options);
       }
     };
-  }, [events]);
+  }, [events.wheel]);
+
+  useEffect(() => {
+    const el = ref.current;
+
+    if (events.contextmenu) {
+      ref.current?.addEventListener("contextmenu", blockEvent, options);
+    }
+
+    return () => {
+      if (events.contextmenu) {
+        el?.removeEventListener("contextmenu", blockEvent, options);
+      }
+    };
+  }, [events.contextmenu]);
 
   return ref;
 }

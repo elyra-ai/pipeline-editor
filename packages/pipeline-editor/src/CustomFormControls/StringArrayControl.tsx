@@ -82,6 +82,8 @@ const reducer = produce((draft: Item[], action) => {
 
         // Insert the remaining items.
         draft.splice(index + 1, 0, ...payload.items.slice(1));
+      } else {
+        draft.push(...payload.items);
       }
       break;
     }
@@ -111,7 +113,7 @@ function ListItem({
 
   if (isEditing) {
     return (
-      <div style={{ display: "flex" }}>
+      <div className="elyra-stringArrayControl-inputWrapper">
         <div className="elyra-stringArrayControl-input">
           <input
             ref={inputRef}
@@ -120,7 +122,6 @@ function ListItem({
           />
         </div>
         <button
-          style={{ margin: "0 4px" }}
           onClick={() => {
             onSubmit?.(inputRef.current?.value ?? "");
           }}
@@ -154,7 +155,7 @@ function ListItem({
             }}
           />
         </div>
-        {canBrowseFiles ? (
+        {!!canBrowseFiles && (
           <div className="elyra-actionItem">
             <div
               className="elyra-icon elyra-actionItemIcon elyra-item-folder"
@@ -163,7 +164,7 @@ function ListItem({
               }}
             />
           </div>
-        ) : null}
+        )}
         <div className="elyra-actionItem">
           <div
             className="elyra-icon elyra-actionItemIcon elyra-item-delete"
@@ -227,8 +228,8 @@ function StringArrayComponent({
   const actualItem = items.find((i) => editingID === i.id);
 
   return (
-    <div style={{ marginTop: "9px" }}>
-      <div style={{ padding: "1px", marginBottom: "1px" }}>
+    <div className="elyra-stringArrayControl">
+      <div className="elyra-stringArrayControl-listGroup">
         {items.map((item) => (
           <ListItem
             key={item.id}
@@ -260,8 +261,7 @@ function StringArrayComponent({
             }}
           />
         ))}
-        {/* This feels a bit hacky */}
-        {editingID !== undefined && actualItem === undefined ? (
+        {editingID !== undefined && actualItem === undefined && (
           <ListItem
             placeholder={placeholder}
             isEditing
@@ -276,7 +276,7 @@ function StringArrayComponent({
               setEditingID(undefined);
             }}
           />
-        ) : null}
+        )}
       </div>
       <div
         style={{
@@ -285,16 +285,26 @@ function StringArrayComponent({
               ? "none"
               : "flex",
         }}
+        className="elyra-stringArrayControl-buttonGroup"
       >
         <button
           onClick={() => {
             const id = nanoid();
             setEditingID(id);
           }}
-          style={{ marginTop: "4px", marginRight: "4px" }}
         >
           Add {singleItemLabel ?? "Item"}
         </button>
+        {!!canBrowseFiles && (
+          <button
+            onClick={() => {
+              const id = nanoid();
+              handleChooseFiles(id);
+            }}
+          >
+            Browse
+          </button>
+        )}
       </div>
     </div>
   );
