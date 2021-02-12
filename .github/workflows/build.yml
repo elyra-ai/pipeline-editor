@@ -25,45 +25,30 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+
+    runs-on: ubuntu-latest
+
     strategy:
-      fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        python-version: [ '3.6', '3.7', '3.8' ]
+        node-version: [10.x, 12.x, 14.x, 15.x]
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        clean: true
-    - name: Set up Node
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
-         node-version: '12.18'
-    - name: Display dependency info
-      run: |
-        node --version
-        npm --version
-    - name: Create npm configuration for authentication
-      run: |
-        echo "scripts-prepend-node-path=true" >> ~/.npmrc
-        echo "prefix=~/.npm-global" >> ~/.npmrc
-        mkdir -p ~/.npm-global
-    - name: Install NPM dependencies
-      run: |
-        sudo apt install yarn
-        npm install -g lerna@3.19.0
-        npm install -g rimraf@3.0.0
-        npm install -g typescript@3.7.3
-        npm install -g yarn@1.21.0
-        npm install -g jest@26.6.3
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+
     - name: Build
-      run: |
-        export PATH=~/.npm-global/bin:$PATH
-        make install
+      run: make build
+
     - name: Test
-      run: |
-        make test
+      run: make test
+
     - name: Collect logs
       uses: actions/upload-artifact@v2
       if: failure()

@@ -7,9 +7,6 @@
   "engines": {
     "vscode": "^1.52.0"
   },
-  "scripts": {
-    "test": "lerna run test --scope \"@elyra/*\" --concurrency 1 --stream"
-  },
   "workspaces": {
     "nohoist": [
       "**/@elyra/canvas",

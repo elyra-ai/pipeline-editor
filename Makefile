@@ -35,4 +35,4 @@ lint:
 
 .PHONY: test
 test:
-	npm run test
+	yarn lerna run test --scope "@elyra/*" --concurrency 1 --stream
