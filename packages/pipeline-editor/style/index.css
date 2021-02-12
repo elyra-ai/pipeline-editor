@@ -213,6 +213,7 @@
   letter-spacing: normal;
   padding: 0;
   opacity: 0.9;
+  user-select: none;
 }
 
 .properties-wrapper .bx--visually-hidden,
@@ -399,6 +400,18 @@
   background-color: var(--elyra-color-formButton-hover-bg);
 }
 
+.elyra-stringArrayControl {
+  margin-top: 9px;
+}
+
+.elyra-stringArrayControl-inputWrapper {
+  display: flex;
+}
+
+.elyra-stringArrayControl-inputWrapper button:first-of-type {
+  margin: 0 4px;
+}
+
 .elyra-stringArrayControl-input {
   background-color: var(--elyra-color-arrayInput-bg);
   border: 1px solid var(--elyra-color-arrayInput-border);
@@ -452,6 +465,19 @@
 
 .elyra-stringArrayControl-listRow:hover .elyra-stringArrayControl-listActions {
   display: flex;
+}
+
+.elyra-stringArrayControl-buttonGroup {
+  margin-top: 4px;
+}
+
+.elyra-stringArrayControl-listGroup {
+  padding: 1px;
+  margin-bottom: 1px;
+}
+
+.elyra-stringArrayControl-buttonGroup button {
+  margin-right: 4px;
 }
 
 /* ========================================================================== */

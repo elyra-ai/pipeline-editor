@@ -113,7 +113,7 @@ function ListItem({
 
   if (isEditing) {
     return (
-      <div style={{ display: "flex" }}>
+      <div className="elyra-stringArrayControl-inputWrapper">
         <div className="elyra-stringArrayControl-input">
           <input
             ref={inputRef}
@@ -122,7 +122,6 @@ function ListItem({
           />
         </div>
         <button
-          style={{ margin: "0 4px" }}
           onClick={() => {
             onSubmit?.(inputRef.current?.value ?? "");
           }}
@@ -229,8 +228,8 @@ function StringArrayComponent({
   const actualItem = items.find((i) => editingID === i.id);
 
   return (
-    <div style={{ marginTop: "9px" }}>
-      <div style={{ padding: "1px", marginBottom: "1px" }}>
+    <div className="elyra-stringArrayControl">
+      <div className="elyra-stringArrayControl-listGroup">
         {items.map((item) => (
           <ListItem
             key={item.id}
@@ -286,13 +285,13 @@ function StringArrayComponent({
               ? "none"
               : "flex",
         }}
+        className="elyra-stringArrayControl-buttonGroup"
       >
         <button
           onClick={() => {
             const id = nanoid();
             setEditingID(id);
           }}
-          style={{ marginTop: "4px", marginRight: "4px" }}
         >
           Add {singleItemLabel ?? "Item"}
         </button>
@@ -302,7 +301,6 @@ function StringArrayComponent({
               const id = nanoid();
               handleChooseFiles(id);
             }}
-            style={{ marginTop: "4px", marginRight: "4px" }}
           >
             Browse
           </button>
