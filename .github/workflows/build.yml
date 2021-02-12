@@ -52,4 +52,5 @@ jobs:
     - name: Test
       run: make test
 
-    - run: make lint
+    - name: Lint
+      run: make lint
