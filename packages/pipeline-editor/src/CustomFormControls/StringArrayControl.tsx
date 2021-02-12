@@ -82,6 +82,8 @@ const reducer = produce((draft: Item[], action) => {
 
         // Insert the remaining items.
         draft.splice(index + 1, 0, ...payload.items.slice(1));
+      } else {
+        draft.push(...payload.items);
       }
       break;
     }
@@ -294,6 +296,17 @@ function StringArrayComponent({
         >
           Add {singleItemLabel ?? "Item"}
         </button>
+        {!!canBrowseFiles && (
+          <button
+            onClick={() => {
+              const id = nanoid();
+              handleChooseFiles(id);
+            }}
+            style={{ marginTop: "4px", marginRight: "4px" }}
+          >
+            Browse
+          </button>
+        )}
       </div>
     </div>
   );
