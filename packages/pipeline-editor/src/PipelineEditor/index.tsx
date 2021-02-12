@@ -38,7 +38,7 @@ interface Props {
   pipeline: any;
   toolbar?: any;
   nodes?: any;
-  onAction?: (type: string) => any;
+  onAction?: (action: { type: string; payload?: any }) => any;
   onChange?: (pipeline: any) => any;
   onError?: (error: Error) => any;
   onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
@@ -148,7 +148,6 @@ const PipelineEditor = forwardRef(
       []
     );
 
-    // TODO: only show "Open Files" if it's a file based node.
     const handleContextMenu = useCallback(
       (e: IContextMenuEvent, defaultMenu: IContextMenu) => {
         const canPaste = isMenuItemEnabled(defaultMenu, "paste");
@@ -237,6 +236,11 @@ const PipelineEditor = forwardRef(
                 {
                   action: "openFile",
                   label: "Open File",
+                  // NOTE: This only checks if the string is empty, but we
+                  // should verify the file exists.
+                  enable:
+                    e.targetObject?.app_data?.filename !== undefined &&
+                    e.targetObject?.app_data?.filename.trim() !== "",
                 },
                 {
                   action: "properties",
@@ -378,7 +382,11 @@ const PipelineEditor = forwardRef(
 
     const handleEditAction = useCallback(
       async (e: ICanvasEditEvent) => {
-        onAction?.(e.editType);
+        let payload;
+        if (e.editType === "openFile") {
+          payload = e.targetObject?.app_data?.filename;
+        }
+        onAction?.({ type: e.editType, payload });
 
         if (e.editType === "properties") {
           setCurrentTab("properties");
@@ -521,7 +529,7 @@ const PipelineEditor = forwardRef(
                 currentTab={currentTab}
                 onTabClick={(id) => {
                   setCurrentTab(id);
-                  onAction?.("openPanel");
+                  onAction?.({ type: "openPanel" });
                   setPanelOpen(true);
                 }}
                 tabs={[
@@ -546,7 +554,7 @@ const PipelineEditor = forwardRef(
                 open={panelOpen}
                 experimental={toolbar === undefined}
                 onClose={() => {
-                  onAction?.("closePanel");
+                  onAction?.({ type: "closePanel" });
                   setPanelOpen(false);
                 }}
               />
