@@ -32,3 +32,7 @@ fix:
 .PHONY: lint
 lint:
 	yarn eslint . --ignore-path .gitignore --ext .ts,.tsx
+
+.PHONY: test
+test:
+	npm run test
