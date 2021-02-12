@@ -150,10 +150,7 @@ describe("@elyra/pipeline-editor", () => {
           },
         ],
       };
-      const actual = convertPipelineV1toV2(
-        v1 as any,
-        "/user/niko/project/untitled.pipeline"
-      );
+      const actual = convertPipelineV1toV2(v1 as any);
       expect(actual).toEqual(expected);
     });
   });

@@ -46,12 +46,7 @@ function BooleanComponent({ name, controller, helperText }: Props) {
         aria-checked={isChecked ? "true" : "false"}
         aria-label=""
       />
-      <div
-        className="properties-control-description"
-        style={{ userSelect: "none" }}
-      >
-        {helperText}
-      </div>
+      <div className="properties-control-description">{helperText}</div>
     </div>
   );
 }

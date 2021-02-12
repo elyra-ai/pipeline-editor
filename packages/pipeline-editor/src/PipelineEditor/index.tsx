@@ -38,12 +38,11 @@ interface Props {
   pipeline: any;
   toolbar?: any;
   nodes?: any;
-  onAction?: (type: string) => any;
+  onAction?: (action: { type: string; payload?: any }) => any;
   onChange?: (pipeline: any) => any;
-  onError?: (error: string) => any;
+  onError?: (error: Error) => any;
   onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
   readOnly?: boolean;
-  panelOpen?: boolean;
   children?: React.ReactNode;
 }
 
@@ -106,7 +105,6 @@ const PipelineEditor = forwardRef(
       onError,
       onFileRequested,
       readOnly,
-      panelOpen,
       children,
     }: Props,
     ref
@@ -114,6 +112,9 @@ const PipelineEditor = forwardRef(
     const controller = useRef(new PipelineController());
 
     const [currentTab, setCurrentTab] = useState<string | undefined>();
+    const [panelOpen, setPanelOpen] = useState(false);
+
+    useCloseContextMenu(controller);
 
     useCloseContextMenu(controller);
 
@@ -135,15 +136,18 @@ const PipelineEditor = forwardRef(
       } catch (e) {
         onError?.(e);
       }
-    }, [nodes, onChange, onError, pipeline, readOnly]);
+    }, [nodes, onError, pipeline, readOnly]);
 
-    useImperativeHandle(ref, () => ({
-      addFile: (item: any, x?: number, y?: number) => {
-        controller.current.addNode(item, { x, y });
-      },
-    }));
+    useImperativeHandle(
+      ref,
+      () => ({
+        addFile: (item: any, x?: number, y?: number) => {
+          controller.current.addNode(item, { x, y });
+        },
+      }),
+      []
+    );
 
-    // TODO: only show "Open Files" if it's a file based node.
     const handleContextMenu = useCallback(
       (e: IContextMenuEvent, defaultMenu: IContextMenu) => {
         const canPaste = isMenuItemEnabled(defaultMenu, "paste");
@@ -232,6 +236,11 @@ const PipelineEditor = forwardRef(
                 {
                   action: "openFile",
                   label: "Open File",
+                  // NOTE: This only checks if the string is empty, but we
+                  // should verify the file exists.
+                  enable:
+                    e.targetObject?.app_data?.filename !== undefined &&
+                    e.targetObject?.app_data?.filename.trim() !== "",
                 },
                 {
                   action: "properties",
@@ -373,10 +382,19 @@ const PipelineEditor = forwardRef(
 
     const handleEditAction = useCallback(
       async (e: ICanvasEditEvent) => {
-        onAction?.(e.editType);
+        let payload;
+        if (e.editType === "openFile") {
+          payload = e.targetObject?.app_data?.filename;
+        }
+        onAction?.({ type: e.editType, payload });
 
         if (e.editType === "properties") {
           setCurrentTab("properties");
+          setPanelOpen(true);
+        }
+
+        if (e.editType === "toggleOpenPanel") {
+          setPanelOpen((prev) => !prev);
         }
 
         if (e.editType === "createExternalNode") {
@@ -400,13 +418,13 @@ const PipelineEditor = forwardRef(
         switch (e.editType) {
           case "properties":
           case "openFile":
+          case "toggleOpenPanel":
           case "copy": // NOTE: "cut" deletes an item so needs a save.
           case "displaySubPipeline":
           case "displayPreviousPipeline":
             return;
         }
 
-        // I can't remember if validating now breaks anything?
         controller.current.validate();
         onChange?.(controller.current.getPipelineFlow());
       },
@@ -420,7 +438,7 @@ const PipelineEditor = forwardRef(
           { app_data: data },
           controller.current.getPrimaryPipelineId()
         );
-        // I can't remember if validating now breaks anything?
+
         controller.current.validate();
         onChange?.(controller.current.getPipelineFlow());
       },
@@ -435,6 +453,10 @@ const PipelineEditor = forwardRef(
         const error = e.node.app_data.invalidNodeError;
         const properties = controller.current.properties(e.node.id);
         return <NodeTooltip error={error} properties={properties} />;
+      }
+      if (isNodeTipEvent(tipType, e) && e.node.type === "super_node") {
+        // TODO: Can we can sub node errors propagated up?
+        return "Supernode";
       }
       return null;
     };
@@ -507,7 +529,8 @@ const PipelineEditor = forwardRef(
                 currentTab={currentTab}
                 onTabClick={(id) => {
                   setCurrentTab(id);
-                  onAction?.("openPanel");
+                  onAction?.({ type: "openPanel" });
+                  setPanelOpen(true);
                 }}
                 tabs={[
                   {
@@ -531,7 +554,8 @@ const PipelineEditor = forwardRef(
                 open={panelOpen}
                 experimental={toolbar === undefined}
                 onClose={() => {
-                  onAction?.("closePanel");
+                  onAction?.({ type: "closePanel" });
+                  setPanelOpen(false);
                 }}
               />
             }

@@ -19,17 +19,12 @@ import path from "path";
 import { CanvasController } from "@elyra/canvas";
 import { nanoid } from "nanoid";
 
-import { createPalette } from "./create-palette";
 import {
   ElyraOutOfDateError,
   PipelineOutOfDateError,
   UnknownVersionError,
-} from "./errors";
-import {
-  convertPipelineV0toV1,
-  convertPipelineV1toV2,
-  convertPipelineV2toV3,
-} from "./migration";
+} from "./../errors";
+import { createPalette } from "./create-palette";
 import { INode } from "./types";
 import {
   ILink,
@@ -50,11 +45,14 @@ class PipelineController extends CanvasController {
   open(pipelineJson: any) {
     // if pipeline is null create a new one from scratch.
     if (pipelineJson === undefined) {
-      const emptyPipeline = this.getPipelineFlow();
-      emptyPipeline.pipelines[0].app_data.version = PIPELINE_CURRENT_VERSION;
-      this.setPipelineFlow(emptyPipeline);
+      pipelineJson = this.getPipelineFlow();
+      pipelineJson.pipelines[0].app_data.version = PIPELINE_CURRENT_VERSION;
+    }
+
+    if (this.lastOpened === pipelineJson) {
       return;
     }
+    this.lastOpened = pipelineJson;
 
     const version = pipelineJson.pipelines[0].app_data?.version ?? 0;
 
@@ -117,33 +115,6 @@ class PipelineController extends CanvasController {
     data.nodeTemplate.app_data.env_vars = env_vars;
     data.nodeTemplate.app_data.include_subdirectories = false;
     this.editActionHandler(data);
-  }
-
-  /**
-   * Migrate pipeline to the latest version.
-   */
-  migrate(): void {
-    let convertedPipeline = this.getPipelineFlow();
-    const version = convertedPipeline.pipelines[0].app_data?.version ?? 0;
-    if (version < 1) {
-      // original pipeline definition without a version
-      console.info("Migrating pipeline to version 1.");
-      convertedPipeline = convertPipelineV0toV1(convertedPipeline);
-    }
-    if (version < 2) {
-      // adding relative path on the pipeline filenames
-      console.info("Migrating pipeline to version 2.");
-      convertedPipeline = convertPipelineV1toV2(
-        convertedPipeline,
-        this.context.path
-      );
-    }
-    if (version < 3) {
-      // Adding python script support
-      console.info("Migrating pipeline to version 3 (current version).");
-      convertedPipeline = convertPipelineV2toV3(convertedPipeline);
-    }
-    this.setPipelineFlow(convertedPipeline);
   }
 
   private _styleNode(node: any): void {
@@ -326,6 +297,5 @@ class PipelineController extends CanvasController {
 }
 
 export * from "./types";
-export * from "./errors";
 
 export default PipelineController;
