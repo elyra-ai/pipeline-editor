@@ -154,7 +154,7 @@ function ListItem({
             }}
           />
         </div>
-        {canBrowseFiles ? (
+        {!!canBrowseFiles && (
           <div className="elyra-actionItem">
             <div
               className="elyra-icon elyra-actionItemIcon elyra-item-folder"
@@ -163,7 +163,7 @@ function ListItem({
               }}
             />
           </div>
-        ) : null}
+        )}
         <div className="elyra-actionItem">
           <div
             className="elyra-icon elyra-actionItemIcon elyra-item-delete"
@@ -260,8 +260,7 @@ function StringArrayComponent({
             }}
           />
         ))}
-        {/* This feels a bit hacky */}
-        {editingID !== undefined && actualItem === undefined ? (
+        {editingID !== undefined && actualItem === undefined && (
           <ListItem
             placeholder={placeholder}
             isEditing
@@ -276,7 +275,7 @@ function StringArrayComponent({
               setEditingID(undefined);
             }}
           />
-        ) : null}
+        )}
       </div>
       <div
         style={{

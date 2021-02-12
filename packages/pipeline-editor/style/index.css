@@ -399,20 +399,18 @@
   background-color: var(--elyra-color-formButton-hover-bg);
 }
 
-/* TODO: colors */
 .elyra-stringArrayControl-input {
-  background-color: var(--vscode-settings-dropdownBackground);
-  border: 1px solid var(--vscode-settings-dropdownBorder);
+  background-color: var(--elyra-color-arrayInput-bg);
+  border: 1px solid var(--elyra-color-arrayInput-border);
   height: 24px;
   max-width: 320px;
   margin-right: 4px;
   box-sizing: border-box;
 }
 
-/* TODO: colors */
 .elyra-stringArrayControl-input input {
   background-color: inherit;
-  color: var(--vscode-settings-textInputForeground);
+  color: var(--elyra-color-arrayInput-text);
   display: inline-block;
   box-sizing: border-box;
   width: 100%;
@@ -428,6 +426,32 @@
 .elyra-stringArrayControl-input input:focus {
   outline: 1px solid var(--elyra-color-focus) !important;
   outline-offset: 0px;
+}
+
+.elyra-stringArrayControl-listItem {
+  display: block;
+  margin-right: 47px;
+  margin-left: 2px;
+  line-height: 24px;
+  max-width: 90%;
+  font-family: var(--elyra-font-family-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-size: var(--elyra-font-size-sans);
+  color: var(--elyra-color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.elyra-stringArrayControl-listActions {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.elyra-stringArrayControl-listRow:hover .elyra-stringArrayControl-listActions {
+  display: flex;
 }
 
 /* ========================================================================== */
