@@ -43,10 +43,10 @@ function TabbedPanelLayout({
     return (
       <div className="elyra-verticalTabGroup">
         {tabs.map((t) => (
-          <div key={t.id} className="elyra-actionItem">
+          <div key={t.id} className="elyra-tabItem">
             <div
               title={t.label}
-              className={`elyra-actionItemIcon ${t.id}`}
+              className={`elyra-icon elyra-tabItemIcon ${t.id}`}
               onClick={() => {
                 onTabClick?.(t.id);
               }}
@@ -83,7 +83,7 @@ function TabbedPanelLayout({
         {experimental ? (
           <div className="elyra-actionItem">
             <div
-              className="elyra-actionItemIcon elyra-panel-close"
+              className="elyra-icon elyra-actionItemIcon elyra-panel-close"
               onClick={() => {
                 onClose?.();
               }}
