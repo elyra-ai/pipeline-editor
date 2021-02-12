@@ -37,7 +37,9 @@ function BooleanComponent({ name, controller, helperText }: Props) {
     <div style={{ display: "flex" }} onClick={handleToggle}>
       <div
         className={
-          isChecked ? "properties-checkbox checked" : "properties-checkbox"
+          isChecked
+            ? "elyra-icon properties-checkbox checked"
+            : "elyra-icon properties-checkbox"
         }
         tabIndex={0}
         role="checkbox"

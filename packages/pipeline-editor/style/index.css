@@ -1,19 +1,41 @@
-.elyra-verticalTabGroup {
-  padding: 7px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.d3-node-super-expand-icon-background {
+  cursor: pointer !important;
+  fill: transparent !important;
 }
 
-.elyra-tabContent {
-  position: absolute;
-  top: 35px;
-  bottom: 0;
-  overflow: auto;
-  width: 100%;
+.d3-node-super-expand-icon {
+  cursor: pointer !important;
+  fill: var(--elyra-color-icon) !important;
 }
 
-/* palette */
+.d3-back-to-previous-flow-box {
+  transform: translate(13px, 9px);
+  height: 38px;
+  width: 148px;
+  fill: var(--elyra-color-button-bg);
+  stroke: none;
+}
+
+.d3-back-to-previous-flow-box[data-pointer-hover="yes"] {
+  fill: var(--elyra-color-button-hover-bg);
+  stroke: none;
+}
+
+.d3-back-to-previous-flow-text svg {
+  display: none;
+}
+
+.d3-back-to-previous-flow-text {
+  font-size: var(--elyra-font-size-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-family: var(--elyra-font-family-sans);
+  fill: var(--elyra-color-button-text);
+  transform: translate(-17px, 9px);
+}
+
+/* ========================================================================== */
+/* PALETTE */
+/* ========================================================================== */
 .elyra-palette {
   margin-top: 14px;
 }
@@ -40,7 +62,24 @@
   font-size: var(--elyra-font-size-sans);
 }
 
-/* tab panel */
+/* ========================================================================== */
+/* TAB PANEL */
+/* ========================================================================== */
+.elyra-verticalTabGroup {
+  padding: 7px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.elyra-tabContent {
+  position: absolute;
+  top: 35px;
+  bottom: 0;
+  overflow: auto;
+  width: 100%;
+}
+
 .elyra-tabPanel > .elyra-actionBar {
   display: flex;
   justify-content: space-between;
@@ -60,11 +99,14 @@
   opacity: 0.5;
 }
 
+/* ========================================================================== */
+/* CANVAS TOOLTIP */
+/* ========================================================================== */
 .elyra-tooltipError {
   color: var(--elyra-color-text-error);
 }
 
-.common-canvas-tooltip[data-id^="node_tip"] {
+.common-canvas-tooltip {
   max-width: unset;
   background-color: var(--elyra-color-tooltip-bg);
   border: 1px solid var(--elyra-color-tooltip-border);
@@ -74,12 +116,16 @@
   border-radius: 0;
   transition: opacity 0.1s ease-in-out, visibility 0.1s ease-in-out;
 
-  padding: 11px 7px 4px 7px;
+  padding: 4px 7px;
   line-height: 1.5;
 
   font-family: var(--elyra-font-family-sans);
   font-weight: var(--elyra-font-weight-sans);
   font-size: var(--elyra-font-size-sans);
+}
+
+.common-canvas-tooltip[data-id^="node_tip"] {
+  padding: 11px 7px 4px 7px;
 }
 
 .common-canvas-tooltip #tipArrow polyline {
@@ -106,8 +152,9 @@
   white-space: pre-wrap;
 }
 
-/* properties */
-
+/* ========================================================================== */
+/* COMMON PROPERTIES */
+/* ========================================================================== */
 .properties-wrapper,
 .properties-wrapper * {
   outline: none !important;
@@ -121,44 +168,12 @@
   margin-top: 14px;
 }
 
-.properties-wrapper .properties-textfield {
-  margin-top: 9px;
-}
-
-.properties-wrapper input[type="text" i] {
-  box-sizing: border-box;
-  padding: 4px;
-  background-color: var(--elyra-color-textInput-bg);
-  color: var(--elyra-color-textInput-text);
-  border: 1px solid var(--elyra-color-textInput-border);
-  width: 100%;
-  max-width: 500px;
-}
-
-.properties-wrapper input[type="text" i]:focus {
-  outline: 1px solid var(--elyra-color-focus) !important;
-  outline-offset: -1px;
-}
-
-.properties-wrapper .bx--list-box__field {
-  background-color: var(--elyra-color-dropdown-bg);
-  color: var(--elyra-color-dropdown-text);
-  border: 1px solid var(--elyra-color-dropdown-border);
-  width: 100%;
-  max-width: 320px;
-
-  /* TODO */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 26px;
-}
-
 .properties-control-panel[data-id="properties-nodeGroupInfo"]
   > .properties-control-panel {
   padding-left: 33px;
   padding-right: 24px;
-  max-width: 1000px;
+  /* 765 + 33 + 24 */
+  max-width: 822px;
 }
 
 .properties-control-panel[data-id="properties-nodeGroupInfo"]
@@ -199,6 +214,120 @@
   opacity: 0.9;
 }
 
+.properties-wrapper .bx--visually-hidden,
+.properties-wrapper .properties-validation-message {
+  display: none;
+}
+
+/* text input */
+.properties-wrapper .properties-textfield {
+  margin-top: 9px;
+}
+
+.properties-wrapper input[type="text" i] {
+  box-sizing: border-box;
+  padding: 4px;
+  background-color: var(--elyra-color-textInput-bg);
+  color: var(--elyra-color-textInput-text);
+  border: 1px solid var(--elyra-color-textInput-border);
+  width: 100%;
+  max-width: 500px;
+  font-size: var(--elyra-font-size-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-family: var(--elyra-font-family-sans);
+}
+
+.properties-wrapper input[type="text" i]:focus {
+  outline: 1px solid var(--elyra-color-focus) !important;
+  outline-offset: -1px;
+}
+
+.properties-wrapper input[type="text" i]:disabled {
+  color: var(--elyra-color-textInput-disabled-text);
+}
+
+/* select */
+
+.properties-dropdown {
+  margin-top: 9px;
+  padding: 0;
+}
+
+.properties-wrapper .bx--list-box {
+  position: relative;
+  max-width: 320px;
+}
+
+.properties-wrapper .bx--list-box__field {
+  background-color: var(--elyra-color-dropdown-bg);
+  color: var(--elyra-color-dropdown-text);
+  border: 1px solid var(--elyra-color-dropdown-border);
+  display: flex;
+  width: 100%;
+  height: 26px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 8px;
+}
+
+.bx--list-box__menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.properties-wrapper .bx--list-box__field:hover {
+  /* override button style */
+  background-color: var(--elyra-color-dropdown-bg);
+}
+
+.properties-wrapper .bx--list-box__menu {
+  display: none;
+}
+
+.properties-wrapper .bx--list-box--expanded .bx--list-box__menu {
+  display: block;
+}
+
+.properties-wrapper .bx--list-box__menu {
+  z-index: 10;
+  position: absolute;
+  top: 26px;
+  left: 0;
+  right: 0;
+  color: var(--elyra-color-dropdown-text);
+  background-color: var(--elyra-color-dropdown-bg);
+  padding: 2px;
+  padding-bottom: 4px;
+}
+
+.properties-wrapper .bx--list-box__menu-item {
+  height: 18px;
+  line-height: 18px;
+  padding-left: 3.5px;
+  color: var(--elyra-color-text-primary);
+}
+
+.properties-wrapper .bx--list-box__menu-item:hover {
+  background-color: var(--elyra-color-dropdownItem-hover-bg);
+}
+
+.properties-wrapper .bx--list-box__menu-item__selected-icon {
+  display: none;
+}
+
+.bx--list-box--expanded .bx--list-box__field,
+.bx--list-box--expanded .bx--list-box__menu {
+  outline: 1px solid var(--elyra-color-focus) !important;
+  outline-offset: -1px;
+}
+
+.bx--list-box__field:focus {
+  outline: 1px solid var(--elyra-color-focus) !important;
+  outline-offset: -1px;
+}
+
+/* checkbox */
 .properties-wrapper .properties-checkbox {
   box-sizing: border-box;
   flex-shrink: 0;
@@ -232,17 +361,65 @@
   opacity: 1;
 }
 
-.properties-wrapper .bx--visually-hidden,
-.properties-wrapper .properties-validation-message {
-  display: none;
-}
-
-.elyra-StringArrayControl-entry {
+/* file control */
+.properties-wrapper .elyra-fileControl {
+  margin-top: 9px;
+  width: 100%;
+  max-width: 500px;
   display: flex;
 }
 
-/* canvas */
+/* button */
+.properties-wrapper button {
+  color: var(--elyra-color-formButton-text);
+  background-color: var(--elyra-color-formButton-bg);
+  font-size: var(--elyra-font-size-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-family: var(--elyra-font-family-sans);
+  padding: 2px 14px;
+  cursor: pointer;
+  line-height: 1.4em;
+  border: none;
+}
 
+.properties-wrapper button:hover {
+  background-color: var(--elyra-color-formButton-hover-bg);
+}
+
+/* TODO: colors */
+.elyra-stringArrayControl-input {
+  background-color: var(--vscode-settings-dropdownBackground);
+  border: 1px solid var(--vscode-settings-dropdownBorder);
+  height: 24px;
+  max-width: 320px;
+  margin-right: 4px;
+  box-sizing: border-box;
+}
+
+/* TODO: colors */
+.elyra-stringArrayControl-input input {
+  background-color: inherit;
+  color: var(--vscode-settings-textInputForeground);
+  display: inline-block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  line-height: inherit;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  resize: none;
+  padding: 4px;
+}
+
+.elyra-stringArrayControl-input input:focus {
+  outline: 1px solid var(--elyra-color-focus) !important;
+  outline-offset: 0px;
+}
+
+/* ========================================================================== */
+/* CANVAS */
+/* ========================================================================== */
 .common-canvas {
   overflow: hidden;
 }
@@ -252,7 +429,12 @@
 }
 
 .d3-svg-background {
-  fill: transparent;
+  fill: var(--elyra-color-panel-bg);
+  cursor: default !important;
+}
+
+.d3-link-group {
+  cursor: pointer;
 }
 
 .d3-node-body-outline {
@@ -290,6 +472,13 @@
   stroke: var(--elyra-color-comment-border) !important;
   stroke-width: 1;
   rx: var(--elyra-border-radius);
+}
+
+.d3-supernode-label {
+  font-family: var(--elyra-font-family-mono);
+  font-weight: var(--elyra-font-weight-mono);
+  font-size: var(--elyra-font-size-mono);
+  fill: var(--elyra-color-node-text);
 }
 
 .d3-node-label {
