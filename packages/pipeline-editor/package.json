@@ -7,7 +7,7 @@
     "build": "tsc",
     "watch": "tsc -w --preserveWatchOutput",
     "link": "yarn link",
-    "test": "jest --config ../../jest.config.js --rootDir"
+    "test": "jest"
   },
   "dependencies": {
     "@elyra/canvas": "9.2.7",

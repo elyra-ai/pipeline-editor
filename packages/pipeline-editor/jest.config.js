@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+const baseConfig = require("../../jest.config");
+
 module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
-  roots: ["<rootDir>/src"],
+  ...baseConfig,
 };
