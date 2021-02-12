@@ -26,7 +26,7 @@ fix:
 
 .PHONY: lint
 lint:
-	yarn eslint . --ignore-path .gitignore --ext .ts,.tsx
+	yarn eslint . --ignore-path .gitignore --ext .ts,.tsx --max-warnings=0
 
 .PHONY: test
 test:
