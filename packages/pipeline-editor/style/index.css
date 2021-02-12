@@ -267,6 +267,12 @@
   padding: 2px 8px;
 }
 
+.bx--list-box__label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .bx--list-box__menu-icon {
   display: flex;
   align-items: center;
@@ -303,6 +309,12 @@
   line-height: 18px;
   padding-left: 3.5px;
   color: var(--elyra-color-text-primary);
+}
+
+.bx--list-box__menu-item__option {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .properties-wrapper .bx--list-box__menu-item:hover {
