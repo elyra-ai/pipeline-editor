@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-const path = require("path");
+const baseConfig = require("../../jest.config");
 
-module.exports = function override(config, _env) {
-  config.module.rules[1].oneOf[2].include = path.resolve(__dirname, "..");
-  return config;
+module.exports = {
+  ...baseConfig,
 };

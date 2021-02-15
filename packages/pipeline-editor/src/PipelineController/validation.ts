@@ -60,7 +60,9 @@ export const checkCircularReferences = (links: ILink[]): string[] => {
     }
     stack.push(...linksToVisit);
     const forkStack: number[] = [];
-    forkStack.push(...linksToVisit.map(() => orderedChain.length));
+
+    const chainLength = orderedChain.length;
+    forkStack.push(...linksToVisit.map(() => chainLength));
 
     while (0 < stack.length && Date.now() - startTime < TIMEOUT) {
       forkStack.pop();
@@ -93,7 +95,8 @@ export const checkCircularReferences = (links: ILink[]): string[] => {
 
       // Uncharted teritory, add it to the stack to be explored.
       stack.push(...linksToVisit);
-      forkStack.push(...linksToVisit.map(() => orderedChain.length));
+      const chainLength = orderedChain.length;
+      forkStack.push(...linksToVisit.map(() => chainLength));
     }
   }
 

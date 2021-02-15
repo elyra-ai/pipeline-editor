@@ -14,4 +14,8 @@
  * limitations under the License.
  */
 
-/// <reference types="react-scripts" />
+module.exports = {
+  preset: "ts-jest",
+  testEnvironment: "node",
+  roots: ["<rootDir>/src"],
+};

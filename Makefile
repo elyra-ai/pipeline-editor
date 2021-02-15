@@ -20,19 +20,14 @@ build:
 watch:
 	FORCE_COLOR=true yarn lerna run watch --parallel --stream
 
-
-.PHONY: start
-start:
-	FORCE_COLOR=true yarn lerna run start --scope demo --stream
-
 .PHONY: fix
 fix:
 	yarn eslint . --fix --ignore-path .gitignore --ext .ts,.tsx
 
 .PHONY: lint
 lint:
-	yarn eslint . --ignore-path .gitignore --ext .ts,.tsx
+	yarn eslint . --ignore-path .gitignore --ext .ts,.tsx --max-warnings=0
 
 .PHONY: test
 test:
-	npm run test
+	yarn lerna run test --stream
