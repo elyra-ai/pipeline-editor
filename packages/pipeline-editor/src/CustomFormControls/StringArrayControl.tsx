@@ -119,6 +119,16 @@ function ListItem({
             ref={inputRef}
             defaultValue={value ?? ""}
             placeholder={placeholder}
+            onKeyDown={(e) => {
+              if (e.code === "Enter") {
+                onSubmit?.(inputRef.current?.value ?? "");
+                return;
+              }
+              if (e.code === "Escape") {
+                onCancel?.();
+                return;
+              }
+            }}
           />
         </div>
         <button
