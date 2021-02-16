@@ -17,8 +17,10 @@
 import React, { useCallback } from "react";
 import ReactDOM from "react-dom";
 
+import { CustomNodeSpecification } from "../types";
+
 interface Props {
-  nodes: any[];
+  nodes: CustomNodeSpecification[];
 }
 
 function Node({ image, label }: any) {

@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-import "@elyra/canvas/dist/styles/common-canvas.min.css";
-import "../style/index.css";
+function migrate(pipeline: any) {
+  // No-Op this is to disable old versions of Elyra
+  // to see a pipeline with Python Script nodes
+  if (pipeline.pipelines[0].app_data) {
+    pipeline.pipelines[0].app_data.version = 3;
+  }
 
-export * from "./errors";
-export { default as PipelineEditor } from "./PipelineEditor";
+  return pipeline;
+}
+
+export default migrate;

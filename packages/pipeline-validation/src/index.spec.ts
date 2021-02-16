@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { checkCircularReferences } from "./validation";
+import { checkCircularReferences } from "./";
 
 const linkExamples = [
   // ╭───╮      ╭───╮
@@ -301,43 +301,11 @@ const linkExamples = [
   },
 ];
 
-describe("@elyra/pipeline-editor", () => {
-  describe("checkCircularReferences", () => {
-    for (const { it: should, given, expected } of linkExamples) {
-      it(should, async () => {
-        const actual = checkCircularReferences(given);
-        expect(new Set(actual)).toEqual(new Set(expected));
-      });
-    }
-  });
+describe("checkCircularReferences", () => {
+  for (const { it: should, given, expected } of linkExamples) {
+    it(should, async () => {
+      const actual = checkCircularReferences(given);
+      expect(new Set(actual)).toEqual(new Set(expected));
+    });
+  }
 });
-
-// new: 13 passed, 0 failed
-//      ✓ should detect a simple cycle
-//      ✓ should ignore comment links
-//      ✓ should detect multiple simple cycles
-//      ✓ should detect multiple cycles in a complex graph
-//      ✓ should detect multiple cycles in a complex graph (shuffled)
-//      ✓ should only detect links contributing to the cycle
-//      ✓ should detect joined cycles
-//      ✓ should detect joined cycles (shuffled)
-//      ✓ should not detect fake cycle
-//      ✓ should detect cycle when a fork that gets checked first is safe
-//      ✓ should handle long forks
-//      ✓ should handle long forks (shuffled)
-//      ✓ should not have a bug that a previous implementation had
-
-// old: 6 passed, 7 failed
-//      ✓ should detect a simple cycle
-//      ✕ should ignore comment links                                      - Maximum call stack size exceeded
-//      ✓ should detect multiple simple cycles
-//      ✕ should detect multiple cycles in a complex graph                 - Maximum call stack size exceeded
-//      ✕ should detect multiple cycles in a complex graph (shuffled)      - Maximum call stack size exceeded
-//      ✕ should only detect links contributing to the cycle               - Maximum call stack size exceeded
-//      ✓ should detect joined cycles
-//      ✓ should detect joined cycles (shuffled)
-//      ✓ should not detect fake cycle
-//      ✕ should detect cycle when a fork that gets checked first is safe  - Maximum call stack size exceeded
-//      ✕ should handle long forks                                         - Maximum call stack size exceeded
-//      ✕ should handle long forks (shuffled)                              - Maximum call stack size exceeded
-//      ✓ should not have a bug that a previous implementation had

@@ -14,54 +14,12 @@
  * limitations under the License.
  */
 
-import { INode } from "./types";
+import { PaletteV3 } from "@elyra/canvas";
 
-interface IPalette {
-  version: "3.0";
-  categories: ICategory[];
-}
+import { CustomNodeSpecification } from "../types";
 
-interface ICategory {
-  label: string;
-  image: string;
-  id: string;
-  description: string;
-  node_types: INodeType[];
-}
-
-interface INodeType {
-  id: string;
-  op: string;
-  type: string;
-  inputs: IPort[];
-  outputs: IPort[];
-  parameters: {};
-  app_data: {
-    ui_data: {
-      label: string;
-      description: string;
-      image: string;
-      x_pos: number;
-      y_pos: number;
-    };
-  };
-}
-
-interface IPort {
-  id: string;
-  app_data: {
-    ui_data: {
-      cardinality: {
-        min: number;
-        max: number;
-      };
-      label: string;
-    };
-  };
-}
-
-export const createPalette = (nodes: INode[]): IPalette => {
-  const palette: IPalette = {
+export const createPalette = (nodes: CustomNodeSpecification[]): PaletteV3 => {
+  const palette: PaletteV3 = {
     version: "3.0",
     categories: [
       {
@@ -75,6 +33,9 @@ export const createPalette = (nodes: INode[]): IPalette => {
   };
 
   for (const node of nodes) {
+    if (palette.categories?.[0].node_types === undefined) {
+      continue;
+    }
     palette.categories[0].node_types.push({
       id: "",
       op: node.op,

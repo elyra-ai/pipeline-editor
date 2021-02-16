@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import "@elyra/canvas/dist/styles/common-canvas.min.css";
-import "../style/index.css";
+const baseConfig = require("../../jest.config");
 
-export * from "./errors";
-export { default as PipelineEditor } from "./PipelineEditor";
+module.exports = {
+  ...baseConfig,
+};

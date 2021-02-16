@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-import "@elyra/canvas/dist/styles/common-canvas.min.css";
-import "../style/index.css";
+import { PropertyDefinitions } from "@elyra/canvas";
 
-export * from "./errors";
-export { default as PipelineEditor } from "./PipelineEditor";
+export interface CustomNodeSpecification {
+  op: string;
+  label: string;
+  description: string;
+  labelField?: string;
+  fileField?: string;
+  fileBased?: boolean;
+  extension?: string;
+  image?: string;
+  properties?: PropertyDefinitions;
+}

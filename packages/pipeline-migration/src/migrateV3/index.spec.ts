@@ -14,8 +14,33 @@
  * limitations under the License.
  */
 
-import "@elyra/canvas/dist/styles/common-canvas.min.css";
-import "../style/index.css";
+import migrate from "./";
 
-export * from "./errors";
-export { default as PipelineEditor } from "./PipelineEditor";
+describe("migrate v2 to v3", () => {
+  it("should only bump version", () => {
+    const v2 = {
+      pipelines: [
+        {
+          app_data: {
+            name: "name",
+            version: 2,
+          },
+          nodes: [],
+        },
+      ],
+    };
+    const expected = {
+      pipelines: [
+        {
+          app_data: {
+            name: "name",
+            version: 3,
+          },
+          nodes: [],
+        },
+      ],
+    };
+    const actual = migrate(v2);
+    expect(actual).toEqual(expected);
+  });
+});
