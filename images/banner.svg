@@ -1,4 +1,4 @@
-<svg viewBox="0 0 800 450" width="800" height="450">
+<svg viewBox="0 0 800 450" width="800" height="450" xmlns="http://www.w3.org/2000/svg"> 
   <defs>
     <linearGradient id="GradientBlue" x1="0" x2="0" y1="0" y2="1">
       <stop offset="0%" stop-color="#19b7f0" />
@@ -17,12 +17,7 @@
   <text
     x="600"
     y="48"
-    style={{
-      fontFamily:
-        "SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace",
-      fontSize: "12px",
-      fill: "rgba(255, 255, 255, 0.7)"
-    }}
+    style="font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace; font-size: 12px; fill: rgba(255, 255, 255, 0.7);"
   >
     @elyra/pipeline-editor
   </text>
@@ -59,19 +54,13 @@
     fill="rgba(255,255,255, 0.28)"
   />
   <g
-    style={{
-      transform: "translate(-167px, -135px)"
-    }}
+    style="transform: translate(-167px, -135px)"
   >
     <g
-      style={{
-        transform: "translate(641px, 367px)"
-      }}
+      style="transform: translate(641px, 367px)"
     >
       <rect
-        style={{
-          fill: "url(#GradientLeft)"
-        }}
+        style="fill: url(#GradientLeft)"
         x="-30"
         y="-3"
         width="60"
@@ -79,9 +68,7 @@
       />
 
       <rect
-        style={{
-          fill: "url(#GradientLeft)"
-        }}
+        style="fill: url(#GradientLeft)"
         x="-50"
         y="50"
         width="80"
@@ -89,9 +76,7 @@
       />
 
       <rect
-        style={{
-          fill: "url(#GradientRight)"
-        }}
+        style="fill: url(#GradientRight)"
         x="175"
         y="-3"
         width="80"
@@ -99,9 +84,7 @@
       />
 
       <rect
-        style={{
-          fill: "url(#GradientRight)"
-        }}
+        style="fill: url(#GradientRight)"
         x="175"
         y="50"
         width="70"
@@ -109,22 +92,14 @@
       />
 
       <rect
-        style={{
-          stroke: "white",
-          strokeWidth: "6px",
-          fill: "none"
-        }}
+        style="stroke: white; stroke-width: 6px; fill: none"
         width="200"
         height="50"
         rx="13px"
       />
 
       <rect
-        style={{
-          fill: "none",
-          stroke: "rgba(255, 255, 255, 0.28)",
-          strokeWidth: "3px"
-        }}
+        style="fill: none; stroke: rgba(255, 255, 255, 0.28); stroke-width: 3px"
         x="11"
         y="11"
         width="28"
@@ -133,9 +108,7 @@
       />
 
       <rect
-        style={{
-          fill: "rgba(255, 255, 255, 0.28)"
-        }}
+        style="fill: rgba(255, 255, 255, 0.28)"
         x="50"
         y="33"
         width="124"
@@ -144,14 +117,10 @@
     </g>
 
     <g
-      style={{
-        transform: "translate(290px, 294px)"
-      }}
+      style="transform: translate(290px, 294px)"
     >
       <rect
-        style={{
-          fill: "url(#GradientLeft)"
-        }}
+        style="fill: url(#GradientLeft)"
         x="-50"
         y="-3"
         width="80"
@@ -159,9 +128,7 @@
       />
 
       <rect
-        style={{
-          fill: "url(#GradientLeft)"
-        }}
+        style="fill: url(#GradientLeft)"
         x="-40"
         y="50"
         width="70"
@@ -169,9 +136,7 @@
       />
 
       <rect
-        style={{
-          fill: "url(#GradientRight)"
-        }}
+        style="fill: url(#GradientRight)"
         x="175"
         y="-3"
         width="80"
@@ -179,9 +144,7 @@
       />
 
       <rect
-        style={{
-          fill: "url(#GradientRight)"
-        }}
+        style="fill: url(#GradientRight)"
         x="175"
         y="50"
         width="60"
@@ -189,22 +152,14 @@
       />
 
       <rect
-        style={{
-          stroke: "white",
-          strokeWidth: "6px",
-          fill: "none"
-        }}
+        style="stroke: white; stroke-width: 6px; fill: none"
         width="200"
         height="50"
         rx="13px"
       />
 
       <rect
-        style={{
-          fill: "none",
-          stroke: "rgba(255, 255, 255, 0.28)",
-          strokeWidth: "3px"
-        }}
+        style="fill: none; stroke: rgba(255, 255, 255, 0.28); stroke-width: 3px"
         x="11"
         y="11"
         width="28"
@@ -213,9 +168,7 @@
       />
 
       <rect
-        style={{
-          fill: "rgba(255, 255, 255, 0.28)"
-        }}
+        style="fill: rgba(255, 255, 255, 0.28)"
         x="50"
         y="33"
         width="124"
@@ -223,11 +176,7 @@
       />
     </g>
     <path
-      style={{
-        stroke: "white",
-        strokeWidth: "6px",
-        fill: "none"
-      }}
+      style="stroke: white; stroke-width: 6px; fill: none"
       d="M 491.4868469238281 319.0490417480469 C 565.6208343505859 319.0490417480469 565.6208343505859 392.5849304199219 639.7548217773438 392.5849304199219"
     />
   </g>
