@@ -18,5 +18,5 @@ limitations under the License.
 # Pipeline Editor
 
 <p align="center">
-  <img alt="Pipeline Editor" src="./images/banner.svg" width="640">
+  <img alt="Pipeline Editor" src="./images/banner.svg">
 </p>
