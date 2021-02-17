@@ -241,24 +241,24 @@ class PipelineController extends CanvasController {
         );
         this.setNodeLabel(node.id, newLabel as string, pipelineID);
       } else {
-        // node.app_data.invalidNodeError = `"${node.op}" is an unsupported node type`;
-        // node.description = undefined;
-
         const image =
           "data:image/svg+xml;utf8," +
-          encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="100" viewBox="0 0 22 22">
-          <text
-          x="11"
-          y="16.5"
-          text-anchor="middle"
-          fill="red"
-          font-family="'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
-          font-size="15px"
-        >
-          ?
-        </text>
-      </svg>`);
-        // node.image = image;
+          encodeURIComponent(`<svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            viewBox="0 0 22 22"
+          >
+            <text
+              x="11"
+              y="16.5"
+              text-anchor="middle"
+              fill="red"
+              font-family="'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
+              font-size="15px"
+            >
+              ?
+            </text>
+          </svg>`);
 
         this.setNodeProperties(
           node.id,
