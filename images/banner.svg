@@ -1,0 +1,183 @@
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg"> 
+  <defs>
+    <linearGradient id="GradientBlue" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#19b7f0" />
+      <stop offset="100%" stop-color="#1762e1" />
+    </linearGradient>
+    <linearGradient id="GradientLeft">
+      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.0)" />
+      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.6)" />
+    </linearGradient>
+    <linearGradient id="GradientRight">
+      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.6)" />
+      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.0)" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" rx="15" fill="url(#GradientBlue)" />
+  <text
+    x="600"
+    y="48"
+    style="font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace; font-size: 12px; fill: rgba(255, 255, 255, 0.7);"
+  >
+    @elyra/pipeline-editor
+  </text>
+  <rect
+    x="30"
+    y="15"
+    height="420"
+    width="3"
+    rx="20px"
+    fill="rgba(255,255,255, 0.28)"
+  />
+  <rect
+    x="767"
+    y="15"
+    height="420"
+    width="3"
+    rx="20px"
+    fill="rgba(255,255,255, 0.28)"
+  />
+  <rect
+    x="15"
+    y="30"
+    height="3"
+    width="770"
+    rx="20px"
+    fill="rgba(255,255,255, 0.28)"
+  />
+  <rect
+    x="15"
+    y="417"
+    height="3"
+    width="770"
+    rx="20px"
+    fill="rgba(255,255,255, 0.28)"
+  />
+  <g
+    style="transform: translate(-167px, -135px)"
+  >
+    <g
+      style="transform: translate(641px, 367px)"
+    >
+      <rect
+        style="fill: url(#GradientLeft)"
+        x="-30"
+        y="-3"
+        width="60"
+        height="3"
+      />
+
+      <rect
+        style="fill: url(#GradientLeft)"
+        x="-50"
+        y="50"
+        width="80"
+        height="3"
+      />
+
+      <rect
+        style="fill: url(#GradientRight)"
+        x="175"
+        y="-3"
+        width="80"
+        height="3"
+      />
+
+      <rect
+        style="fill: url(#GradientRight)"
+        x="175"
+        y="50"
+        width="70"
+        height="3"
+      />
+
+      <rect
+        style="stroke: white; stroke-width: 6px; fill: none"
+        width="200"
+        height="50"
+        rx="13px"
+      />
+
+      <rect
+        style="fill: none; stroke: rgba(255, 255, 255, 0.28); stroke-width: 3px"
+        x="11"
+        y="11"
+        width="28"
+        height="28"
+        rx="5px"
+      />
+
+      <rect
+        style="fill: rgba(255, 255, 255, 0.28)"
+        x="50"
+        y="33"
+        width="124"
+        height="3"
+      />
+    </g>
+
+    <g
+      style="transform: translate(290px, 294px)"
+    >
+      <rect
+        style="fill: url(#GradientLeft)"
+        x="-50"
+        y="-3"
+        width="80"
+        height="3"
+      />
+
+      <rect
+        style="fill: url(#GradientLeft)"
+        x="-40"
+        y="50"
+        width="70"
+        height="3"
+      />
+
+      <rect
+        style="fill: url(#GradientRight)"
+        x="175"
+        y="-3"
+        width="80"
+        height="3"
+      />
+
+      <rect
+        style="fill: url(#GradientRight)"
+        x="175"
+        y="50"
+        width="60"
+        height="3"
+      />
+
+      <rect
+        style="stroke: white; stroke-width: 6px; fill: none"
+        width="200"
+        height="50"
+        rx="13px"
+      />
+
+      <rect
+        style="fill: none; stroke: rgba(255, 255, 255, 0.28); stroke-width: 3px"
+        x="11"
+        y="11"
+        width="28"
+        height="28"
+        rx="5px"
+      />
+
+      <rect
+        style="fill: rgba(255, 255, 255, 0.28)"
+        x="50"
+        y="33"
+        width="124"
+        height="3"
+      />
+    </g>
+    <path
+      style="stroke: white; stroke-width: 6px; fill: none"
+      d="M 491.4868469238281 319.0490417480469 C 565.6208343505859 319.0490417480469 565.6208343505859 392.5849304199219 639.7548217773438 392.5849304199219"
+    />
+  </g>
+</svg>
