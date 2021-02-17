@@ -1,8 +1,12 @@
 {
   "private": true,
-  "name": "pipeline-editor",
+  "name": "elyra-vscode",
+  "displayName": "elyra-vscode",
   "description": "",
   "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.52.0"
+  },
   "workspaces": {
     "nohoist": [
       "**/@elyra/canvas",
@@ -12,7 +16,26 @@
       "packages/*"
     ]
   },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCustomEditor:elyra-vscode.pipeline"
+  ],
   "main": "./packages/extension/dist/index.js",
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "elyra-vscode.pipeline",
+        "displayName": "Elyra Pipeline",
+        "selector": [
+          {
+            "filenamePattern": "*.pipeline"
+          }
+        ]
+      }
+    ]
+  },
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
