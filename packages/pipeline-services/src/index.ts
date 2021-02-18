@@ -14,8 +14,5 @@
  * limitations under the License.
  */
 
-const baseConfig = require("../../jest.config");
-
-module.exports = {
-  ...baseConfig,
-};
+export * from "./migration";
+export * from "./validation";

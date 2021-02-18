@@ -1,5 +1,5 @@
 {
-  "name": "@elyra/pipeline-validation",
+  "name": "@elyra/pipeline-services",
   "version": "0.0.1",
   "main": "dist/index.js",
   "scripts": {
@@ -8,6 +8,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "immer": "^8.0.1",
     "jsonc-parser": "^3.0.0"
   },
   "publishConfig": {

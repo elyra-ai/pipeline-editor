@@ -20,7 +20,7 @@ import migrateV1 from "./migrateV1";
 import migrateV2 from "./migrateV2";
 import migrateV3 from "./migrateV3";
 
-function migrate(pipelineJSON: any) {
+export function migrate(pipelineJSON: any) {
   return produce(pipelineJSON, (draft: any) => {
     const version = draft.pipelines[0].app_data?.version ?? 0;
     if (version < 1) {
@@ -40,5 +40,3 @@ function migrate(pipelineJSON: any) {
     }
   });
 }
-
-export default migrate;

@@ -22,7 +22,7 @@ import {
   NodeTypeDef,
   PipelineFlowV3,
 } from "@elyra/canvas";
-import { checkCircularReferences } from "@elyra/pipeline-validation";
+import { checkCircularReferences } from "@elyra/pipeline-services";
 import { nanoid } from "nanoid";
 
 import { CustomNodeSpecification } from "../types";
