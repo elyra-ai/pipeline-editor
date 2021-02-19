@@ -77,7 +77,7 @@ export function checkCircularReferences(links: Link[]) {
           taintedLinks.add(item);
         }
 
-        const position = forkStack.pop();
+        const position = forkStack.pop() ?? 0;
         orderedChain = orderedChain.slice(0, position);
         continue;
       }
@@ -88,7 +88,7 @@ export function checkCircularReferences(links: Link[]) {
 
       // We reached the end of a chain.
       if (linksToVisit === undefined) {
-        const position = forkStack.pop();
+        const position = forkStack.pop() ?? 0;
         orderedChain = orderedChain.slice(0, position);
         continue;
       }
@@ -136,8 +136,8 @@ function getLinks(pipeline: any): Link[] {
           if (isNode(pipeline.nodes, link.node_id_ref)) {
             links.push({
               id: link.id,
-              srcNodeId: node.id,
-              trgNodeId: link.node_id_ref,
+              trgNodeId: node.id,
+              srcNodeId: link.node_id_ref,
               type: "",
               path: ["pipelines", 0, "nodes", n, "inputs", i, "links", l],
             });

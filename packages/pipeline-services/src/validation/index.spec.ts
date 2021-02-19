@@ -281,7 +281,7 @@ const linkExamples = [
   // │ a │──l0─►│ b │──l1─►│ c │──l5─►│ f │──l6─►│ g │
   // ╰───╯      ╰───╯      ╰───╯      ╰───╯      ╰───╯
   //                         │          ▲
-  //                        l2          l4
+  //                        l2         l4
   //                         ▼          │
   //                       ╭───╮      ╭───╮
   //                       │ d │──l3─►│ e │
@@ -294,6 +294,35 @@ const linkExamples = [
       { id: "l2", srcNodeId: "c", trgNodeId: "d", type: "nodeLink" },
       { id: "l3", srcNodeId: "d", trgNodeId: "e", type: "nodeLink" },
       { id: "l4", srcNodeId: "e", trgNodeId: "f", type: "nodeLink" },
+      { id: "l5", srcNodeId: "c", trgNodeId: "f", type: "nodeLink" },
+      { id: "l6", srcNodeId: "f", trgNodeId: "g", type: "nodeLink" },
+    ],
+    expected: [],
+  },
+
+  //            ╭───╮
+  //            │ e │
+  //            ╰───╯
+  //              ▲
+  //             l3
+  //              │
+  // ╭───╮      ╭───╮      ╭───╮
+  // │ a │──l0─►│ b │──l2─►│ d │
+  // ╰───╯      ╰───╯      ╰───╯
+  //              │          │
+  //             l1          l4
+  //              ▼          ▼
+  //            ╭───╮      ╭───╮      ╭───╮
+  //            │ c │──l5─►│ f │──l6─►│ g │
+  //            ╰───╯      ╰───╯      ╰───╯
+  {
+    it: "issue #1303",
+    given: [
+      { id: "l0", srcNodeId: "a", trgNodeId: "b", type: "nodeLink" },
+      { id: "l1", srcNodeId: "b", trgNodeId: "c", type: "nodeLink" },
+      { id: "l2", srcNodeId: "b", trgNodeId: "d", type: "nodeLink" },
+      { id: "l3", srcNodeId: "b", trgNodeId: "e", type: "nodeLink" },
+      { id: "l4", srcNodeId: "d", trgNodeId: "f", type: "nodeLink" },
       { id: "l5", srcNodeId: "c", trgNodeId: "f", type: "nodeLink" },
       { id: "l6", srcNodeId: "f", trgNodeId: "g", type: "nodeLink" },
     ],
