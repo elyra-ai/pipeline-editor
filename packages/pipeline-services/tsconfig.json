@@ -2,8 +2,8 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "module": "esnext",
+    "lib": ["esnext"],
+    "module": "commonjs",
     "outDir": "dist",
     "declaration": true,
     "downlevelIteration": true,

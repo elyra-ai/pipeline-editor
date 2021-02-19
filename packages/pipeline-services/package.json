@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w --preserveWatchOutput",
-    "test": "jest"
+    "test": "jest",
+    "link": "yarn link"
   },
   "dependencies": {
     "immer": "^8.0.1",
