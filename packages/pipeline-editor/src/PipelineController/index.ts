@@ -23,7 +23,6 @@ import {
   PipelineFlowV3,
 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
-import { nanoid } from "nanoid";
 
 import { CustomNodeSpecification } from "../types";
 import {
@@ -38,10 +37,6 @@ const PIPELINE_CURRENT_VERSION = 3;
 interface AddNodeOptions {
   x?: number;
   y?: number;
-}
-
-interface StyleOptions {
-  error?: boolean;
 }
 
 function isExecutionNode(node: NodeTypeDef): node is ExecutionNodeDef {
@@ -88,7 +83,7 @@ class PipelineController extends CanvasController {
     throw new UnknownVersionError();
   }
 
-  private _getNode(nodeID: string): any {
+  private _getNode(nodeID: string) {
     const pipelineID = this.getPrimaryPipelineId();
     const node = this.getNode(nodeID, pipelineID);
     if (node) {
@@ -103,6 +98,7 @@ class PipelineController extends CanvasController {
         return node;
       }
     }
+    return undefined;
   }
 
   setNodes(nodes: CustomNodeSpecification[]) {
@@ -111,7 +107,7 @@ class PipelineController extends CanvasController {
     this.setPipelineFlowPalette(palette);
   }
 
-  addNode(item: any, { x, y }: AddNodeOptions = {}): void {
+  addNode(item: any, { x, y }: AddNodeOptions = {}) {
     const nodeTemplate = this.getPaletteNode(item.op);
     const data = {
       editType: "createNode",
@@ -128,50 +124,36 @@ class PipelineController extends CanvasController {
     this.editActionHandler(data);
   }
 
-  styleNode(nodeID: string, { error }: StyleOptions): void {
+  setNodeErrors(nodeIDs: string[]) {
     const pipelineID = this.getPrimaryPipelineId();
-    const nodeToBeStyled = { [pipelineID]: [nodeID] };
-
-    if (error === true) {
-      const image =
-        "data:image/svg+xml;utf8," +
-        encodeURIComponent(
-          '<svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="#da1e28" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#ffffff"></circle><path d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2	c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z"></path><path d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8	c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" data-icon-path="inner-path" opacity="0"></path></svg>'
-        );
-
-      const indicator = {
-        id: "error",
-        image: image,
-        outline: false,
-        position: "topRight",
-        x_pos: -24,
-        y_pos: -8,
-      };
-
-      this.setObjectsStyle(
-        nodeToBeStyled,
-        {
-          body: { default: "stroke: var(--elyra-color-error-border);" },
-          selection_outline: {
-            default: "stroke: var(--elyra-color-error-border);",
-          },
-        },
-        true
-      );
-      this.setNodeDecorations(nodeID, [indicator], pipelineID);
-      return;
-    }
+    const nodeToBeStyled = { [pipelineID]: nodeIDs };
 
     this.setObjectsStyle(
       nodeToBeStyled,
       {
-        body: { default: "" },
-        selection_outline: { default: "" },
-        label: { default: "" },
+        body: { default: "stroke: var(--elyra-color-error-border);" },
+        selection_outline: {
+          default: "stroke: var(--elyra-color-error-border);",
+        },
       },
       true
     );
-    this.setNodeDecorations(nodeID, [], pipelineID);
+
+    const indicator = {
+      id: "error",
+      image:
+        "data:image/svg+xml;utf8," +
+        encodeURIComponent(
+          '<svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="#da1e28" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#ffffff"></circle><path d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2	c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z"></path><path d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8	c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" data-icon-path="inner-path" opacity="0"></path></svg>'
+        ),
+      outline: false,
+      position: "topRight",
+      x_pos: -24,
+      y_pos: -8,
+    };
+    for (const nodeID of nodeIDs) {
+      this.setNodeDecorations(nodeID, [indicator], pipelineID);
+    }
   }
 
   setInvalidNode(nodeID: string) {
@@ -217,46 +199,46 @@ class PipelineController extends CanvasController {
     this.setNodeLabel(node.id, "unsupported node", pipelineID);
   }
 
-  styleLink(linkID: string, { error }: StyleOptions): void {
-    const link = this.getLinks().find((l) => l.id === linkID);
-    if (link === undefined) {
-      return;
-    }
+  setLinkErrors(linkIDs: string[]) {
+    const pipelineID = this.getPrimaryPipelineId();
+    const linkToBeStyled = { [pipelineID]: linkIDs };
 
-    if (error === true) {
-      this.setLinkProperties(link.id, {
-        id: nanoid(), // forces link to actually be redrawn.
-        class_name: "d3-data-link-error",
-      });
-      return;
-    }
-
-    this.setLinkProperties(link.id, {
-      id: nanoid(), // forces link to actually be redrawn.
-      class_name: link.type === "nodeLink" ? "d3-data-link" : "d3-comment-link",
-    });
+    // @ts-ignore
+    this.setLinksStyle(
+      linkToBeStyled,
+      {
+        line: {
+          default: `
+            stroke: var(--elyra-color-error-border) !important; 
+            stroke-width: 2;
+            stroke-dasharray: 13;
+            `,
+        },
+      },
+      true
+    );
   }
 
   resetStyles() {
+    // @ts-ignore
+    this.removeAllStyles(false);
+
     const pipelineID = this.getPrimaryPipelineId();
 
-    const links = this.getLinks();
-    for (const link of links) {
-      this.styleLink(link.id, {
-        error: false,
-      });
-    }
-
     const nodes = this.getNodes();
+
     for (const node of nodes) {
-      this.styleNode(node.id, {
-        error: false,
-      });
+      // `setNodeDecorations` is VERY slow, so make sure we HAVE to set it
+      // before setting it.
+      if ((node as any).decorations.length !== 0) {
+        this.setNodeDecorations(node.id, [], pipelineID);
+      }
 
       if (!isExecutionNode(node)) {
         // We only need to label execution nodes.
         continue;
       }
+
       const nodeDef = this.nodes.find((n) => n.op === node.op);
 
       if (nodeDef === undefined) {
@@ -269,7 +251,25 @@ class PipelineController extends CanvasController {
           ? node.app_data[nodeDef.labelField]
           : nodeDef.label;
 
-      this.setNodeLabel(node.id, newLabel as string, pipelineID);
+      // `setNodeLabel` is VERY slow, so make sure we HAVE to set it before
+      // setting it.
+      if ((node as any).label !== newLabel) {
+        this.setNodeLabel(node.id, newLabel as string, pipelineID);
+      }
+
+      if (
+        node.description !== nodeDef.description ||
+        (node as any).image !== nodeDef.image
+      ) {
+        this.setNodeProperties(
+          node.id,
+          {
+            description: nodeDef.description,
+            image: nodeDef.image,
+          },
+          pipelineID
+        );
+      }
     }
   }
 
@@ -281,32 +281,37 @@ class PipelineController extends CanvasController {
       this.nodes
     );
 
+    const linksWithErrors = [];
+    const invalidNodes = [];
+    const missingProperties = [];
     for (const problem of problems) {
       switch (problem.info.type) {
         case "circularReference":
-          this.styleLink(problem.info.linkID, {
-            error: true,
-          });
+          linksWithErrors.push(problem.info.linkID);
           break;
         case "missingProperty":
-          this.styleNode(problem.info.nodeID, {
-            error: true,
+          missingProperties.push({
+            nodeID: problem.info.nodeID,
+            property: problem.info.property,
           });
           break;
         case "invalidNode":
-          this.styleNode(problem.info.nodeID, {
-            error: true,
-          });
+          invalidNodes.push(problem.info.nodeID);
           this.setInvalidNode(problem.info.nodeID);
           break;
       }
     }
+    this.setLinkErrors(linksWithErrors);
+    this.setNodeErrors([
+      ...invalidNodes,
+      ...missingProperties.map((p) => p.nodeID),
+    ]);
 
     const pipelineID = this.getPrimaryPipelineId();
     const nodes = this.getNodes();
     for (const node of nodes) {
-      const nodeProblems = problems.filter(
-        (p) => p.info.type === "missingProperty" && p.info.nodeID === node.id
+      const nodeProblems = missingProperties.filter(
+        (p) => p.nodeID === node.id
       );
       if (nodeProblems.length > 0) {
         if (!isExecutionNode(node)) {
@@ -317,24 +322,22 @@ class PipelineController extends CanvasController {
           continue;
         }
 
-        const messages = nodeProblems.map((problem) => {
-          const label = nodeDef.properties?.uihints?.parameter_info.find(
-            (p) =>
-              problem.info.type === "missingProperty" &&
-              p.parameter_ref === problem.info.property
-          )?.label.default;
-          return `property "${label}" is required`;
-        });
+        const message = nodeProblems
+          .map((problem) => {
+            const label = nodeDef.properties?.uihints?.parameter_info.find(
+              (p) => p.parameter_ref === problem.property
+            )?.label.default;
+            return `property "${label}" is required`;
+          })
+          .join("\n");
 
         this.setNodeProperties(
           node.id,
           {
             app_data: {
               ...node.app_data,
-              invalidNodeError: messages.join("\n"),
+              invalidNodeError: message,
             },
-            description: nodeDef.description,
-            image: nodeDef.image,
           },
           pipelineID
         );
@@ -344,13 +347,21 @@ class PipelineController extends CanvasController {
 
   properties(nodeID: string) {
     const node = this._getNode(nodeID);
+    if (node === undefined) {
+      return [];
+    }
+
+    if (!isExecutionNode(node)) {
+      return [];
+    }
+
     const nodeDef = this.nodes.find((n) => n.op === node.op);
 
     const properties = (nodeDef?.properties?.uihints?.parameter_info ?? []).map(
       (p) => {
         return {
           label: p.label.default,
-          value: node.app_data[p.parameter_ref],
+          value: node.app_data?.[p.parameter_ref],
         };
       }
     );
