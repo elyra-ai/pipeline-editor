@@ -110,6 +110,23 @@ enum Severity {
   Hint,
 }
 
+interface CircularReferenceInfo {
+  type: "circularReference";
+  linkID: string;
+}
+
+interface MissingPropertyInfo {
+  type: "missingProperty";
+  nodeID: string;
+  property: string;
+}
+
+interface InvalidNodeInfo {
+  type: "invalidNode";
+  nodeID: string;
+  op: string;
+}
+
 interface Problem {
   severity: Severity;
   range: {
@@ -117,6 +134,7 @@ interface Problem {
     length: number;
   };
   message: string;
+  info: CircularReferenceInfo | MissingPropertyInfo | InvalidNodeInfo;
 }
 
 function isNode(nodes: any[], id: string) {
@@ -170,23 +188,29 @@ export function validate(pipeline: string, nodeDefinitions: any): Problem[] {
   const links = getLinks(primaryPipeline);
   const taintedLinks = checkCircularReferences(links);
 
-  let problems = taintedLinks.map((linkID) => {
-    const link = links.find((l) => l.id === linkID);
-    const location = findNodeAtLocation(pipelineTreeRoot, [
-      ...(link?.path ?? []),
-      "node_id_ref",
-    ]);
-    const source = findNode(primaryPipeline, link?.srcNodeId ?? "");
-    const target = findNode(primaryPipeline, link?.trgNodeId ?? "");
-    return {
-      severity: 1,
-      message: `The connection between nodes '${source.app_data.ui_data.label}' and '${target.app_data.ui_data.label}' is part of a circular reference.`,
-      range: {
-        offset: location?.offset ?? 0,
-        length: location?.length ?? 0,
-      },
-    };
-  });
+  let problems = taintedLinks.map(
+    (linkID): Problem => {
+      const link = links.find((l) => l.id === linkID);
+      const location = findNodeAtLocation(pipelineTreeRoot, [
+        ...(link?.path ?? []),
+        "node_id_ref",
+      ]);
+      const source = findNode(primaryPipeline, link?.srcNodeId ?? "");
+      const target = findNode(primaryPipeline, link?.trgNodeId ?? "");
+      return {
+        severity: 1,
+        message: `The connection between nodes '${source.app_data.ui_data.label}' and '${target.app_data.ui_data.label}' is part of a circular reference.`,
+        range: {
+          offset: location?.offset ?? 0,
+          length: location?.length ?? 0,
+        },
+        info: {
+          type: "circularReference",
+          linkID: linkID,
+        },
+      };
+    }
+  );
 
   // validate properties
   const nodes = getNodes(primaryPipeline);
@@ -220,6 +244,11 @@ export function validate(pipeline: string, nodeDefinitions: any): Problem[] {
             range: {
               offset: location?.offset ?? 0,
               length: location?.length ?? 0,
+            },
+            info: {
+              type: "missingProperty",
+              nodeID: node.id,
+              property: prop.id,
             },
           });
           continue;

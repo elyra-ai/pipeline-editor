@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./migration";
-export * from "./validation";
+export { migrate } from "./migration";
+export { validate } from "./validation";

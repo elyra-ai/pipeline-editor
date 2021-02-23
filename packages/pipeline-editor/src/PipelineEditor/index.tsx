@@ -140,7 +140,7 @@ const PipelineEditor = forwardRef(
           controller.current.setNodes(nodes);
           controller.current.validate();
         } else {
-          controller.current.clearErrors();
+          controller.current.resetStyles();
         }
         // don't call to persist change because it will cause an infinate loop
       } catch (e) {
