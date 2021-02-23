@@ -1,0 +1,18 @@
+{
+  "name": "@elyra/pipeline-services",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w --preserveWatchOutput",
+    "test": "jest",
+    "link": "yarn link"
+  },
+  "dependencies": {
+    "immer": "^8.0.1",
+    "jsonc-parser": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

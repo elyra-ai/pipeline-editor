@@ -16,31 +16,27 @@
 
 import produce from "immer";
 
-import {
-  convertPipelineV0toV1,
-  convertPipelineV1toV2,
-  convertPipelineV2toV3,
-} from "./migration";
+import migrateV1 from "./migrateV1";
+import migrateV2 from "./migrateV2";
+import migrateV3 from "./migrateV3";
 
-function migrate(pipelineJSON: any) {
+export function migrate(pipelineJSON: any) {
   return produce(pipelineJSON, (draft: any) => {
     const version = draft.pipelines[0].app_data?.version ?? 0;
     if (version < 1) {
       // original pipeline definition without a version
       console.info("Migrating pipeline to version 1.");
-      convertPipelineV0toV1(draft);
+      migrateV1(draft);
     }
     if (version < 2) {
       // adding relative path on the pipeline filenames
       console.info("Migrating pipeline to version 2.");
-      convertPipelineV1toV2(draft);
+      migrateV2(draft);
     }
     if (version < 3) {
       // Adding python script support
       console.info("Migrating pipeline to version 3 (current version).");
-      convertPipelineV2toV3(draft);
+      migrateV3(draft);
     }
   });
 }
-
-export default migrate;

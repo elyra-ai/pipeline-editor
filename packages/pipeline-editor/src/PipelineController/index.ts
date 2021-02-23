@@ -16,21 +16,22 @@
 
 import path from "path";
 
-import { CanvasController } from "@elyra/canvas";
+import {
+  CanvasController,
+  ExecutionNodeDef,
+  NodeTypeDef,
+  PipelineFlowV3,
+} from "@elyra/canvas";
+import { checkCircularReferences } from "@elyra/pipeline-services";
 import { nanoid } from "nanoid";
 
+import { CustomNodeSpecification } from "../types";
 import {
   ElyraOutOfDateError,
   PipelineOutOfDateError,
   UnknownVersionError,
 } from "./../errors";
 import { createPalette } from "./create-palette";
-import { INode } from "./types";
-import {
-  ILink,
-  checkCircularReferences,
-  validateProperties,
-} from "./validation";
 
 const PIPELINE_CURRENT_VERSION = 3;
 
@@ -39,14 +40,40 @@ interface AddNodeOptions {
   y?: number;
 }
 
-class PipelineController extends CanvasController {
-  private nodes: INode[] = [];
+// TODO: use function from `@elyra/pipeline-validation`
+function validateProperties(
+  nodeDef: CustomNodeSpecification,
+  node: any
+): string | undefined {
+  const errors: string[] = [];
+  for (const prop of nodeDef.properties?.parameters ?? []) {
+    // this should be safe because a boolean can't be required
+    // otherwise we would need to check strings for undefined or empty string
+    if (prop.required && !node.app_data[prop.id]) {
+      const label = nodeDef.properties?.uihints?.parameter_info.find(
+        (p) => p.parameter_ref === prop.id
+      )?.label.default;
+      errors.push(`property "${label}" is required`);
+      continue;
+    }
+  }
 
-  open(pipelineJson: any) {
+  if (errors.length > 0) {
+    return errors.join("\n");
+  }
+  return;
+}
+
+class PipelineController extends CanvasController {
+  private nodes: CustomNodeSpecification[] = [];
+  private lastOpened: PipelineFlowV3 | undefined;
+
+  open(pipelineJson: PipelineFlowV3) {
     // if pipeline is null create a new one from scratch.
     if (pipelineJson === undefined) {
       pipelineJson = this.getPipelineFlow();
-      pipelineJson.pipelines[0].app_data.version = PIPELINE_CURRENT_VERSION;
+      // NOTE: We should be guaranteed app_data is defined here.
+      pipelineJson.pipelines[0].app_data!.version = PIPELINE_CURRENT_VERSION;
     }
 
     if (this.lastOpened === pipelineJson) {
@@ -94,7 +121,7 @@ class PipelineController extends CanvasController {
     }
   }
 
-  setNodes(nodes: INode[]) {
+  setNodes(nodes: CustomNodeSpecification[]) {
     this.nodes = nodes;
     const palette = createPalette(this.nodes);
     this.setPipelineFlowPalette(palette);
@@ -159,7 +186,7 @@ class PipelineController extends CanvasController {
   }
 
   private _checkCircularReferences(): void {
-    const links: ILink[] = this.getLinks();
+    const links = this.getLinks();
 
     const taintedLinks = checkCircularReferences(links);
 
@@ -183,8 +210,11 @@ class PipelineController extends CanvasController {
   private _checkEachNode() {
     const pipelineID = this.getPrimaryPipelineId();
     const nodes = this.getNodes();
+    function isExecutionNode(node: NodeTypeDef): node is ExecutionNodeDef {
+      return (node as ExecutionNodeDef).op !== undefined;
+    }
     for (const node of nodes) {
-      if (node.op === undefined) {
+      if (!isExecutionNode(node)) {
         // NOTE: supernode or binding, don't know if we need to validate anything?
         continue;
       }
@@ -193,7 +223,7 @@ class PipelineController extends CanvasController {
         const error = validateProperties(nodeDef, node);
 
         const newLabel =
-          nodeDef.labelField && node.app_data[nodeDef.labelField]
+          nodeDef.labelField && node.app_data?.[nodeDef.labelField]
             ? node.app_data[nodeDef.labelField]
             : nodeDef.label;
 
@@ -209,26 +239,26 @@ class PipelineController extends CanvasController {
           },
           pipelineID
         );
-        this.setNodeLabel(node.id, newLabel, pipelineID);
+        this.setNodeLabel(node.id, newLabel as string, pipelineID);
       } else {
-        // node.app_data.invalidNodeError = `"${node.op}" is an unsupported node type`;
-        // node.description = undefined;
-
         const image =
           "data:image/svg+xml;utf8," +
-          encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="100" viewBox="0 0 22 22">
-          <text
-          x="11"
-          y="16.5"
-          text-anchor="middle"
-          fill="red"
-          font-family="'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
-          font-size="15px"
-        >
-          ?
-        </text>
-      </svg>`);
-        // node.image = image;
+          encodeURIComponent(`<svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            viewBox="0 0 22 22"
+          >
+            <text
+              x="11"
+              y="16.5"
+              text-anchor="middle"
+              fill="red"
+              font-family="'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
+              font-size="15px"
+            >
+              ?
+            </text>
+          </svg>`);
 
         this.setNodeProperties(
           node.id,
@@ -254,7 +284,7 @@ class PipelineController extends CanvasController {
   }
 
   clearErrors() {
-    const links: ILink[] = this.getLinks();
+    const links = this.getLinks();
 
     for (const l of links) {
       this.setLinkProperties(l.id, {
@@ -283,7 +313,7 @@ class PipelineController extends CanvasController {
     const node = this._getNode(nodeID);
     const nodeDef = this.nodes.find((n) => n.op === node.op);
 
-    const properties = (nodeDef?.properties?.uihints.parameter_info ?? []).map(
+    const properties = (nodeDef?.properties?.uihints?.parameter_info ?? []).map(
       (p) => {
         return {
           label: p.label.default,
@@ -295,7 +325,5 @@ class PipelineController extends CanvasController {
     return properties;
   }
 }
-
-export * from "./types";
 
 export default PipelineController;

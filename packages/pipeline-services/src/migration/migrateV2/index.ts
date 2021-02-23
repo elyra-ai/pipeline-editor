@@ -16,48 +16,7 @@
 
 import path from "path";
 
-export const convertPipelineV0toV1 = (pipeline: IPipeline): IPipeline => {
-  if (pipeline.pipelines[0].app_data) {
-    // title -> name
-    pipeline.pipelines[0].app_data.name = pipeline.pipelines[0].app_data.title;
-    delete pipeline.pipelines[0].app_data.title;
-
-    delete pipeline.pipelines[0].app_data.export;
-    delete pipeline.pipelines[0].app_data.export_format;
-    delete pipeline.pipelines[0].app_data.export_path;
-
-    pipeline.pipelines[0].app_data.version = 1;
-  }
-
-  for (const node of pipeline.pipelines[0].nodes) {
-    if (node.app_data === undefined) {
-      continue;
-    }
-    // artifact -> filename
-    node.app_data.filename = node.app_data.artifact;
-    delete node.app_data.artifact;
-
-    // image -> runtime_image
-    node.app_data.runtime_image = node.app_data.image;
-    delete node.app_data.image;
-
-    // vars -> env_vars
-    node.app_data.env_vars = node.app_data.vars;
-    delete node.app_data.vars;
-
-    // file_dependencies -> dependencies
-    node.app_data.dependencies = node.app_data.file_dependencies;
-    delete node.app_data.file_dependencies;
-
-    // recursive_dependencies -> include_subdirectories
-    node.app_data.include_subdirectories = node.app_data.recursive_dependencies;
-    delete node.app_data.recursive_dependencies;
-  }
-
-  return pipeline;
-};
-
-export const convertPipelineV1toV2 = (pipeline: IPipeline): IPipeline => {
+function migrate(pipeline: any) {
   for (const node of pipeline.pipelines[0].nodes) {
     if (node.app_data === undefined) {
       continue;
@@ -92,14 +51,6 @@ export const convertPipelineV1toV2 = (pipeline: IPipeline): IPipeline => {
   }
 
   return pipeline;
-};
+}
 
-export const convertPipelineV2toV3 = (pipeline: IPipeline): IPipeline => {
-  // No-Op this is to disable old versions of Elyra
-  // to see a pipeline with Python Script nodes
-  if (pipeline.pipelines[0].app_data) {
-    pipeline.pipelines[0].app_data.version = 3;
-  }
-
-  return pipeline;
-};
+export default migrate;

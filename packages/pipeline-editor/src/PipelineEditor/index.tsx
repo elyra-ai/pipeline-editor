@@ -23,7 +23,17 @@ import React, {
   useState,
 } from "react";
 
-import { CommonCanvas } from "@elyra/canvas";
+import {
+  CanvasClickEvent,
+  CanvasEditEvent,
+  CanvasSelectionEvent,
+  CommonCanvas,
+  ContextMenu,
+  ContextMenuEvent,
+  NodeTypeDef,
+  TipEvent,
+  TipNode,
+} from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
 
 import NodeTooltip from "../NodeTooltip";
@@ -49,7 +59,7 @@ interface Props {
 const NODE_SVG_PATH =
   "M 0 0 h 160 a 6 6 0 0 1 6 6 v 28 a 6 6 0 0 1 -6 6 h -160 a 6 6 0 0 1 -6 -6 v -28 a 6 6 0 0 1 6 -6 z";
 
-function isMenuItemEnabled(menu: IContextMenu, action: string) {
+function isMenuItemEnabled(menu: ContextMenu, action: string) {
   const item = menu.find((m) => {
     if (m.menu === undefined) {
       return m.action === action;
@@ -149,7 +159,7 @@ const PipelineEditor = forwardRef(
     );
 
     const handleContextMenu = useCallback(
-      (e: IContextMenuEvent, defaultMenu: IContextMenu) => {
+      (e: ContextMenuEvent, defaultMenu: ContextMenu) => {
         const canPaste = isMenuItemEnabled(defaultMenu, "paste");
 
         const canDisconnect = isMenuItemEnabled(defaultMenu, "disconnectNode");
@@ -367,7 +377,7 @@ const PipelineEditor = forwardRef(
       []
     );
 
-    const handleClickAction = useCallback((e: ICanvasClickEvent) => {
+    const handleClickAction = useCallback((e: CanvasClickEvent) => {
       if (e.clickType === "DOUBLE_CLICK" && e.objectType === "node") {
         // TODO: callback to let parent decide what to do instead.
         setCurrentTab("properties");
@@ -375,13 +385,13 @@ const PipelineEditor = forwardRef(
       }
     }, []);
 
-    const [selectedNodes, setSelectedNodes] = useState();
-    const handleSelectionChange = useCallback((e: any) => {
+    const [selectedNodes, setSelectedNodes] = useState<NodeTypeDef[]>();
+    const handleSelectionChange = useCallback((e: CanvasSelectionEvent) => {
       setSelectedNodes(e.selectedNodes);
     }, []);
 
     const handleEditAction = useCallback(
-      async (e: ICanvasEditEvent) => {
+      async (e: CanvasEditEvent) => {
         let payload;
         if (e.editType === "openFile") {
           payload = e.targetObject?.app_data?.filename;
@@ -445,8 +455,8 @@ const PipelineEditor = forwardRef(
       [onChange]
     );
 
-    const handleTooltip = (tipType: string, e: ITipEvent) => {
-      function isNodeTipEvent(type: string, _e: ITipEvent): _e is ITipNode {
+    const handleTooltip = (tipType: string, e: TipEvent) => {
+      function isNodeTipEvent(type: string, _e: TipEvent): _e is TipNode {
         return type === "tipTypeNode";
       }
       if (isNodeTipEvent(tipType, e) && e.node.type === "execution_node") {
