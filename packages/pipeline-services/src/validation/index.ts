@@ -77,11 +77,13 @@ export function checkCircularReferences(links: Link[]) {
           taintedLinks.add(item);
         }
 
-        // `position ?? 0` causes an infinite loop in some cases. No idea why...
-        const position = forkStack.pop();
+        // This is completely useless, but it makes me feel better that this is
+        // here.
+        const position = forkStack.slice(-1).pop();
         if (position !== undefined) {
           orderedChain = orderedChain.slice(0, position);
         }
+        // if position is undefined we will set orderedChain to []
         continue;
       }
 
@@ -91,8 +93,12 @@ export function checkCircularReferences(links: Link[]) {
 
       // We reached the end of a chain.
       if (linksToVisit === undefined) {
-        const position = forkStack.pop() ?? 0;
-        orderedChain = orderedChain.slice(0, position);
+        // This is 100% necessary unlike the other example.
+        const position = forkStack.slice(-1).pop();
+        if (position !== undefined) {
+          orderedChain = orderedChain.slice(0, position);
+        }
+        // if position is undefined we will set orderedChain to []
         continue;
       }
 
