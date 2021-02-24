@@ -18,7 +18,7 @@ import { parseTree, findNodeAtLocation } from "jsonc-parser";
 
 // 3 seconds should be ample time.
 // should only protect against any infinite loops.
-const TIMEOUT = 3 * 1000;
+const TIMEOUT = 3000;
 
 export interface Link {
   id: string;
@@ -64,7 +64,7 @@ export function checkCircularReferences(links: Link[]) {
     const chainLength = orderedChain.length;
     forkStack.push(...linksToVisit.map(() => chainLength));
 
-    while (0 < stack.length && Date.now() - startTime < TIMEOUT) {
+    while (stack.length > 0 && Date.now() - startTime < TIMEOUT) {
       forkStack.pop();
       const l = stack.pop()!; // we should be gauranteed an item.
       seen.add(l.id);
@@ -77,8 +77,11 @@ export function checkCircularReferences(links: Link[]) {
           taintedLinks.add(item);
         }
 
-        const position = forkStack.pop() ?? 0;
-        orderedChain = orderedChain.slice(0, position);
+        // `position ?? 0` causes an infinite loop in some cases. No idea why...
+        const position = forkStack.pop();
+        if (position !== undefined) {
+          orderedChain = orderedChain.slice(0, position);
+        }
         continue;
       }
 

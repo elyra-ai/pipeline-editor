@@ -484,7 +484,7 @@ const PipelineEditor = forwardRef(
               contextMenuHandler={() => {}}
               editActionHandler={() => {
                 controller.current.setPipelineFlow(pipeline);
-                controller.current.clearErrors();
+                controller.current.resetStyles();
               }}
               toolbarConfig={[]}
               config={{
