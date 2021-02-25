@@ -166,7 +166,14 @@ class PipelineController extends CanvasController {
     this.setNodeLabel(node.id, "unsupported node", pipelineID);
   }
 
+<<<<<<< HEAD
   setLinkErrors(linkToBeStyled: { [key: string]: string[] }) {
+=======
+  setLinkErrors(linkIDs: string[]) {
+    const pipelineID = this.getPrimaryPipelineId();
+    const linkToBeStyled = { [pipelineID]: linkIDs };
+
+>>>>>>> Update type declarations
     this.setLinksStyle(
       linkToBeStyled,
       {
