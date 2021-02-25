@@ -120,6 +120,17 @@ declare module "@elyra/canvas" {
         createSupernode?: boolean;
       };
     };
+    keyboardConfig?: {
+      actions?: {
+        delete?: boolean;
+        undo?: boolean;
+        redo?: boolean;
+        selectAll?: boolean;
+        cutToClipboard?: boolean;
+        copyToClipboard?: boolean;
+        pasteFromClipboard?: boolean;
+      };
+    };
   }
 
   function CommonCanvas(props: CommonCanvasProps);
