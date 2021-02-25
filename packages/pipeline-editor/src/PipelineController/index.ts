@@ -206,6 +206,7 @@ class PipelineController extends CanvasController {
           this.setNodeDecorations(node.id, [], pipeline.id);
         }
 
+<<<<<<< HEAD
         if (node.type !== "execution_node") {
           continue;
         }
@@ -216,6 +217,21 @@ class PipelineController extends CanvasController {
           // We don't have a nodedef, skipping...
           continue;
         }
+=======
+    for (const node of nodes) {
+      if (!isExecutionNode(node)) {
+        // We only need to label execution nodes.
+        continue;
+      }
+
+      // `setNodeDecorations` is VERY slow, so make sure we HAVE to set it
+      // before setting it.
+      if (node.decorations !== undefined && node.decorations.length !== 0) {
+        this.setNodeDecorations(node.id, [], pipelineID);
+      }
+
+      const nodeDef = this.nodes.find((n) => n.op === node.op);
+>>>>>>> Update validation to check ALL pipelines
 
         const newLabel =
           nodeDef.labelField && node.app_data?.[nodeDef.labelField]

@@ -681,6 +681,7 @@ declare module "@elyra/canvas" {
    * Definition of a single execution pipeline node
    */
   interface ExecutionNodeDef {
+    decorations?: any[];
     /**
      * Unique identifier for node within the current pipeline
      */
@@ -1094,6 +1095,7 @@ declare module "@elyra/canvas" {
    * Definition of a supernode which serves as the entry point for a sub-pipeline
    */
   interface SupernodeDef {
+    decorations?: any[];
     /**
      * Unique identifier for the supernode within the current pipeline
      */
