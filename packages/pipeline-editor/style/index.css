@@ -125,10 +125,6 @@
   font-size: var(--elyra-font-size-sans);
 }
 
-.common-canvas-tooltip[data-id^="node_tip"] {
-  padding: 11px 7px 4px 7px;
-}
-
 .common-canvas-tooltip #tipArrow polyline {
   fill: var(--elyra-color-tooltip-bg);
   stroke-width: 0;

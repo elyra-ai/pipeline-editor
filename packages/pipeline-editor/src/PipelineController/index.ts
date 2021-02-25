@@ -167,6 +167,7 @@ class PipelineController extends CanvasController {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   setLinkErrors(linkToBeStyled: { [key: string]: string[] }) {
 =======
   setLinkErrors(linkIDs: string[]) {
@@ -174,6 +175,9 @@ class PipelineController extends CanvasController {
     const linkToBeStyled = { [pipelineID]: linkIDs };
 
 >>>>>>> Update type declarations
+=======
+  setLinkErrors(linkToBeStyled: { [key: string]: string[] }) {
+>>>>>>> Supernode bug fixes
     this.setLinksStyle(
       linkToBeStyled,
       {
@@ -205,6 +209,7 @@ class PipelineController extends CanvasController {
         ) {
           this.setNodeDecorations(node.id, [], pipeline.id);
         }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
         if (node.type !== "execution_node") {
@@ -223,15 +228,24 @@ class PipelineController extends CanvasController {
         // We only need to label execution nodes.
         continue;
       }
+=======
 
-      // `setNodeDecorations` is VERY slow, so make sure we HAVE to set it
-      // before setting it.
-      if (node.decorations !== undefined && node.decorations.length !== 0) {
-        this.setNodeDecorations(node.id, [], pipelineID);
-      }
+        if (node.type !== "execution_node") {
+          continue;
+        }
+>>>>>>> Supernode bug fixes
 
+        const nodeDef = this.nodes.find((n) => n.op === node.op);
+
+<<<<<<< HEAD
       const nodeDef = this.nodes.find((n) => n.op === node.op);
 >>>>>>> Update validation to check ALL pipelines
+=======
+        if (nodeDef === undefined) {
+          // We don't have a nodedef, skipping...
+          continue;
+        }
+>>>>>>> Supernode bug fixes
 
         const newLabel =
           nodeDef.labelField && node.app_data?.[nodeDef.labelField]
