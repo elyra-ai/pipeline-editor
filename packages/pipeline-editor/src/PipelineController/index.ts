@@ -203,7 +203,6 @@ class PipelineController extends CanvasController {
     const pipelineID = this.getPrimaryPipelineId();
     const linkToBeStyled = { [pipelineID]: linkIDs };
 
-    // @ts-ignore
     this.setLinksStyle(
       linkToBeStyled,
       {
@@ -220,8 +219,7 @@ class PipelineController extends CanvasController {
   }
 
   resetStyles() {
-    // @ts-ignore
-    this.removeAllStyles(false);
+    this.removeAllStyles();
 
     const pipelineID = this.getPrimaryPipelineId();
 
