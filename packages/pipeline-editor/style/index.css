@@ -31,6 +31,7 @@
   font-family: var(--elyra-font-family-sans);
   fill: var(--elyra-color-button-text);
   transform: translate(-17px, 9px);
+  text-rendering: geometricPrecision;
 }
 
 /* ========================================================================== */
@@ -537,18 +538,14 @@
   rx: var(--elyra-border-radius);
 }
 
+.d3-node-label,
 .d3-supernode-label {
-  font-family: var(--elyra-font-family-mono);
-  font-weight: var(--elyra-font-weight-mono);
-  font-size: var(--elyra-font-size-mono);
+  font-family: var(--elyra-font-family-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-size: var(--elyra-font-size-sans);
   fill: var(--elyra-color-node-text);
-}
-
-.d3-node-label {
-  font-family: var(--elyra-font-family-mono);
-  font-weight: var(--elyra-font-weight-mono);
-  font-size: var(--elyra-font-size-mono);
-  fill: var(--elyra-color-node-text);
+  font-weight: 500;
+  text-rendering: geometricPrecision;
 }
 
 .d3-comment-text-tspan {
@@ -556,6 +553,7 @@
   font-weight: var(--elyra-font-weight-sans) !important;
   font-size: var(--elyra-font-size-sans) !important;
   fill: var(--elyra-color-comment-text) !important;
+  text-rendering: geometricPrecision;
 }
 
 .d3-comment-entry {
