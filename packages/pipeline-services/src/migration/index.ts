@@ -19,6 +19,7 @@ import produce from "immer";
 import migrateV1 from "./migrateV1";
 import migrateV2 from "./migrateV2";
 import migrateV3 from "./migrateV3";
+import migrateV4 from "./migrateV4";
 
 export function migrate(pipelineJSON: any) {
   return produce(pipelineJSON, (draft: any) => {
@@ -35,8 +36,13 @@ export function migrate(pipelineJSON: any) {
     }
     if (version < 3) {
       // Adding python script support
-      console.info("Migrating pipeline to version 3 (current version).");
+      console.info("Migrating pipeline to version 3.");
       migrateV3(draft);
+    }
+    if (version < 4) {
+      // Adding python script support
+      console.info("Migrating pipeline to version 4 (current version).");
+      migrateV4(draft);
     }
   });
 }

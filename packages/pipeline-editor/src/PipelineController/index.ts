@@ -33,7 +33,7 @@ import {
 } from "./../errors";
 import { createPalette } from "./create-palette";
 
-const PIPELINE_CURRENT_VERSION = 3;
+const PIPELINE_CURRENT_VERSION = 4;
 
 interface AddNodeOptions {
   x?: number;
