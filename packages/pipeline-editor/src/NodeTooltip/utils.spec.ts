@@ -101,13 +101,6 @@ describe("toPrettyString", () => {
     const result = toPrettyString(new Error("this is an error"));
     expect(result).toEqual("Error: this is an error");
   });
-
-  it("returns a string for a date", () => {
-    const result = toPrettyString(new Date("October 1, 1994"));
-    expect(result).toEqual(
-      "Sat Oct 01 1994 00:00:00 GMT-0400 (Eastern Daylight Time)"
-    );
-  });
 });
 
 describe("hasValue", () => {
