@@ -66,8 +66,7 @@ function PropertiesPanel({
 
   const selectedNode = selectedNodes[0];
 
-  if (selectedNode.op === undefined) {
-    // supernode
+  if (selectedNode.type !== "execution_node") {
     return (
       <div className="elyra-noContentMessage">
         This node type doesn't have any editable properties.
@@ -76,6 +75,14 @@ function PropertiesPanel({
   }
 
   const nodePropertiesSchema = nodes.find((n: any) => n.op === selectedNode.op);
+
+  if (nodePropertiesSchema === undefined) {
+    return (
+      <div className="elyra-noContentMessage">
+        This node type doesn't have any editable properties.
+      </div>
+    );
+  }
 
   return (
     <CommonProperties
