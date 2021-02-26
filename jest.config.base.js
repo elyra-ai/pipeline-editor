@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-const baseConfig = require("./jest.config.base");
-
 module.exports = {
-  ...baseConfig,
-  coverageReporters: ["lcov", "text"],
-  projects: ["<rootDir>/packages/*"],
+  preset: "ts-jest",
+  testEnvironment: "node",
 };

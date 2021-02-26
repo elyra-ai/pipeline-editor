@@ -14,19 +14,37 @@
  * limitations under the License.
  */
 
-export const toPrettyString = (o: any): string => {
+export function toPrettyString(o: any) {
+  function toString(o: any) {
+    if (typeof o === "boolean") {
+      return o ? "Yes" : "No";
+    }
+
+    if (o === undefined) {
+      return "undefined";
+    }
+
+    if (o === null) {
+      return "null";
+    }
+
+    return o.toString();
+  }
+
   if (Array.isArray(o)) {
-    return o.map((v) => v.value ?? v).join("\n");
+    return o.map((v) => toString(v?.value ?? v)).join("\n");
   }
 
-  if (typeof o === "boolean") {
-    return o ? "Yes" : "No";
+  if (!!o && o.constructor === Object) {
+    return Object.entries(o)
+      .map(([key, value]) => `${key}: ${toString(value)}`)
+      .join("\n");
   }
 
-  return o;
-};
+  return toString(o);
+}
 
-export const hasValue = (o: any): boolean => {
+export function hasValue(o: any) {
   if (o === undefined || o === null) {
     return false;
   }
@@ -40,4 +58,4 @@ export const hasValue = (o: any): boolean => {
   }
 
   return o !== "";
-};
+}

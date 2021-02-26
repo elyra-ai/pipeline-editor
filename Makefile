@@ -30,4 +30,4 @@ lint:
 
 .PHONY: test
 test:
-	yarn lerna run test --stream
+	yarn jest
