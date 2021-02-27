@@ -18,7 +18,7 @@ import { parseTree, findNodeAtLocation } from "jsonc-parser";
 
 // 3 seconds should be ample time.
 // should only protect against any infinite loops.
-const TIMEOUT = 3 * 1000;
+const TIMEOUT = 3000;
 
 export interface Link {
   id: string;
@@ -64,7 +64,7 @@ export function checkCircularReferences(links: Link[]) {
     const chainLength = orderedChain.length;
     forkStack.push(...linksToVisit.map(() => chainLength));
 
-    while (0 < stack.length && Date.now() - startTime < TIMEOUT) {
+    while (stack.length > 0 && Date.now() - startTime < TIMEOUT) {
       forkStack.pop();
       const l = stack.pop()!; // we should be gauranteed an item.
       seen.add(l.id);
@@ -77,8 +77,13 @@ export function checkCircularReferences(links: Link[]) {
           taintedLinks.add(item);
         }
 
-        const position = forkStack.pop() ?? 0;
-        orderedChain = orderedChain.slice(0, position);
+        // This is completely useless, but it makes me feel better that this is
+        // here.
+        const position = forkStack.slice(-1).pop();
+        if (position !== undefined) {
+          orderedChain = orderedChain.slice(0, position);
+        }
+        // if position is undefined we will set orderedChain to []
         continue;
       }
 
@@ -88,8 +93,12 @@ export function checkCircularReferences(links: Link[]) {
 
       // We reached the end of a chain.
       if (linksToVisit === undefined) {
-        const position = forkStack.pop() ?? 0;
-        orderedChain = orderedChain.slice(0, position);
+        // This is 100% necessary unlike the other example.
+        const position = forkStack.slice(-1).pop();
+        if (position !== undefined) {
+          orderedChain = orderedChain.slice(0, position);
+        }
+        // if position is undefined we will set orderedChain to []
         continue;
       }
 
@@ -110,6 +119,23 @@ enum Severity {
   Hint,
 }
 
+interface CircularReferenceInfo {
+  type: "circularReference";
+  linkID: string;
+}
+
+interface MissingPropertyInfo {
+  type: "missingProperty";
+  nodeID: string;
+  property: string;
+}
+
+interface InvalidNodeInfo {
+  type: "invalidNode";
+  nodeID: string;
+  op: string;
+}
+
 interface Problem {
   severity: Severity;
   range: {
@@ -117,6 +143,7 @@ interface Problem {
     length: number;
   };
   message: string;
+  info: CircularReferenceInfo | MissingPropertyInfo | InvalidNodeInfo;
 }
 
 function isNode(nodes: any[], id: string) {
@@ -170,23 +197,29 @@ export function validate(pipeline: string, nodeDefinitions: any): Problem[] {
   const links = getLinks(primaryPipeline);
   const taintedLinks = checkCircularReferences(links);
 
-  let problems = taintedLinks.map((linkID) => {
-    const link = links.find((l) => l.id === linkID);
-    const location = findNodeAtLocation(pipelineTreeRoot, [
-      ...(link?.path ?? []),
-      "node_id_ref",
-    ]);
-    const source = findNode(primaryPipeline, link?.srcNodeId ?? "");
-    const target = findNode(primaryPipeline, link?.trgNodeId ?? "");
-    return {
-      severity: 1,
-      message: `The connection between nodes '${source.app_data.ui_data.label}' and '${target.app_data.ui_data.label}' is part of a circular reference.`,
-      range: {
-        offset: location?.offset ?? 0,
-        length: location?.length ?? 0,
-      },
-    };
-  });
+  let problems = taintedLinks.map(
+    (linkID): Problem => {
+      const link = links.find((l) => l.id === linkID);
+      const location = findNodeAtLocation(pipelineTreeRoot, [
+        ...(link?.path ?? []),
+        "node_id_ref",
+      ]);
+      const source = findNode(primaryPipeline, link?.srcNodeId ?? "");
+      const target = findNode(primaryPipeline, link?.trgNodeId ?? "");
+      return {
+        severity: 1,
+        message: `The connection between nodes '${source.app_data.ui_data.label}' and '${target.app_data.ui_data.label}' is part of a circular reference.`,
+        range: {
+          offset: location?.offset ?? 0,
+          length: location?.length ?? 0,
+        },
+        info: {
+          type: "circularReference",
+          linkID: linkID,
+        },
+      };
+    }
+  );
 
   // validate properties
   const nodes = getNodes(primaryPipeline);
@@ -220,6 +253,11 @@ export function validate(pipeline: string, nodeDefinitions: any): Problem[] {
             range: {
               offset: location?.offset ?? 0,
               length: location?.length ?? 0,
+            },
+            info: {
+              type: "missingProperty",
+              nodeID: node.id,
+              property: prop.id,
             },
           });
           continue;

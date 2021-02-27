@@ -332,9 +332,13 @@ const linkExamples = [
 
 describe("checkCircularReferences", () => {
   for (const { it: should, given, expected } of linkExamples) {
-    it(should, async () => {
+    it(should, () => {
+      const startTime = Date.now();
       const actual = checkCircularReferences(given);
+      const endTime = Date.now();
+
       expect(new Set(actual)).toEqual(new Set(expected));
+      expect(endTime - startTime).toBeLessThan(300);
     });
   }
 });
