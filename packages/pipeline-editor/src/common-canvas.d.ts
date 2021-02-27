@@ -108,6 +108,12 @@ declare module "@elyra/canvas" {
       enableNodeLayout?: {
         bodyPath?: string;
         selectionPath?: string;
+        imagePosX?: number;
+        imagePosY?: number;
+        imageWidth?: number;
+        imageHeight?: number;
+        labelPosX?: number;
+        labelMaxWidth?: number;
       };
     };
     notificationConfig?: {

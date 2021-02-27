@@ -523,6 +523,14 @@ const PipelineEditor = forwardRef(
                   enablePaletteLayout: "None", // 'Flyout', 'None', 'Modal'
                   enableNodeFormatType: "Horizontal",
                   enableToolbarLayout: toolbar === undefined ? "None" : "Top",
+                  enableNodeLayout: {
+                    imagePosX: 10,
+                    imagePosY: 0,
+                    imageWidth: 16,
+                    imageHeight: 40,
+                    labelPosX: 32,
+                    labelMaxWidth: 118,
+                  },
                 }}
                 notificationConfig={{ enable: false }}
                 contextMenuConfig={{
