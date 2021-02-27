@@ -31,3 +31,11 @@ lint:
 .PHONY: test
 test:
 	yarn jest
+
+.PHONY: coverage
+coverage:
+	yarn jest --coverage
+
+.PHONY: snapshot
+snapshot:
+	yarn jest --testMatch "**/*.snap.test.{ts,tsx}"

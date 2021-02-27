@@ -86,7 +86,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["webpack.*.js", "*.spec.tsx", "*.spec.ts"],
+      files: ["webpack.*.js", "*.test.tsx", "*.test.ts"],
       rules: {
         "import/no-extraneous-dependencies": [
           "warn",

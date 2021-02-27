@@ -31,6 +31,7 @@ it("renders one item", () => {
   const { container } = render(
     <NodeTooltip properties={[{ label: "Label", value: "some value" }]} />
   );
+
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
       class="elyra-PipelineNodeTooltip"
@@ -60,6 +61,7 @@ it("renders multiple items", () => {
       ]}
     />
   );
+
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
       class="elyra-PipelineNodeTooltip"
@@ -100,6 +102,7 @@ it("renders with errors", () => {
       properties={[{ label: "Label", value: "some value" }]}
     />
   );
+
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
       class="elyra-PipelineNodeTooltip"

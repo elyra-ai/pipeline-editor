@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-const baseConfig = require("./jest.config.base");
-
 module.exports = {
-  ...baseConfig,
-  collectCoverageFrom: ["**/*.{js,jsx,ts,tsx}", "!**/src/*", "!**/*.d.ts"],
+  collectCoverageFrom: [
+    // Collect coverage for all typescript files
+    "**/*.{ts,tsx}",
+    // Ignore files in the src directory. Mainly, `index.ts` which should only
+    // be exports.
+    "!**/src/*",
+    // Ignore any typescript declaration files.
+    "!**/*.d.ts",
+  ],
   coverageReporters: ["lcov", "text"],
   projects: ["<rootDir>/packages/*"],
 };

@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
-  testMatch: [
-    // Match all typescript tests
-    "**/*.test.{ts,tsx}",
-    // Ignore snapshot tests
-    "!**/*.snap.test.{ts,tsx}",
-  ],
-};
+import { render } from "@testing-library/react";
+
+import PipelineEditor from "./";
+
+it("shows custom empty component for undefined pipeline", () => {
+  const { container } = render(
+    <PipelineEditor pipeline={undefined}>custom empty message</PipelineEditor>
+  );
+  expect(container.firstChild).toHaveTextContent(/custom empty message/i);
+});
+
+it("shows custom empty component for null pipeline", () => {
+  const { container } = render(
+    <PipelineEditor pipeline={null}>custom empty message</PipelineEditor>
+  );
+  expect(container.firstChild).toHaveTextContent(/custom empty message/i);
+});
