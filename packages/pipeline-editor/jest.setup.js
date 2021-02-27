@@ -19,3 +19,7 @@ global.crypto = {
     return new Uint8Array(256);
   },
 };
+
+window.scrollTo = () => {
+  return;
+};

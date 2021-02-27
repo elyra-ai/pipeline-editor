@@ -24,18 +24,12 @@ export function migrate(pipelineJSON: any) {
   return produce(pipelineJSON, (draft: any) => {
     const version = draft.pipelines[0].app_data?.version ?? 0;
     if (version < 1) {
-      // original pipeline definition without a version
-      console.info("Migrating pipeline to version 1.");
       migrateV1(draft);
     }
     if (version < 2) {
-      // adding relative path on the pipeline filenames
-      console.info("Migrating pipeline to version 2.");
       migrateV2(draft);
     }
     if (version < 3) {
-      // Adding python script support
-      console.info("Migrating pipeline to version 3 (current version).");
       migrateV3(draft);
     }
   });
