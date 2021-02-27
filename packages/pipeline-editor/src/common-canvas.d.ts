@@ -108,6 +108,12 @@ declare module "@elyra/canvas" {
       enableNodeLayout?: {
         bodyPath?: string;
         selectionPath?: string;
+        imagePosX?: number;
+        imagePosY?: number;
+        imageWidth?: number;
+        imageHeight?: number;
+        labelPosX?: number;
+        labelMaxWidth?: number;
       };
     };
     notificationConfig?: {
@@ -118,6 +124,17 @@ declare module "@elyra/canvas" {
       defaultMenuEntries?: {
         saveToPalette?: boolean;
         createSupernode?: boolean;
+      };
+    };
+    keyboardConfig?: {
+      actions?: {
+        delete?: boolean;
+        undo?: boolean;
+        redo?: boolean;
+        selectAll?: boolean;
+        cutToClipboard?: boolean;
+        copyToClipboard?: boolean;
+        pasteFromClipboard?: boolean;
       };
     };
   }

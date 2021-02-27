@@ -54,6 +54,7 @@ interface Props {
   onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
   readOnly?: boolean;
   children?: React.ReactNode;
+  nativeKeyboardActions?: boolean;
 }
 
 const NODE_SVG_PATH =
@@ -116,6 +117,7 @@ const PipelineEditor = forwardRef(
       onFileRequested,
       readOnly,
       children,
+      nativeKeyboardActions,
     }: Props,
     ref
   ) => {
@@ -523,6 +525,14 @@ const PipelineEditor = forwardRef(
                   enablePaletteLayout: "None", // 'Flyout', 'None', 'Modal'
                   enableNodeFormatType: "Horizontal",
                   enableToolbarLayout: toolbar === undefined ? "None" : "Top",
+                  enableNodeLayout: {
+                    imagePosX: 10,
+                    imagePosY: 0,
+                    imageWidth: 16,
+                    imageHeight: 40,
+                    labelPosX: 32,
+                    labelMaxWidth: 118,
+                  },
                 }}
                 notificationConfig={{ enable: false }}
                 contextMenuConfig={{
@@ -532,6 +542,19 @@ const PipelineEditor = forwardRef(
                     createSupernode: true,
                   },
                 }}
+                keyboardConfig={
+                  nativeKeyboardActions
+                    ? {
+                        actions: {
+                          undo: false,
+                          redo: false,
+                          cutToClipboard: false,
+                          copyToClipboard: false,
+                          pasteFromClipboard: false,
+                        },
+                      }
+                    : undefined
+                }
               />
             }
             right={
