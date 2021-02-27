@@ -18,10 +18,6 @@ import { render } from "@testing-library/react";
 
 import NodeTooltip from "./";
 
-it("renders", () => {
-  render(<NodeTooltip properties={[]} />);
-});
-
 it("renders one item", () => {
   const { container } = render(
     <NodeTooltip properties={[{ label: "Label", value: "some value" }]} />
@@ -49,6 +45,15 @@ it("renders multiple items", () => {
 });
 
 it("renders with errors", () => {
+  const { container } = render(
+    <NodeTooltip error="this is an error" properties={[]} />
+  );
+
+  expect(container.firstChild).toHaveTextContent(/error/i);
+  expect(container.firstChild).toHaveTextContent(/this is an error/i);
+});
+
+it("renders with errors and properties", () => {
   const { container } = render(
     <NodeTooltip
       error="this is an error"
