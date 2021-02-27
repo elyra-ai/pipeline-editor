@@ -47,3 +47,114 @@ it("should migrate v0 to latest", () => {
     }
   `);
 });
+
+it("should migrate v0 to latest with missing app_data", () => {
+  const v0 = {
+    pipelines: [
+      {
+        nodes: [],
+      },
+    ],
+  };
+
+  const actual = migrate(v0);
+
+  expect(actual).toMatchInlineSnapshot(`
+    Object {
+      "pipelines": Array [
+        Object {
+          "app_data": Object {
+            "version": 3,
+          },
+          "nodes": Array [],
+        },
+      ],
+    }
+  `);
+});
+
+it("should migrate v1 to latest", () => {
+  const v1 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 1,
+        },
+        nodes: [
+          { app_data: { filename: "/user/niko/project/notebook.ipynb" } },
+        ],
+      },
+    ],
+  };
+
+  const actual = migrate(v1);
+
+  expect(actual).toMatchInlineSnapshot(`
+    Object {
+      "pipelines": Array [
+        Object {
+          "app_data": Object {
+            "name": "name",
+            "version": 3,
+          },
+          "nodes": Array [
+            Object {
+              "app_data": Object {
+                "filename": "notebook.ipynb",
+              },
+            },
+          ],
+        },
+      ],
+    }
+  `);
+});
+
+it("should migrate v2 to latest", () => {
+  const v2 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 2,
+        },
+        nodes: [],
+      },
+    ],
+  };
+
+  const actual = migrate(v2);
+
+  expect(actual).toMatchInlineSnapshot(`
+    Object {
+      "pipelines": Array [
+        Object {
+          "app_data": Object {
+            "name": "name",
+            "version": 3,
+          },
+          "nodes": Array [],
+        },
+      ],
+    }
+  `);
+});
+
+it("should do nothing for latest version", () => {
+  const latest = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 3,
+        },
+        nodes: [],
+      },
+    ],
+  };
+
+  const actual = migrate(latest);
+
+  expect(actual).toEqual(latest);
+});
