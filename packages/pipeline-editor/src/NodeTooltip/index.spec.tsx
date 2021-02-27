@@ -18,7 +18,7 @@ import { render } from "@testing-library/react";
 
 import NodeTooltip from "./";
 
-test("renders", () => {
+it("renders", () => {
   const { container } = render(<NodeTooltip properties={[]} />);
   expect(container.firstChild).toMatchInlineSnapshot(`
       <div
@@ -27,7 +27,7 @@ test("renders", () => {
     `);
 });
 
-test("renders one item", () => {
+it("renders one item", () => {
   const { container } = render(
     <NodeTooltip properties={[{ label: "Label", value: "some value" }]} />
   );
@@ -51,7 +51,7 @@ test("renders one item", () => {
   `);
 });
 
-test("renders multiple items", () => {
+it("renders multiple items", () => {
   const { container } = render(
     <NodeTooltip
       properties={[
@@ -93,7 +93,7 @@ test("renders multiple items", () => {
   `);
 });
 
-test("renders with errors", () => {
+it("renders with errors", () => {
   const { container } = render(
     <NodeTooltip
       error="this is an error"

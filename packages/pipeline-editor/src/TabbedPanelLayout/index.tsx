@@ -18,8 +18,8 @@ import React from "react";
 
 interface Props {
   tabs: Tab[];
-  open?: boolean;
-  experimental?: boolean;
+  collapsed?: boolean;
+  showCloseButton?: boolean;
   currentTab?: string;
   onClose?: () => any;
   onTabClick?: (id: string) => any;
@@ -35,11 +35,11 @@ function TabbedPanelLayout({
   currentTab,
   onTabClick,
   tabs,
-  experimental,
-  open,
+  showCloseButton,
+  collapsed,
   onClose,
 }: Props) {
-  if (open !== true) {
+  if (collapsed === true) {
     return (
       <div className="elyra-verticalTabGroup">
         {tabs.map((t) => (
@@ -57,7 +57,7 @@ function TabbedPanelLayout({
     );
   }
 
-  let resolvedCurrentTab = currentTab === undefined ? tabs[0].id : currentTab;
+  const resolvedCurrentTab = currentTab === undefined ? tabs[0].id : currentTab;
 
   return (
     <div className="elyra-tabPanel">
@@ -80,16 +80,17 @@ function TabbedPanelLayout({
             </div>
           ))}
         </div>
-        {experimental ? (
+        {showCloseButton === true && (
           <div className="elyra-actionItem">
             <div
+              title="Close Panel"
               className="elyra-icon elyra-actionItemIcon elyra-panel-close"
               onClick={() => {
                 onClose?.();
               }}
             />
           </div>
-        ) : null}
+        )}
       </div>
       <div
         className="elyra-tabContent"
@@ -101,7 +102,8 @@ function TabbedPanelLayout({
           width: "100%",
         }}
       >
-        {tabs.find((t) => t.id === resolvedCurrentTab)?.content}
+        {tabs.find((t) => t.id === resolvedCurrentTab)?.content ??
+          "Invalid tab id."}
       </div>
     </div>
   );

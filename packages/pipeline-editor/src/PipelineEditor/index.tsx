@@ -584,8 +584,8 @@ const PipelineEditor = forwardRef(
                     content: <PalettePanel nodes={nodes} />,
                   },
                 ]}
-                open={panelOpen}
-                experimental={toolbar === undefined}
+                collapsed={panelOpen === false}
+                showCloseButton={toolbar === undefined}
                 onClose={() => {
                   onAction?.({ type: "closePanel" });
                   setPanelOpen(false);

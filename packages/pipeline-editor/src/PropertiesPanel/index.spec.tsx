@@ -19,7 +19,7 @@ import { IntlProvider } from "react-intl";
 
 import PropertiesPanel from "./";
 
-test("renders with no nodes selected", () => {
+it("renders with no nodes selected", () => {
   const { container } = render(<PropertiesPanel nodes={[]} />);
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
@@ -30,7 +30,7 @@ test("renders with no nodes selected", () => {
   `);
 });
 
-test("renders with no nodes selected", () => {
+it("renders with no nodes selected", () => {
   const { container } = render(
     <PropertiesPanel nodes={[]} selectedNodes={[]} />
   );
@@ -43,7 +43,7 @@ test("renders with no nodes selected", () => {
   `);
 });
 
-test("renders with multiple nodes selected", () => {
+it("renders with multiple nodes selected", () => {
   const { container } = render(
     <PropertiesPanel nodes={[]} selectedNodes={[{}, {}]} />
   );
@@ -56,7 +56,7 @@ test("renders with multiple nodes selected", () => {
   `);
 });
 
-test("renders with supernode selected", () => {
+it("renders with supernode selected", () => {
   const { container } = render(
     <PropertiesPanel nodes={[]} selectedNodes={[{ type: "super_node" }]} />
   );
@@ -69,7 +69,7 @@ test("renders with supernode selected", () => {
   `);
 });
 
-test("renders if selected node op isn't defined in schema", () => {
+it("renders if selected node op isn't defined in schema", () => {
   const { container } = render(
     <PropertiesPanel
       nodes={[]}
@@ -236,7 +236,7 @@ const node = {
   },
 };
 
-test("renders with one node selected", () => {
+it("renders with one node selected", () => {
   const { container } = render(
     <IntlProvider locale="en">
       <PropertiesPanel
