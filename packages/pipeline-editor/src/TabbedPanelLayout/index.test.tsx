@@ -185,7 +185,7 @@ it("renders the first tab when no current tab is provided", async () => {
   expect(container).toHaveTextContent("Tab one content");
 });
 
-it("renders the first tab when no current tab is provided", async () => {
+it("shows invalid tab message when current tab doesn't exist", async () => {
   const { container } = render(
     <TabbedPanelLayout
       currentTab="three"

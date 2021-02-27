@@ -332,6 +332,7 @@ const linkExamples = [
 
 describe("checkCircularReferences", () => {
   for (const { it: should, given, expected } of linkExamples) {
+    // eslint-disable-next-line jest/valid-title
     it(should, () => {
       const startTime = Date.now();
       const actual = checkCircularReferences(given);

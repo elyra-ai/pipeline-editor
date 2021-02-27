@@ -29,7 +29,7 @@ it("should throw for an invalid pipeline", () => {
       pipelines: [{ app_data: { version: "3" } }],
     });
   }
-  expect(open).toThrowError(new InvalidPipelineError());
+  expect(open).toThrow(new InvalidPipelineError());
 });
 
 it("should throw for an out of date pipeline", () => {
@@ -40,7 +40,7 @@ it("should throw for an out of date pipeline", () => {
       pipelines: [{ app_data: { version: 1 } }],
     });
   }
-  expect(open).toThrowError(new PipelineOutOfDateError());
+  expect(open).toThrow(new PipelineOutOfDateError());
 });
 
 it("should throw for an out of date elyra", () => {
@@ -51,7 +51,7 @@ it("should throw for an out of date elyra", () => {
       pipelines: [{ app_data: { version: PIPELINE_CURRENT_VERSION + 1 } }],
     });
   }
-  expect(open).toThrowError(new ElyraOutOfDateError());
+  expect(open).toThrow(new ElyraOutOfDateError());
 });
 
 it("should open a valid pipeline", () => {
@@ -63,7 +63,7 @@ it("should open a valid pipeline", () => {
     });
   }
 
-  expect(open).not.toThrowError();
+  expect(open).not.toThrow();
 });
 
 it("should not attempt to re-open the same pipeline", () => {
@@ -76,8 +76,8 @@ it("should not attempt to re-open the same pipeline", () => {
   function open() {
     controller.open(pipeline);
   }
-  expect(open).toThrowError(new PipelineOutOfDateError());
-  expect(open).not.toThrowError();
+  expect(open).toThrow(new PipelineOutOfDateError());
+  expect(open).not.toThrow();
 });
 
 it("should attempt to re-open the same pipeline if they are not the same reference", () => {
@@ -89,6 +89,6 @@ it("should attempt to re-open the same pipeline if they are not the same referen
     };
     controller.open(pipeline);
   }
-  expect(open).toThrowError(new PipelineOutOfDateError());
-  expect(open).toThrowError(new PipelineOutOfDateError());
+  expect(open).toThrow(new PipelineOutOfDateError());
+  expect(open).toThrow(new PipelineOutOfDateError());
 });

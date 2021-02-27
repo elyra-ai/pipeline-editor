@@ -19,7 +19,7 @@ import { IntlProvider } from "react-intl";
 
 import PropertiesPanel from "./";
 
-it("renders with no nodes selected", () => {
+it("renders with undefined nodes selected", () => {
   const { container } = render(<PropertiesPanel nodes={[]} />);
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div

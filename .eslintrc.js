@@ -18,9 +18,10 @@ const allExtensions = [".ts", ".tsx", ".d.ts", ".js", ".jsx"];
 
 module.exports = {
   root: true,
-  extends: "react-app",
+  extends: ["react-app", "plugin:jest/recommended", "plugin:jest/style"],
   plugins: ["import", "header"],
   rules: {
+    "jest/no-large-snapshots": ["error", { maxSize: 1 }],
     "header/header": [
       "warn",
       "block",
@@ -85,6 +86,12 @@ module.exports = {
     ],
   },
   overrides: [
+    {
+      files: ["*.snap.test.ts", "*.snap.test.tsx"],
+      rules: {
+        "jest/no-large-snapshots": ["off"],
+      },
+    },
     {
       files: ["webpack.*.js", "*.test.tsx", "*.test.ts"],
       rules: {
