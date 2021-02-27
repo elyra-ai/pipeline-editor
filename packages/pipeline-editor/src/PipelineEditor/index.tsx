@@ -437,7 +437,6 @@ const PipelineEditor = forwardRef(
             return;
         }
 
-        controller.current.validate();
         onChange?.(controller.current.getPipelineFlow());
       },
       [onAction, onChange]
@@ -445,14 +444,15 @@ const PipelineEditor = forwardRef(
 
     const handlePropertiesChange = useCallback(
       (nodeID, data) => {
-        controller.current.setNodeProperties(
-          nodeID,
-          { app_data: data },
-          controller.current.getPrimaryPipelineId()
-        );
-
-        controller.current.validate();
-        onChange?.(controller.current.getPipelineFlow());
+        const pipeline = controller.current.findNodeParentPipeline(nodeID);
+        if (pipeline !== undefined) {
+          controller.current.setNodeProperties(
+            nodeID,
+            { app_data: data },
+            pipeline.id
+          );
+          onChange?.(controller.current.getPipelineFlow());
+        }
       },
       [onChange]
     );
