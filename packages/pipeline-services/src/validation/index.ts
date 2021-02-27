@@ -121,17 +121,20 @@ enum Severity {
 
 interface CircularReferenceInfo {
   type: "circularReference";
+  pipelineID: string;
   linkID: string;
 }
 
 interface MissingPropertyInfo {
   type: "missingProperty";
+  pipelineID: string;
   nodeID: string;
   property: string;
 }
 
 interface InvalidNodeInfo {
   type: "invalidNode";
+  pipelineID: string;
   nodeID: string;
   op: string;
 }
@@ -157,7 +160,7 @@ function isNode(nodes: any[], id: string) {
 function getLinks(pipeline: any): Link[] {
   let links: Link[] = [];
   for (const [n, node] of pipeline.nodes.entries()) {
-    for (const [i, input] of node.inputs.entries()) {
+    for (const [i, input] of node.inputs?.entries() ?? []) {
       if (input.links !== undefined) {
         for (const [l, link] of input.links.entries()) {
           if (isNode(pipeline.nodes, link.node_id_ref)) {
@@ -166,7 +169,7 @@ function getLinks(pipeline: any): Link[] {
               trgNodeId: node.id,
               srcNodeId: link.node_id_ref,
               type: "",
-              path: ["pipelines", 0, "nodes", n, "inputs", i, "links", l],
+              path: ["nodes", n, "inputs", i, "links", l],
             });
           }
         }
@@ -191,76 +194,77 @@ export function validate(pipeline: string, nodeDefinitions: any): Problem[] {
   }
 
   const pipelineJSON = JSON.parse(pipeline);
-  const primaryPipeline = pipelineJSON.pipelines.find(
-    (p: any) => p.id === pipelineJSON.primary_pipeline
-  );
-  const links = getLinks(primaryPipeline);
-  const taintedLinks = checkCircularReferences(links);
 
-  let problems = taintedLinks.map(
-    (linkID): Problem => {
-      const link = links.find((l) => l.id === linkID);
-      const location = findNodeAtLocation(pipelineTreeRoot, [
-        ...(link?.path ?? []),
-        "node_id_ref",
-      ]);
-      const source = findNode(primaryPipeline, link?.srcNodeId ?? "");
-      const target = findNode(primaryPipeline, link?.trgNodeId ?? "");
-      return {
-        severity: 1,
-        message: `The connection between nodes '${source.app_data.ui_data.label}' and '${target.app_data.ui_data.label}' is part of a circular reference.`,
-        range: {
-          offset: location?.offset ?? 0,
-          length: location?.length ?? 0,
-        },
-        info: {
-          type: "circularReference",
-          linkID: linkID,
-        },
-      };
-    }
-  );
+  let problems: Problem[] = [];
+  for (const [p, pipeline] of pipelineJSON.pipelines.entries()) {
+    const links = getLinks(pipeline);
+    const taintedLinks = checkCircularReferences(links);
+    const linkProblems = taintedLinks.map(
+      (linkID): Problem => {
+        const link = links.find((l) => l.id === linkID);
 
-  // validate properties
-  const nodes = getNodes(primaryPipeline);
-  for (const [n, node] of nodes.entries()) {
-    if (node.op === undefined) {
-      // NOTE: supernode or binding, don't know if we need to validate anything?
-      continue;
-    }
-    const nodeDef = nodeDefinitions.find((n: any) => n.op === node.op);
-    if (nodeDef) {
-      for (const prop of nodeDef.properties?.parameters ?? []) {
-        // this should be safe because a boolean can't be required
-        // otherwise we would need to check strings for undefined or empty string
-        // NOTE: 0 is also falsy, but we don't have any number inputs right now?
-        // TODO: We should update this to do type checking.
-        const location = findNodeAtLocation(pipelineTreeRoot, [
-          "pipelines",
-          0,
-          "nodes",
-          n,
-          "app_data",
-          prop.id,
-        ]);
-        if (prop.required && !node.app_data[prop.id]) {
-          const label = nodeDef.properties?.uihints.parameter_info.find(
-            (p: any) => p.parameter_ref === prop.id
-          )?.label.default;
-          problems.push({
-            severity: 1,
-            message: `The property '${label}' on node '${node.app_data.ui_data.label}' is required.`,
-            range: {
-              offset: location?.offset ?? 0,
-              length: location?.length ?? 0,
-            },
-            info: {
-              type: "missingProperty",
-              nodeID: node.id,
-              property: prop.id,
-            },
-          });
-          continue;
+        const path = ["pipelines", p, ...(link?.path ?? []), "node_id_ref"];
+        const location = findNodeAtLocation(pipelineTreeRoot, path);
+        const source = findNode(pipeline, link?.srcNodeId ?? "");
+        const target = findNode(pipeline, link?.trgNodeId ?? "");
+        return {
+          severity: 1,
+          message: `The connection between nodes '${source.app_data.ui_data.label}' and '${target.app_data.ui_data.label}' is part of a circular reference.`,
+          range: {
+            offset: location?.offset ?? 0,
+            length: location?.length ?? 0,
+          },
+          info: {
+            type: "circularReference",
+            pipelineID: pipeline.id,
+            linkID: linkID,
+          },
+        };
+      }
+    );
+    problems.push(...linkProblems);
+
+    // validate properties
+    const nodes = getNodes(pipeline);
+    for (const [n, node] of nodes.entries()) {
+      if (node.op === undefined) {
+        // NOTE: supernode or binding, don't know if we need to validate anything?
+        continue;
+      }
+      const nodeDef = nodeDefinitions.find((n: any) => n.op === node.op);
+      if (nodeDef) {
+        for (const prop of nodeDef.properties?.parameters ?? []) {
+          // If the property isn't in the json, report the error one level higher.
+          let path = ["pipelines", p, "nodes", n, "app_data"];
+          if (node.app_data[prop.id] !== undefined) {
+            path.push(prop.id);
+          }
+          const location = findNodeAtLocation(pipelineTreeRoot, path);
+
+          // this should be safe because a boolean can't be required
+          // otherwise we would need to check strings for undefined or empty string
+          // NOTE: 0 is also falsy, but we don't have any number inputs right now?
+          // TODO: We should update this to do type checking.
+          if (prop.required && !node.app_data[prop.id]) {
+            const label = nodeDef.properties?.uihints.parameter_info.find(
+              (p: any) => p.parameter_ref === prop.id
+            )?.label.default;
+            problems.push({
+              severity: 1,
+              message: `The property '${label}' on node '${node.app_data.ui_data.label}' is required.`,
+              range: {
+                offset: location?.offset ?? 0,
+                length: location?.length ?? 0,
+              },
+              info: {
+                type: "missingProperty",
+                pipelineID: pipeline.id,
+                nodeID: node.id,
+                property: prop.id,
+              },
+            });
+            continue;
+          }
         }
       }
     }

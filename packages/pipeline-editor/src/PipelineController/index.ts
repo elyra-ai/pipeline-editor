@@ -16,12 +16,7 @@
 
 import path from "path";
 
-import {
-  CanvasController,
-  ExecutionNodeDef,
-  NodeTypeDef,
-  PipelineFlowV3,
-} from "@elyra/canvas";
+import { CanvasController, PipelineFlowV3 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
 import { CustomNodeSpecification } from "../types";
@@ -37,10 +32,6 @@ const PIPELINE_CURRENT_VERSION = 3;
 interface AddNodeOptions {
   x?: number;
   y?: number;
-}
-
-function isExecutionNode(node: NodeTypeDef): node is ExecutionNodeDef {
-  return (node as ExecutionNodeDef).op !== undefined;
 }
 
 class PipelineController extends CanvasController {
@@ -83,24 +74,6 @@ class PipelineController extends CanvasController {
     throw new UnknownVersionError();
   }
 
-  private _getNode(nodeID: string) {
-    const pipelineID = this.getPrimaryPipelineId();
-    const node = this.getNode(nodeID, pipelineID);
-    if (node) {
-      return node;
-    }
-    // If the node is in a supernode, search supernodes for it
-    const superNodes = this.getSupernodes(pipelineID);
-    for (const superNode of superNodes) {
-      const superNodePipelineID = superNode.subflow_ref.pipeline_id_ref;
-      const node = this.getNode(nodeID, superNodePipelineID);
-      if (node) {
-        return node;
-      }
-    }
-    return undefined;
-  }
-
   setNodes(nodes: CustomNodeSpecification[]) {
     this.nodes = nodes;
     const palette = createPalette(this.nodes);
@@ -124,10 +97,7 @@ class PipelineController extends CanvasController {
     this.editActionHandler(data);
   }
 
-  setNodeErrors(nodeIDs: string[]) {
-    const pipelineID = this.getPrimaryPipelineId();
-    const nodeToBeStyled = { [pipelineID]: nodeIDs };
-
+  setNodeErrors(nodeToBeStyled: { [key: string]: string[] }) {
     this.setObjectsStyle(
       nodeToBeStyled,
       {
@@ -151,18 +121,16 @@ class PipelineController extends CanvasController {
       x_pos: -24,
       y_pos: -8,
     };
-    for (const nodeID of nodeIDs) {
-      this.setNodeDecorations(nodeID, [indicator], pipelineID);
+    for (const [pipelineID, nodes] of Object.entries(nodeToBeStyled)) {
+      for (const nodeID of nodes) {
+        this.setNodeDecorations(nodeID, [indicator], pipelineID);
+      }
     }
   }
 
-  setInvalidNode(nodeID: string) {
-    const pipelineID = this.getPrimaryPipelineId();
-    const node = this.getNodes().find((n) => n.id === nodeID);
-    if (node === undefined) {
-      return;
-    }
-    if (!isExecutionNode(node)) {
+  setInvalidNode(pipelineID: string, nodeID: string) {
+    const node = this.getNode(nodeID, pipelineID);
+    if (node.type !== "execution_node") {
       return;
     }
     const image =
@@ -183,7 +151,6 @@ class PipelineController extends CanvasController {
               ?
             </text>
           </svg>`);
-
     this.setNodeProperties(
       node.id,
       {
@@ -199,10 +166,7 @@ class PipelineController extends CanvasController {
     this.setNodeLabel(node.id, "unsupported node", pipelineID);
   }
 
-  setLinkErrors(linkIDs: string[]) {
-    const pipelineID = this.getPrimaryPipelineId();
-    const linkToBeStyled = { [pipelineID]: linkIDs };
-
+  setLinkErrors(linkToBeStyled: { [key: string]: string[] }) {
     this.setLinksStyle(
       linkToBeStyled,
       {
@@ -221,54 +185,77 @@ class PipelineController extends CanvasController {
   resetStyles() {
     this.removeAllStyles();
 
-    const pipelineID = this.getPrimaryPipelineId();
+    for (const pipeline of this.getPipelineFlow().pipelines) {
+      for (const node of pipeline.nodes) {
+        if (node.type !== "execution_node" && node.type !== "super_node") {
+          continue;
+        }
+        // `setNodeDecorations` is VERY slow, so make sure we HAVE to set it
+        // before setting it.
+        if (
+          node.app_data?.ui_data?.decorations !== undefined &&
+          node.app_data?.ui_data?.decorations.length !== 0
+        ) {
+          this.setNodeDecorations(node.id, [], pipeline.id);
+        }
 
-    const nodes = this.getNodes();
+        if (node.type !== "execution_node") {
+          continue;
+        }
 
-    for (const node of nodes) {
-      // `setNodeDecorations` is VERY slow, so make sure we HAVE to set it
-      // before setting it.
-      if ((node as any).decorations.length !== 0) {
-        this.setNodeDecorations(node.id, [], pipelineID);
-      }
+        const nodeDef = this.nodes.find((n) => n.op === node.op);
 
-      if (!isExecutionNode(node)) {
-        // We only need to label execution nodes.
-        continue;
-      }
+        if (nodeDef === undefined) {
+          // We don't have a nodedef, skipping...
+          continue;
+        }
 
-      const nodeDef = this.nodes.find((n) => n.op === node.op);
+        const newLabel =
+          nodeDef.labelField && node.app_data?.[nodeDef.labelField]
+            ? node.app_data[nodeDef.labelField]
+            : nodeDef.label;
 
-      if (nodeDef === undefined) {
-        // We don't have a nodedef, skipping...
-        continue;
-      }
+        // `setNodeLabel` is VERY slow, so make sure we HAVE to set it before
+        // setting it.
+        if ((node as any).label !== newLabel) {
+          this.setNodeLabel(node.id, newLabel as string, pipeline.id);
+        }
 
-      const newLabel =
-        nodeDef.labelField && node.app_data?.[nodeDef.labelField]
-          ? node.app_data[nodeDef.labelField]
-          : nodeDef.label;
-
-      // `setNodeLabel` is VERY slow, so make sure we HAVE to set it before
-      // setting it.
-      if ((node as any).label !== newLabel) {
-        this.setNodeLabel(node.id, newLabel as string, pipelineID);
-      }
-
-      if (
-        node.description !== nodeDef.description ||
-        (node as any).image !== nodeDef.image
-      ) {
-        this.setNodeProperties(
-          node.id,
-          {
-            description: nodeDef.description,
-            image: nodeDef.image,
-          },
-          pipelineID
-        );
+        if (
+          node.description !== nodeDef.description ||
+          node.app_data?.ui_data?.image !== nodeDef.image ||
+          node.app_data?.invalidNodeError !== undefined
+        ) {
+          this.setNodeProperties(
+            node.id,
+            {
+              description: nodeDef.description,
+              image: nodeDef.image,
+              app_data: {
+                ...node.app_data,
+                invalidNodeError: undefined,
+              },
+            },
+            pipeline.id
+          );
+        }
       }
     }
+  }
+
+  setSupernodeErrors(pipelineIDs: string[]) {
+    let supernodesWithErrors: { [key: string]: string[] } = {};
+    for (const pipelineID of pipelineIDs) {
+      try {
+        const sn = this.getSupernodeObjReferencing(pipelineID);
+        supernodesWithErrors[sn.parentPipelineId] = [
+          ...(supernodesWithErrors[sn.parentPipelineId] ?? []),
+          sn.supernodeId,
+        ];
+      } catch {}
+    }
+
+    this.setNodeErrors(supernodesWithErrors);
   }
 
   validate() {
@@ -279,87 +266,114 @@ class PipelineController extends CanvasController {
       this.nodes
     );
 
-    const linksWithErrors = [];
-    const invalidNodes = [];
+    const linksWithErrors: { [key: string]: string[] } = {};
+    const nodesWithErrors: { [key: string]: string[] } = {};
     const missingProperties = [];
     for (const problem of problems) {
       switch (problem.info.type) {
         case "circularReference":
-          linksWithErrors.push(problem.info.linkID);
+          linksWithErrors[problem.info.pipelineID] = [
+            ...(linksWithErrors[problem.info.pipelineID] ?? []),
+            problem.info.linkID,
+          ];
           break;
         case "missingProperty":
+          nodesWithErrors[problem.info.pipelineID] = [
+            ...(nodesWithErrors[problem.info.pipelineID] ?? []),
+            problem.info.nodeID,
+          ];
           missingProperties.push({
             nodeID: problem.info.nodeID,
             property: problem.info.property,
           });
           break;
         case "invalidNode":
-          invalidNodes.push(problem.info.nodeID);
-          this.setInvalidNode(problem.info.nodeID);
+          nodesWithErrors[problem.info.pipelineID] = [
+            ...(nodesWithErrors[problem.info.pipelineID] ?? []),
+            problem.info.nodeID,
+          ];
+          this.setInvalidNode(problem.info.pipelineID, problem.info.nodeID);
           break;
       }
     }
     this.setLinkErrors(linksWithErrors);
-    this.setNodeErrors([
-      ...invalidNodes,
-      ...missingProperties.map((p) => p.nodeID),
+    this.setNodeErrors(nodesWithErrors);
+
+    this.setSupernodeErrors([
+      ...new Set([
+        ...Object.keys(linksWithErrors),
+        ...Object.keys(nodesWithErrors),
+      ]),
     ]);
 
-    const pipelineID = this.getPrimaryPipelineId();
-    const nodes = this.getNodes();
-    for (const node of nodes) {
-      const nodeProblems = missingProperties.filter(
-        (p) => p.nodeID === node.id
-      );
-      if (nodeProblems.length > 0) {
-        if (!isExecutionNode(node)) {
-          continue;
-        }
-        const nodeDef = this.nodes.find((n) => n.op === node.op);
-        if (nodeDef === undefined) {
-          continue;
-        }
-
-        const message = nodeProblems
-          .map((problem) => {
-            const label = nodeDef.properties?.uihints?.parameter_info.find(
-              (p) => p.parameter_ref === problem.property
-            )?.label.default;
-            return `property "${label}" is required`;
-          })
-          .join("\n");
-
-        this.setNodeProperties(
-          node.id,
-          {
-            app_data: {
-              ...node.app_data,
-              invalidNodeError: message,
-            },
-          },
-          pipelineID
+    for (const pipeline of this.getPipelineFlow().pipelines) {
+      for (const node of pipeline.nodes) {
+        const nodeProblems = missingProperties.filter(
+          (p) => p.nodeID === node.id
         );
+        if (nodeProblems.length > 0) {
+          if (node.type !== "execution_node") {
+            continue;
+          }
+          const nodeDef = this.nodes.find((n) => n.op === node.op);
+          if (nodeDef === undefined) {
+            continue;
+          }
+
+          const message = nodeProblems
+            .map((problem) => {
+              const label = nodeDef.properties?.uihints?.parameter_info.find(
+                (p) => p.parameter_ref === problem.property
+              )?.label.default;
+              return `property "${label}" is required`;
+            })
+            .join("\n");
+
+          this.setNodeProperties(
+            node.id,
+            {
+              app_data: {
+                ...node.app_data,
+                invalidNodeError: message,
+              },
+            },
+            pipeline.id
+          );
+        }
       }
     }
   }
 
+  findExecutionNode(nodeID: string) {
+    for (const pipeline of this.getPipelineFlow().pipelines) {
+      const search = pipeline.nodes.find((n) => n.id === nodeID);
+      if (search !== undefined && search.type === "execution_node") {
+        return search;
+      }
+    }
+    return undefined;
+  }
+
+  findNodeParentPipeline(nodeID: string) {
+    for (const pipeline of this.getPipelineFlow().pipelines) {
+      const search = pipeline.nodes.find((n) => n.id === nodeID);
+      if (search !== undefined) {
+        return pipeline;
+      }
+    }
+    return undefined;
+  }
+
   properties(nodeID: string) {
-    const node = this._getNode(nodeID);
-    if (node === undefined) {
-      return [];
-    }
+    let node = this.findExecutionNode(nodeID);
 
-    if (!isExecutionNode(node)) {
-      return [];
-    }
-
-    const nodeDef = this.nodes.find((n) => n.op === node.op);
+    const nodeDef = this.nodes.find((n) => n.op === node?.op);
 
     const properties = (nodeDef?.properties?.uihints?.parameter_info ?? []).map(
       (p) => {
         return {
           label: p.label.default,
-          value: node.app_data?.[p.parameter_ref],
+          value: node?.app_data?.[p.parameter_ref],
         };
       }
     );
