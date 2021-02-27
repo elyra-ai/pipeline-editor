@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-const baseConfig = require("./jest.config.base");
+import PipelineController from "./";
 
-module.exports = {
-  ...baseConfig,
-  collectCoverageFrom: ["**/*.{js,jsx,ts,tsx}", "!**/src/*", "!**/*.d.ts"],
-  coverageReporters: ["lcov", "text"],
-  projects: ["<rootDir>/packages/*"],
-};
+it("todo", () => {
+  new PipelineController();
+});
