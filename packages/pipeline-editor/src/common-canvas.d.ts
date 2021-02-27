@@ -127,6 +127,12 @@ declare module "@elyra/canvas" {
   function CommonProperties(props: any);
 
   class CanvasController {
+    setLinksStyle(
+      linkObjectIds: { [key: string]: string[] },
+      newStyle: unknown,
+      temporary: boolean
+    ): void;
+    removeAllStyles(temporary?: boolean): void;
     getPipelineFlow(): PipelineFlowV3;
     setPipelineFlow(pipelineFlow: PipelineFlowV3): void;
     getPrimaryPipelineId(): string;
