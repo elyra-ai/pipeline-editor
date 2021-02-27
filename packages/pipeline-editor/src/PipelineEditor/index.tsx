@@ -54,6 +54,7 @@ interface Props {
   onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
   readOnly?: boolean;
   children?: React.ReactNode;
+  nativeKeyboardActions?: boolean;
 }
 
 const NODE_SVG_PATH =
@@ -116,6 +117,7 @@ const PipelineEditor = forwardRef(
       onFileRequested,
       readOnly,
       children,
+      nativeKeyboardActions,
     }: Props,
     ref
   ) => {
@@ -540,6 +542,19 @@ const PipelineEditor = forwardRef(
                     createSupernode: true,
                   },
                 }}
+                keyboardConfig={
+                  nativeKeyboardActions
+                    ? {
+                        actions: {
+                          undo: false,
+                          redo: false,
+                          cutToClipboard: false,
+                          copyToClipboard: false,
+                          pasteFromClipboard: false,
+                        },
+                      }
+                    : undefined
+                }
               />
             }
             right={
