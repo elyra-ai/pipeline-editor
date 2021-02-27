@@ -128,8 +128,6 @@ const PipelineEditor = forwardRef(
 
     useCloseContextMenu(controller);
 
-    useCloseContextMenu(controller);
-
     const blockingRef = useBlockEvents({
       wheel: true,
       contextmenu: readOnly,

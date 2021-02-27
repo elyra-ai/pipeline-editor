@@ -23,34 +23,62 @@ import { CustomNodeSpecification } from "../types";
 import {
   ElyraOutOfDateError,
   PipelineOutOfDateError,
-  UnknownVersionError,
+  InvalidPipelineError,
 } from "./../errors";
 import { createPalette } from "./create-palette";
 
-const PIPELINE_CURRENT_VERSION = 3;
+export const PIPELINE_CURRENT_VERSION = 3;
 
 interface AddNodeOptions {
   x?: number;
   y?: number;
 }
 
+// NOTE: This is extremely basic validation.
+function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
+  if (pipeline === undefined || pipeline === null) {
+    return false;
+  }
+  if (pipeline.version !== "3.0") {
+    return false;
+  }
+  if (!Array.isArray(pipeline.pipelines)) {
+    return false;
+  }
+  if (pipeline.pipelines?.length < 1) {
+    return false;
+  }
+  if (typeof pipeline.pipelines[0].app_data?.version !== "number") {
+    return false;
+  }
+  return true;
+}
+
 class PipelineController extends CanvasController {
   private nodes: CustomNodeSpecification[] = [];
   private lastOpened: PipelineFlowV3 | undefined;
 
-  open(pipelineJson: PipelineFlowV3) {
-    // if pipeline is null create a new one from scratch.
-    if (pipelineJson === undefined) {
-      pipelineJson = this.getPipelineFlow();
+  open(pipelineJson: any) {
+    // if pipeline is undefined/null create a new one from scratch.
+    if (pipelineJson === undefined || pipelineJson === null) {
+      const emptyPipelineJson = this.getPipelineFlow();
       // NOTE: We should be guaranteed app_data is defined here.
-      pipelineJson.pipelines[0].app_data!.version = PIPELINE_CURRENT_VERSION;
+      emptyPipelineJson.pipelines[0].app_data!.version = PIPELINE_CURRENT_VERSION;
+      pipelineJson = emptyPipelineJson;
     }
 
+    // This must happen after the pipeline has been finalized, but before any
+    // errors are thrown.
     if (this.lastOpened === pipelineJson) {
       return;
     }
     this.lastOpened = pipelineJson;
 
+    if (!isPipelineFlowV3(pipelineJson)) {
+      throw new InvalidPipelineError();
+    }
+
+    // TODO: Should this be primary pipeline? or can it be any?
     const version = pipelineJson.pipelines[0].app_data?.version ?? 0;
 
     if (version === PIPELINE_CURRENT_VERSION) {
@@ -66,12 +94,7 @@ class PipelineController extends CanvasController {
 
     // in this case, pipeline was last edited in a "old" version of Elyra and
     // it needs to be updated/migrated.
-    if (version < PIPELINE_CURRENT_VERSION) {
-      throw new PipelineOutOfDateError();
-    }
-
-    // we should only reach here if the version isn't a number
-    throw new UnknownVersionError();
+    throw new PipelineOutOfDateError();
   }
 
   setNodes(nodes: CustomNodeSpecification[]) {
