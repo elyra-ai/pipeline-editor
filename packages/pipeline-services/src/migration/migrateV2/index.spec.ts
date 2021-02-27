@@ -16,33 +16,58 @@
 
 import migrate from "./";
 
-describe("migrate v1 to v2", () => {
-  it("should change all node paths to relative", () => {
-    const v1 = {
-      pipelines: [
-        {
-          app_data: {
-            name: "name",
-            version: 1,
-          },
-          nodes: [
-            { app_data: { filename: "/user/niko/project/notebook.ipynb" } },
-          ],
+it("should change all node paths to relative", () => {
+  const v1 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 1,
         },
-      ],
-    };
-    const expected = {
-      pipelines: [
-        {
-          app_data: {
-            name: "name",
-            version: 2,
-          },
-          nodes: [{ app_data: { filename: "notebook.ipynb" } }],
+        nodes: [
+          { app_data: { filename: "/user/niko/project/notebook.ipynb" } },
+        ],
+      },
+    ],
+  };
+  const expected = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 2,
         },
-      ],
-    };
-    const actual = migrate(v1);
-    expect(actual).toEqual(expected);
-  });
+        nodes: [{ app_data: { filename: "notebook.ipynb" } }],
+      },
+    ],
+  };
+  const actual = migrate(v1);
+  expect(actual).toEqual(expected);
+});
+
+it("should handle missing node app_data", () => {
+  const v1 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 1,
+        },
+        nodes: [{}],
+      },
+    ],
+  };
+  const expected = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 2,
+        },
+        nodes: [{}],
+      },
+    ],
+  };
+  const actual = migrate(v1);
+  expect(actual).toEqual(expected);
 });

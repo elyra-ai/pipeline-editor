@@ -16,105 +16,151 @@
 
 import migrate from "./";
 
-describe("migrate v0 to v1", () => {
-  it("should rename `title` key to `name`", () => {
-    const v0 = {
-      pipelines: [
-        {
-          app_data: {
-            title: "title",
-          },
-          nodes: [],
+it("should rename `title` key to `name`", () => {
+  const v0 = {
+    pipelines: [
+      {
+        app_data: {
+          title: "title",
         },
-      ],
-    };
-    const expected = {
-      pipelines: [
-        {
-          app_data: {
-            name: "title",
-            version: 1,
-          },
-          nodes: [],
+        nodes: [],
+      },
+    ],
+  };
+  const expected = {
+    pipelines: [
+      {
+        app_data: {
+          name: "title",
+          version: 1,
         },
-      ],
-    };
-    const actual = migrate(v0);
-    expect(actual).toEqual(expected);
-  });
+        nodes: [],
+      },
+    ],
+  };
+  const actual = migrate(v0);
+  expect(actual).toEqual(expected);
+});
 
-  it("should delete deprecated keys", () => {
-    const v0 = {
-      pipelines: [
-        {
-          app_data: {
-            title: "title",
-            export: "export",
-            export_format: "export_format",
-            export_path: "export_path",
-          },
-          nodes: [],
+it("should delete deprecated keys", () => {
+  const v0 = {
+    pipelines: [
+      {
+        app_data: {
+          title: "title",
+          export: "export",
+          export_format: "export_format",
+          export_path: "export_path",
         },
-      ],
-    };
-    const expected = {
-      pipelines: [
-        {
-          app_data: {
-            name: "title",
-            version: 1,
-          },
-          nodes: [],
+        nodes: [],
+      },
+    ],
+  };
+  const expected = {
+    pipelines: [
+      {
+        app_data: {
+          name: "title",
+          version: 1,
         },
-      ],
-    };
-    const actual = migrate(v0);
-    expect(actual).toEqual(expected);
-  });
+        nodes: [],
+      },
+    ],
+  };
+  const actual = migrate(v0);
+  expect(actual).toEqual(expected);
+});
 
-  it("should rename all node keys", () => {
-    const v0 = {
-      pipelines: [
-        {
-          app_data: {
-            title: "title",
-          },
-          nodes: [
-            {
-              app_data: {
-                artifact: "artifact",
-                image: "image",
-                vars: "vars",
-                file_dependencies: "file_dependencies",
-                recursive_dependencies: "recursive_dependencies",
-              },
-            },
-          ],
+it("should rename all node keys", () => {
+  const v0 = {
+    pipelines: [
+      {
+        app_data: {
+          title: "title",
         },
-      ],
-    };
-    const expected = {
-      pipelines: [
-        {
-          app_data: {
-            name: "title",
-            version: 1,
-          },
-          nodes: [
-            {
-              app_data: {
-                filename: "artifact",
-                runtime_image: "image",
-                env_vars: "vars",
-                dependencies: "file_dependencies",
-                include_subdirectories: "recursive_dependencies",
-              },
+        nodes: [
+          {
+            app_data: {
+              artifact: "artifact",
+              image: "image",
+              vars: "vars",
+              file_dependencies: "file_dependencies",
+              recursive_dependencies: "recursive_dependencies",
             },
-          ],
+          },
+        ],
+      },
+    ],
+  };
+  const expected = {
+    pipelines: [
+      {
+        app_data: {
+          name: "title",
+          version: 1,
         },
-      ],
-    };
-    const actual = migrate(v0);
-    expect(actual).toEqual(expected);
-  });
+        nodes: [
+          {
+            app_data: {
+              filename: "artifact",
+              runtime_image: "image",
+              env_vars: "vars",
+              dependencies: "file_dependencies",
+              include_subdirectories: "recursive_dependencies",
+            },
+          },
+        ],
+      },
+    ],
+  };
+  const actual = migrate(v0);
+  expect(actual).toEqual(expected);
+});
+
+it("should handle missing app_data for pipeline", () => {
+  const v0 = {
+    pipelines: [
+      {
+        nodes: [],
+      },
+    ],
+  };
+  const expected = {
+    pipelines: [
+      {
+        app_data: {
+          version: 1,
+        },
+        nodes: [],
+      },
+    ],
+  };
+  const actual = migrate(v0);
+  expect(actual).toEqual(expected);
+});
+
+it("should handle missing app_data for nodes", () => {
+  const v0 = {
+    pipelines: [
+      {
+        app_data: {
+          title: "title",
+        },
+        nodes: [{}],
+      },
+    ],
+  };
+  const expected = {
+    pipelines: [
+      {
+        app_data: {
+          name: "title",
+          version: 1,
+        },
+        nodes: [{}],
+      },
+    ],
+  };
+  const actual = migrate(v0);
+  expect(actual).toEqual(expected);
 });

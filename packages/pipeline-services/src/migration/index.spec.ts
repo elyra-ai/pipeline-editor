@@ -14,31 +14,36 @@
  * limitations under the License.
  */
 
-import migrate from "./";
+import { migrate } from "./";
 
-it("should only bump version", () => {
-  const v2 = {
+it("should migrate v0 to latest", () => {
+  const v0 = {
     pipelines: [
       {
         app_data: {
-          name: "name",
-          version: 2,
+          title: "title",
+          export: "export",
+          export_format: "export_format",
+          export_path: "export_path",
         },
         nodes: [],
       },
     ],
   };
-  const expected = {
-    pipelines: [
-      {
-        app_data: {
-          name: "name",
-          version: 3,
+
+  const actual = migrate(v0);
+
+  expect(actual).toMatchInlineSnapshot(`
+    Object {
+      "pipelines": Array [
+        Object {
+          "app_data": Object {
+            "name": "title",
+            "version": 3,
+          },
+          "nodes": Array [],
         },
-        nodes: [],
-      },
-    ],
-  };
-  const actual = migrate(v2);
-  expect(actual).toEqual(expected);
+      ],
+    }
+  `);
 });

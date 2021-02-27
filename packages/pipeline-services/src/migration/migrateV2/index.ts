@@ -16,6 +16,9 @@
 
 import path from "path";
 
+// NOTE: technically a pipeline can have a missing app_data field however, if
+// this is really an Elyra v1 pipeline, it should be guaranteed to have app_data
+// otherwise we wouldn't know this is a v1 pipeline.
 function migrate(pipeline: any) {
   for (const node of pipeline.pipelines[0].nodes) {
     if (node.app_data === undefined) {
@@ -46,9 +49,7 @@ function migrate(pipeline: any) {
     node.app_data.filename = path.basename(node.app_data.filename);
   }
 
-  if (pipeline.pipelines[0].app_data) {
-    pipeline.pipelines[0].app_data.version = 2;
-  }
+  pipeline.pipelines[0].app_data.version = 2;
 
   return pipeline;
 }

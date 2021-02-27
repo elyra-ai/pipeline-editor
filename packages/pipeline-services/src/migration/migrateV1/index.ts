@@ -25,6 +25,8 @@ function migrate(pipeline: any) {
     delete pipeline.pipelines[0].app_data.export_path;
 
     pipeline.pipelines[0].app_data.version = 1;
+  } else {
+    pipeline.pipelines[0].app_data = { version: 1 };
   }
 
   for (const node of pipeline.pipelines[0].nodes) {
