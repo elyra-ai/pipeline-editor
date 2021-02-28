@@ -48,7 +48,10 @@ function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
   if (pipeline.pipelines?.length < 1) {
     return false;
   }
-  if (typeof pipeline.pipelines[0].app_data?.version !== "number") {
+  if (
+    pipeline.pipelines[0].app_data?.version !== undefined &&
+    typeof pipeline.pipelines[0].app_data?.version !== "number"
+  ) {
     return false;
   }
   return true;

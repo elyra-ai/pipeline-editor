@@ -21,74 +21,117 @@ import {
 } from "../errors";
 import PipelineController, { PIPELINE_CURRENT_VERSION } from "./";
 
-it("should throw for an invalid pipeline", () => {
-  function open() {
+describe("open", () => {
+  it("should throw for an invalid pipeline", () => {
     const controller = new PipelineController();
-    controller.open({
-      version: "3.0",
-      pipelines: [{ app_data: { version: "3" } }],
-    });
-  }
-  expect(open).toThrow(new InvalidPipelineError());
-});
+    function open() {
+      controller.open({
+        version: "3.0",
+        pipelines: [{ app_data: { version: "3" } }],
+      });
+    }
+    expect(open).toThrow(new InvalidPipelineError());
+  });
 
-it("should throw for an out of date pipeline", () => {
-  function open() {
+  it("should throw for an out of date pipeline with no version", () => {
     const controller = new PipelineController();
-    controller.open({
-      version: "3.0",
-      pipelines: [{ app_data: { version: 1 } }],
-    });
-  }
-  expect(open).toThrow(new PipelineOutOfDateError());
-});
+    function open() {
+      controller.open({
+        version: "3.0",
+        pipelines: [{}],
+      });
+    }
+    expect(open).toThrow(new PipelineOutOfDateError());
+  });
 
-it("should throw for an out of date elyra", () => {
-  function open() {
+  it("should throw for an out of date pipeline", () => {
     const controller = new PipelineController();
-    controller.open({
-      version: "3.0",
-      pipelines: [{ app_data: { version: PIPELINE_CURRENT_VERSION + 1 } }],
-    });
-  }
-  expect(open).toThrow(new ElyraOutOfDateError());
-});
+    function open() {
+      controller.open({
+        version: "3.0",
+        pipelines: [{ app_data: { version: 1 } }],
+      });
+    }
+    expect(open).toThrow(new PipelineOutOfDateError());
+  });
 
-it("should open a valid pipeline", () => {
-  function open() {
+  it("should throw for an out of date elyra", () => {
     const controller = new PipelineController();
-    controller.open({
-      version: "3.0",
-      pipelines: [{ app_data: { version: PIPELINE_CURRENT_VERSION } }],
-    });
-  }
+    function open() {
+      controller.open({
+        version: "3.0",
+        pipelines: [{ app_data: { version: PIPELINE_CURRENT_VERSION + 1 } }],
+      });
+    }
+    expect(open).toThrow(new ElyraOutOfDateError());
+  });
 
-  expect(open).not.toThrow();
-});
+  it("should open a valid pipeline", () => {
+    const controller = new PipelineController();
+    function open() {
+      controller.open({
+        version: "3.0",
+        pipelines: [{ app_data: { version: PIPELINE_CURRENT_VERSION } }],
+      });
+    }
 
-it("should not attempt to re-open the same pipeline", () => {
-  const pipeline = {
-    version: "3.0",
-    pipelines: [{ app_data: { version: 1 } }],
-  };
+    expect(open).not.toThrow();
+    expect(controller.getPipelineFlow().pipelines).toHaveLength(1);
+    expect(controller.getPipelineFlow().pipelines[0].app_data?.version).toBe(
+      PIPELINE_CURRENT_VERSION
+    );
+  });
 
-  const controller = new PipelineController();
-  function open() {
-    controller.open(pipeline);
-  }
-  expect(open).toThrow(new PipelineOutOfDateError());
-  expect(open).not.toThrow();
-});
+  it("should open a null pipeline", () => {
+    const controller = new PipelineController();
+    function open() {
+      controller.open(null);
+    }
 
-it("should attempt to re-open the same pipeline if they are not the same reference", () => {
-  const controller = new PipelineController();
-  function open() {
+    expect(open).not.toThrow();
+    expect(controller.getPipelineFlow().pipelines).toHaveLength(1);
+    expect(controller.getPipelineFlow().pipelines[0].app_data?.version).toBe(
+      PIPELINE_CURRENT_VERSION
+    );
+  });
+
+  it("should open an undefined pipeline", () => {
+    const controller = new PipelineController();
+    function open() {
+      controller.open(null);
+    }
+
+    expect(open).not.toThrow();
+    expect(controller.getPipelineFlow().pipelines).toHaveLength(1);
+    expect(controller.getPipelineFlow().pipelines[0].app_data?.version).toBe(
+      PIPELINE_CURRENT_VERSION
+    );
+  });
+
+  it("should not attempt to re-open the same pipeline", () => {
     const pipeline = {
       version: "3.0",
       pipelines: [{ app_data: { version: 1 } }],
     };
-    controller.open(pipeline);
-  }
-  expect(open).toThrow(new PipelineOutOfDateError());
-  expect(open).toThrow(new PipelineOutOfDateError());
+
+    const controller = new PipelineController();
+    function open() {
+      controller.open(pipeline);
+    }
+    expect(open).toThrow(new PipelineOutOfDateError());
+    expect(open).not.toThrow();
+  });
+
+  it("should attempt to re-open the same pipeline if they are not the same reference", () => {
+    const controller = new PipelineController();
+    function open() {
+      const pipeline = {
+        version: "3.0",
+        pipelines: [{ app_data: { version: 1 } }],
+      };
+      controller.open(pipeline);
+    }
+    expect(open).toThrow(new PipelineOutOfDateError());
+    expect(open).toThrow(new PipelineOutOfDateError());
+  });
 });
