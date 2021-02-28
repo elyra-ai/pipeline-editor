@@ -17,7 +17,7 @@
 import { fireEvent, render } from "@testing-library/react";
 import { Provider } from "react-redux";
 
-import StringArrayControl, { reducer } from "./StringArrayControl";
+import StringArrayControl, { reducer, ListItem } from "./StringArrayControl";
 import { createPropertiesStore } from "./test-utils";
 
 const propertyId = { name: "string-array" };
@@ -165,6 +165,179 @@ describe("reducer - UPSERT_ITEMS", () => {
     expect(result[1].value).toBe("two");
     expect(result[2].value).toBe("five");
     expect(result[3].value).toBe("six");
+  });
+});
+
+describe("ListItem", () => {
+  it("renders", () => {
+    const { container } = render(<ListItem value="Example list item" />);
+    expect(container.firstChild).toHaveTextContent(/example list item/i);
+  });
+
+  it("calls onEdit when double clicked", () => {
+    const handleEdit = jest.fn();
+    const { getByTestId, rerender } = render(
+      <ListItem value="Example list item" onEdit={handleEdit} />
+    );
+    const row = getByTestId("list-row");
+    fireEvent.doubleClick(row);
+    expect(handleEdit).toHaveBeenCalledTimes(1);
+
+    rerender(<ListItem value="Example list item" />);
+
+    fireEvent.doubleClick(row);
+    expect(handleEdit).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls onEdit when edit button is clicked", () => {
+    const handleEdit = jest.fn();
+    const { getByTitle, rerender } = render(
+      <ListItem value="Example list item" onEdit={handleEdit} />
+    );
+    const editButton = getByTitle("edit");
+    fireEvent.click(editButton);
+    expect(handleEdit).toHaveBeenCalledTimes(1);
+
+    rerender(<ListItem value="Example list item" />);
+
+    fireEvent.click(editButton);
+    expect(handleEdit).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls onChooseFiles when browse button is clicked", () => {
+    const handleChooseFiles = jest.fn();
+    const { getByTitle, rerender } = render(
+      <ListItem
+        value="Example list item"
+        onChooseFiles={handleChooseFiles}
+        canBrowseFiles
+      />
+    );
+    const browseButton = getByTitle("browse");
+    fireEvent.click(browseButton);
+    expect(handleChooseFiles).toHaveBeenCalledTimes(1);
+
+    rerender(<ListItem value="Example list item" canBrowseFiles />);
+
+    fireEvent.click(browseButton);
+    expect(handleChooseFiles).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls onDelete when delete button is clicked", () => {
+    const handleDelete = jest.fn();
+    const { getByTitle, rerender } = render(
+      <ListItem value="Example list item" onDelete={handleDelete} />
+    );
+    const editButton = getByTitle("delete");
+    fireEvent.click(editButton);
+    expect(handleDelete).toHaveBeenCalledTimes(1);
+
+    rerender(<ListItem value="Example list item" />);
+
+    fireEvent.click(editButton);
+    expect(handleDelete).toHaveBeenCalledTimes(1);
+  });
+
+  it("should focus the input when isEditing is true", () => {
+    const { getByRole } = render(<ListItem isEditing />);
+    const input = getByRole("textbox");
+    expect(input).toHaveFocus();
+  });
+
+  it("should not have an empty value if value is set", () => {
+    const { getByRole } = render(<ListItem value="example value" isEditing />);
+    const input = getByRole("textbox");
+    expect(input).toHaveFocus();
+    expect(input).toHaveValue("example value");
+  });
+
+  it("call onSubmit with a string when 'ok' button is pressed but value is undefined", () => {
+    const handleSubmit = jest.fn();
+    const { getByText } = render(
+      <ListItem onSubmit={handleSubmit} isEditing />
+    );
+    fireEvent.click(getByText(/ok/i));
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+    expect(handleSubmit).toHaveBeenCalledWith("");
+  });
+
+  it("call onSubmit when 'ok' button is pressed", () => {
+    const handleSubmit = jest.fn();
+    const { getByText, getByRole, rerender } = render(
+      <ListItem onSubmit={handleSubmit} isEditing />
+    );
+    fireEvent.change(getByRole("textbox"), {
+      target: { value: "I am user entered text" },
+    });
+    fireEvent.click(getByText(/ok/i));
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+    expect(handleSubmit).toHaveBeenCalledWith("I am user entered text");
+
+    rerender(<ListItem isEditing />);
+    fireEvent.click(getByText(/ok/i));
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  it("call onSubmit when 'enter' key is pressed", () => {
+    const handleSubmit = jest.fn();
+    const { getByRole, rerender } = render(
+      <ListItem onSubmit={handleSubmit} isEditing />
+    );
+    fireEvent.change(getByRole("textbox"), {
+      target: { value: "I am user entered text" },
+    });
+    fireEvent.keyDown(getByRole("textbox"), { key: "Enter", code: "Enter" });
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+    expect(handleSubmit).toHaveBeenCalledWith("I am user entered text");
+
+    rerender(<ListItem isEditing />);
+    fireEvent.keyDown(getByRole("textbox"), { key: "Enter", code: "Enter" });
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  it("call onCancel when 'cancel' button is pressed", () => {
+    const handleCancel = jest.fn();
+    const { getByRole, getByText, rerender } = render(
+      <ListItem onCancel={handleCancel} isEditing />
+    );
+    fireEvent.change(getByRole("textbox"), {
+      target: { value: "I am user entered text" },
+    });
+    fireEvent.click(getByText(/cancel/i));
+    expect(handleCancel).toHaveBeenCalledTimes(1);
+    expect(handleCancel).toHaveBeenCalledWith();
+
+    rerender(<ListItem isEditing />);
+    fireEvent.click(getByText(/cancel/i));
+    expect(handleCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it("call onCancel when 'escape' key is pressed", () => {
+    const handleCancel = jest.fn();
+    const { getByRole, rerender } = render(
+      <ListItem onCancel={handleCancel} isEditing />
+    );
+    fireEvent.change(getByRole("textbox"), {
+      target: { value: "I am user entered text" },
+    });
+    fireEvent.keyDown(getByRole("textbox"), { key: "Escape", code: "Escape" });
+    expect(handleCancel).toHaveBeenCalledTimes(1);
+    expect(handleCancel).toHaveBeenCalledWith();
+
+    rerender(<ListItem isEditing />);
+    fireEvent.keyDown(getByRole("textbox"), { key: "Escape", code: "Escape" });
+    expect(handleCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it("does nothing when 'escape' or 'enter' key is not pressed", () => {
+    const handleSubmit = jest.fn();
+    const handleCancel = jest.fn();
+    const { getByRole } = render(
+      <ListItem onCancel={handleCancel} onSubmit={handleSubmit} isEditing />
+    );
+    fireEvent.keyDown(getByRole("textbox"), { key: "A", code: "KeyA" });
+    expect(handleCancel).toHaveBeenCalledTimes(0);
+    expect(handleSubmit).toHaveBeenCalledTimes(0);
   });
 });
 

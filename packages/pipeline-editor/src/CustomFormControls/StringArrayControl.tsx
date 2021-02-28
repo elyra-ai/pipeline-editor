@@ -90,7 +90,7 @@ export const reducer = produce((draft: Item[], action) => {
   }
 });
 
-function ListItem({
+export function ListItem({
   value,
   isEditing,
   placeholder,
@@ -106,8 +106,8 @@ function ListItem({
   useEffect(() => {
     // We want this to be called anytime isEditing becomes true.
     if (isEditing) {
-      inputRef.current?.focus();
-      inputRef.current?.select();
+      inputRef.current!.focus();
+      inputRef.current!.select();
     }
   }, [isEditing]);
 
@@ -121,7 +121,7 @@ function ListItem({
             placeholder={placeholder}
             onKeyDown={(e) => {
               if (e.code === "Enter") {
-                onSubmit?.(inputRef.current?.value ?? "");
+                onSubmit?.(inputRef.current!.value);
                 return;
               }
               if (e.code === "Escape") {
@@ -133,7 +133,7 @@ function ListItem({
         </div>
         <button
           onClick={() => {
-            onSubmit?.(inputRef.current?.value ?? "");
+            onSubmit?.(inputRef.current!.value);
           }}
         >
           OK
@@ -150,6 +150,7 @@ function ListItem({
   }
   return (
     <div
+      data-testid="list-row"
       className="elyra-stringArrayControl-listRow"
       onDoubleClick={() => {
         onEdit?.();
@@ -159,6 +160,7 @@ function ListItem({
       <div className="elyra-stringArrayControl-listActions">
         <div className="elyra-actionItem">
           <div
+            title="edit"
             className="elyra-icon elyra-actionItemIcon elyra-item-edit"
             onClick={() => {
               onEdit?.();
@@ -168,6 +170,7 @@ function ListItem({
         {!!canBrowseFiles && (
           <div className="elyra-actionItem">
             <div
+              title="browse"
               className="elyra-icon elyra-actionItemIcon elyra-item-folder"
               onClick={() => {
                 onChooseFiles?.();
@@ -177,6 +180,7 @@ function ListItem({
         )}
         <div className="elyra-actionItem">
           <div
+            title="delete"
             className="elyra-icon elyra-actionItemIcon elyra-item-delete"
             onClick={() => {
               onDelete?.();
