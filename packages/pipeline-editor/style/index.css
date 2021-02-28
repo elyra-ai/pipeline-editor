@@ -465,6 +465,7 @@
 }
 
 .elyra-stringArrayControl-buttonGroup {
+  display: flex;
   margin-top: 4px;
 }
 

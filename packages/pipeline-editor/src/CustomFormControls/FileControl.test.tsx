@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 
 import FileControl from "./FileControl";
@@ -166,10 +166,9 @@ it("does not call updatePropertyValue when no files are chosen", async () => {
     filters: { Notebook: ["ipynb"] },
   });
 
-  // HACK: wait for resolve
-  await new Promise((r) => requestAnimationFrame(r));
-
-  expect(updatePropertyValue).not.toHaveBeenCalled();
+  await waitFor(() => {
+    expect(updatePropertyValue).not.toHaveBeenCalled();
+  });
 });
 
 it("calls updatePropertyValue when one file is chosen", async () => {
@@ -203,10 +202,12 @@ it("calls updatePropertyValue when one file is chosen", async () => {
     filters: { Notebook: ["ipynb"] },
   });
 
-  // HACK: wait for resolve
-  await new Promise((r) => requestAnimationFrame(r));
-
-  expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, "example.ipynb");
+  await waitFor(() => {
+    expect(updatePropertyValue).toHaveBeenCalledWith(
+      propertyId,
+      "example.ipynb"
+    );
+  });
 });
 
 it("calls updatePropertyValue with the first file if multiple are chosen", async () => {
@@ -240,10 +241,9 @@ it("calls updatePropertyValue with the first file if multiple are chosen", async
     filters: { Notebook: ["ipynb"] },
   });
 
-  // HACK: wait for resolve
-  await new Promise((r) => requestAnimationFrame(r));
-
-  expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, "one.ipynb");
+  await waitFor(() => {
+    expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, "one.ipynb");
+  });
 });
 
 it("calls actionHandler with a default uri if a path is already selected", async () => {
@@ -277,10 +277,9 @@ it("calls actionHandler with a default uri if a path is already selected", async
     filters: { Notebook: ["ipynb"] },
   });
 
-  // HACK: wait for resolve
-  await new Promise((r) => requestAnimationFrame(r));
-
-  expect(updatePropertyValue).not.toHaveBeenCalled();
+  await waitFor(() => {
+    expect(updatePropertyValue).not.toHaveBeenCalled();
+  });
 });
 
 it("doesn't crash when actionHandler is not defined", async () => {

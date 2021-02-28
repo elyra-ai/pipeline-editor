@@ -46,7 +46,7 @@ interface Item {
   id: string;
 }
 
-const reducer = produce((draft: Item[], action) => {
+export const reducer = produce((draft: Item[], action) => {
   const { type, payload } = action;
   switch (type) {
     case "ADD_ITEM": {
@@ -188,8 +188,6 @@ function ListItem({
   );
 }
 
-// NOTE: This uses IDs which is a breaking change to pipeline spec. Would
-// require a migration.
 function StringArrayComponent({
   name,
   controller,
@@ -202,7 +200,7 @@ function StringArrayComponent({
   const [editingID, setEditingID] = useState<string>();
 
   const items: Item[] = useSelector(
-    (state: any) => state.propertiesReducer[name]
+    (state: any) => state.propertiesReducer[name] ?? []
   );
 
   const handleAction = useCallback(
@@ -288,34 +286,30 @@ function StringArrayComponent({
           />
         )}
       </div>
-      <div
-        style={{
-          display:
-            editingID !== undefined && actualItem === undefined
-              ? "none"
-              : "flex",
-        }}
-        className="elyra-stringArrayControl-buttonGroup"
-      >
-        <button
-          onClick={() => {
-            const id = nanoid();
-            setEditingID(id);
-          }}
-        >
-          Add {singleItemLabel ?? "Item"}
-        </button>
-        {!!canBrowseFiles && (
+
+      {/* TODO: Clean up this logic */}
+      {!(editingID !== undefined && actualItem === undefined) && (
+        <div className="elyra-stringArrayControl-buttonGroup">
           <button
             onClick={() => {
               const id = nanoid();
-              handleChooseFiles(id);
+              setEditingID(id);
             }}
           >
-            Browse
+            Add {singleItemLabel ?? "Item"}
           </button>
-        )}
-      </div>
+          {!!canBrowseFiles && (
+            <button
+              onClick={() => {
+                const id = nanoid();
+                handleChooseFiles(id);
+              }}
+            >
+              Browse
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
