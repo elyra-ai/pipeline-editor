@@ -18,9 +18,9 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
   testMatch: [
-    // Match all typescript tests
+    // Match all typescript tests.
     "**/*.test.{ts,tsx}",
-    // Ignore snapshot tests
+    // Ignore snapshot tests.
     "!**/*.snap.test.{ts,tsx}",
   ],
 };
