@@ -39,3 +39,7 @@ coverage:
 .PHONY: snapshot
 snapshot:
 	yarn jest --testMatch "**/*.snap.test.{ts,tsx}"
+
+.PHONY: update-snapshots
+update-snapshots:
+	yarn jest --testMatch "**/*.snap.test.{ts,tsx}" -u

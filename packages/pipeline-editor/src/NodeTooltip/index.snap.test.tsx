@@ -19,87 +19,13 @@ import { render } from "@testing-library/react";
 import NodeTooltip from "./";
 
 it("renders", () => {
-  const { container } = render(<NodeTooltip properties={[]} />);
-  expect(container.firstChild).toMatchInlineSnapshot(`
-      <div
-        class="elyra-PipelineNodeTooltip"
-      />
-    `);
-});
-
-it("renders one item", () => {
-  const { container } = render(
-    <NodeTooltip properties={[{ label: "Label", value: "some value" }]} />
-  );
-
-  expect(container.firstChild).toMatchInlineSnapshot(`
-    <div
-      class="elyra-PipelineNodeTooltip"
-    >
-      <div>
-        <div
-          class="elyra-tooltipKey"
-        >
-          Label
-        </div>
-        <div
-          class="elyra-tooltipValue"
-        >
-          some value
-        </div>
-      </div>
-    </div>
-  `);
-});
-
-it("renders multiple items", () => {
   const { container } = render(
     <NodeTooltip
+      error="this is an error"
       properties={[
         { label: "Label", value: "some value" },
         { label: "Array", value: ["one", "two"] },
       ]}
-    />
-  );
-
-  expect(container.firstChild).toMatchInlineSnapshot(`
-    <div
-      class="elyra-PipelineNodeTooltip"
-    >
-      <div>
-        <div
-          class="elyra-tooltipKey"
-        >
-          Label
-        </div>
-        <div
-          class="elyra-tooltipValue"
-        >
-          some value
-        </div>
-      </div>
-      <div>
-        <div
-          class="elyra-tooltipKey"
-        >
-          Array
-        </div>
-        <div
-          class="elyra-tooltipValue"
-        >
-          one
-    two
-        </div>
-      </div>
-    </div>
-  `);
-});
-
-it("renders with errors", () => {
-  const { container } = render(
-    <NodeTooltip
-      error="this is an error"
-      properties={[{ label: "Label", value: "some value" }]}
     />
   );
 
@@ -131,6 +57,19 @@ it("renders with errors", () => {
           class="elyra-tooltipValue"
         >
           some value
+        </div>
+      </div>
+      <div>
+        <div
+          class="elyra-tooltipKey"
+        >
+          Array
+        </div>
+        <div
+          class="elyra-tooltipValue"
+        >
+          one
+    two
         </div>
       </div>
     </div>

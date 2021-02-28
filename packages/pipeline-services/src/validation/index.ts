@@ -119,7 +119,7 @@ export function validate(pipeline: string, nodeDefinitions: any) {
         const { path, ...rest } = p;
         return {
           ...rest,
-          severity: 1,
+          severity: 1 as 1 | 2 | 3 | 4 | undefined,
           range: {
             offset: getLocation(path)?.offset ?? 0,
             length: getLocation(path)?.length ?? 0,

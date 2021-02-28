@@ -18,7 +18,7 @@ import { render } from "@testing-library/react";
 
 import TabbedPanelLayout from "./";
 
-it("renders the default tab", () => {
+it("renders", () => {
   const { container } = render(
     <TabbedPanelLayout
       currentTab="one"
@@ -78,67 +78,7 @@ it("renders the default tab", () => {
   `);
 });
 
-it("renders another tab", () => {
-  const { container } = render(
-    <TabbedPanelLayout
-      currentTab="two"
-      tabs={[
-        {
-          id: "one",
-          label: "Tab one",
-          content: <div>Tab one content</div>,
-        },
-        {
-          id: "two",
-          label: "Tab two",
-          content: <div>Tab two content</div>,
-        },
-      ]}
-    />
-  );
-  expect(container.firstChild).toMatchInlineSnapshot(`
-    <div
-      class="elyra-tabPanel"
-    >
-      <div
-        class="elyra-actionBar"
-      >
-        <div
-          class="elyra-tabGroup"
-        >
-          <div
-            class="elyra-tab"
-          >
-            <div
-              class="elyra-tabText"
-            >
-              Tab one
-            </div>
-          </div>
-          <div
-            class="elyra-tab"
-          >
-            <div
-              class="elyra-tabText activeTab"
-            >
-              Tab two
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="elyra-tabContent"
-        style="position: absolute; top: 35px; bottom: 0px; overflow: auto; width: 100%;"
-      >
-        <div>
-          Tab two content
-        </div>
-      </div>
-    </div>
-  `);
-});
-
-it("renders as vertical tabs when collapsed", () => {
+it("renders collapsed", () => {
   const { container } = render(
     <TabbedPanelLayout
       currentTab="one"

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { CommonProperties } from "@elyra/canvas";
 
@@ -100,14 +100,14 @@ function PropertiesPanel({
       }}
       callbacks={{
         actionHandler: async (id: string, _appData: any, data: any) => {
-          if (id === "browse_file") {
-            return await onFileRequested?.(data);
+          switch (id) {
+            case "browse_file":
+              return await onFileRequested?.(data);
           }
         },
         controllerHandler: (e: any) => {
           controller.current = e;
         },
-        applyPropertyChanges: () => {},
         propertyListener: (e: any) => {
           if (e.action === "UPDATE_PROPERTY") {
             onChange?.(selectedNode.id, controller.current.getPropertyValues());

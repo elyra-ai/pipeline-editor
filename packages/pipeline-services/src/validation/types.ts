@@ -43,7 +43,7 @@ export interface InvalidNodeInfo {
 }
 
 export interface Problem {
-  severity: number;
+  severity: 1 | 2 | 3 | 4 | undefined;
   range: {
     offset: number;
     length: number;

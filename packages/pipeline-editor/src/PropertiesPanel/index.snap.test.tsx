@@ -18,259 +18,12 @@ import { render } from "@testing-library/react";
 import { IntlProvider } from "react-intl";
 
 import PropertiesPanel from "./";
-
-it("renders with undefined nodes selected", () => {
-  const { container } = render(<PropertiesPanel nodes={[]} />);
-  expect(container.firstChild).toMatchInlineSnapshot(`
-    <div
-      class="elyra-noContentMessage"
-    >
-      Select a node to edit its properties.
-    </div>
-  `);
-});
-
-it("renders with no nodes selected", () => {
-  const { container } = render(
-    <PropertiesPanel nodes={[]} selectedNodes={[]} />
-  );
-  expect(container.firstChild).toMatchInlineSnapshot(`
-    <div
-      class="elyra-noContentMessage"
-    >
-      Select a node to edit its properties.
-    </div>
-  `);
-});
-
-it("renders with multiple nodes selected", () => {
-  const { container } = render(
-    <PropertiesPanel nodes={[]} selectedNodes={[{}, {}]} />
-  );
-  expect(container.firstChild).toMatchInlineSnapshot(`
-    <div
-      class="elyra-noContentMessage"
-    >
-      Multiple nodes are selected. Select a single node to edit its properties.
-    </div>
-  `);
-});
-
-it("renders with supernode selected", () => {
-  const { container } = render(
-    <PropertiesPanel nodes={[]} selectedNodes={[{ type: "super_node" }]} />
-  );
-  expect(container.firstChild).toMatchInlineSnapshot(`
-    <div
-      class="elyra-noContentMessage"
-    >
-      This node type doesn't have any editable properties.
-    </div>
-  `);
-});
-
-it("renders if selected node op isn't defined in schema", () => {
-  const { container } = render(
-    <PropertiesPanel
-      nodes={[]}
-      selectedNodes={[
-        {
-          id: "0af8e1e7-4dd5-412e-95f1-812550843657",
-          type: "execution_node",
-          op: "execute-notebook-node",
-          app_data: {
-            filename: "example.ipynb",
-            runtime_image: "example/runtime:2020.07",
-            env_vars: [],
-            include_subdirectories: false,
-            outputs: [
-              {
-                value: "file1.csv",
-                id: "Dkab7Ue1kg16BNy9muH0v",
-              },
-              {
-                value: "file2.zip",
-                id: "784X1_3yUJY9N_hmbPszs",
-              },
-            ],
-            dependencies: [
-              {
-                value: "file.ipynb",
-                id: "N7ohLGA_xMaMdElCIEW2X",
-              },
-            ],
-          },
-        },
-      ]}
-    />
-  );
-  expect(container.firstChild).toMatchInlineSnapshot(`
-    <div
-      class="elyra-noContentMessage"
-    >
-      This node type doesn't have any editable properties.
-    </div>
-  `);
-});
-
-const node = {
-  op: "execute-notebook-node",
-  properties: {
-    current_parameters: {
-      filename: "",
-      runtime_image: "",
-      dependencies: [],
-      include_subdirectories: false,
-      env_vars: [],
-      outputs: [],
-    },
-    parameters: [
-      { id: "filename", type: "string", required: true },
-      {
-        id: "runtime_image",
-        enum: ["continuumio/anaconda3:2020.07", "amancevice/pandas:1.0.3"],
-        required: true,
-      },
-      { id: "dependencies", type: "array[string]", required: false },
-      { id: "include_subdirectories", type: "cboolean", required: false },
-      { id: "env_vars", type: "array[string]", required: false },
-      { id: "outputs", type: "array[string]", required: false },
-    ],
-    uihints: {
-      id: "nodeProperties",
-      parameter_info: [
-        {
-          control: "custom",
-          custom_control_id: "pipeline-editor-file-control",
-          parameter_ref: "filename",
-          label: { default: "File" },
-          description: {
-            default: "The path to the notebook file.",
-            placement: "on_panel",
-          },
-        },
-        {
-          parameter_ref: "runtime_image",
-          label: { default: "Runtime Image" },
-          control: "oneofselect",
-          description: {
-            default: "Docker image used as execution environment.",
-            placement: "on_panel",
-          },
-        },
-        {
-          control: "custom",
-          custom_control_id: "pipeline-editor-string-array-control",
-          parameter_ref: "dependencies",
-          label: { default: "File Dependencies" },
-          description: {
-            default:
-              "Local file dependencies that need to be copied to remote execution environment.",
-            placement: "on_panel",
-          },
-          data: { placeholder: "*.py", fileBrowser: true },
-        },
-        {
-          control: "custom",
-          custom_control_id: "pipeline-editor-boolean-control",
-          parameter_ref: "include_subdirectories",
-          label: { default: "Include Subdirectories" },
-          data: {
-            helperText:
-              "Wether or not to include recursively include subdirectories when submitting a pipeline (This may increase submission time).",
-          },
-        },
-        {
-          control: "custom",
-          custom_control_id: "pipeline-editor-string-array-control",
-          parameter_ref: "env_vars",
-          label: { default: "Environment Variables" },
-          description: {
-            default:
-              "Environment variables to be set on the execution environment.",
-            placement: "on_panel",
-          },
-          data: { placeholder: "ENV_VAR=value" },
-        },
-        {
-          control: "custom",
-          custom_control_id: "pipeline-editor-string-array-control",
-          parameter_ref: "outputs",
-          label: { default: "Output Files" },
-          description: {
-            default:
-              "Files generated during execution that will become available to all subsequent pipeline steps.",
-            placement: "on_panel",
-          },
-          data: { placeholder: "*.csv" },
-        },
-      ],
-      group_info: [
-        {
-          id: "nodeGroupInfo",
-          type: "panels",
-          group_info: [
-            { id: "filename", type: "controls", parameter_refs: ["filename"] },
-            {
-              id: "runtime_image",
-              type: "controls",
-              parameter_refs: ["runtime_image"],
-            },
-            {
-              id: "dependencies",
-              type: "controls",
-              parameter_refs: ["dependencies"],
-            },
-            {
-              id: "include_subdirectories",
-              type: "controls",
-              parameter_refs: ["include_subdirectories"],
-            },
-            { id: "env_vars", type: "controls", parameter_refs: ["env_vars"] },
-            { id: "outputs", type: "controls", parameter_refs: ["outputs"] },
-          ],
-        },
-      ],
-    },
-    resources: {},
-  },
-};
+import { nodeSpec, selectedNode } from "./test-utils";
 
 it("renders with one node selected", () => {
   const { container } = render(
     <IntlProvider locale="en">
-      <PropertiesPanel
-        nodes={[node]}
-        selectedNodes={[
-          {
-            id: "0af8e1e7-4dd5-412e-95f1-812550843657",
-            type: "execution_node",
-            op: "execute-notebook-node",
-            app_data: {
-              filename: "example.ipynb",
-              runtime_image: "example/runtime:2020.07",
-              env_vars: [],
-              include_subdirectories: false,
-              outputs: [
-                {
-                  value: "file1.csv",
-                  id: "Dkab7Ue1kg16BNy9muH0v",
-                },
-                {
-                  value: "file2.zip",
-                  id: "784X1_3yUJY9N_hmbPszs",
-                },
-              ],
-              dependencies: [
-                {
-                  value: "file.ipynb",
-                  id: "N7ohLGA_xMaMdElCIEW2X",
-                },
-              ],
-            },
-          },
-        ]}
-      />
+      <PropertiesPanel nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
     </IntlProvider>
   );
   expect(container.firstChild).toMatchInlineSnapshot(`
@@ -493,6 +246,7 @@ it("renders with one node selected", () => {
                       >
                         <div
                           class="elyra-stringArrayControl-listRow"
+                          data-testid="list-row"
                         >
                           <div
                             class="elyra-stringArrayControl-listItem"
@@ -507,6 +261,7 @@ it("renders with one node selected", () => {
                             >
                               <div
                                 class="elyra-icon elyra-actionItemIcon elyra-item-edit"
+                                title="edit"
                               />
                             </div>
                             <div
@@ -514,6 +269,7 @@ it("renders with one node selected", () => {
                             >
                               <div
                                 class="elyra-icon elyra-actionItemIcon elyra-item-delete"
+                                title="delete"
                               />
                             </div>
                           </div>
@@ -521,7 +277,6 @@ it("renders with one node selected", () => {
                       </div>
                       <div
                         class="elyra-stringArrayControl-buttonGroup"
-                        style="display: flex;"
                       >
                         <button>
                           Add 
@@ -604,7 +359,6 @@ it("renders with one node selected", () => {
                       />
                       <div
                         class="elyra-stringArrayControl-buttonGroup"
-                        style="display: flex;"
                       >
                         <button>
                           Add 
@@ -648,6 +402,7 @@ it("renders with one node selected", () => {
                       >
                         <div
                           class="elyra-stringArrayControl-listRow"
+                          data-testid="list-row"
                         >
                           <div
                             class="elyra-stringArrayControl-listItem"
@@ -662,6 +417,7 @@ it("renders with one node selected", () => {
                             >
                               <div
                                 class="elyra-icon elyra-actionItemIcon elyra-item-edit"
+                                title="edit"
                               />
                             </div>
                             <div
@@ -669,12 +425,14 @@ it("renders with one node selected", () => {
                             >
                               <div
                                 class="elyra-icon elyra-actionItemIcon elyra-item-delete"
+                                title="delete"
                               />
                             </div>
                           </div>
                         </div>
                         <div
                           class="elyra-stringArrayControl-listRow"
+                          data-testid="list-row"
                         >
                           <div
                             class="elyra-stringArrayControl-listItem"
@@ -689,6 +447,7 @@ it("renders with one node selected", () => {
                             >
                               <div
                                 class="elyra-icon elyra-actionItemIcon elyra-item-edit"
+                                title="edit"
                               />
                             </div>
                             <div
@@ -696,6 +455,7 @@ it("renders with one node selected", () => {
                             >
                               <div
                                 class="elyra-icon elyra-actionItemIcon elyra-item-delete"
+                                title="delete"
                               />
                             </div>
                           </div>
@@ -703,7 +463,6 @@ it("renders with one node selected", () => {
                       </div>
                       <div
                         class="elyra-stringArrayControl-buttonGroup"
-                        style="display: flex;"
                       >
                         <button>
                           Add 
