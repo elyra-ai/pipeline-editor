@@ -217,4 +217,27 @@ describe("getNodeProblems", () => {
     ]);
     expect(problems).toHaveLength(0);
   });
+
+  it("should return no problems for extra properties", () => {
+    const pipeline = {
+      nodes: [
+        {
+          id: "node-1",
+          type: "execution_node",
+          op: "execute-notebook-node",
+          app_data: {
+            fake: "123",
+            ui_data: {
+              label: "Node 1",
+            },
+          },
+        },
+      ],
+    };
+
+    const problems = getNodeProblems(pipeline, [
+      { op: "execute-notebook-node" },
+    ]);
+    expect(problems).toHaveLength(0);
+  });
 });
