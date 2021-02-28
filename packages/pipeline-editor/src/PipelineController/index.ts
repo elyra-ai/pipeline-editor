@@ -35,7 +35,7 @@ interface AddNodeOptions {
 }
 
 // NOTE: This is extremely basic validation.
-function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
+export function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
   if (pipeline === undefined || pipeline === null) {
     return false;
   }
@@ -45,12 +45,12 @@ function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
   if (!Array.isArray(pipeline.pipelines)) {
     return false;
   }
-  if (pipeline.pipelines?.length < 1) {
+  if (pipeline.pipelines.length < 1) {
     return false;
   }
   if (
     pipeline.pipelines[0].app_data?.version !== undefined &&
-    typeof pipeline.pipelines[0].app_data?.version !== "number"
+    typeof pipeline.pipelines[0].app_data.version !== "number"
   ) {
     return false;
   }

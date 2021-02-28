@@ -19,7 +19,74 @@ import {
   InvalidPipelineError,
   ElyraOutOfDateError,
 } from "../errors";
-import PipelineController, { PIPELINE_CURRENT_VERSION } from "./";
+import PipelineController, {
+  PIPELINE_CURRENT_VERSION,
+  isPipelineFlowV3,
+} from "./";
+
+describe("isPipelineFlowV3", () => {
+  it("return false for null flow", () => {
+    const isValid = isPipelineFlowV3(null);
+    expect(isValid).toBe(false);
+  });
+
+  it("return false for undefined flow", () => {
+    const isValid = isPipelineFlowV3(undefined);
+    expect(isValid).toBe(false);
+  });
+
+  it("return false for non 3.0 flow", () => {
+    const isValid = isPipelineFlowV3({ version: "2.3" });
+    expect(isValid).toBe(false);
+  });
+
+  it("return false for non array pipelines field", () => {
+    const isValid = isPipelineFlowV3({ version: "3.0", pipelines: "cat" });
+    expect(isValid).toBe(false);
+  });
+
+  it("return false no pipelines array", () => {
+    const isValid = isPipelineFlowV3({ version: "3.0" });
+    expect(isValid).toBe(false);
+  });
+
+  it("return false for empty pipelines array", () => {
+    const isValid = isPipelineFlowV3({ version: "3.0", pipelines: [] });
+    expect(isValid).toBe(false);
+  });
+
+  it("return false for non number pipeline version", () => {
+    const isValid = isPipelineFlowV3({
+      version: "3.0",
+      pipelines: [{ app_data: { version: "3" } }],
+    });
+    expect(isValid).toBe(false);
+  });
+
+  it("return true for no app_data", () => {
+    const isValid = isPipelineFlowV3({
+      version: "3.0",
+      pipelines: [{}],
+    });
+    expect(isValid).toBe(true);
+  });
+
+  it("return true for no version", () => {
+    const isValid = isPipelineFlowV3({
+      version: "3.0",
+      pipelines: [{ app_data: {} }],
+    });
+    expect(isValid).toBe(true);
+  });
+
+  it("return true for number version", () => {
+    const isValid = isPipelineFlowV3({
+      version: "3.0",
+      pipelines: [{ app_data: { version: 0 } }],
+    });
+    expect(isValid).toBe(true);
+  });
+});
 
 describe("open", () => {
   it("should throw for an invalid pipeline", () => {
