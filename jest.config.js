@@ -15,8 +15,6 @@
  */
 
 module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
   collectCoverageFrom: [
     // Collect coverage for all typescript files.
     "**/*.{ts,tsx}",
