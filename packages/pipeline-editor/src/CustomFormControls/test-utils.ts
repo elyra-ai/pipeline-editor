@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-module.exports = {
-  collectCoverageFrom: [
-    // Collect coverage for all typescript files.
-    "**/*.{ts,tsx}",
-    // Ignore files in the src directory. Mainly, `index.ts` which should only
-    // be exports.
-    "!**/src/*",
-    // Ignore any typescript declaration files.
-    "!**/*.d.ts",
-    // Ignore any test utils.
-    "!**/test-utils.{ts,tsx}",
-    // ignore tests and snapshot tests.
-    "!**/*.test.{ts,tsx}",
-  ],
-  coverageReporters: ["lcov", "text"],
-  projects: ["<rootDir>/packages/*"],
-};
+import { createStore } from "redux";
+
+export function createPropertiesStore(name: string, value: any) {
+  const initialState = {
+    propertiesReducer: {
+      [name]: value,
+    },
+  };
+
+  function reducer(state: any, action: any) {
+    switch (action.type) {
+      default:
+        return state;
+    }
+  }
+
+  return createStore(reducer, initialState);
+}
