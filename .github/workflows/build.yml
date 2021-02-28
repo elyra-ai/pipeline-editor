@@ -43,11 +43,18 @@ jobs:
     - name: Install dependencies
       run: yarn --frozen-lockfile
 
+    - name: Lint
+      run: make lint
+      env:
+        FORCE_COLOR: true
+
     - name: Build
       run: make build
+      env:
+        FORCE_COLOR: true
 
     - name: Test
       run: make test
+      env:
+        FORCE_COLOR: true
 
-    - name: Lint
-      run: make lint
