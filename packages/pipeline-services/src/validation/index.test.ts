@@ -16,7 +16,89 @@
 
 import { validate } from "./";
 
-it("should return an empty array for nothing", () => {
-  const problems = validate("", {});
-  expect(problems).toEqual([]);
+describe("validate", () => {
+  it("should return an empty array for a junk string", () => {
+    const problems = validate("bad json", {});
+    expect(problems).toHaveLength(0);
+  });
+
+  it("should return an empty array if there are no problems", () => {
+    const pipeline = {
+      pipelines: [
+        {
+          nodes: [
+            {
+              id: "node-1",
+              type: "execution_node",
+              inputs: [
+                {
+                  links: [
+                    {
+                      id: "link-1",
+                      node_id_ref: "node-2",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const problems = validate(JSON.stringify(pipeline), []);
+    expect(problems).toHaveLength(0);
+  });
+
+  it("should return problems for a circular reference", () => {
+    const pipeline = {
+      pipelines: [
+        {
+          nodes: [
+            {
+              id: "node-1",
+              type: "execution_node",
+              app_data: {
+                ui_data: {
+                  label: "Node 1",
+                },
+              },
+              inputs: [
+                {
+                  links: [
+                    {
+                      id: "link-1",
+                      node_id_ref: "node-2",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              id: "node-2",
+              type: "execution_node",
+              app_data: {
+                ui_data: {
+                  label: "Node 2",
+                },
+              },
+              inputs: [
+                {
+                  links: [
+                    {
+                      id: "link-2",
+                      node_id_ref: "node-1",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const problems = validate(JSON.stringify(pipeline), []);
+    expect(problems).toHaveLength(2);
+    expect(problems[0].info.type).toBe("circularReference");
+    expect(problems[1].info.type).toBe("circularReference");
+  });
 });
