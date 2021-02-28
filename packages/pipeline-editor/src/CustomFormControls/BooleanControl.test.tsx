@@ -20,18 +20,18 @@ import { Provider } from "react-redux";
 import BooleanControl from "./BooleanControl";
 import { createPropertiesStore } from "./test-utils";
 
+const propertyId = { name: "boolean" };
+
 it("has an id", () => {
   expect(BooleanControl.id()).toBe("pipeline-editor-boolean-control");
 });
 
 it("renders helper text", () => {
-  const store = createPropertiesStore("boolean", true);
+  const store = createPropertiesStore(propertyId, true);
 
-  const control = new BooleanControl(
-    { name: "boolean" },
-    {},
-    { helperText: "helper text" }
-  );
+  const data = { helperText: "helper text" };
+
+  const control = new BooleanControl(propertyId, {}, data);
   const { container } = render(
     <Provider store={store}>{control.renderControl()}</Provider>
   );
@@ -40,13 +40,11 @@ it("renders helper text", () => {
 });
 
 it("renders checked", () => {
-  const store = createPropertiesStore("boolean", true);
+  const store = createPropertiesStore(propertyId, true);
 
-  const control = new BooleanControl(
-    { name: "boolean" },
-    {},
-    { helperText: "helper text" }
-  );
+  const data = { helperText: "helper text" };
+
+  const control = new BooleanControl(propertyId, {}, data);
   const { getByRole } = render(
     <Provider store={store}>{control.renderControl()}</Provider>
   );
@@ -55,13 +53,11 @@ it("renders checked", () => {
 });
 
 it("renders not checked", () => {
-  const store = createPropertiesStore("boolean", false);
+  const store = createPropertiesStore(propertyId, false);
 
-  const control = new BooleanControl(
-    { name: "boolean" },
-    {},
-    { helperText: "helper text" }
-  );
+  const data = { helperText: "helper text" };
+
+  const control = new BooleanControl(propertyId, {}, data);
   const { getByRole } = render(
     <Provider store={store}>{control.renderControl()}</Provider>
   );
@@ -70,39 +66,35 @@ it("renders not checked", () => {
 });
 
 it("calls updatePropertyValue on with true when not checked", () => {
-  const store = createPropertiesStore("boolean", false);
+  const store = createPropertiesStore(propertyId, false);
 
   const updatePropertyValue = jest.fn();
 
-  const control = new BooleanControl(
-    { name: "boolean" },
-    { updatePropertyValue },
-    { helperText: "helper text" }
-  );
+  const data = { helperText: "helper text" };
+
+  const control = new BooleanControl(propertyId, { updatePropertyValue }, data);
   const { getByRole } = render(
     <Provider store={store}>{control.renderControl()}</Provider>
   );
 
   fireEvent.click(getByRole("checkbox"));
 
-  expect(updatePropertyValue).toHaveBeenCalledWith({ name: "boolean" }, true);
+  expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, true);
 });
 
 it("calls updatePropertyValue on with false when checked", () => {
-  const store = createPropertiesStore("boolean", true);
+  const store = createPropertiesStore(propertyId, true);
 
   const updatePropertyValue = jest.fn();
 
-  const control = new BooleanControl(
-    { name: "boolean" },
-    { updatePropertyValue },
-    { helperText: "helper text" }
-  );
+  const data = { helperText: "helper text" };
+
+  const control = new BooleanControl(propertyId, { updatePropertyValue }, data);
   const { getByRole } = render(
     <Provider store={store}>{control.renderControl()}</Provider>
   );
 
   fireEvent.click(getByRole("checkbox"));
 
-  expect(updatePropertyValue).toHaveBeenCalledWith({ name: "boolean" }, false);
+  expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, false);
 });

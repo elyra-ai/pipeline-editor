@@ -18,9 +18,8 @@ module.exports = {
   collectCoverageFrom: [
     // Collect coverage for all typescript files.
     "**/*.{ts,tsx}",
-    // Ignore files in the src directory. Mainly, `index.ts` which should only
-    // be exports.
-    "!**/src/*",
+    // Ignore `src/index.ts`, because it should only be exports.
+    "!**/src/index.ts",
     // Ignore any typescript declaration files.
     "!**/*.d.ts",
     // Ignore any test utils.

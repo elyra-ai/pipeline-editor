@@ -16,18 +16,22 @@
 
 import { createStore } from "redux";
 
-export function createPropertiesStore(name: string, value: any) {
+export function createPropertiesStore(
+  { name }: { name: string },
+  value: any,
+  error?: any
+) {
   const initialState = {
     propertiesReducer: {
       [name]: value,
     },
+    errorMessagesReducer: {
+      [name]: error,
+    },
   };
 
-  function reducer(state: any, action: any) {
-    switch (action.type) {
-      default:
-        return state;
-    }
+  function reducer(state: any) {
+    return state;
   }
 
   return createStore(reducer, initialState);
