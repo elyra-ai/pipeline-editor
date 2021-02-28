@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import { getLinks, getNodes, findNode } from "./utils";
+import { Node } from "jsonc-parser";
+
+import { getLinks, getNodes, findNode, rangeForLocation } from "./utils";
 
 describe("findNode", () => {
   it("returns undefined if node doesn't exist", () => {
@@ -160,5 +162,17 @@ describe("getLinks", () => {
     expect(links[0].id).toBe("link-1");
     expect(links[0].srcNodeId).toBe("node-2");
     expect(links[0].trgNodeId).toBe("node-1");
+  });
+});
+
+describe("rangeForLocation", () => {
+  it("returns 0,0 for undefined", () => {
+    const range = rangeForLocation(undefined);
+    expect(range).toEqual({ offset: 0, length: 0 });
+  });
+
+  it("returns range for range", () => {
+    const range = rangeForLocation({ offset: 10, length: 10 } as Node);
+    expect(range).toEqual({ offset: 10, length: 10 });
   });
 });

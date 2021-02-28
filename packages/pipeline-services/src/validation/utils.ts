@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { Node } from "jsonc-parser";
+
 import { Link } from "./types";
 
 export function getLinks(pipeline: any) {
@@ -45,4 +47,11 @@ export function getNodes(pipeline: any): any[] {
 
 export function findNode(pipeline: any, id: string) {
   return pipeline.nodes.find((node: any) => node.id === id);
+}
+
+export function rangeForLocation(location: Node | undefined) {
+  return {
+    offset: location?.offset ?? 0,
+    length: location?.length ?? 0,
+  };
 }

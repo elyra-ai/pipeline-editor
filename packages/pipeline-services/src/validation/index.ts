@@ -18,7 +18,7 @@ import { parseTree, findNodeAtLocation } from "jsonc-parser";
 
 import checkCircularReferences from "./check-circular-references";
 import { PartialProblem, Problem } from "./types";
-import { findNode, getLinks, getNodes } from "./utils";
+import { findNode, getLinks, getNodes, rangeForLocation } from "./utils";
 
 export function getLinkProblems(pipeline: any) {
   const links = getLinks(pipeline);
@@ -27,10 +27,8 @@ export function getLinkProblems(pipeline: any) {
 
   let problems: PartialProblem[] = [];
   for (const linkID of taintedLinks) {
-    const link = links.find((l) => l.id === linkID);
-    if (link === undefined) {
-      continue;
-    }
+    // linkID should be guaranteed to be found.
+    const link = links.find((l) => l.id === linkID)!;
 
     const source = findNode(pipeline, link.srcNodeId);
     const target = findNode(pipeline, link.trgNodeId);
@@ -73,11 +71,8 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       // NOTE: 0 is also falsy, but we don't have any number inputs right now?
       // TODO: We should update this to do type checking.
       if (prop.required && !node.app_data[prop.id]) {
-        const paramInfo = nodeDef.properties?.uihints.parameter_info;
+        const paramInfo = nodeDef.properties.uihints.parameter_info;
         const param = paramInfo.find((p: any) => p.parameter_ref === prop.id);
-        if (param === undefined) {
-          continue;
-        }
         problems.push({
           message: `The property '${param.label.default}' on node '${node.app_data.ui_data.label}' is required.`,
           path,
@@ -110,20 +105,19 @@ export function validate(pipeline: string, nodeDefinitions: any) {
     partials.push(...getLinkProblems(pipeline));
     partials.push(...getNodeProblems(pipeline, nodeDefinitions));
 
-    const getLocation = (path: any[]) => {
-      return findNodeAtLocation(pipelineTreeRoot, ["pipelines", p, ...path]);
-    };
-
     problems.push(
-      ...partials.map((p) => {
-        const { path, ...rest } = p;
+      ...partials.map((partial) => {
+        const { path, ...rest } = partial;
+        const location = findNodeAtLocation(pipelineTreeRoot, [
+          "pipelines",
+          p,
+          ...path,
+        ]);
+
         return {
           ...rest,
           severity: 1 as 1 | 2 | 3 | 4 | undefined,
-          range: {
-            offset: getLocation(path)?.offset ?? 0,
-            length: getLocation(path)?.length ?? 0,
-          },
+          range: rangeForLocation(location),
         };
       })
     );

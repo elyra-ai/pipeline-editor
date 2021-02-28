@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { validate } from "./";
+import { validate, getNodeProblems } from "./";
+import { nodeSpec } from "./test-utils";
 
 describe("validate", () => {
   it("should return an empty array for a junk string", () => {
@@ -100,5 +101,120 @@ describe("validate", () => {
     expect(problems).toHaveLength(2);
     expect(problems[0].info.type).toBe("circularReference");
     expect(problems[1].info.type).toBe("circularReference");
+  });
+});
+
+describe("getNodeProblems", () => {
+  it("should skip supernodes", () => {
+    const pipeline = {
+      nodes: [
+        {
+          id: "node-1",
+          type: "super_node",
+          app_data: {
+            ui_data: {
+              label: "Node 1",
+            },
+          },
+        },
+      ],
+    };
+
+    const problems = getNodeProblems(pipeline, []);
+    expect(problems).toHaveLength(0);
+  });
+
+  it("should find missing properties", () => {
+    const pipeline = {
+      nodes: [
+        {
+          id: "node-1",
+          type: "execution_node",
+          op: "execute-notebook-node",
+          app_data: {
+            ui_data: {
+              label: "Node 1",
+            },
+          },
+        },
+      ],
+    };
+
+    const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
+    expect(problems).toHaveLength(2);
+    expect(problems[0].info.type).toBe("missingProperty");
+    expect(problems[0].info.property).toBe("filename");
+    expect(problems[1].info.type).toBe("missingProperty");
+    expect(problems[1].info.property).toBe("runtime_image");
+  });
+
+  it("should find missing properties for empty strings", () => {
+    const pipeline = {
+      nodes: [
+        {
+          id: "node-1",
+          type: "execution_node",
+          op: "execute-notebook-node",
+          app_data: {
+            filename: "",
+            runtime_image: "",
+            ui_data: {
+              label: "Node 1",
+            },
+          },
+        },
+      ],
+    };
+
+    const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
+    expect(problems).toHaveLength(2);
+    expect(problems[0].info.type).toBe("missingProperty");
+    expect(problems[0].info.property).toBe("filename");
+    expect(problems[1].info.type).toBe("missingProperty");
+    expect(problems[1].info.property).toBe("runtime_image");
+  });
+
+  it("should return no problems if required properties are provided", () => {
+    const pipeline = {
+      nodes: [
+        {
+          id: "node-1",
+          type: "execution_node",
+          op: "execute-notebook-node",
+          app_data: {
+            filename: "example.py",
+            runtime_image: "example/runtime:1.2.3",
+            ui_data: {
+              label: "Node 1",
+            },
+          },
+        },
+      ],
+    };
+
+    const problems = getNodeProblems(pipeline, [nodeSpec]);
+    expect(problems).toHaveLength(0);
+  });
+
+  it("should return no problems for no required properties", () => {
+    const pipeline = {
+      nodes: [
+        {
+          id: "node-1",
+          type: "execution_node",
+          op: "execute-notebook-node",
+          app_data: {
+            ui_data: {
+              label: "Node 1",
+            },
+          },
+        },
+      ],
+    };
+
+    const problems = getNodeProblems(pipeline, [
+      { op: "execute-notebook-node" },
+    ]);
+    expect(problems).toHaveLength(0);
   });
 });
