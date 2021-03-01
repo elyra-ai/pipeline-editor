@@ -793,3 +793,84 @@ describe("properties", () => {
     expect(properties).toHaveLength(0);
   });
 });
+
+describe("setInvalidNode", () => {
+  it("sets style for an unsupported node", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "execution_node",
+              op: "fake",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const setNodeProperties = jest.fn();
+    const setNodeLabel = jest.fn();
+    controller.setNodeProperties = setNodeProperties;
+    controller.setNodeLabel = setNodeLabel;
+
+    controller.setInvalidNode("pipeline1", "node-to-find");
+
+    expect(setNodeProperties).toHaveBeenCalledTimes(1);
+    expect(setNodeProperties).toHaveBeenCalledWith(
+      "node-to-find",
+      expect.anything(),
+      "pipeline1"
+    );
+    expect(setNodeProperties.mock.calls[0][1].app_data.invalidNodeError).toBe(
+      '"fake" is an unsupported node type'
+    );
+
+    expect(setNodeLabel).toHaveBeenCalledTimes(1);
+    expect(setNodeLabel).toHaveBeenCalledWith(
+      "node-to-find",
+      "unsupported node",
+      "pipeline1"
+    );
+  });
+
+  it("doesn't set style for supernodes", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "super_node",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const setNodeProperties = jest.fn();
+    const setNodeLabel = jest.fn();
+    controller.setNodeProperties = setNodeProperties;
+    controller.setNodeLabel = setNodeLabel;
+
+    controller.setInvalidNode("pipeline1", "node-to-find");
+
+    expect(setNodeProperties).not.toHaveBeenCalled();
+    expect(setNodeLabel).not.toHaveBeenCalled();
+  });
+});
