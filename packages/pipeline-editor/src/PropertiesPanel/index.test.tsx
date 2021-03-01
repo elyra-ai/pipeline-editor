@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { IntlProvider } from "react-intl";
 
 import PropertiesPanel from "./";
@@ -83,7 +84,7 @@ it("calls onFileRequested when a browse button is pressed", async () => {
       />
     </IntlProvider>
   );
-  fireEvent.click(screen.getByText(/browse/i));
+  userEvent.click(screen.getByText(/browse/i));
   expect(handleFileRequested).toHaveBeenCalledTimes(1);
   expect(handleFileRequested).toHaveBeenCalledWith({
     canSelectMany: false,
@@ -99,7 +100,7 @@ it("doesn't crash when a browse button is pressed and onFileRequested is undefin
       <PropertiesPanel nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
     </IntlProvider>
   );
-  fireEvent.click(screen.getByText(/browse/i));
+  userEvent.click(screen.getByText(/browse/i));
 });
 
 it("calls onChange when a field changes", async () => {
@@ -115,6 +116,6 @@ it("calls onChange when a field changes", async () => {
   );
   // UPDATE_PROPERTY is triggered on mount
   expect(handleChange).toHaveBeenCalledTimes(1);
-  fireEvent.click(screen.getByRole("checkbox"));
+  userEvent.click(screen.getByRole("checkbox"));
   expect(handleChange).toHaveBeenCalledTimes(2);
 });

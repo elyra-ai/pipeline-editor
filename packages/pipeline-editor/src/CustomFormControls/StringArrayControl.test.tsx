@@ -323,17 +323,6 @@ describe("ListItem", () => {
     });
     expect(handleCancel).toHaveBeenCalledTimes(1);
   });
-
-  // it("does nothing when 'escape' or 'enter' key is not pressed", () => {
-  //   const handleSubmit = jest.fn();
-  //   const handleCancel = jest.fn();
-  //   render(
-  //     <ListItem onCancel={handleCancel} onSubmit={handleSubmit} isEditing />
-  //   );
-  //   fireEvent.keyDown(screen.getByRole("textbox"), { key: "A", code: "KeyA" });
-  //   expect(handleCancel).toHaveBeenCalledTimes(0);
-  //   expect(handleSubmit).toHaveBeenCalledTimes(0);
-  // });
 });
 
 it("has an id", () => {
@@ -576,7 +565,7 @@ it("can delete list item", async () => {
   const control = new StringArrayControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(screen.getByTitle(/delete/i));
+  userEvent.click(screen.getByTitle(/delete/i));
 
   expect(updatePropertyValue).toHaveBeenCalledTimes(1);
   expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, []);

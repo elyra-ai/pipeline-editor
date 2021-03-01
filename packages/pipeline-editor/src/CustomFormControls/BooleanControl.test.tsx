@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 
 import BooleanControl from "./BooleanControl";
@@ -71,7 +72,7 @@ it("calls updatePropertyValue on with true when not checked", () => {
   const control = new BooleanControl(propertyId, { updatePropertyValue }, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(screen.getByRole("checkbox"));
+  userEvent.click(screen.getByRole("checkbox"));
 
   expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, true);
 });
@@ -86,7 +87,7 @@ it("calls updatePropertyValue on with false when checked", () => {
   const control = new BooleanControl(propertyId, { updatePropertyValue }, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(screen.getByRole("checkbox"));
+  userEvent.click(screen.getByRole("checkbox"));
 
   expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, false);
 });

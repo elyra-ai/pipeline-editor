@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { fireEvent, render, waitFor, screen } from "@testing-library/react";
+import { render, waitFor, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 
 import FileControl from "./FileControl";
@@ -143,7 +144,7 @@ it("does not call updatePropertyValue when no files are chosen", async () => {
   const control = new FileControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(screen.getByRole("button"));
+  userEvent.click(screen.getByRole("button"));
 
   expect(actionHandler).toHaveBeenCalledTimes(1);
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
@@ -177,7 +178,7 @@ it("calls updatePropertyValue when one file is chosen", async () => {
   const control = new FileControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(screen.getByRole("button"));
+  userEvent.click(screen.getByRole("button"));
 
   expect(actionHandler).toHaveBeenCalledTimes(1);
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
@@ -214,7 +215,7 @@ it("calls updatePropertyValue with the first file if multiple are chosen", async
   const control = new FileControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(screen.getByRole("button"));
+  userEvent.click(screen.getByRole("button"));
 
   expect(actionHandler).toHaveBeenCalledTimes(1);
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
@@ -248,7 +249,7 @@ it("calls actionHandler with a default uri if a path is already selected", async
   const control = new FileControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(screen.getByRole("button"));
+  userEvent.click(screen.getByRole("button"));
 
   expect(actionHandler).toHaveBeenCalledTimes(1);
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
@@ -279,7 +280,7 @@ it("doesn't crash when actionHandler is not defined", async () => {
   const control = new FileControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(screen.getByRole("button"));
+  userEvent.click(screen.getByRole("button"));
 
   expect(getHandlers).toHaveBeenCalledTimes(1);
 });

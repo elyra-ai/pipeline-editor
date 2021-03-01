@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import TabbedPanelLayout from "./";
 
@@ -40,7 +41,7 @@ it("calls onTabClick with correct tab id in collapsed mode", async () => {
     />
   );
 
-  fireEvent.click(screen.getByTitle(/tab two/i));
+  userEvent.click(screen.getByTitle(/tab two/i));
 
   expect(handleTabClick).toHaveBeenCalledWith("two");
 });
@@ -66,7 +67,7 @@ it("calls onTabClick with correct tab id in expanded mode", async () => {
     />
   );
 
-  fireEvent.click(screen.getByText(/tab two/i));
+  userEvent.click(screen.getByText(/tab two/i));
 
   expect(handleTabClick).toHaveBeenCalledWith("two");
 });
@@ -93,7 +94,7 @@ it("calls onClose", async () => {
     />
   );
 
-  fireEvent.click(screen.getByTitle(/close panel/i));
+  userEvent.click(screen.getByTitle(/close panel/i));
 
   expect(handleClose).toHaveBeenCalled();
 });
@@ -119,7 +120,7 @@ it("does not break with no close handler", async () => {
     />
   );
 
-  fireEvent.click(screen.getByTitle(/close panel/i));
+  userEvent.click(screen.getByTitle(/close panel/i));
 });
 
 // eslint-disable-next-line jest/expect-expect
@@ -142,7 +143,7 @@ it("does not break with no tab click handler", async () => {
     />
   );
 
-  fireEvent.click(screen.getByText(/tab two/i));
+  userEvent.click(screen.getByText(/tab two/i));
 
   rerender(
     <TabbedPanelLayout
@@ -163,7 +164,7 @@ it("does not break with no tab click handler", async () => {
     />
   );
 
-  fireEvent.click(screen.getByTitle(/tab two/i));
+  userEvent.click(screen.getByTitle(/tab two/i));
 });
 
 it("renders the first tab when no current tab is provided", async () => {
