@@ -467,3 +467,187 @@ describe("setSupernodeErrors", () => {
     });
   });
 });
+
+describe("findExecutionNode", () => {
+  it("can find a node", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "execution_node",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const node = controller.findExecutionNode("node-to-find");
+    expect(node?.id).toBe("node-to-find");
+  });
+
+  it("can find a node in any pipeline", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [],
+        },
+        {
+          id: "pipeline2",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "execution_node",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const node = controller.findExecutionNode("node-to-find");
+    expect(node?.id).toBe("node-to-find");
+  });
+
+  it("doesn't find nodes that aren't 'execution_node' type", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "super_node",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const node = controller.findExecutionNode("node-to-find");
+    expect(node).toBeUndefined();
+  });
+});
+
+describe("findNodeParentPipeline", () => {
+  it("can find a parent", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "execution_node",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const search = controller.findNodeParentPipeline("node-to-find");
+    expect(search?.id).toBe("pipeline1");
+  });
+
+  it("can find a parent of a node in any pipeline", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [],
+        },
+        {
+          id: "pipeline2",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "execution_node",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const search = controller.findNodeParentPipeline("node-to-find");
+    expect(search?.id).toBe("pipeline2");
+  });
+
+  it("can find parent of any node type", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "super_node",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const search = controller.findNodeParentPipeline("node-to-find");
+    expect(search?.id).toBe("pipeline1");
+  });
+
+  it("returns undefined for a not found node", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const search = controller.findNodeParentPipeline("node-to-find");
+    expect(search).toBeUndefined();
+  });
+});
