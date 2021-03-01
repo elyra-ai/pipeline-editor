@@ -18,9 +18,16 @@ const allExtensions = [".ts", ".tsx", ".d.ts", ".js", ".jsx"];
 
 module.exports = {
   root: true,
-  extends: ["react-app", "plugin:jest/recommended", "plugin:jest/style"],
+  extends: [
+    "react-app",
+    "plugin:jest/recommended",
+    "plugin:jest/style",
+    "plugin:testing-library/react",
+    "plugin:jest-dom/recommended",
+  ],
   plugins: ["import", "header"],
   rules: {
+    "testing-library/prefer-screen-queries": ["warn"],
     "jest/no-large-snapshots": ["error", { maxSize: 1 }],
     "header/header": [
       "warn",

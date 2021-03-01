@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { IntlProvider } from "react-intl";
 
 import PropertiesPanel from "./";
@@ -64,17 +64,17 @@ it("renders if selected node op isn't defined in schema", () => {
 });
 
 it("renders common properties with one node selected", () => {
-  const { getByLabelText } = render(
+  render(
     <IntlProvider locale="en">
       <PropertiesPanel nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
     </IntlProvider>
   );
-  expect(getByLabelText(/properties/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/properties/i)).toBeInTheDocument();
 });
 
 it("calls onFileRequested when a browse button is pressed", async () => {
   const handleFileRequested = jest.fn().mockResolvedValue([]);
-  const { getByText } = render(
+  render(
     <IntlProvider locale="en">
       <PropertiesPanel
         nodes={[nodeSpec]}
@@ -83,7 +83,7 @@ it("calls onFileRequested when a browse button is pressed", async () => {
       />
     </IntlProvider>
   );
-  fireEvent.click(getByText(/browse/i));
+  fireEvent.click(screen.getByText(/browse/i));
   expect(handleFileRequested).toHaveBeenCalledTimes(1);
   expect(handleFileRequested).toHaveBeenCalledWith({
     canSelectMany: false,
@@ -94,17 +94,17 @@ it("calls onFileRequested when a browse button is pressed", async () => {
 
 // eslint-disable-next-line jest/expect-expect
 it("doesn't crash when a browse button is pressed and onFileRequested is undefined", async () => {
-  const { getByText } = render(
+  render(
     <IntlProvider locale="en">
       <PropertiesPanel nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
     </IntlProvider>
   );
-  fireEvent.click(getByText(/browse/i));
+  fireEvent.click(screen.getByText(/browse/i));
 });
 
 it("calls onChange when a field changes", async () => {
   const handleChange = jest.fn();
-  const { getByRole } = render(
+  render(
     <IntlProvider locale="en">
       <PropertiesPanel
         nodes={[nodeSpec]}
@@ -115,6 +115,6 @@ it("calls onChange when a field changes", async () => {
   );
   // UPDATE_PROPERTY is triggered on mount
   expect(handleChange).toHaveBeenCalledTimes(1);
-  fireEvent.click(getByRole("checkbox"));
+  fireEvent.click(screen.getByRole("checkbox"));
   expect(handleChange).toHaveBeenCalledTimes(2);
 });

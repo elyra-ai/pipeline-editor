@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import TabbedPanelLayout from "./";
 
 it("calls onTabClick with correct tab id in collapsed mode", async () => {
   const handleTabClick = jest.fn();
-  const { getByTitle } = render(
+  render(
     <TabbedPanelLayout
       currentTab="one"
       tabs={[
@@ -40,14 +40,14 @@ it("calls onTabClick with correct tab id in collapsed mode", async () => {
     />
   );
 
-  fireEvent.click(getByTitle(/tab two/i));
+  fireEvent.click(screen.getByTitle(/tab two/i));
 
   expect(handleTabClick).toHaveBeenCalledWith("two");
 });
 
 it("calls onTabClick with correct tab id in expanded mode", async () => {
   const handleTabClick = jest.fn();
-  const { getByText } = render(
+  render(
     <TabbedPanelLayout
       currentTab="one"
       tabs={[
@@ -66,14 +66,14 @@ it("calls onTabClick with correct tab id in expanded mode", async () => {
     />
   );
 
-  fireEvent.click(getByText(/tab two/i));
+  fireEvent.click(screen.getByText(/tab two/i));
 
   expect(handleTabClick).toHaveBeenCalledWith("two");
 });
 
 it("calls onClose", async () => {
   const handleClose = jest.fn();
-  const { getByTitle } = render(
+  render(
     <TabbedPanelLayout
       currentTab="one"
       tabs={[
@@ -93,14 +93,14 @@ it("calls onClose", async () => {
     />
   );
 
-  fireEvent.click(getByTitle(/close panel/i));
+  fireEvent.click(screen.getByTitle(/close panel/i));
 
   expect(handleClose).toHaveBeenCalled();
 });
 
 // eslint-disable-next-line jest/expect-expect
 it("does not break with no close handler", async () => {
-  const { getByTitle } = render(
+  render(
     <TabbedPanelLayout
       currentTab="one"
       tabs={[
@@ -119,12 +119,12 @@ it("does not break with no close handler", async () => {
     />
   );
 
-  fireEvent.click(getByTitle(/close panel/i));
+  fireEvent.click(screen.getByTitle(/close panel/i));
 });
 
 // eslint-disable-next-line jest/expect-expect
 it("does not break with no tab click handler", async () => {
-  const { rerender, getByText, getByTitle } = render(
+  const { rerender } = render(
     <TabbedPanelLayout
       currentTab="one"
       tabs={[
@@ -142,7 +142,7 @@ it("does not break with no tab click handler", async () => {
     />
   );
 
-  fireEvent.click(getByText(/tab two/i));
+  fireEvent.click(screen.getByText(/tab two/i));
 
   rerender(
     <TabbedPanelLayout
@@ -163,7 +163,7 @@ it("does not break with no tab click handler", async () => {
     />
   );
 
-  fireEvent.click(getByTitle(/tab two/i));
+  fireEvent.click(screen.getByTitle(/tab two/i));
 });
 
 it("renders the first tab when no current tab is provided", async () => {
@@ -184,7 +184,7 @@ it("renders the first tab when no current tab is provided", async () => {
     />
   );
 
-  expect(container).toHaveTextContent("Tab one content");
+  expect(container).toHaveTextContent(/tab one content/i);
 });
 
 it("shows invalid tab message when current tab doesn't exist", async () => {

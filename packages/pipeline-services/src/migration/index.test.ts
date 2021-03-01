@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+// Allow snapshots here because these tests will change with any version bump.
+/* eslint-disable jest/no-large-snapshots */
+
 import { migrate } from "./";
 
 it("should migrate v0 to latest", () => {

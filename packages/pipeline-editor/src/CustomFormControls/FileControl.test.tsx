@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { fireEvent, render, waitFor, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 
 import FileControl from "./FileControl";
@@ -32,11 +32,9 @@ it("renders nothing when path is an undefined", () => {
   const data = {};
 
   const control = new FileControl(propertyId, {}, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  const input = getByRole("textbox");
+  const input = screen.getByRole("textbox");
 
   expect(input.getAttribute("placeholder")).toBeFalsy();
   expect(input).toHaveValue("");
@@ -48,11 +46,9 @@ it("renders nothing when path is an empty string", () => {
   const data = {};
 
   const control = new FileControl(propertyId, {}, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  const input = getByRole("textbox");
+  const input = screen.getByRole("textbox");
 
   expect(input.getAttribute("placeholder")).toBeFalsy();
   expect(input).toHaveValue("");
@@ -64,13 +60,11 @@ it("renders placeholder when path is undefined", () => {
   const data = { placeholder: "placeholder text" };
 
   const control = new FileControl(propertyId, {}, data);
-  const { getByRole, getByPlaceholderText } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  expect(getByPlaceholderText("placeholder text")).toBeTruthy();
+  expect(screen.getByPlaceholderText("placeholder text")).toBeTruthy();
 
-  const input = getByRole("textbox");
+  const input = screen.getByRole("textbox");
 
   expect(input).toHaveValue("");
 });
@@ -81,13 +75,11 @@ it("renders placeholder when path is an empty string", () => {
   const data = { placeholder: "placeholder text" };
 
   const control = new FileControl(propertyId, {}, data);
-  const { getByRole, getByPlaceholderText } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  expect(getByPlaceholderText("placeholder text")).toBeTruthy();
+  expect(screen.getByPlaceholderText("placeholder text")).toBeTruthy();
 
-  const input = getByRole("textbox");
+  const input = screen.getByRole("textbox");
 
   expect(input).toHaveValue("");
 });
@@ -111,11 +103,9 @@ it("renders a path", () => {
   const data = {};
 
   const control = new FileControl(propertyId, {}, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  const input = getByRole("textbox");
+  const input = screen.getByRole("textbox");
 
   expect(input).toHaveValue("path/example.ipynb");
 });
@@ -126,13 +116,11 @@ it("has input dissabled", () => {
   const data = {};
 
   const control = new FileControl(propertyId, {}, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  const input = getByRole("textbox");
+  const input = screen.getByRole("textbox");
 
-  expect(input).toHaveAttribute("disabled");
+  expect(input).toBeDisabled();
 });
 
 it("does not call updatePropertyValue when no files are chosen", async () => {
@@ -153,11 +141,9 @@ it("does not call updatePropertyValue when no files are chosen", async () => {
   const data = {};
 
   const control = new FileControl(propertyId, controller, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(getByRole("button"));
+  fireEvent.click(screen.getByRole("button"));
 
   expect(actionHandler).toHaveBeenCalledTimes(1);
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
@@ -189,11 +175,9 @@ it("calls updatePropertyValue when one file is chosen", async () => {
   const data = {};
 
   const control = new FileControl(propertyId, controller, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(getByRole("button"));
+  fireEvent.click(screen.getByRole("button"));
 
   expect(actionHandler).toHaveBeenCalledTimes(1);
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
@@ -228,11 +212,9 @@ it("calls updatePropertyValue with the first file if multiple are chosen", async
   const data = {};
 
   const control = new FileControl(propertyId, controller, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(getByRole("button"));
+  fireEvent.click(screen.getByRole("button"));
 
   expect(actionHandler).toHaveBeenCalledTimes(1);
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
@@ -264,11 +246,9 @@ it("calls actionHandler with a default uri if a path is already selected", async
   const data = {};
 
   const control = new FileControl(propertyId, controller, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(getByRole("button"));
+  fireEvent.click(screen.getByRole("button"));
 
   expect(actionHandler).toHaveBeenCalledTimes(1);
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
@@ -297,11 +277,9 @@ it("doesn't crash when actionHandler is not defined", async () => {
   const data = {};
 
   const control = new FileControl(propertyId, controller, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(getByRole("button"));
+  fireEvent.click(screen.getByRole("button"));
 
   expect(getHandlers).toHaveBeenCalledTimes(1);
 });

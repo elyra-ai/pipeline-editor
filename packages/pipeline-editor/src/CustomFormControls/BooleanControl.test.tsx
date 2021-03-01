@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 
 import BooleanControl from "./BooleanControl";
@@ -45,11 +45,9 @@ it("renders checked", () => {
   const data = { helperText: "helper text" };
 
   const control = new BooleanControl(propertyId, {}, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  expect(getByRole("checkbox").getAttribute("aria-checked")).toBe("true");
+  expect(screen.getByRole("checkbox")).toBeChecked();
 });
 
 it("renders not checked", () => {
@@ -58,11 +56,9 @@ it("renders not checked", () => {
   const data = { helperText: "helper text" };
 
   const control = new BooleanControl(propertyId, {}, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  expect(getByRole("checkbox").getAttribute("aria-checked")).toBe("false");
+  expect(screen.getByRole("checkbox")).not.toBeChecked();
 });
 
 it("calls updatePropertyValue on with true when not checked", () => {
@@ -73,11 +69,9 @@ it("calls updatePropertyValue on with true when not checked", () => {
   const data = { helperText: "helper text" };
 
   const control = new BooleanControl(propertyId, { updatePropertyValue }, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(getByRole("checkbox"));
+  fireEvent.click(screen.getByRole("checkbox"));
 
   expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, true);
 });
@@ -90,11 +84,9 @@ it("calls updatePropertyValue on with false when checked", () => {
   const data = { helperText: "helper text" };
 
   const control = new BooleanControl(propertyId, { updatePropertyValue }, data);
-  const { getByRole } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
 
-  fireEvent.click(getByRole("checkbox"));
+  fireEvent.click(screen.getByRole("checkbox"));
 
   expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, false);
 });
