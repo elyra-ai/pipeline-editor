@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import path from "path";
-
 import { CanvasController, PipelineFlowV3 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
