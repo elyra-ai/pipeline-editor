@@ -361,3 +361,109 @@ describe("setLinkErrors", () => {
     );
   });
 });
+
+describe("setSupernodeErrors", () => {
+  it("doesn't style any nodes if pipeline isn't a subflow of any supernodes", () => {
+    const controller = new PipelineController();
+
+    const setNodeErrors = jest.fn();
+    controller.setNodeErrors = setNodeErrors;
+
+    controller.setSupernodeErrors(["pipeline1"]);
+
+    expect(setNodeErrors).toHaveBeenCalledTimes(1);
+    expect(setNodeErrors).toHaveBeenCalledWith({});
+  });
+
+  it("styles a supernode when a pipeline with errors is a subflow of it", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "supernode1",
+              type: "super_node",
+              subflow_ref: {
+                pipeline_id_ref: "pipeline2",
+              },
+            },
+          ],
+        },
+        {
+          id: "pipeline2",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [],
+        },
+      ],
+    };
+
+    controller.open(pipeline);
+
+    const setNodeErrors = jest.fn();
+    controller.setNodeErrors = setNodeErrors;
+
+    controller.setSupernodeErrors(["pipeline1", "pipeline2"]);
+
+    expect(setNodeErrors).toHaveBeenCalledTimes(1);
+    expect(setNodeErrors).toHaveBeenCalledWith({ pipeline1: ["supernode1"] });
+  });
+
+  it("styles multiple supernodes when a pipeline with errors is a subflow of it", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "supernode1",
+              type: "super_node",
+              subflow_ref: {
+                pipeline_id_ref: "pipeline2",
+              },
+            },
+            {
+              id: "supernode2",
+              type: "super_node",
+              subflow_ref: {
+                pipeline_id_ref: "pipeline3",
+              },
+            },
+          ],
+        },
+        {
+          id: "pipeline2",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [],
+        },
+        {
+          id: "pipeline3",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [],
+        },
+      ],
+    };
+
+    controller.open(pipeline);
+
+    const setNodeErrors = jest.fn();
+    controller.setNodeErrors = setNodeErrors;
+
+    controller.setSupernodeErrors(["pipeline1", "pipeline2", "pipeline3"]);
+
+    expect(setNodeErrors).toHaveBeenCalledTimes(1);
+    expect(setNodeErrors).toHaveBeenCalledWith({
+      pipeline1: ["supernode1", "supernode2"],
+    });
+  });
+});

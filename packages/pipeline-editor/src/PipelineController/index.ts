@@ -321,6 +321,8 @@ class PipelineController extends CanvasController {
     this.setLinkErrors(linksWithErrors);
     this.setNodeErrors(nodesWithErrors);
 
+    // Pass a list of all pipelineIDs that have errors. This will find and style
+    // any supernodes that have the pipeline as a subflow.
     this.setSupernodeErrors([
       ...new Set([
         ...Object.keys(linksWithErrors),
