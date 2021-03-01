@@ -277,5 +277,87 @@ describe("addNode", () => {
 });
 
 describe("setNodeErrors", () => {
-  it("", () => {});
+  it("styles nothing for an empty object", () => {
+    const controller = new PipelineController();
+
+    const setObjectsStyle = jest.fn();
+    const setNodeDecorations = jest.fn();
+    controller.setObjectsStyle = setObjectsStyle;
+    controller.setNodeDecorations = setNodeDecorations;
+
+    controller.setNodeErrors({});
+
+    expect(setObjectsStyle).toHaveBeenCalledTimes(1);
+    expect(setObjectsStyle).toHaveBeenCalledWith({}, expect.anything(), true);
+
+    expect(setNodeDecorations).not.toHaveBeenCalled();
+  });
+
+  it("styles multiple nodes across multiple pipelines", () => {
+    const controller = new PipelineController();
+
+    const setObjectsStyle = jest.fn();
+    const setNodeDecorations = jest.fn();
+    controller.setObjectsStyle = setObjectsStyle;
+    controller.setNodeDecorations = setNodeDecorations;
+
+    controller.setNodeErrors({
+      pipeline1: ["node1"],
+      pipeline2: ["node2", "node3"],
+    });
+
+    expect(setObjectsStyle).toHaveBeenCalledTimes(1);
+    expect(setObjectsStyle).toHaveBeenCalledWith(
+      {
+        pipeline1: ["node1"],
+        pipeline2: ["node2", "node3"],
+      },
+      expect.anything(),
+      true
+    );
+
+    expect(setNodeDecorations).toHaveBeenCalledTimes(3);
+    expect(setNodeDecorations.mock.calls[0][0]).toBe("node1");
+    expect(setNodeDecorations.mock.calls[0][2]).toBe("pipeline1");
+    expect(setNodeDecorations.mock.calls[1][0]).toBe("node2");
+    expect(setNodeDecorations.mock.calls[1][2]).toBe("pipeline2");
+    expect(setNodeDecorations.mock.calls[2][0]).toBe("node3");
+    expect(setNodeDecorations.mock.calls[2][2]).toBe("pipeline2");
+  });
+});
+
+describe("setLinkErrors", () => {
+  it("styles nothing for an empty object", () => {
+    const controller = new PipelineController();
+
+    const setLinksStyle = jest.fn();
+    controller.setLinksStyle = setLinksStyle;
+
+    controller.setLinkErrors({});
+
+    expect(setLinksStyle).toHaveBeenCalledTimes(1);
+    expect(setLinksStyle).toHaveBeenCalledWith({}, expect.anything(), true);
+  });
+
+  it("styles multiple links across multiple pipelines", () => {
+    const controller = new PipelineController();
+
+    const setLinksStyle = jest.fn();
+    controller.setLinksStyle = setLinksStyle;
+
+    controller.setLinkErrors({
+      pipeline1: ["link1"],
+      pipeline2: ["link2", "link3"],
+    });
+
+    expect(setLinksStyle).toHaveBeenCalledTimes(1);
+    expect(setLinksStyle).toHaveBeenCalledWith(
+      {
+        pipeline1: ["link1"],
+        pipeline2: ["link2", "link3"],
+      },
+      expect.anything(),
+      true
+    );
+  });
 });
