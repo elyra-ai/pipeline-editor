@@ -202,3 +202,76 @@ describe("open", () => {
     expect(open).toThrow(new PipelineOutOfDateError());
   });
 });
+
+describe("setNodes", () => {
+  it("sets the nodes", () => {
+    const controller = new PipelineController();
+    controller.setNodes([
+      {
+        op: "example-op",
+        label: "example-label",
+        description: "example-description",
+      },
+    ]);
+
+    const paletteNode = controller.getPaletteNode("example-op") as any;
+    expect(paletteNode.app_data.ui_data.label).toBe("example-label");
+  });
+
+  it("sets the nodes with an image", () => {
+    const controller = new PipelineController();
+    controller.setNodes([
+      {
+        op: "example-op",
+        label: "example-label",
+        description: "example-description",
+        image: "example-image",
+      },
+    ]);
+
+    const paletteNode = controller.getPaletteNode("example-op") as any;
+    expect(paletteNode.app_data.ui_data.image).toBe("example-image");
+  });
+});
+
+describe("addNode", () => {
+  it("adds a node at specified location", () => {
+    const controller = new PipelineController();
+    controller.setNodes([
+      {
+        op: "example-op",
+        label: "example-label",
+        description: "example-description",
+      },
+    ]);
+
+    const editActionHandler = jest.fn();
+    controller.editActionHandler = editActionHandler;
+
+    controller.addNode({ op: "example-op" }, { x: 15, y: 20 });
+
+    expect(editActionHandler).toHaveBeenCalledTimes(1);
+    expect(editActionHandler.mock.calls[0][0].offsetX).toBe(15);
+    expect(editActionHandler.mock.calls[0][0].offsetY).toBe(20);
+  });
+
+  it("adds a node at a default location", () => {
+    const controller = new PipelineController();
+    controller.setNodes([
+      {
+        op: "example-op",
+        label: "example-label",
+        description: "example-description",
+      },
+    ]);
+
+    const editActionHandler = jest.fn();
+    controller.editActionHandler = editActionHandler;
+
+    controller.addNode({ op: "example-op" });
+
+    expect(editActionHandler).toHaveBeenCalledTimes(1);
+    expect(editActionHandler.mock.calls[0][0].offsetX).toBe(40);
+    expect(editActionHandler.mock.calls[0][0].offsetY).toBe(40);
+  });
+});
