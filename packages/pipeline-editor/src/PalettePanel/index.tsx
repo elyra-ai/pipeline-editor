@@ -23,7 +23,7 @@ interface Props {
   nodes: CustomNodeSpecification[];
 }
 
-function Node({ image, label }: any) {
+export function Node({ image, label }: any) {
   return (
     <svg className="svg-area" width="172px" height="40px" x="0" y="0">
       <g className="d3-canvas-group">
@@ -81,6 +81,7 @@ function PalettePanel({ nodes }: Props) {
     <div className="elyra-palette">
       {nodes.map((n) => (
         <div
+          key={n.op}
           className="elyra-paletteItem"
           draggable="true"
           onDragStart={(e) => {
