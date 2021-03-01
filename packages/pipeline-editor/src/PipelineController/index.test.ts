@@ -1214,3 +1214,98 @@ describe("resetStyles", () => {
     ).toBeUndefined();
   });
 });
+
+describe("validate", () => {
+  it("finds all the problems", () => {
+    const controller = new PipelineController();
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "execution_node",
+              op: "execute-notebook-node",
+              inputs: [
+                {
+                  links: [
+                    {
+                      id: "link1",
+                      node_id_ref: "node2",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              id: "node2",
+              type: "execution_node",
+              op: "fake",
+              inputs: [
+                {
+                  links: [
+                    {
+                      id: "link2",
+                      node_id_ref: "node1",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              id: "supernode1",
+              type: "super_node",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+    controller.setNodes([nodeSpec as any]);
+
+    controller.validate();
+
+    const flow = controller.getPipelineFlow();
+    expect(flow.pipelines[0].nodes[0].app_data?.invalidNodeError).toBeDefined();
+    expect(
+      flow.pipelines[0].nodes[1].app_data?.invalidNodeError
+    ).toBeUndefined();
+    expect(
+      flow.pipelines[0].nodes[2].app_data?.invalidNodeError
+    ).toBeUndefined();
+  });
+
+  it("finds no problems for an op with no properties", () => {
+    const controller = new PipelineController();
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "execution_node",
+              op: "no-props",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+    controller.setNodes([{ op: "no-props", description: "", label: "" }]);
+
+    controller.validate();
+
+    const flow = controller.getPipelineFlow();
+    expect(
+      flow.pipelines[0].nodes[0].app_data?.invalidNodeError
+    ).toBeUndefined();
+  });
+});

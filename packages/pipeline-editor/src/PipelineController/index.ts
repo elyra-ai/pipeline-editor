@@ -314,13 +314,6 @@ class PipelineController extends CanvasController {
             property: problem.info.property,
           });
           break;
-        case "invalidNode":
-          nodesWithErrors[problem.info.pipelineID] = [
-            ...(nodesWithErrors[problem.info.pipelineID] ?? []),
-            problem.info.nodeID,
-          ];
-          this.setInvalidNode(problem.info.pipelineID, problem.info.nodeID);
-          break;
       }
     }
     this.setLinkErrors(linksWithErrors);
@@ -337,23 +330,23 @@ class PipelineController extends CanvasController {
 
     for (const pipeline of this.getPipelineFlow().pipelines) {
       for (const node of pipeline.nodes) {
+        if (node.type !== "execution_node") {
+          continue;
+        }
+
         const nodeProblems = missingProperties.filter(
           (p) => p.nodeID === node.id
         );
         if (nodeProblems.length > 0) {
-          if (node.type !== "execution_node") {
-            continue;
-          }
-          const nodeDef = this.nodes.find((n) => n.op === node.op);
-          if (nodeDef === undefined) {
-            continue;
-          }
+          // All of this information should be defined, otherwise we wouldn't
+          // have had any problems reported.
+          const nodeDef = this.nodes.find((n) => n.op === node.op)!;
 
           const message = nodeProblems
             .map((problem) => {
-              const label = nodeDef.properties?.uihints?.parameter_info.find(
+              const label = nodeDef.properties!.uihints!.parameter_info.find(
                 (p) => p.parameter_ref === problem.property
-              )?.label.default;
+              )!.label.default;
               return `property "${label}" is required`;
             })
             .join("\n");
