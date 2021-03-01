@@ -391,18 +391,23 @@ class PipelineController extends CanvasController {
   properties(nodeID: string) {
     let node = this.findExecutionNode(nodeID);
 
-    const nodeDef = this.nodes.find((n) => n.op === node?.op);
+    if (node !== undefined) {
+      const { op, app_data } = node;
+      const nodeDef = this.nodes.find((n) => n.op === op);
 
-    const properties = (nodeDef?.properties?.uihints?.parameter_info ?? []).map(
-      (p) => {
+      const info = nodeDef?.properties?.uihints?.parameter_info ?? [];
+
+      const properties = info.map((i) => {
         return {
-          label: p.label.default,
-          value: node?.app_data?.[p.parameter_ref],
+          label: i.label.default,
+          // `app_data` should never be undefined because canvas injects it.
+          value: app_data![i.parameter_ref],
         };
-      }
-    );
+      });
+      return properties;
+    }
 
-    return properties;
+    return [];
   }
 }
 

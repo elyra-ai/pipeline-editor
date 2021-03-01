@@ -19,6 +19,7 @@ import {
   InvalidPipelineError,
   ElyraOutOfDateError,
 } from "../errors";
+import { nodeSpec } from "../PropertiesPanel/test-utils";
 import PipelineController, {
   PIPELINE_CURRENT_VERSION,
   isPipelineFlowV3,
@@ -649,5 +650,146 @@ describe("findNodeParentPipeline", () => {
 
     const search = controller.findNodeParentPipeline("node-to-find");
     expect(search).toBeUndefined();
+  });
+});
+
+describe("properties", () => {
+  it("returns an empty list for no properties", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "execution_node",
+              op: "fake",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const properties = controller.properties("node-to-find");
+    expect(properties).toHaveLength(0);
+  });
+
+  it("returns an empty list for non spec properties", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "execution_node",
+              op: "fake",
+              app_data: {
+                filename: "example.py",
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const properties = controller.properties("node-to-find");
+    expect(properties).toHaveLength(0);
+  });
+
+  it("returns node properties", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "execution_node",
+              op: "execute-notebook-node",
+              app_data: {
+                filename: "example.py",
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+    controller.setNodes([nodeSpec as any]);
+
+    const properties = controller.properties("node-to-find");
+    expect(properties).toHaveLength(6);
+    expect(properties[0].label).toBe("File");
+    expect(properties[0].value).toBe("example.py");
+  });
+
+  it("returns node properties when app_data is undefined", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "execution_node",
+              op: "execute-notebook-node",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+    controller.setNodes([nodeSpec as any]);
+
+    const properties = controller.properties("node-to-find");
+    expect(properties).toHaveLength(6);
+  });
+
+  it("returns an empty list for non 'execution_node' nodes", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node-to-find",
+              type: "super_node",
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const properties = controller.properties("node-to-find");
+    expect(properties).toHaveLength(0);
   });
 });
