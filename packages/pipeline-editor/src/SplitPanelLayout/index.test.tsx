@@ -14,30 +14,86 @@
  * limitations under the License.
  */
 
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import SplitPanelLayout from "./";
 
-it("renders only left panel by default", () => {
-  const { container } = render(
+it("renders only left panel when closed", () => {
+  render(
     <SplitPanelLayout
       left={<div>left panel</div>}
       right={<div>right panel</div>}
+      mode="closed"
     />
   );
-  expect(container.firstChild).toHaveTextContent(/left panel/i);
-  expect(container.firstChild).not.toHaveTextContent(/right panel/i);
+
+  expect(screen.getByText(/left panel/i)).toBeInTheDocument();
+  expect(screen.queryByText(/right panel/i)).not.toBeInTheDocument();
 });
 
-it("renders both panels", () => {
-  const { container } = render(
+it("renders both panels when open", () => {
+  render(
     <SplitPanelLayout
       left={<div>left panel</div>}
       right={<div>right panel</div>}
-      rightOpen
+      mode="open"
     />
   );
 
-  expect(container.firstChild).toHaveTextContent("left panel");
-  expect(container.firstChild).toHaveTextContent("right panel");
+  expect(screen.getByText(/left panel/i)).toBeInTheDocument();
+  expect(screen.getByText(/right panel/i)).toBeInTheDocument();
+});
+
+it("renders both panels when collapsed", () => {
+  render(
+    <SplitPanelLayout
+      left={<div>left panel</div>}
+      right={<div>right panel</div>}
+      mode="collapsed"
+    />
+  );
+
+  expect(screen.getByText(/left panel/i)).toBeInTheDocument();
+  expect(screen.getByText(/right panel/i)).toBeInTheDocument();
+});
+
+it("should adjust width when dragged", () => {
+  render(
+    <SplitPanelLayout
+      left={<div>left panel</div>}
+      right={<div>right panel</div>}
+      mode="open"
+    />
+  );
+
+  const before = screen.getByTestId("drag-handle").style.right;
+
+  fireEvent.mouseDown(screen.getByTestId("drag-handle"));
+  fireEvent.mouseMove(screen.getByTestId("drag-handle"), { clientX: 0 });
+  fireEvent.mouseUp(screen.getByTestId("drag-handle"));
+
+  const after = screen.getByTestId("drag-handle").style.right;
+
+  expect(after).not.toBe(before);
+});
+
+it("should not adjust width when handle has not been clicked", () => {
+  render(
+    <SplitPanelLayout
+      left={<div>left panel</div>}
+      right={<div>right panel</div>}
+      mode="open"
+    />
+  );
+
+  const before = screen.getByTestId("drag-handle").style.right;
+
+  fireEvent.mouseDown(screen.getByTestId("drag-handle"));
+  fireEvent.mouseUp(screen.getByTestId("drag-handle"));
+
+  fireEvent.mouseMove(screen.getByTestId("drag-handle"), { clientX: 0 });
+
+  const after = screen.getByTestId("drag-handle").style.right;
+
+  expect(after).toBe(before);
 });

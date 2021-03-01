@@ -590,8 +590,13 @@ const PipelineEditor = forwardRef(
                 }}
               />
             }
-            experimental={toolbar === undefined}
-            rightOpen={panelOpen}
+            mode={
+              panelOpen
+                ? "open"
+                : toolbar === undefined
+                ? "collapsed"
+                : "closed"
+            }
           />
         </IntlProvider>
       </div>
