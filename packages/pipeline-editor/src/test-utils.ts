@@ -16,6 +16,13 @@
 
 export const nodeSpec = {
   op: "execute-notebook-node",
+  description: "Notebook file",
+  label: "Notebook",
+  labelField: "filename",
+  fileField: "filename",
+  fileBased: true,
+  extension: ".ipynb",
+  image: undefined,
   properties: {
     current_parameters: {
       filename: "",

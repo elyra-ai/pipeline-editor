@@ -18,8 +18,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { IntlProvider } from "react-intl";
 
+import { nodeSpec, selectedNode } from "../test-utils";
 import PropertiesPanel from "./";
-import { nodeSpec, selectedNode } from "./test-utils";
 
 it("renders with undefined nodes selected", () => {
   const { container } = render(<PropertiesPanel nodes={[]} />);

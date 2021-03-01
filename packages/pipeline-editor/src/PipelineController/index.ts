@@ -55,6 +55,9 @@ export function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
   return true;
 }
 
+// TODO: Should update `app_data` in `PipelineFlowV3` to be non-option? or maybe
+// a second type `PipelineFlowV3Opened` because `app_data` is guaranteed once
+// the pipeline file has been opened by canvas.
 class PipelineController extends CanvasController {
   private nodes: CustomNodeSpecification[] = [];
   private lastOpened: PipelineFlowV3 | undefined;
@@ -215,8 +218,9 @@ class PipelineController extends CanvasController {
         // `setNodeDecorations` is VERY slow, so make sure we HAVE to set it
         // before setting it.
         if (
-          node.app_data?.ui_data?.decorations !== undefined &&
-          node.app_data?.ui_data?.decorations.length !== 0
+          // `app_data` and `ui_data` should always be defined.
+          node.app_data!.ui_data!.decorations !== undefined &&
+          node.app_data!.ui_data!.decorations.length !== 0
         ) {
           this.setNodeDecorations(node.id, [], pipeline.id);
         }
@@ -233,20 +237,21 @@ class PipelineController extends CanvasController {
         }
 
         const newLabel =
-          nodeDef.labelField && node.app_data?.[nodeDef.labelField]
-            ? node.app_data[nodeDef.labelField]
+          nodeDef.labelField && node.app_data![nodeDef.labelField]
+            ? node.app_data![nodeDef.labelField]
             : nodeDef.label;
 
         // `setNodeLabel` is VERY slow, so make sure we HAVE to set it before
         // setting it.
-        if ((node as any).label !== newLabel) {
+        if (node.app_data!.ui_data!.label !== newLabel) {
           this.setNodeLabel(node.id, newLabel as string, pipeline.id);
         }
 
         if (
-          node.description !== nodeDef.description ||
-          node.app_data?.ui_data?.image !== nodeDef.image ||
-          node.app_data?.invalidNodeError !== undefined
+          // `app_data` and `ui_data` should be guaranteed.
+          node.app_data!.ui_data!.description !== nodeDef.description ||
+          node.app_data!.ui_data!.image !== nodeDef.image ||
+          node.app_data!.invalidNodeError !== undefined
         ) {
           this.setNodeProperties(
             node.id,

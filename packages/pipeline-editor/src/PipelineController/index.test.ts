@@ -19,7 +19,7 @@ import {
   InvalidPipelineError,
   ElyraOutOfDateError,
 } from "../errors";
-import { nodeSpec } from "../PropertiesPanel/test-utils";
+import { nodeSpec } from "../test-utils";
 import PipelineController, {
   PIPELINE_CURRENT_VERSION,
   isPipelineFlowV3,
@@ -872,5 +872,345 @@ describe("setInvalidNode", () => {
 
     expect(setNodeProperties).not.toHaveBeenCalled();
     expect(setNodeLabel).not.toHaveBeenCalled();
+  });
+});
+
+describe("resetStyles", () => {
+  it("doesn't make unnecessary setNodeDecorations calls", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "execution_node",
+              app_data: {
+                ui_data: {
+                  decorations: [],
+                },
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const setNodeDecorations = jest.fn();
+    controller.setNodeDecorations = setNodeDecorations;
+
+    controller.resetStyles();
+
+    expect(setNodeDecorations).not.toHaveBeenCalled();
+  });
+
+  it("removes any decorations", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "execution_node",
+              app_data: {
+                ui_data: {
+                  decorations: [{}],
+                },
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const setNodeDecorations = jest.fn();
+    controller.setNodeDecorations = setNodeDecorations;
+
+    controller.resetStyles();
+
+    expect(setNodeDecorations).toHaveBeenCalledTimes(1);
+    expect(setNodeDecorations).toHaveBeenCalledWith("node1", [], "pipeline1");
+  });
+
+  it("doesn't make any setNodeXXX calls when node is not a super_node or execution_node", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "fake",
+              app_data: {
+                ui_data: {
+                  decorations: [{}],
+                },
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const setNodeDecorations = jest.fn();
+    const setNodeLabel = jest.fn();
+    const setNodeProperties = jest.fn();
+
+    controller.setNodeDecorations = setNodeDecorations;
+    controller.setNodeLabel = setNodeLabel;
+    controller.setNodeProperties = setNodeProperties;
+
+    controller.resetStyles();
+
+    expect(setNodeDecorations).not.toHaveBeenCalled();
+    expect(setNodeLabel).not.toHaveBeenCalled();
+    expect(setNodeProperties).not.toHaveBeenCalled();
+  });
+
+  it("only updates decorations for super_node", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "super_node",
+              app_data: {
+                ui_data: {
+                  decorations: [{}],
+                },
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+
+    const setNodeDecorations = jest.fn();
+    const setNodeLabel = jest.fn();
+    const setNodeProperties = jest.fn();
+
+    controller.setNodeDecorations = setNodeDecorations;
+    controller.setNodeLabel = setNodeLabel;
+    controller.setNodeProperties = setNodeProperties;
+
+    controller.resetStyles();
+
+    expect(setNodeDecorations).toHaveBeenCalledTimes(1);
+    expect(setNodeDecorations).toHaveBeenCalledWith("node1", [], "pipeline1");
+    expect(setNodeLabel).not.toHaveBeenCalled();
+    expect(setNodeProperties).not.toHaveBeenCalled();
+  });
+
+  it("doesn't unnecessarily update the label", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "execution_node",
+              op: "execute-notebook-node",
+              app_data: {
+                filename: "example.py",
+                ui_data: {
+                  label: "example.py",
+                },
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+    controller.setNodes([nodeSpec as any]);
+
+    const setNodeLabel = jest.fn();
+
+    controller.setNodeLabel = setNodeLabel;
+
+    controller.resetStyles();
+
+    expect(setNodeLabel).not.toHaveBeenCalled();
+  });
+
+  it("updates the label", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "execution_node",
+              op: "execute-notebook-node",
+              app_data: {
+                ui_data: {
+                  label: "old label",
+                },
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+    controller.setNodes([nodeSpec as any]);
+
+    controller.resetStyles();
+
+    const flow = controller.getPipelineFlow();
+    expect(flow.pipelines[0].nodes[0].app_data?.ui_data?.label).toBe(
+      "Notebook"
+    );
+  });
+
+  it("updates the label with filename", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "execution_node",
+              op: "execute-notebook-node",
+              app_data: {
+                filename: "example.py",
+                ui_data: {
+                  label: "old label",
+                },
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+    controller.setNodes([nodeSpec as any]);
+
+    controller.resetStyles();
+
+    const flow = controller.getPipelineFlow();
+    expect(flow.pipelines[0].nodes[0].app_data?.ui_data?.label).toBe(
+      "example.py"
+    );
+  });
+
+  it("doesn't unnecessarily update properties", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "execution_node",
+              op: "execute-notebook-node",
+              app_data: {
+                filename: "example.py",
+                invalidNodeError: undefined,
+                ui_data: {
+                  image: undefined,
+                  description: "Notebook file",
+                },
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+    controller.setNodes([nodeSpec as any]);
+
+    const setNodeProperties = jest.fn();
+    controller.setNodeProperties = setNodeProperties;
+
+    controller.resetStyles();
+
+    expect(setNodeProperties).not.toHaveBeenCalled();
+  });
+
+  it("removes invalid node errors without removing any other properties", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "execution_node",
+              op: "execute-notebook-node",
+              app_data: {
+                filename: "example.py",
+                invalidNodeError: "some error",
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+    controller.setNodes([nodeSpec as any]);
+
+    controller.resetStyles();
+
+    const flow = controller.getPipelineFlow();
+    expect(flow.pipelines[0].nodes[0].app_data?.filename).toBe("example.py");
+    expect(
+      flow.pipelines[0].nodes[0].app_data?.invalidNodeError
+    ).toBeUndefined();
   });
 });
