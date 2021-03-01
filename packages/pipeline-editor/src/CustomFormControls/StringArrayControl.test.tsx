@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 
 import StringArrayControl, { reducer, ListItem } from "./StringArrayControl";
@@ -101,7 +101,7 @@ describe("reducer - UPSERT_ITEMS", () => {
     const result = reducer([] as any[], {
       type: "UPSERT_ITEMS",
       payload: {
-        id: "xxx",
+        id: undefined,
         items: [
           { value: "one", id: "1" },
           { value: "two", id: "2" },
@@ -194,7 +194,7 @@ describe("ListItem", () => {
     const { getByTitle, rerender } = render(
       <ListItem value="Example list item" onEdit={handleEdit} />
     );
-    const editButton = getByTitle("edit");
+    const editButton = getByTitle(/edit/i);
     fireEvent.click(editButton);
     expect(handleEdit).toHaveBeenCalledTimes(1);
 
@@ -213,7 +213,7 @@ describe("ListItem", () => {
         canBrowseFiles
       />
     );
-    const browseButton = getByTitle("browse");
+    const browseButton = getByTitle(/browse/i);
     fireEvent.click(browseButton);
     expect(handleChooseFiles).toHaveBeenCalledTimes(1);
 
@@ -228,7 +228,7 @@ describe("ListItem", () => {
     const { getByTitle, rerender } = render(
       <ListItem value="Example list item" onDelete={handleDelete} />
     );
-    const editButton = getByTitle("delete");
+    const editButton = getByTitle(/delete/i);
     fireEvent.click(editButton);
     expect(handleDelete).toHaveBeenCalledTimes(1);
 
@@ -462,4 +462,282 @@ it("shows an input with 'ok' and 'cancel' buttons when 'add item' is clicked", a
   expect(getByRole("textbox")).toBeInTheDocument();
   expect(getByText(/ok/i)).toBeInTheDocument();
   expect(getByText(/cancel/i)).toBeInTheDocument();
+
+  fireEvent.click(getByText(/cancel/i));
+
+  expect(queryByText(/add item/i)).toBeInTheDocument();
+});
+
+it("adds nothing to list if no files are chosen", async () => {
+  const store = createPropertiesStore(propertyId, []);
+
+  const updatePropertyValue = jest.fn();
+
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
+
+  const controller = {
+    updatePropertyValue,
+    getHandlers,
+  };
+
+  const data = {
+    placeholder: undefined,
+    singleItemLabel: undefined,
+    canBrowseFiles: true,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
+  const { getByText } = render(
+    <Provider store={store}>{control.renderControl()}</Provider>
+  );
+
+  fireEvent.click(getByText(/browse/i));
+
+  await waitFor(() => {
+    expect(updatePropertyValue).toHaveBeenCalledTimes(1);
+    expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, []);
+  });
+});
+
+it("adds appends items to list if files are chosen", async () => {
+  const store = createPropertiesStore(propertyId, [
+    { value: "one", id: "1" },
+    { value: "two", id: "2" },
+  ]);
+
+  const updatePropertyValue = jest.fn();
+
+  const actionHandler = jest.fn().mockResolvedValue(["three", "four"]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
+
+  const controller = {
+    updatePropertyValue,
+    getHandlers,
+  };
+
+  const data = {
+    placeholder: undefined,
+    singleItemLabel: undefined,
+    canBrowseFiles: true,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
+  const { getByText } = render(
+    <Provider store={store}>{control.renderControl()}</Provider>
+  );
+
+  fireEvent.click(getByText(/browse/i));
+
+  await waitFor(() => {
+    expect(updatePropertyValue).toHaveBeenCalledTimes(1);
+    expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, [
+      { value: "one", id: "1" },
+      { value: "two", id: "2" },
+      { value: "three", id: expect.any(String) },
+      { value: "four", id: expect.any(String) },
+    ]);
+  });
+});
+
+it("calls updatePropertyValue with entered text", async () => {
+  const store = createPropertiesStore(propertyId, []);
+
+  const updatePropertyValue = jest.fn();
+
+  const controller = {
+    updatePropertyValue,
+  };
+
+  const data = {
+    placeholder: undefined,
+    singleItemLabel: undefined,
+    canBrowseFiles: undefined,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
+  const { getByText, getByRole } = render(
+    <Provider store={store}>{control.renderControl()}</Provider>
+  );
+
+  fireEvent.click(getByText(/add item/i));
+
+  fireEvent.change(getByRole("textbox"), {
+    target: { value: "I am user entered text" },
+  });
+
+  fireEvent.click(getByText(/ok/i));
+
+  expect(updatePropertyValue).toHaveBeenCalledTimes(1);
+  expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, [
+    {
+      value: "I am user entered text",
+      id: expect.any(String),
+    },
+  ]);
+});
+
+it("can delete list item", async () => {
+  const store = createPropertiesStore(propertyId, [{ value: "one", id: "1" }]);
+
+  const updatePropertyValue = jest.fn();
+
+  const controller = {
+    updatePropertyValue,
+  };
+
+  const data = {
+    placeholder: undefined,
+    singleItemLabel: undefined,
+    canBrowseFiles: undefined,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
+  const { getByTitle } = render(
+    <Provider store={store}>{control.renderControl()}</Provider>
+  );
+
+  fireEvent.click(getByTitle(/delete/i));
+
+  expect(updatePropertyValue).toHaveBeenCalledTimes(1);
+  expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, []);
+});
+
+it("can edit list item", async () => {
+  const store = createPropertiesStore(propertyId, [{ value: "one", id: "1" }]);
+
+  const updatePropertyValue = jest.fn();
+
+  const controller = {
+    updatePropertyValue,
+  };
+
+  const data = {
+    placeholder: undefined,
+    singleItemLabel: undefined,
+    canBrowseFiles: undefined,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
+  const { getByTitle, getByRole, getByText } = render(
+    <Provider store={store}>{control.renderControl()}</Provider>
+  );
+
+  fireEvent.click(getByTitle(/edit/i));
+
+  fireEvent.change(getByRole("textbox"), {
+    target: { value: "updated one" },
+  });
+
+  fireEvent.click(getByText(/ok/i));
+
+  expect(updatePropertyValue).toHaveBeenCalledTimes(1);
+  expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, [
+    { value: "updated one", id: "1" },
+  ]);
+});
+
+it("doesn't edit list item when canceled", async () => {
+  const store = createPropertiesStore(propertyId, [{ value: "one", id: "1" }]);
+
+  const updatePropertyValue = jest.fn();
+
+  const controller = {
+    updatePropertyValue,
+  };
+
+  const data = {
+    placeholder: undefined,
+    singleItemLabel: undefined,
+    canBrowseFiles: undefined,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
+  const { getByTitle, getByRole, getByText } = render(
+    <Provider store={store}>{control.renderControl()}</Provider>
+  );
+
+  fireEvent.click(getByTitle(/edit/i));
+
+  fireEvent.change(getByRole("textbox"), {
+    target: { value: "updated one" },
+  });
+
+  fireEvent.click(getByText(/cancel/i));
+
+  expect(updatePropertyValue).toHaveBeenCalledTimes(0);
+
+  fireEvent.click(getByTitle(/edit/i));
+
+  expect(getByRole("textbox")).toHaveValue("one");
+});
+
+it("can browse for files from list item", async () => {
+  const store = createPropertiesStore(propertyId, [{ value: "one", id: "1" }]);
+
+  const updatePropertyValue = jest.fn();
+
+  const actionHandler = jest.fn().mockResolvedValue(["file.py"]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
+
+  const controller = {
+    updatePropertyValue,
+    getHandlers,
+  };
+
+  const data = {
+    placeholder: undefined,
+    singleItemLabel: undefined,
+    canBrowseFiles: true,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
+  const { getByTitle } = render(
+    <Provider store={store}>{control.renderControl()}</Provider>
+  );
+
+  fireEvent.click(getByTitle(/browse/i));
+
+  await waitFor(() => {
+    expect(updatePropertyValue).toHaveBeenCalledTimes(1);
+    expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, [
+      { id: "1", value: "file.py" },
+    ]);
+  });
+});
+
+it("doesn't call updatePropertyValue when no files are retrieved", async () => {
+  const store = createPropertiesStore(propertyId, [{ value: "one", id: "1" }]);
+
+  const updatePropertyValue = jest.fn();
+
+  const getHandlers = jest.fn(() => ({}));
+
+  const controller = {
+    updatePropertyValue,
+    getHandlers,
+  };
+
+  const data = {
+    placeholder: undefined,
+    singleItemLabel: undefined,
+    canBrowseFiles: true,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
+  const { getByTitle } = render(
+    <Provider store={store}>{control.renderControl()}</Provider>
+  );
+
+  fireEvent.click(getByTitle(/browse/i));
+
+  await waitFor(() => {
+    expect(updatePropertyValue).toHaveBeenCalledTimes(0);
+  });
 });

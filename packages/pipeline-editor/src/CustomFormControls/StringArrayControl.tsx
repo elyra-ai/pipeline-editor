@@ -160,7 +160,7 @@ export function ListItem({
       <div className="elyra-stringArrayControl-listActions">
         <div className="elyra-actionItem">
           <div
-            title="edit"
+            title="Edit"
             className="elyra-icon elyra-actionItemIcon elyra-item-edit"
             onClick={() => {
               onEdit?.();
@@ -170,7 +170,7 @@ export function ListItem({
         {!!canBrowseFiles && (
           <div className="elyra-actionItem">
             <div
-              title="browse"
+              title="Browse"
               className="elyra-icon elyra-actionItemIcon elyra-item-folder"
               onClick={() => {
                 onChooseFiles?.();
@@ -180,7 +180,7 @@ export function ListItem({
         )}
         <div className="elyra-actionItem">
           <div
-            title="delete"
+            title="Delete"
             className="elyra-icon elyra-actionItemIcon elyra-item-delete"
             onClick={() => {
               onDelete?.();
@@ -223,16 +223,18 @@ function StringArrayComponent({
         defaultUri: items.find((i) => i.id === id)?.value,
       });
 
-      handleAction({
-        type: "UPSERT_ITEMS",
-        payload: {
-          id: id,
-          items: values.map((v: string) => ({
-            value: v,
-            id: nanoid(),
-          })),
-        },
-      });
+      if (Array.isArray(values)) {
+        handleAction({
+          type: "UPSERT_ITEMS",
+          payload: {
+            id: id,
+            items: values.map((v: string) => ({
+              value: v,
+              id: nanoid(),
+            })),
+          },
+        });
+      }
     },
     [handleAction, items]
   );
@@ -305,8 +307,7 @@ function StringArrayComponent({
           {!!canBrowseFiles && (
             <button
               onClick={() => {
-                const id = nanoid();
-                handleChooseFiles(id);
+                handleChooseFiles(undefined);
               }}
             >
               Browse
