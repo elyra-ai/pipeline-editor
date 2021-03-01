@@ -27,11 +27,6 @@ import { createPalette } from "./create-palette";
 
 export const PIPELINE_CURRENT_VERSION = 3;
 
-interface AddNodeOptions {
-  x?: number;
-  y?: number;
-}
-
 // NOTE: This is extremely basic validation.
 export function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
   if (pipeline === undefined || pipeline === null) {
@@ -107,12 +102,12 @@ class PipelineController extends CanvasController {
     this.setPipelineFlowPalette(palette);
   }
 
-  addNode(item: any, { x, y }: AddNodeOptions = {}) {
+  addNode(item: any) {
     const nodeTemplate = this.getPaletteNode(item.op);
     const data = {
       editType: "createNode",
-      offsetX: x ?? 40,
-      offsetY: y ?? 40,
+      offsetX: item.x ?? 40,
+      offsetY: item.y ?? 40,
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
     };
 

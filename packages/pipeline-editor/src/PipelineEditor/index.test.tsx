@@ -14,20 +14,70 @@
  * limitations under the License.
  */
 
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
+import { nodeSpec, samplePipeline } from "../test-utils";
 import PipelineEditor from "./";
 
 it("shows custom empty component for undefined pipeline", () => {
-  const { container } = render(
+  render(
     <PipelineEditor pipeline={undefined}>custom empty message</PipelineEditor>
   );
-  expect(container.firstChild).toHaveTextContent(/custom empty message/i);
+  expect(screen.getByText(/custom empty message/i)).toBeInTheDocument();
 });
 
 it("shows custom empty component for null pipeline", () => {
+  render(<PipelineEditor pipeline={null}>custom empty message</PipelineEditor>);
+  expect(screen.getByText(/custom empty message/i)).toBeInTheDocument();
+});
+
+it("renders a pipeline with two nodes", () => {
+  const { container } = render(<PipelineEditor pipeline={samplePipeline} />);
+
+  expect(container.getElementsByClassName("d3-node-group")).toHaveLength(2);
+});
+
+it("renders a pipeline with two nodes in readOnly mode", () => {
   const { container } = render(
-    <PipelineEditor pipeline={null}>custom empty message</PipelineEditor>
+    <PipelineEditor pipeline={samplePipeline} readOnly />
   );
-  expect(container.firstChild).toHaveTextContent(/custom empty message/i);
+
+  expect(container.getElementsByClassName("d3-node-group")).toHaveLength(2);
+});
+
+it("throws error for invalid pipeline json", () => {
+  const handleError = jest.fn();
+  render(<PipelineEditor pipeline="xxx" onError={handleError} />);
+
+  expect(handleError).toHaveBeenCalledTimes(1);
+  expect(handleError).toHaveBeenCalledWith(expect.any(Error));
+});
+
+it("renders", () => {
+  const handleError = jest.fn();
+  render(
+    <PipelineEditor
+      pipeline={samplePipeline}
+      nodes={[]}
+      onError={handleError}
+    />
+  );
+  expect(handleError).not.toHaveBeenCalled();
+});
+
+it("can add node through imperative handle", () => {
+  let handle: any;
+  const { container } = render(
+    <PipelineEditor
+      ref={(r) => (handle = r)}
+      pipeline={samplePipeline}
+      nodes={[nodeSpec]}
+    />
+  );
+
+  expect(container.getElementsByClassName("d3-node-group")).toHaveLength(2);
+
+  handle.addFile({ op: "execute-notebook-node", path: "example.ipynb" });
+
+  expect(container.getElementsByClassName("d3-node-group")).toHaveLength(3);
 });

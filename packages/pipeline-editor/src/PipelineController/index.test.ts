@@ -249,7 +249,7 @@ describe("addNode", () => {
     const editActionHandler = jest.fn();
     controller.editActionHandler = editActionHandler;
 
-    controller.addNode({ op: "example-op" }, { x: 15, y: 20 });
+    controller.addNode({ op: "example-op", x: 15, y: 20 });
 
     expect(editActionHandler).toHaveBeenCalledTimes(1);
     expect(editActionHandler.mock.calls[0][0].offsetX).toBe(15);

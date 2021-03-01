@@ -23,3 +23,7 @@ global.crypto = {
 window.scrollTo = () => {
   return;
 };
+
+window.Element.prototype.getComputedTextLength = () => {
+  return 200;
+};

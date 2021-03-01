@@ -151,8 +151,8 @@ const PipelineEditor = forwardRef(
     useImperativeHandle(
       ref,
       () => ({
-        addFile: (item: any, x?: number, y?: number) => {
-          controller.current.addNode(item, { x, y });
+        addFile: (item: any) => {
+          controller.current.addNode(item);
         },
       }),
       []
