@@ -93,7 +93,6 @@ it("calls onFileRequested when a browse button is pressed", async () => {
   });
 });
 
-// eslint-disable-next-line jest/expect-expect
 it("doesn't crash when a browse button is pressed and onFileRequested is undefined", async () => {
   render(
     <IntlProvider locale="en">

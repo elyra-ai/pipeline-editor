@@ -28,7 +28,9 @@ module.exports = {
   plugins: ["import", "header"],
   rules: {
     "testing-library/prefer-screen-queries": ["warn"],
-    "jest/no-large-snapshots": ["error", { maxSize: 1 }],
+    "jest/no-large-snapshots": ["warn", { maxSize: 20 }],
+    "jest/expect-expect": ["off"],
+    "jest/valid-title": ["off"],
     "header/header": [
       "warn",
       "block",

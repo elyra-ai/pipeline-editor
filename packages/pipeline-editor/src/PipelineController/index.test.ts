@@ -275,3 +275,7 @@ describe("addNode", () => {
     expect(editActionHandler.mock.calls[0][0].offsetY).toBe(40);
   });
 });
+
+describe("setNodeErrors", () => {
+  it("", () => {});
+});

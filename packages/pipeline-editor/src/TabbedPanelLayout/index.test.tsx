@@ -99,7 +99,6 @@ it("calls onClose", async () => {
   expect(handleClose).toHaveBeenCalled();
 });
 
-// eslint-disable-next-line jest/expect-expect
 it("does not break with no close handler", async () => {
   render(
     <TabbedPanelLayout
@@ -123,7 +122,6 @@ it("does not break with no close handler", async () => {
   userEvent.click(screen.getByTitle(/close panel/i));
 });
 
-// eslint-disable-next-line jest/expect-expect
 it("does not break with no tab click handler", async () => {
   const { rerender } = render(
     <TabbedPanelLayout
