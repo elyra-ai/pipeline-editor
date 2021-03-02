@@ -31,15 +31,8 @@ lint:
 .PHONY: test
 test:
 	yarn jest
+	yarn test:cypress
 
 .PHONY: coverage
 coverage:
 	yarn jest --coverage
-
-.PHONY: snapshot
-snapshot:
-	yarn jest --testMatch "**/*.snap.test.{ts,tsx}"
-
-.PHONY: update-snapshots
-update-snapshots:
-	yarn jest --testMatch "**/*.snap.test.{ts,tsx}" -u
