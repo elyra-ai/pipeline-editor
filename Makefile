@@ -29,9 +29,5 @@ lint:
 
 .PHONY: test
 test:
-	yarn jest
-	yarn test:cypress
-
-.PHONY: coverage
-coverage:
 	yarn jest --coverage
+	yarn test:cypress
