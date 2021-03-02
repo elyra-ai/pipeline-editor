@@ -6,7 +6,6 @@ clean:
 .PHONY: install
 install:
 	yarn install
-	# yarn lerna bootstrap
 
 .PHONY: link
 link:
