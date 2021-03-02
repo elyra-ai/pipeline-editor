@@ -96,13 +96,17 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["*.snap.test.ts", "*.snap.test.tsx"],
+      files: ["cypress/**"],
       rules: {
-        "jest/no-large-snapshots": ["off"],
+        "testing-library/prefer-screen-queries": "off",
       },
     },
     {
-      files: ["webpack.*.js", "*.test.tsx", "*.test.ts"],
+      files: ["stories/**"],
+      rules: { "import/no-anonymous-default-export": ["off"] },
+    },
+    {
+      files: ["webpack.*.js", "*.test.tsx", "*.test.ts", "cypress/**"],
       rules: {
         "import/no-extraneous-dependencies": [
           "warn",
