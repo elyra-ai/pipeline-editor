@@ -86,6 +86,12 @@ module.exports = {
   },
   overrides: [
     {
+      files: ["examples/**"],
+      rules: {
+        "header/header": ["off"],
+      },
+    },
+    {
       files: ["webpack.*.js"],
       rules: {
         "import/no-extraneous-dependencies": [

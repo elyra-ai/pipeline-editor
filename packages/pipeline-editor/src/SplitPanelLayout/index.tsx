@@ -114,7 +114,7 @@ function SplitPanelLayout({ left, right, rightOpen, experimental }: Props) {
               position: "absolute",
               top: 0,
               bottom: 0,
-              background: "var(--vscode-statusBar-background)",
+              background: "var(--elyra-color-secondaryPanel-bg)",
               width: `${32}px`,
               right: 0,
             }}
