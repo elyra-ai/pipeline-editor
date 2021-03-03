@@ -43,6 +43,7 @@ yarn add @elyra/pipeline-editor
 ```
 
 Or can be linked locally:
+
 ```sh
 git clone git@github.com:elyra-ai/pipeline-editor.git
 cd pipeline-editor
@@ -51,10 +52,13 @@ make clean install link
 ```
 
 ## Usage
+
 ```jsx
-import { PipelineEditor } from '@elyra/pipeline-editor';
+import { PipelineEditor } from "@elyra/pipeline-editor";
 
 function App() {
   return <PipelineEditor />;
 }
 ```
+
+[![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/bourdakos1/pipeline-editor/tree/examples/examples/create-react-app)
