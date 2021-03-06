@@ -35,6 +35,12 @@ import {
   TipNode,
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
+import {
+  css,
+  DefaultTheme,
+  ThemeProvider as InternalThemeProvider,
+  useTheme,
+} from "styled-components";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
@@ -126,6 +132,9 @@ const PipelineEditor = forwardRef(
     }: Props,
     ref
   ) => {
+    const theme = useTheme();
+    console.log(theme);
+
     const controller = useRef(new PipelineController());
 
     const [supernodeOpen, setSupernodeOpen] = useState(false);
@@ -652,4 +661,74 @@ const PipelineEditor = forwardRef(
   }
 );
 
-export default PipelineEditor;
+const defaultTheme: DefaultTheme = {
+  palette: {
+    primary: {
+      main: "#4d78cc",
+      hover: "#6087cf",
+      contrastText: "#fff",
+    },
+    error: {
+      main: "#be1100",
+      contrastText: "#fff",
+    },
+    text: {
+      icon: "#c5c5c5",
+      whySoManyTextColorsThebrightestBesidesWhite: "#f0f0f0",
+      evenMorePrimary: "#e7e7e7", // form labels?
+      primary: "#cccccc",
+      secondary: "#abb2bf",
+      disabled: "rgba(215, 218, 224, 0.25)",
+      link: "#3794ff",
+      error: "#f48771",
+    },
+    focus: "#528bff",
+    border: "#181a1f",
+    divider: "rgba(128, 128, 128, 0.35)",
+    background: {
+      default: "#282c34",
+      secondary: "#21252b",
+      okayThereWasActualAThirdBackgroundColor: "#353b45",
+      ughAndInputsHaveAnotherColor: "#1b1d23",
+    },
+  },
+  typography: {
+    fontFamily: "-apple-system, system-ui, sans-serif",
+    fontWeight: "normal",
+    fontSize: 13,
+  },
+};
+
+function createTheme(overides: Partial<DefaultTheme>) {
+  return { ...defaultTheme, ...overides };
+}
+
+const theme = {};
+
+const x = css`
+  color: var(--fun-day);
+  background-color: ${(props) => props.theme.palette.primary.main};
+`;
+
+const ThemeProvider: React.FC<{ theme: Partial<DefaultTheme> }> = ({
+  theme,
+  children,
+}) => {
+  return (
+    <InternalThemeProvider theme={theme as any}>
+      {children}
+    </InternalThemeProvider>
+  );
+};
+
+function ThemedPipelineEditor(props: Props) {
+  return (
+    <ThemeProvider theme={theme}>
+      <InternalThemeProvider theme={createTheme}>
+        <PipelineEditor {...props} />
+      </InternalThemeProvider>
+    </ThemeProvider>
+  );
+}
+
+export default ThemedPipelineEditor;

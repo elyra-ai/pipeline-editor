@@ -24,7 +24,8 @@
     "react-dom": "^17.0.1",
     "react-intl": "^5.0.0",
     "react-redux": "^7.0.0",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "styled-components": "^5.2.1"
   },
   "devDependencies": {
     "@elyra/canvas": "10.3.0",
@@ -34,7 +35,8 @@
     "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
     "@types/react-intl": "^3.0.0",
-    "@types/react-redux": "^7.1.16"
+    "@types/react-redux": "^7.1.16",
+    "@types/styled-components": "^5.1.7"
   },
   "publishConfig": {
     "access": "public"
