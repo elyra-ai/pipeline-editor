@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// import "@elyra/canvas/dist/styles/common-canvas.min.css";
+import "@elyra/canvas/dist/styles/common-canvas.min.css";
 import "../style/index.css";
 
 export * from "./errors";

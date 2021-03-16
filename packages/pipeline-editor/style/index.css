@@ -41,35 +41,6 @@
 }
 
 /* ========================================================================== */
-/* PALETTE */
-/* ========================================================================== */
-.elyra-palette {
-  margin-top: 14px;
-}
-
-.elyra-paletteItem {
-  display: flex;
-  align-items: center;
-  cursor: grab;
-  height: 40px;
-  margin: 0 22px 8px;
-  background-color: var(--elyra-color-palette-bg);
-  border: 1px solid var(--elyra-color-palette-border);
-  color: var(--elyra-color-palette-text);
-}
-
-.elyra-paletteItemIcon {
-  height: 26px;
-  margin: 0 7px;
-}
-
-.elyra-paletteItemLabel {
-  font-family: var(--elyra-font-family-sans);
-  font-weight: var(--elyra-font-weight-sans);
-  font-size: var(--elyra-font-size-sans);
-}
-
-/* ========================================================================== */
 /* TAB PANEL */
 /* ========================================================================== */
 .elyra-verticalTabGroup {
@@ -197,58 +168,9 @@
   padding-bottom: 0;
 }
 
-.properties-wrapper .properties-control-label {
-  font-family: var(--elyra-font-family-sans);
-  font-weight: 600;
-  font-size: var(--elyra-font-size-sans);
-  color: var(--elyra-color-formLabel-text);
-  line-height: 1.4em !important;
-  letter-spacing: normal;
-}
-
-.properties-wrapper .properties-control-description {
-  margin-top: -1px;
-  font-family: var(--elyra-font-family-sans);
-  font-weight: var(--elyra-font-weight-sans);
-  font-size: var(--elyra-font-size-sans);
-  color: var(--elyra-color-formDescription-text);
-  line-height: 1.4em !important;
-  letter-spacing: normal;
-  padding: 0;
-  opacity: 0.9;
-  user-select: none;
-}
-
 .properties-wrapper .bx--visually-hidden,
 .properties-wrapper .properties-validation-message {
   display: none;
-}
-
-/* text input */
-.properties-wrapper .properties-textfield {
-  margin-top: 9px;
-}
-
-.properties-wrapper input[type="text" i] {
-  box-sizing: border-box;
-  padding: 4px;
-  background-color: var(--elyra-color-textInput-bg);
-  color: var(--elyra-color-textInput-text);
-  border: 1px solid var(--elyra-color-textInput-border);
-  width: 100%;
-  max-width: 500px;
-  font-size: var(--elyra-font-size-sans);
-  font-weight: var(--elyra-font-weight-sans);
-  font-family: var(--elyra-font-family-sans);
-}
-
-.properties-wrapper input[type="text" i]:focus {
-  outline: 1px solid var(--elyra-color-focus) !important;
-  outline-offset: -1px;
-}
-
-.properties-wrapper input[type="text" i]:disabled {
-  color: var(--elyra-color-textInput-disabled-text);
 }
 
 /* select */

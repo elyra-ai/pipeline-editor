@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import ReactDOM from "react-dom";
+
+import styled from "styled-components";
 
 import { CustomNodeSpecification } from "../types";
 
@@ -57,6 +59,32 @@ export function Node({ image, label }: any) {
   );
 }
 
+const Container = styled.div`
+  margin-top: 14px;
+`;
+
+const Item = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  height: 40px;
+  margin: 0 22px 8px;
+  background-color: ${(props) => props.theme.palette.background.secondary};
+  border: 1px solid transparent;
+  color: ${(props) => props.theme.palette.text.secondary};
+`;
+
+const Icon = styled.img`
+  height: 26px;
+  margin: 0 7px;
+`;
+
+const Label = styled.div`
+  font-family: ${(props) => props.theme.typography.fontFamily};
+  font-weight: ${(props) => props.theme.typography.fontWeight};
+  font-size: ${(props) => props.theme.typography.fontSize};
+`;
+
 function PalettePanel({ nodes }: Props) {
   const handleDragStart = useCallback((e, node) => {
     const evData = {
@@ -78,26 +106,20 @@ function PalettePanel({ nodes }: Props) {
   }, []);
 
   return (
-    <div className="elyra-palette">
+    <Container>
       {nodes.map((n) => (
-        <div
+        <Item
           key={n.op}
-          className="elyra-paletteItem"
           draggable="true"
           onDragStart={(e) => {
             handleDragStart(e, n);
           }}
         >
-          <img
-            className="elyra-paletteItemIcon"
-            draggable="false"
-            src={n.image}
-            alt=""
-          />
-          <div className="elyra-paletteItemLabel">{n.label}</div>
-        </div>
+          <Icon draggable="false" src={n.image} alt="" />
+          <Label>{n.label}</Label>
+        </Item>
       ))}
-    </div>
+    </Container>
   );
 }
 

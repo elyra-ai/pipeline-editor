@@ -51,7 +51,7 @@ declare module "styled-components" {
     typography: {
       fontFamily: string;
       fontWeight: string;
-      fontSize: number;
+      fontSize: string;
     };
   }
 }

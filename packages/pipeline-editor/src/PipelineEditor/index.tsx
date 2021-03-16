@@ -36,7 +36,6 @@ import {
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
 import {
-  css,
   DefaultTheme,
   ThemeProvider as InternalThemeProvider,
   useTheme,
@@ -47,6 +46,7 @@ import PalettePanel from "../PalettePanel";
 import PipelineController from "../PipelineController";
 import PropertiesPanel from "../PropertiesPanel";
 import SplitPanelLayout from "../SplitPanelLayout";
+import { CanvasOverrides } from "../styles";
 import TabbedPanelLayout from "../TabbedPanelLayout";
 import useBlockEvents from "./useBlockEvents";
 
@@ -695,7 +695,7 @@ const defaultTheme: DefaultTheme = {
   typography: {
     fontFamily: "-apple-system, system-ui, sans-serif",
     fontWeight: "normal",
-    fontSize: 13,
+    fontSize: "13px",
   },
 };
 
@@ -704,11 +704,6 @@ function createTheme(overides: Partial<DefaultTheme>) {
 }
 
 const theme = {};
-
-const x = css`
-  color: var(--fun-day);
-  background-color: ${(props) => props.theme.palette.primary.main};
-`;
 
 const ThemeProvider: React.FC<{ theme: Partial<DefaultTheme> }> = ({
   theme,
@@ -725,6 +720,7 @@ function ThemedPipelineEditor(props: Props) {
   return (
     <ThemeProvider theme={theme}>
       <InternalThemeProvider theme={createTheme}>
+        <CanvasOverrides />
         <PipelineEditor {...props} />
       </InternalThemeProvider>
     </ThemeProvider>
