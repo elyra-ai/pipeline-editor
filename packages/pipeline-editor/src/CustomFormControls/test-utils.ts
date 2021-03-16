@@ -14,33 +14,25 @@
  * limitations under the License.
  */
 
-import migrate from "./";
+import { createStore } from "redux";
 
-describe("migrate v2 to v3", () => {
-  it("should only bump version", () => {
-    const v2 = {
-      pipelines: [
-        {
-          app_data: {
-            name: "name",
-            version: 2,
-          },
-          nodes: [],
-        },
-      ],
-    };
-    const expected = {
-      pipelines: [
-        {
-          app_data: {
-            name: "name",
-            version: 3,
-          },
-          nodes: [],
-        },
-      ],
-    };
-    const actual = migrate(v2);
-    expect(actual).toEqual(expected);
-  });
-});
+export function createPropertiesStore(
+  { name }: { name: string },
+  value: any,
+  error?: any
+) {
+  const initialState = {
+    propertiesReducer: {
+      [name]: value,
+    },
+    errorMessagesReducer: {
+      [name]: error,
+    },
+  };
+
+  function reducer(state: any) {
+    return state;
+  }
+
+  return createStore(reducer, initialState);
+}

@@ -15,7 +15,18 @@
  */
 
 module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
-  roots: ["<rootDir>/src"],
+  collectCoverageFrom: [
+    // Collect coverage for all typescript files.
+    "**/*.{ts,tsx}",
+    // Ignore `src/index.ts`, because it should only be exports.
+    "!**/src/index.ts",
+    // Ignore any typescript declaration files.
+    "!**/*.d.ts",
+    // Ignore any test utils.
+    "!**/test-utils.{ts,tsx}",
+    // ignore tests and snapshot tests.
+    "!**/*.test.{ts,tsx}",
+  ],
+  coverageReporters: ["lcov", "text"],
+  projects: ["<rootDir>/packages/*"],
 };

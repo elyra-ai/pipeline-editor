@@ -1,3 +1,6 @@
+cypress/videos
+cypress/screenshots
+
 # production
 dist
 build

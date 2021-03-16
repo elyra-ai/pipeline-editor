@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { checkCircularReferences } from "./";
+import checkCircularReferences from "./";
 
 const linkExamples = [
   // ╭───╮      ╭───╮
@@ -330,15 +330,13 @@ const linkExamples = [
   },
 ];
 
-describe("checkCircularReferences", () => {
-  for (const { it: should, given, expected } of linkExamples) {
-    it(should, () => {
-      const startTime = Date.now();
-      const actual = checkCircularReferences(given);
-      const endTime = Date.now();
+for (const { it: should, given, expected } of linkExamples) {
+  it(should, () => {
+    const startTime = Date.now();
+    const actual = checkCircularReferences(given);
+    const endTime = Date.now();
 
-      expect(new Set(actual)).toEqual(new Set(expected));
-      expect(endTime - startTime).toBeLessThan(300);
-    });
-  }
-});
+    expect(new Set(actual)).toEqual(new Set(expected));
+    expect(endTime - startTime).toBeLessThan(300);
+  });
+}

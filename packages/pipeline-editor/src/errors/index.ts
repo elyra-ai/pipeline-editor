@@ -16,6 +16,7 @@
 
 export class ElyraOutOfDateError extends Error {
   constructor() {
+    /* istanbul ignore next */
     super(
       "Pipeline was last edited in a newer version of Elyra. Update Elyra to use this pipeline."
     );
@@ -24,12 +25,14 @@ export class ElyraOutOfDateError extends Error {
 
 export class PipelineOutOfDateError extends Error {
   constructor() {
+    /* istanbul ignore next */
     super("Pipeline is out of date.");
   }
 }
 
-export class UnknownVersionError extends Error {
+export class InvalidPipelineError extends Error {
   constructor() {
-    super("Pipeline has an unrecognizable version.");
+    /* istanbul ignore next */
+    super("Pipeline is invalid.");
   }
 }

@@ -46,7 +46,7 @@ interface Item {
   id: string;
 }
 
-const reducer = produce((draft: Item[], action) => {
+export const reducer = produce((draft: Item[], action) => {
   const { type, payload } = action;
   switch (type) {
     case "ADD_ITEM": {
@@ -90,7 +90,7 @@ const reducer = produce((draft: Item[], action) => {
   }
 });
 
-function ListItem({
+export function ListItem({
   value,
   isEditing,
   placeholder,
@@ -106,8 +106,8 @@ function ListItem({
   useEffect(() => {
     // We want this to be called anytime isEditing becomes true.
     if (isEditing) {
-      inputRef.current?.focus();
-      inputRef.current?.select();
+      inputRef.current!.focus();
+      inputRef.current!.select();
     }
   }, [isEditing]);
 
@@ -121,7 +121,7 @@ function ListItem({
             placeholder={placeholder}
             onKeyDown={(e) => {
               if (e.code === "Enter") {
-                onSubmit?.(inputRef.current?.value ?? "");
+                onSubmit?.(inputRef.current!.value);
                 return;
               }
               if (e.code === "Escape") {
@@ -133,7 +133,7 @@ function ListItem({
         </div>
         <button
           onClick={() => {
-            onSubmit?.(inputRef.current?.value ?? "");
+            onSubmit?.(inputRef.current!.value);
           }}
         >
           OK
@@ -150,6 +150,7 @@ function ListItem({
   }
   return (
     <div
+      data-testid="list-row"
       className="elyra-stringArrayControl-listRow"
       onDoubleClick={() => {
         onEdit?.();
@@ -159,6 +160,7 @@ function ListItem({
       <div className="elyra-stringArrayControl-listActions">
         <div className="elyra-actionItem">
           <div
+            title="Edit"
             className="elyra-icon elyra-actionItemIcon elyra-item-edit"
             onClick={() => {
               onEdit?.();
@@ -168,6 +170,7 @@ function ListItem({
         {!!canBrowseFiles && (
           <div className="elyra-actionItem">
             <div
+              title="Browse"
               className="elyra-icon elyra-actionItemIcon elyra-item-folder"
               onClick={() => {
                 onChooseFiles?.();
@@ -177,6 +180,7 @@ function ListItem({
         )}
         <div className="elyra-actionItem">
           <div
+            title="Delete"
             className="elyra-icon elyra-actionItemIcon elyra-item-delete"
             onClick={() => {
               onDelete?.();
@@ -188,8 +192,6 @@ function ListItem({
   );
 }
 
-// NOTE: This uses IDs which is a breaking change to pipeline spec. Would
-// require a migration.
 function StringArrayComponent({
   name,
   controller,
@@ -202,7 +204,7 @@ function StringArrayComponent({
   const [editingID, setEditingID] = useState<string>();
 
   const items: Item[] = useSelector(
-    (state: any) => state.propertiesReducer[name]
+    (state: any) => state.propertiesReducer[name] ?? []
   );
 
   const handleAction = useCallback(
@@ -221,16 +223,18 @@ function StringArrayComponent({
         defaultUri: items.find((i) => i.id === id)?.value,
       });
 
-      handleAction({
-        type: "UPSERT_ITEMS",
-        payload: {
-          id: id,
-          items: values.map((v: string) => ({
-            value: v,
-            id: nanoid(),
-          })),
-        },
-      });
+      if (Array.isArray(values)) {
+        handleAction({
+          type: "UPSERT_ITEMS",
+          payload: {
+            id: id,
+            items: values.map((v: string) => ({
+              value: v,
+              id: nanoid(),
+            })),
+          },
+        });
+      }
     },
     [handleAction, items]
   );
@@ -288,34 +292,29 @@ function StringArrayComponent({
           />
         )}
       </div>
-      <div
-        style={{
-          display:
-            editingID !== undefined && actualItem === undefined
-              ? "none"
-              : "flex",
-        }}
-        className="elyra-stringArrayControl-buttonGroup"
-      >
-        <button
-          onClick={() => {
-            const id = nanoid();
-            setEditingID(id);
-          }}
-        >
-          Add {singleItemLabel ?? "Item"}
-        </button>
-        {!!canBrowseFiles && (
+
+      {/* TODO: Clean up this logic */}
+      {!(editingID !== undefined && actualItem === undefined) && (
+        <div className="elyra-stringArrayControl-buttonGroup">
           <button
             onClick={() => {
               const id = nanoid();
-              handleChooseFiles(id);
+              setEditingID(id);
             }}
           >
-            Browse
+            Add {singleItemLabel ?? "Item"}
           </button>
-        )}
-      </div>
+          {!!canBrowseFiles && (
+            <button
+              onClick={() => {
+                handleChooseFiles(undefined);
+              }}
+            >
+              Browse
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -22,11 +22,69 @@ const MIN_PANEL_WIDTH = 300;
 interface Props {
   left: React.ReactNode;
   right: React.ReactNode;
-  experimental?: boolean;
-  rightOpen?: boolean;
+  mode: "open" | "collapsed" | "closed";
 }
 
-function SplitPanelLayout({ left, right, rightOpen, experimental }: Props) {
+interface RightPanelProps {
+  mode: "open" | "collapsed" | "closed";
+  width: number;
+  children: React.ReactNode;
+  onMouseDown: () => any;
+}
+
+function RightPanel({ mode, width, children, onMouseDown }: RightPanelProps) {
+  switch (mode) {
+    case "open":
+      return (
+        <div>
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              background: "var(--elyra-color-panel-bg)",
+              borderLeft: "1px solid var(--elyra-color-panel-border)",
+              width: `${width}px`,
+              right: 0,
+            }}
+          >
+            {children}
+          </div>
+          <div
+            data-testid="drag-handle"
+            style={{
+              position: "absolute",
+              cursor: "col-resize",
+              top: 0,
+              bottom: 0,
+              width: "8px",
+              right: `${width - 4}px`,
+            }}
+            onMouseDown={onMouseDown}
+          />
+        </div>
+      );
+    case "collapsed":
+      return (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            background: "var(--vscode-statusBar-background)",
+            width: `${32}px`,
+            right: 0,
+          }}
+        >
+          {children}
+        </div>
+      );
+    case "closed":
+      return null;
+  }
+}
+
+function SplitPanelLayout({ left, right, mode }: Props) {
   const [dragPosition, setDragPosition] = useState<number | undefined>(
     undefined
   );
@@ -64,7 +122,7 @@ function SplitPanelLayout({ left, right, rightOpen, experimental }: Props) {
     dragging.current = true;
   }, []);
 
-  const width = rightOpen ? dragPosition ?? DEFAULT_PANEL_WIDTH : 0;
+  const width = mode === "open" ? dragPosition ?? DEFAULT_PANEL_WIDTH : 0;
 
   return (
     <React.Fragment>
@@ -80,49 +138,9 @@ function SplitPanelLayout({ left, right, rightOpen, experimental }: Props) {
       >
         {left}
       </div>
-      {rightOpen ? (
-        <div>
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              background: "var(--elyra-color-panel-bg)",
-              borderLeft: "1px solid var(--elyra-color-panel-border)",
-              width: `${width}px`,
-              right: 0,
-            }}
-          >
-            {right}
-          </div>
-          <div
-            style={{
-              position: "absolute",
-              cursor: "col-resize",
-              top: 0,
-              bottom: 0,
-              width: "8px",
-              right: `${width - 4}px`,
-            }}
-            onMouseDown={handleMouseDown}
-          />
-        </div>
-      ) : experimental ? (
-        <div>
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              background: "var(--vscode-statusBar-background)",
-              width: `${32}px`,
-              right: 0,
-            }}
-          >
-            {right}
-          </div>
-        </div>
-      ) : null}
+      <RightPanel mode={mode} width={width} onMouseDown={handleMouseDown}>
+        {right}
+      </RightPanel>
     </React.Fragment>
   );
 }

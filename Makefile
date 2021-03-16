@@ -6,7 +6,6 @@ clean:
 .PHONY: install
 install:
 	yarn install
-	yarn lerna bootstrap
 
 .PHONY: link
 link:
@@ -30,4 +29,5 @@ lint:
 
 .PHONY: test
 test:
-	yarn lerna run test --stream
+	yarn jest --coverage
+	yarn test:cypress

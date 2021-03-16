@@ -13,12 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-name: Elyra Pipeline Editor Tests
+name: Tests
+
 on:
   push:
-    branches: '*'
   pull_request:
-    branches: '*'
   schedule:
     # once a day at 3 am (UTC) (7 pm (PST))
     - cron:  '0 3 * * *'
@@ -30,7 +29,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
+        node-version: [12.x, 14.x, 15.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -43,14 +42,20 @@ jobs:
     - name: Install dependencies
       run: yarn --frozen-lockfile
 
-    - name: Build
-      run: make build
-
-    - name: Test
-      run: make test
-
-    - name: Test
-      run: make test
-
     - name: Lint
       run: make lint
+      env:
+        FORCE_COLOR: true
+
+    - name: Build
+      run: make build
+      env:
+        FORCE_COLOR: true
+
+    - name: Test
+      run: make test
+      env:
+        FORCE_COLOR: true
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1

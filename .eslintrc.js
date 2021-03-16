@@ -18,9 +18,19 @@ const allExtensions = [".ts", ".tsx", ".d.ts", ".js", ".jsx"];
 
 module.exports = {
   root: true,
-  extends: "react-app",
+  extends: [
+    "react-app",
+    "plugin:jest/recommended",
+    "plugin:jest/style",
+    "plugin:testing-library/react",
+    "plugin:jest-dom/recommended",
+  ],
   plugins: ["import", "header"],
   rules: {
+    "testing-library/prefer-screen-queries": ["warn"],
+    "jest/no-large-snapshots": ["warn", { maxSize: 20 }],
+    "jest/expect-expect": ["off"],
+    "jest/valid-title": ["off"],
     "header/header": [
       "warn",
       "block",
@@ -86,7 +96,17 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["webpack.*.js"],
+      files: ["cypress/**"],
+      rules: {
+        "testing-library/prefer-screen-queries": "off",
+      },
+    },
+    {
+      files: ["stories/**"],
+      rules: { "import/no-anonymous-default-export": ["off"] },
+    },
+    {
+      files: ["webpack.*.js", "*.test.tsx", "*.test.ts", "cypress/**"],
       rules: {
         "import/no-extraneous-dependencies": [
           "warn",

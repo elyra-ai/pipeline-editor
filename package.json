@@ -14,24 +14,37 @@
   },
   "main": "./packages/extension/dist/index.js",
   "devDependencies": {
+    "@babel/core": "^7.13.8",
+    "@storybook/addon-actions": "^6.1.20",
+    "@storybook/addon-essentials": "^6.1.20",
+    "@storybook/addon-links": "^6.1.20",
+    "@storybook/react": "^6.1.20",
+    "@testing-library/cypress": "^7.0.4",
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
     "@typescript-eslint/parser": "^4.5.0",
     "babel-eslint": "^10.0.0",
+    "babel-loader": "^8.2.2",
+    "core-js": "^3.9.1",
+    "cypress": "^6.6.0",
     "eslint": "^7.11.0",
     "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-flowtype": "^5.2.0",
     "eslint-plugin-header": "^3.1.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-jest-dom": "^3.6.5",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-testing-library": "^3.10.1",
     "husky": "^3.1.0",
     "jest": "^26.6.3",
     "lerna": "^3.22.1",
     "lint-staged": "^9.4.3",
     "prettier": "^2.2.1",
+    "start-server-and-test": "^1.12.0",
     "ts-jest": "^26.5.1",
     "typescript": "4.1.3"
   },
@@ -45,5 +58,16 @@
       "prettier --write",
       "git add"
     ]
-  }
+  },
+  "scripts": {
+    "postinstall": "lerna bootstrap",
+    "build": "lerna run build",
+    "sb:start": "start-storybook -p 6006",
+    "sb:ci": "start-storybook -p 6006 --ci",
+    "test:cypress:dev": "start-server-and-test sb:ci http://localhost:6006 cy:open",
+    "test:cypress": "start-server-and-test sb:ci http://localhost:6006 cy:run",
+    "cy:run": "cypress run",
+    "cy:open": "cypress open"
+  },
+  "dependencies": {}
 }

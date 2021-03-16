@@ -43,7 +43,7 @@ function FileComponent({ name, controller, placeholder }: Props) {
       filters: { Notebook: ["ipynb"] }, // TODO: this should be specified via node definition
     });
     //  Don't set if nothing was chosen.
-    if (values.length > 0) {
+    if (values !== undefined && values.length > 0) {
       controllerRef.current.updatePropertyValue({ name }, values[0]);
     }
   }, [name, path]);

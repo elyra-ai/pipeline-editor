@@ -16,33 +16,29 @@
 
 import migrate from "./";
 
-describe("migrate v1 to v2", () => {
-  it("should change all node paths to relative", () => {
-    const v1 = {
-      pipelines: [
-        {
-          app_data: {
-            name: "name",
-            version: 1,
-          },
-          nodes: [
-            { app_data: { filename: "/user/niko/project/notebook.ipynb" } },
-          ],
+it("should only bump version", () => {
+  const v2 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 2,
         },
-      ],
-    };
-    const expected = {
-      pipelines: [
-        {
-          app_data: {
-            name: "name",
-            version: 2,
-          },
-          nodes: [{ app_data: { filename: "notebook.ipynb" } }],
+        nodes: [],
+      },
+    ],
+  };
+  const expected = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 3,
         },
-      ],
-    };
-    const actual = migrate(v1);
-    expect(actual).toEqual(expected);
-  });
+        nodes: [],
+      },
+    ],
+  };
+  const actual = migrate(v2);
+  expect(actual).toEqual(expected);
 });

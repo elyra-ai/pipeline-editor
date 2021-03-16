@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import path from "path";
-
 import { CanvasController, PipelineFlowV3 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
@@ -23,34 +21,63 @@ import { CustomNodeSpecification } from "../types";
 import {
   ElyraOutOfDateError,
   PipelineOutOfDateError,
-  UnknownVersionError,
+  InvalidPipelineError,
 } from "./../errors";
 import { createPalette } from "./create-palette";
 
-const PIPELINE_CURRENT_VERSION = 3;
+export const PIPELINE_CURRENT_VERSION = 3;
 
-interface AddNodeOptions {
-  x?: number;
-  y?: number;
+// NOTE: This is extremely basic validation.
+export function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
+  if (pipeline === undefined || pipeline === null) {
+    return false;
+  }
+  if (pipeline.version !== "3.0") {
+    return false;
+  }
+  if (!Array.isArray(pipeline.pipelines)) {
+    return false;
+  }
+  if (pipeline.pipelines.length < 1) {
+    return false;
+  }
+  if (
+    pipeline.pipelines[0].app_data?.version !== undefined &&
+    typeof pipeline.pipelines[0].app_data.version !== "number"
+  ) {
+    return false;
+  }
+  return true;
 }
 
+// TODO: Should update `app_data` in `PipelineFlowV3` to be non-option? or maybe
+// a second type `PipelineFlowV3Opened` because `app_data` is guaranteed once
+// the pipeline file has been opened by canvas.
 class PipelineController extends CanvasController {
   private nodes: CustomNodeSpecification[] = [];
   private lastOpened: PipelineFlowV3 | undefined;
 
-  open(pipelineJson: PipelineFlowV3) {
-    // if pipeline is null create a new one from scratch.
-    if (pipelineJson === undefined) {
-      pipelineJson = this.getPipelineFlow();
+  open(pipelineJson: any) {
+    // if pipeline is undefined/null create a new one from scratch.
+    if (pipelineJson === undefined || pipelineJson === null) {
+      const emptyPipelineJson = this.getPipelineFlow();
       // NOTE: We should be guaranteed app_data is defined here.
-      pipelineJson.pipelines[0].app_data!.version = PIPELINE_CURRENT_VERSION;
+      emptyPipelineJson.pipelines[0].app_data!.version = PIPELINE_CURRENT_VERSION;
+      pipelineJson = emptyPipelineJson;
     }
 
+    // This must happen after the pipeline has been finalized, but before any
+    // errors are thrown.
     if (this.lastOpened === pipelineJson) {
       return;
     }
     this.lastOpened = pipelineJson;
 
+    if (!isPipelineFlowV3(pipelineJson)) {
+      throw new InvalidPipelineError();
+    }
+
+    // TODO: Should this be primary pipeline? or can it be any?
     const version = pipelineJson.pipelines[0].app_data?.version ?? 0;
 
     if (version === PIPELINE_CURRENT_VERSION) {
@@ -66,12 +93,7 @@ class PipelineController extends CanvasController {
 
     // in this case, pipeline was last edited in a "old" version of Elyra and
     // it needs to be updated/migrated.
-    if (version < PIPELINE_CURRENT_VERSION) {
-      throw new PipelineOutOfDateError();
-    }
-
-    // we should only reach here if the version isn't a number
-    throw new UnknownVersionError();
+    throw new PipelineOutOfDateError();
   }
 
   setNodes(nodes: CustomNodeSpecification[]) {
@@ -80,20 +102,18 @@ class PipelineController extends CanvasController {
     this.setPipelineFlowPalette(palette);
   }
 
-  addNode(item: any, { x, y }: AddNodeOptions = {}) {
+  addNode(item: any) {
     const nodeTemplate = this.getPaletteNode(item.op);
     const data = {
       editType: "createNode",
-      offsetX: x || 40,
-      offsetY: y || 40,
+      offsetX: item.x ?? 40,
+      offsetY: item.y ?? 40,
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
     };
-    let env_vars = item.env_vars || [];
-    data.nodeTemplate.label = path.parse(item.path).base;
+
+    // TODO: We should only set this for file based nodes.
     data.nodeTemplate.app_data.filename = item.path;
-    data.nodeTemplate.app_data.runtime_image = "";
-    data.nodeTemplate.app_data.env_vars = env_vars;
-    data.nodeTemplate.app_data.include_subdirectories = false;
+
     this.editActionHandler(data);
   }
 
@@ -193,8 +213,9 @@ class PipelineController extends CanvasController {
         // `setNodeDecorations` is VERY slow, so make sure we HAVE to set it
         // before setting it.
         if (
-          node.app_data?.ui_data?.decorations !== undefined &&
-          node.app_data?.ui_data?.decorations.length !== 0
+          // `app_data` and `ui_data` should always be defined.
+          node.app_data!.ui_data!.decorations !== undefined &&
+          node.app_data!.ui_data!.decorations.length !== 0
         ) {
           this.setNodeDecorations(node.id, [], pipeline.id);
         }
@@ -211,20 +232,21 @@ class PipelineController extends CanvasController {
         }
 
         const newLabel =
-          nodeDef.labelField && node.app_data?.[nodeDef.labelField]
-            ? node.app_data[nodeDef.labelField]
+          nodeDef.labelField && node.app_data![nodeDef.labelField]
+            ? node.app_data![nodeDef.labelField]
             : nodeDef.label;
 
         // `setNodeLabel` is VERY slow, so make sure we HAVE to set it before
         // setting it.
-        if ((node as any).label !== newLabel) {
+        if (node.app_data!.ui_data!.label !== newLabel) {
           this.setNodeLabel(node.id, newLabel as string, pipeline.id);
         }
 
         if (
-          node.description !== nodeDef.description ||
-          node.app_data?.ui_data?.image !== nodeDef.image ||
-          node.app_data?.invalidNodeError !== undefined
+          // `app_data` and `ui_data` should be guaranteed.
+          node.app_data!.ui_data!.description !== nodeDef.description ||
+          node.app_data!.ui_data!.image !== nodeDef.image ||
+          node.app_data!.invalidNodeError !== undefined
         ) {
           this.setNodeProperties(
             node.id,
@@ -287,18 +309,13 @@ class PipelineController extends CanvasController {
             property: problem.info.property,
           });
           break;
-        case "invalidNode":
-          nodesWithErrors[problem.info.pipelineID] = [
-            ...(nodesWithErrors[problem.info.pipelineID] ?? []),
-            problem.info.nodeID,
-          ];
-          this.setInvalidNode(problem.info.pipelineID, problem.info.nodeID);
-          break;
       }
     }
     this.setLinkErrors(linksWithErrors);
     this.setNodeErrors(nodesWithErrors);
 
+    // Pass a list of all pipelineIDs that have errors. This will find and style
+    // any supernodes that have the pipeline as a subflow.
     this.setSupernodeErrors([
       ...new Set([
         ...Object.keys(linksWithErrors),
@@ -308,23 +325,23 @@ class PipelineController extends CanvasController {
 
     for (const pipeline of this.getPipelineFlow().pipelines) {
       for (const node of pipeline.nodes) {
+        if (node.type !== "execution_node") {
+          continue;
+        }
+
         const nodeProblems = missingProperties.filter(
           (p) => p.nodeID === node.id
         );
         if (nodeProblems.length > 0) {
-          if (node.type !== "execution_node") {
-            continue;
-          }
-          const nodeDef = this.nodes.find((n) => n.op === node.op);
-          if (nodeDef === undefined) {
-            continue;
-          }
+          // All of this information should be defined, otherwise we wouldn't
+          // have had any problems reported.
+          const nodeDef = this.nodes.find((n) => n.op === node.op)!;
 
           const message = nodeProblems
             .map((problem) => {
-              const label = nodeDef.properties?.uihints?.parameter_info.find(
+              const label = nodeDef.properties!.uihints!.parameter_info.find(
                 (p) => p.parameter_ref === problem.property
-              )?.label.default;
+              )!.label.default;
               return `property "${label}" is required`;
             })
             .join("\n");
@@ -367,18 +384,23 @@ class PipelineController extends CanvasController {
   properties(nodeID: string) {
     let node = this.findExecutionNode(nodeID);
 
-    const nodeDef = this.nodes.find((n) => n.op === node?.op);
+    if (node !== undefined) {
+      const { op, app_data } = node;
+      const nodeDef = this.nodes.find((n) => n.op === op);
 
-    const properties = (nodeDef?.properties?.uihints?.parameter_info ?? []).map(
-      (p) => {
+      const info = nodeDef?.properties?.uihints?.parameter_info ?? [];
+
+      const properties = info.map((i) => {
         return {
-          label: p.label.default,
-          value: node?.app_data?.[p.parameter_ref],
+          label: i.label.default,
+          // `app_data` should never be undefined because canvas injects it.
+          value: app_data![i.parameter_ref],
         };
-      }
-    );
+      });
+      return properties;
+    }
 
-    return properties;
+    return [];
   }
 }
 

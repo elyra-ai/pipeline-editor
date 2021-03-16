@@ -128,8 +128,6 @@ const PipelineEditor = forwardRef(
 
     useCloseContextMenu(controller);
 
-    useCloseContextMenu(controller);
-
     const blockingRef = useBlockEvents({
       wheel: true,
       contextmenu: readOnly,
@@ -153,8 +151,8 @@ const PipelineEditor = forwardRef(
     useImperativeHandle(
       ref,
       () => ({
-        addFile: (item: any, x?: number, y?: number) => {
-          controller.current.addNode(item, { x, y });
+        addFile: (item: any) => {
+          controller.current.addNode(item);
         },
       }),
       []
@@ -584,16 +582,21 @@ const PipelineEditor = forwardRef(
                     content: <PalettePanel nodes={nodes} />,
                   },
                 ]}
-                open={panelOpen}
-                experimental={toolbar === undefined}
+                collapsed={panelOpen === false}
+                showCloseButton={toolbar === undefined}
                 onClose={() => {
                   onAction?.({ type: "closePanel" });
                   setPanelOpen(false);
                 }}
               />
             }
-            experimental={toolbar === undefined}
-            rightOpen={panelOpen}
+            mode={
+              panelOpen
+                ? "open"
+                : toolbar === undefined
+                ? "collapsed"
+                : "closed"
+            }
           />
         </IntlProvider>
       </div>

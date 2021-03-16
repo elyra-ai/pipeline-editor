@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { CommonProperties } from "@elyra/canvas";
 
@@ -66,8 +66,7 @@ function PropertiesPanel({
 
   const selectedNode = selectedNodes[0];
 
-  if (selectedNode.op === undefined) {
-    // supernode
+  if (selectedNode.type !== "execution_node") {
     return (
       <div className="elyra-noContentMessage">
         This node type doesn't have any editable properties.
@@ -76,6 +75,14 @@ function PropertiesPanel({
   }
 
   const nodePropertiesSchema = nodes.find((n: any) => n.op === selectedNode.op);
+
+  if (nodePropertiesSchema === undefined) {
+    return (
+      <div className="elyra-noContentMessage">
+        This node type doesn't have any editable properties.
+      </div>
+    );
+  }
 
   return (
     <CommonProperties
@@ -93,14 +100,14 @@ function PropertiesPanel({
       }}
       callbacks={{
         actionHandler: async (id: string, _appData: any, data: any) => {
-          if (id === "browse_file") {
-            return await onFileRequested?.(data);
+          switch (id) {
+            case "browse_file":
+              return await onFileRequested?.(data);
           }
         },
         controllerHandler: (e: any) => {
           controller.current = e;
         },
-        applyPropertyChanges: () => {},
         propertyListener: (e: any) => {
           if (e.action === "UPDATE_PROPERTY") {
             onChange?.(selectedNode.id, controller.current.getPropertyValues());

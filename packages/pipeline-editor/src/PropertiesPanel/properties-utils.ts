@@ -29,7 +29,7 @@ declare namespace CommonPropertiesSchema {
   export interface UIHints {
     id: string;
     parameter_info: any[];
-    action_info: any[];
+    action_info?: any[];
     group_info: any[];
   }
   export interface StringParameter {
@@ -61,12 +61,16 @@ declare namespace CommonPropertiesSchema {
 }
 
 export function fillPropertiesWithSavedData(
-  properties: CommonPropertiesSchema,
+  properties: { current_parameters: { [key: string]: any } },
   appData: { [key: string]: any }
 ) {
   return produce(properties, (draftState) => {
     for (const [key, val] of Object.entries(appData)) {
-      if (val !== undefined) {
+      if (
+        val !== undefined &&
+        val !== null &&
+        draftState.current_parameters.hasOwnProperty(key)
+      ) {
         draftState.current_parameters[key] = val;
       }
     }

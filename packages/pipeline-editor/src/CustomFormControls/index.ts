@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/* istanbul ignore file */
+
 export { default as FileControl } from "./FileControl";
 export { default as StringArrayControl } from "./StringArrayControl";
 export { default as BooleanControl } from "./BooleanControl";
