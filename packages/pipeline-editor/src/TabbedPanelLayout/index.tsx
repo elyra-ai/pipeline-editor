@@ -16,8 +16,14 @@
 
 import React from "react";
 
+import styled from "styled-components";
+
 interface Props {
-  tabs: Tab[];
+  tabs: {
+    id: string;
+    label: string;
+    content: React.ReactNode;
+  }[];
   collapsed?: boolean;
   showCloseButton?: boolean;
   currentTab?: string;
@@ -25,11 +31,75 @@ interface Props {
   onTabClick?: (id: string) => any;
 }
 
-interface Tab {
-  id: string;
-  label: string;
-  content: React.ReactNode;
+const VerticalTabGroup = styled.div`
+  padding: 7px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const HorizontalTabGroup = styled.div`
+  display: flex;
+`;
+
+const Tab = styled.div`
+  ${VerticalTabGroup} & {
+    margin: 3px 0;
+  }
+  ${VerticalTabGroup} &:hover {
+    /* TODO: styles */
+    background-color: var(--vscode-statusBarItem-hoverBackground);
+  }
+  ${VerticalTabGroup} &:active {
+    /* TODO: styles */
+    background-color: rgba(255, 255, 255, 0.18);
+  }
+  ${HorizontalTabGroup} & {
+    cursor: pointer;
+    user-select: none;
+    text-transform: uppercase;
+    padding: 4px 10px 3px;
+  }
+`;
+
+const ActionBar = styled.div`
+  padding: 0 8px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Content = styled.div`
+  position: absolute;
+  top: 35px;
+  bottom: 0;
+  overflow: auto;
+  width: 100%;
+`;
+
+interface LabelProps {
+  active: boolean;
 }
+
+const Label = styled.div<LabelProps>`
+  /* TODO: styles */
+  line-height: 27px;
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-size: 11px;
+
+  color: ${({ active }) =>
+    active
+      ? "var(--vscode-panelTitle-activeForeground)"
+      : "var(--vscode-panelTitle-inactiveForeground)"};
+
+  border-bottom: 1px solid
+    ${({ active }) =>
+      active ? "var(--vscode-panelTitle-activeBorder)" : "transparent"};
+
+  &:hover {
+    color: var(--vscode-panelTitle-activeForeground);
+  }
+`;
 
 function TabbedPanelLayout({
   currentTab,
@@ -41,45 +111,42 @@ function TabbedPanelLayout({
 }: Props) {
   if (collapsed === true) {
     return (
-      <div className="elyra-verticalTabGroup">
+      <VerticalTabGroup>
         {tabs.map((t) => (
-          <div key={t.id} className="elyra-tabItem">
+          <Tab key={t.id}>
             <div
               title={t.label}
+              // TODO: styles
               className={`elyra-icon elyra-tabItemIcon ${t.id}`}
               onClick={() => {
                 onTabClick?.(t.id);
               }}
             />
-          </div>
+          </Tab>
         ))}
-      </div>
+      </VerticalTabGroup>
     );
   }
 
   const resolvedCurrentTab = currentTab === undefined ? tabs[0].id : currentTab;
 
   return (
-    <div className="elyra-tabPanel">
-      <div className="elyra-actionBar">
-        <div className="elyra-tabGroup">
+    <React.Fragment>
+      <ActionBar>
+        <HorizontalTabGroup>
           {tabs.map((t) => (
-            <div key={t.id} className="elyra-tab">
-              <div
-                className={
-                  resolvedCurrentTab === t.id
-                    ? "elyra-tabText activeTab"
-                    : "elyra-tabText"
-                }
+            <Tab key={t.id}>
+              <Label
+                active={resolvedCurrentTab === t.id}
                 onClick={() => {
                   onTabClick?.(t.id);
                 }}
               >
                 {t.label}
-              </div>
-            </div>
+              </Label>
+            </Tab>
           ))}
-        </div>
+        </HorizontalTabGroup>
         {showCloseButton === true && (
           <div className="elyra-actionItem">
             <div
@@ -91,21 +158,12 @@ function TabbedPanelLayout({
             />
           </div>
         )}
-      </div>
-      <div
-        className="elyra-tabContent"
-        style={{
-          position: "absolute",
-          top: "35px",
-          bottom: 0,
-          overflow: "auto",
-          width: "100%",
-        }}
-      >
+      </ActionBar>
+      <Content>
         {tabs.find((t) => t.id === resolvedCurrentTab)?.content ??
           "Invalid tab id."}
-      </div>
-    </div>
+      </Content>
+    </React.Fragment>
   );
 }
 

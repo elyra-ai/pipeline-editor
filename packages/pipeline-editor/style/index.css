@@ -43,29 +43,6 @@
 /* ========================================================================== */
 /* TAB PANEL */
 /* ========================================================================== */
-.elyra-verticalTabGroup {
-  padding: 7px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.elyra-tabContent {
-  position: absolute;
-  top: 35px;
-  bottom: 0;
-  overflow: auto;
-  width: 100%;
-}
-
-.elyra-tabPanel > .elyra-actionBar {
-  display: flex;
-  justify-content: space-between;
-}
-
-.elyra-tabPanel > .elyra-actionBar > .elyra-tabGroup {
-  display: flex;
-}
 
 .elyra-noContentMessage {
   margin-top: 14px;

@@ -63,26 +63,26 @@ const Container = styled.div`
   margin-top: 14px;
 `;
 
-const Item = styled.div`
+const Item = styled.div.attrs({ draggable: true })`
   display: flex;
   align-items: center;
   cursor: grab;
   height: 40px;
   margin: 0 22px 8px;
-  background-color: ${(props) => props.theme.palette.background.secondary};
+  background-color: ${({ theme }) => theme.palette.background.secondary};
   border: 1px solid transparent;
-  color: ${(props) => props.theme.palette.text.secondary};
+  color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
-const Icon = styled.img`
+const Icon = styled.img.attrs({ draggable: false, alt: "" })`
   height: 26px;
   margin: 0 7px;
 `;
 
 const Label = styled.div`
-  font-family: ${(props) => props.theme.typography.fontFamily};
-  font-weight: ${(props) => props.theme.typography.fontWeight};
-  font-size: ${(props) => props.theme.typography.fontSize};
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-size: ${({ theme }) => theme.typography.fontSize};
 `;
 
 function PalettePanel({ nodes }: Props) {
@@ -108,14 +108,8 @@ function PalettePanel({ nodes }: Props) {
   return (
     <Container>
       {nodes.map((n) => (
-        <Item
-          key={n.op}
-          draggable="true"
-          onDragStart={(e) => {
-            handleDragStart(e, n);
-          }}
-        >
-          <Icon draggable="false" src={n.image} alt="" />
+        <Item key={n.op} onDragStart={(e) => handleDragStart(e, n)}>
+          <Icon src={n.image} />
           <Label>{n.label}</Label>
         </Item>
       ))}
