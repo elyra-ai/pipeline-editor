@@ -35,18 +35,14 @@ import {
   TipNode,
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
-import {
-  DefaultTheme,
-  ThemeProvider as InternalThemeProvider,
-} from "styled-components";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
 import PipelineController from "../PipelineController";
 import PropertiesPanel from "../PropertiesPanel";
 import SplitPanelLayout from "../SplitPanelLayout";
-import { CanvasOverrides } from "../styles";
 import TabbedPanelLayout from "../TabbedPanelLayout";
+import ThemeProvider from "../ThemeProvider";
 import useBlockEvents from "./useBlockEvents";
 
 interface Props {
@@ -657,68 +653,13 @@ const PipelineEditor = forwardRef(
   }
 );
 
-const defaultTheme: DefaultTheme = {
-  palette: {
-    primary: {
-      main: "#4d78cc",
-      hover: "#6087cf",
-      contrastText: "#fff",
-    },
-    error: {
-      main: "#be1100",
-      contrastText: "#fff",
-    },
-    text: {
-      icon: "#c5c5c5",
-      whySoManyTextColorsThebrightestBesidesWhite: "#f0f0f0",
-      evenMorePrimary: "#e7e7e7", // form labels?
-      primary: "#cccccc",
-      secondary: "#abb2bf",
-      disabled: "rgba(215, 218, 224, 0.25)",
-      link: "#3794ff",
-      error: "#f48771",
-    },
-    focus: "#528bff",
-    border: "#181a1f",
-    divider: "rgba(128, 128, 128, 0.35)",
-    background: {
-      default: "#282c34",
-      secondary: "#21252b",
-      okayThereWasActualAThirdBackgroundColor: "#353b45",
-      ughAndInputsHaveAnotherColor: "#1b1d23",
-    },
-  },
-  typography: {
-    fontFamily: "-apple-system, system-ui, sans-serif",
-    fontWeight: "normal",
-    fontSize: "13px",
-  },
-};
-
-function createTheme(overides: Partial<DefaultTheme>) {
-  return { ...defaultTheme, ...overides };
-}
-
+// TODO: styles - Make this a prop.
 const theme = {};
-
-const ThemeProvider: React.FC<{ theme: Partial<DefaultTheme> }> = ({
-  theme,
-  children,
-}) => {
-  return (
-    <InternalThemeProvider theme={theme as any}>
-      {children}
-    </InternalThemeProvider>
-  );
-};
 
 const ThemedPipelineEditor = forwardRef((props: Props, ref) => {
   return (
     <ThemeProvider theme={theme}>
-      <InternalThemeProvider theme={createTheme}>
-        <CanvasOverrides />
-        <PipelineEditor {...props} ref={ref} />
-      </InternalThemeProvider>
+      <PipelineEditor {...props} ref={ref} />
     </ThemeProvider>
   );
 });
