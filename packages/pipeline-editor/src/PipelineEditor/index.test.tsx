@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { render, screen } from "@testing-library/react";
-
-import { nodeSpec, samplePipeline } from "../test-utils";
+import { render, screen, nodeSpec, samplePipeline } from "../test-utils";
 import PipelineEditor from "./";
 
 it("shows custom empty component for undefined pipeline", () => {

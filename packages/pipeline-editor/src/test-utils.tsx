@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+import { render as rtlRender } from "@testing-library/react";
+import { ThemeProvider, DefaultTheme } from "styled-components";
+
 export const nodeSpec = {
   op: "execute-notebook-node",
   description: "Notebook file",
@@ -304,3 +307,60 @@ export const samplePipeline = {
   ],
   schemas: [],
 };
+
+const theme: DefaultTheme = {
+  palette: {
+    primary: {
+      main: "#4d78cc",
+      hover: "#6087cf",
+      contrastText: "#fff",
+    },
+    error: {
+      main: "#be1100",
+      contrastText: "#fff",
+    },
+    text: {
+      icon: "#c5c5c5",
+      whySoManyTextColorsThebrightestBesidesWhite: "#f0f0f0",
+      evenMorePrimary: "#e7e7e7", // form labels?
+      primary: "#cccccc",
+      secondary: "#abb2bf",
+      disabled: "rgba(215, 218, 224, 0.25)",
+      link: "#3794ff",
+      error: "#f48771",
+    },
+    focus: "#528bff",
+    border: "#181a1f",
+    divider: "rgba(128, 128, 128, 0.35)",
+    background: {
+      default: "#282c34",
+      secondary: "#21252b",
+      okayThereWasActualAThirdBackgroundColor: "#353b45",
+      ughAndInputsHaveAnotherColor: "#1b1d23",
+    },
+  },
+  typography: {
+    fontFamily: "-apple-system, system-ui, sans-serif",
+    fontWeight: "normal",
+    fontSize: "13px",
+  },
+};
+
+function render(
+  ui: Parameters<typeof rtlRender>[0],
+  renderOptions?: Parameters<typeof rtlRender>[1]
+) {
+  const Wrapper: React.FC = ({ children }) => {
+    return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+  };
+
+  return {
+    ...rtlRender(ui, {
+      wrapper: Wrapper,
+      ...renderOptions,
+    }),
+  };
+}
+
+export * from "@testing-library/react";
+export { render };

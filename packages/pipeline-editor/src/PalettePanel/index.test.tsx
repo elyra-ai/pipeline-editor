@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { fireEvent, render, screen } from "@testing-library/react";
-
+import { fireEvent, render, screen } from "../test-utils";
 import PalettePanel, { Node } from "./";
 
 describe("Node", () => {
