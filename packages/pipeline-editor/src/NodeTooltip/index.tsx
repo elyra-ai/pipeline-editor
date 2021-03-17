@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import styled from "styled-components";
+
 import { hasValue, toPrettyString } from "./utils";
 
 interface Props {
@@ -24,24 +26,44 @@ interface Props {
   }[];
 }
 
+const Container = styled.div`
+  padding-top: 7px;
+  text-align: left;
+`;
+
+const Key = styled.div`
+  color: var(--elyra-color-tooltip-text-bold);
+  font-weight: 600;
+`;
+
+const Value = styled.div`
+  margin-left: 7px;
+  margin-bottom: 7px;
+  white-space: pre-wrap;
+`;
+
+const ErrorValue = styled(Value)`
+  color: var(--elyra-color-text-error);
+`;
+
 function NodeTooltip({ error, properties }: Props) {
   return (
-    <div className="elyra-PipelineNodeTooltip">
+    <Container>
       {error && (
-        <div className="elyra-tooltipError">
-          <div className="elyra-tooltipKey">Error</div>
-          <div className="elyra-tooltipValue">{toPrettyString(error)}</div>
+        <div>
+          <Key>Error</Key>
+          <ErrorValue>{toPrettyString(error)}</ErrorValue>
         </div>
       )}
       {properties
         .filter(({ value }) => hasValue(value))
         .map(({ label, value }) => (
           <div key={label}>
-            <div className="elyra-tooltipKey">{label}</div>
-            <div className="elyra-tooltipValue">{toPrettyString(value)}</div>
+            <Key>{label}</Key>
+            <Value>{toPrettyString(value)}</Value>
           </div>
         ))}
-    </div>
+    </Container>
   );
 }
 

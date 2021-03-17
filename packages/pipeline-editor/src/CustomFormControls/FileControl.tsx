@@ -17,12 +17,20 @@
 import React, { useCallback, useRef } from "react";
 
 import { useSelector } from "react-redux";
+import styled from "styled-components";
 
 interface Props {
   name: string;
   controller: any;
   placeholder?: string;
 }
+
+const Container = styled.div`
+  margin-top: 9px;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+`;
 
 function FileComponent({ name, controller, placeholder }: Props) {
   const controllerRef = useRef(controller);
@@ -49,7 +57,7 @@ function FileComponent({ name, controller, placeholder }: Props) {
   }, [name, path]);
 
   return (
-    <div className={isError ? "elyra-fileControl error" : "elyra-fileControl"}>
+    <Container className={isError ? "error" : undefined}>
       <input
         type="text"
         value={path ?? ""}
@@ -63,7 +71,7 @@ function FileComponent({ name, controller, placeholder }: Props) {
       >
         Browse
       </button>
-    </div>
+    </Container>
   );
 }
 
