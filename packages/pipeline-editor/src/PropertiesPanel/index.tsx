@@ -17,6 +17,7 @@
 import React, { useEffect, useRef } from "react";
 
 import { CommonProperties } from "@elyra/canvas";
+import styled from "styled-components";
 
 import {
   BooleanControl,
@@ -31,6 +32,16 @@ interface Props {
   onFileRequested?: (options: any) => any;
   onChange?: (nodeID: string, data: any) => any;
 }
+
+const Message = styled.div`
+  margin-top: 14px;
+  padding: 0 22px;
+  font-family: var(--elyra-font-family-sans);
+  font-weight: var(--elyra-font-weight-sans);
+  font-size: var(--elyra-font-size-sans);
+  color: var(--elyra-color-text-primary);
+  opacity: 0.5;
+`;
 
 function PropertiesPanel({
   selectedNodes,
@@ -48,19 +59,15 @@ function PropertiesPanel({
   });
 
   if (selectedNodes === undefined || selectedNodes.length === 0) {
-    return (
-      <div className="elyra-noContentMessage">
-        Select a node to edit its properties.
-      </div>
-    );
+    return <Message>Select a node to edit its properties.</Message>;
   }
 
   if (selectedNodes.length > 1) {
     return (
-      <div className="elyra-noContentMessage">
+      <Message>
         Multiple nodes are selected. Select a single node to edit its
         properties.
-      </div>
+      </Message>
     );
   }
 
@@ -68,9 +75,7 @@ function PropertiesPanel({
 
   if (selectedNode.type !== "execution_node") {
     return (
-      <div className="elyra-noContentMessage">
-        This node type doesn't have any editable properties.
-      </div>
+      <Message>This node type doesn't have any editable properties.</Message>
     );
   }
 
@@ -78,9 +83,7 @@ function PropertiesPanel({
 
   if (nodePropertiesSchema === undefined) {
     return (
-      <div className="elyra-noContentMessage">
-        This node type doesn't have any editable properties.
-      </div>
+      <Message>This node type doesn't have any editable properties.</Message>
     );
   }
 

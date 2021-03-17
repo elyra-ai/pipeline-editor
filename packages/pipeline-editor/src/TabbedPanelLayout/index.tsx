@@ -18,6 +18,8 @@ import React from "react";
 
 import styled from "styled-components";
 
+import IconButton from "../IconButton";
+
 interface Props {
   tabs: {
     id: string;
@@ -74,6 +76,14 @@ const Content = styled.div`
   bottom: 0;
   overflow: auto;
   width: 100%;
+`;
+
+const StyledIconButton = styled(IconButton)`
+  display: block;
+  height: 35px;
+  line-height: 35px;
+  min-width: 28px;
+  margin-right: 4px;
 `;
 
 interface LabelProps {
@@ -148,15 +158,13 @@ function TabbedPanelLayout({
           ))}
         </HorizontalTabGroup>
         {showCloseButton === true && (
-          <div className="elyra-actionItem">
-            <div
-              title="Close Panel"
-              className="elyra-icon elyra-actionItemIcon elyra-panel-close"
-              onClick={() => {
-                onClose?.();
-              }}
-            />
-          </div>
+          <StyledIconButton
+            title="Close Panel"
+            className="elyra-icon elyra-panel-close"
+            onClick={() => {
+              onClose?.();
+            }}
+          />
         )}
       </ActionBar>
       <Content>
