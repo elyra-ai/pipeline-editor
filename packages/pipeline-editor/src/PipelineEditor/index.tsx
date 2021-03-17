@@ -42,7 +42,7 @@ import PipelineController from "../PipelineController";
 import PropertiesPanel from "../PropertiesPanel";
 import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
-import ThemeProvider from "../ThemeProvider";
+import { InternalThemeProvider } from "../ThemeProvider";
 import useBlockEvents from "./useBlockEvents";
 
 interface Props {
@@ -653,14 +653,11 @@ const PipelineEditor = forwardRef(
   }
 );
 
-// TODO: styles - Make this a prop.
-const theme = {};
-
 const ThemedPipelineEditor = forwardRef((props: Props, ref) => {
   return (
-    <ThemeProvider theme={theme}>
+    <InternalThemeProvider>
       <PipelineEditor {...props} ref={ref} />
-    </ThemeProvider>
+    </InternalThemeProvider>
   );
 });
 

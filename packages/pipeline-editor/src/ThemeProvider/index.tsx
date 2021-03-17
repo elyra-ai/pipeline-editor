@@ -16,7 +16,7 @@
 
 import {
   DefaultTheme,
-  ThemeProvider as InternalThemeProvider,
+  ThemeProvider as StyledThemeProvider,
 } from "styled-components";
 
 import { CanvasOverrides } from "./styles";
@@ -68,12 +68,16 @@ const ThemeProvider: React.FC<{ theme: Partial<DefaultTheme> }> = ({
   children,
 }) => {
   return (
-    <InternalThemeProvider theme={theme as any}>
-      <InternalThemeProvider theme={createTheme}>
-        <CanvasOverrides />
-        {children}
-      </InternalThemeProvider>
-    </InternalThemeProvider>
+    <StyledThemeProvider theme={theme as any}>{children}</StyledThemeProvider>
+  );
+};
+
+export const InternalThemeProvider: React.FC = ({ children }) => {
+  return (
+    <StyledThemeProvider theme={createTheme}>
+      <CanvasOverrides />
+      {children}
+    </StyledThemeProvider>
   );
 };
 

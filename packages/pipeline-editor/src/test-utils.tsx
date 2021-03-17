@@ -16,7 +16,7 @@
 
 import { render as rtlRender } from "@testing-library/react";
 
-import ThemeProvider from "./ThemeProvider";
+import { InternalThemeProvider } from "./ThemeProvider";
 
 export const nodeSpec = {
   op: "execute-notebook-node",
@@ -314,7 +314,7 @@ function render(
   renderOptions?: Parameters<typeof rtlRender>[1]
 ) {
   const Wrapper: React.FC = ({ children }) => {
-    return <ThemeProvider theme={{}}>{children}</ThemeProvider>;
+    return <InternalThemeProvider>{children}</InternalThemeProvider>;
   };
 
   return {
