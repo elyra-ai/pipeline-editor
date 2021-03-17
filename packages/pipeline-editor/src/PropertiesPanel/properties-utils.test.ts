@@ -123,18 +123,18 @@ describe("fillPropertiesWithSavedData", () => {
     const result = fillPropertiesWithSavedData(defaults, {
       filename: "example.ipynb",
       runtime_image: "example/runtime",
-      dependencies: [{ value: "one" }],
+      dependencies: ["one"],
       include_subdirectories: true,
       env_vars: [],
-      outputs: [{ value: "one" }, { value: "two" }],
+      outputs: ["one", "two"],
     });
     expect(result.current_parameters).toEqual({
       filename: "example.ipynb",
       runtime_image: "example/runtime",
-      dependencies: [{ value: "one" }],
+      dependencies: ["one"],
       include_subdirectories: true,
       env_vars: [],
-      outputs: [{ value: "one" }, { value: "two" }],
+      outputs: ["one", "two"],
     });
   });
 });
