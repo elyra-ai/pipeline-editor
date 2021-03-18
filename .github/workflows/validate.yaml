@@ -1,0 +1,171 @@
+#
+# Copyright 2018-2021 Elyra Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+name: Validate
+
+on: [push, pull_request]
+
+jobs:
+  prepare-yarn-cache:
+    name: Prepare Cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: yarn-
+      - name: Check Yarn dedupe
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn dedupe --check
+      - name: Check or update Yarn cache
+        run: yarn install --immutable --skip-builds
+        env:
+          YARN_ENABLE_SCRIPTS: false # disable post-install scripts
+          YARN_NODE_LINKER: pnp # use pnp linker for better linking performance: it's meant to update yarn cache only
+
+  lint:
+    name: Lint
+    needs: prepare-yarn-cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
+      - name: Install
+        run: yarn install
+      - name: Lint
+        run: yarn eslint . --ignore-path .gitignore --ext .ts,.tsx --max-warnings=0
+        env:
+          FORCE_COLOR: true
+      - name: Prettier
+        run: yarn prettier --ignore-path .gitignore --check "**/*.{tsx,ts,js,md,css,html,json}"
+        env:
+          FORCE_COLOR: true
+
+  test-coverage:
+    name: Coverage
+    needs: prepare-yarn-cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: yarn-
+      - name: Install
+        run: yarn install
+      - name: Generate coverage report
+        run: yarn jest --coverage
+        env:
+          FORCE_COLOR: true
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v1
+
+
+  test:
+    name: Test
+    needs: prepare-yarn-cache
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14, 12]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: yarn-
+      - name: Install
+        run: yarn install
+      - name: Lint
+        run: yarn eslint . --ignore-path .gitignore --ext .ts,.tsx --max-warnings=0
+
+  build:
+    name: Build
+    needs: prepare-yarn-cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: yarn-
+      - name: Build
+        run: yarn lerna run build --stream
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-artifact
+          path: |
+            packages/*/dist/**/*
+            !**/node_modules/**
+
+  test-integration:
+    name: Test Integration
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14, 12]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-
+      - name: Install
+        run: yarn install
+      - uses: actions/download-artifact@v2
+        with:
+          name: build-artifact
+      - name: Test Integration
+        run: yarn test:cypress
