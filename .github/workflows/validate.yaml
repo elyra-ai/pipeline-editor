@@ -33,9 +33,6 @@ jobs:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: yarn-
-      - name: Check Yarn dedupe
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn dedupe --check
       - name: Check or update Yarn cache
         run: yarn install --immutable --skip-builds
         env:
