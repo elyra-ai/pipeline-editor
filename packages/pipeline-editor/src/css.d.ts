@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./errors";
-export { default as ThemeProvider } from "./ThemeProvider";
-export { default as PipelineEditor } from "./PipelineEditor";
+declare module "*.css";
