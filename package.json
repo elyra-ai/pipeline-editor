@@ -60,7 +60,6 @@
     ]
   },
   "scripts": {
-    "postinstall": "lerna bootstrap",
     "build": "lerna run build",
     "sb:start": "start-storybook -p 6006",
     "sb:ci": "start-storybook -p 6006 --ci",
