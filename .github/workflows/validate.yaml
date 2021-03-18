@@ -36,7 +36,6 @@ jobs:
       - name: Check or update Yarn cache
         run: yarn install --immutable --skip-builds
         env:
-          YARN_ENABLE_SCRIPTS: false # disable post-install scripts
           YARN_NODE_LINKER: pnp # use pnp linker for better linking performance: it's meant to update yarn cache only
 
   lint:
@@ -60,12 +59,12 @@ jobs:
         env:
           FORCE_COLOR: true
       - name: Prettier
-        run: yarn prettier --ignore-path .gitignore --check "**/*.{tsx,ts,js,md,css,html,json}"
+        run: yarn prettier --ignore-path .gitignore --check "**/*.{tsx,ts,js,css,html,json}"
         env:
           FORCE_COLOR: true
 
   test-coverage:
-    name: Coverage
+    name: Generate Coverage Report
     needs: prepare-yarn-cache
     runs-on: ubuntu-latest
     steps:
@@ -87,7 +86,6 @@ jobs:
           FORCE_COLOR: true
       - name: Upload coverage report
         uses: codecov/codecov-action@v1
-
 
   test:
     name: Test
@@ -111,8 +109,10 @@ jobs:
           restore-keys: yarn-
       - name: Install
         run: yarn install
-      - name: Lint
-        run: yarn eslint . --ignore-path .gitignore --ext .ts,.tsx --max-warnings=0
+      - name: Test
+        run: yarn jest
+        env:
+          FORCE_COLOR: true
 
   build:
     name: Build
@@ -129,6 +129,8 @@ jobs:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: yarn-
+      - name: Install
+        run: yarn install
       - name: Build
         run: yarn lerna run build --stream
       - uses: actions/upload-artifact@v2
@@ -138,8 +140,8 @@ jobs:
             packages/*/dist/**/*
             !**/node_modules/**
 
-  test-integration:
-    name: Test Integration
+  test-e2e:
+    name: E2E
     needs: build
     runs-on: ubuntu-latest
     strategy:
