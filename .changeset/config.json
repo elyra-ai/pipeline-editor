@@ -1,9 +1,12 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@1.5.0/schema.json",
-  "changelog": "@changesets/cli/changelog",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "elyra-ai/pipeline-editor" }
+  ],
   "commit": false,
-  "linked": [],
-  "access": "restricted",
+  "linked": [["@elyra/*"]],
+  "access": "public",
   "baseBranch": "master",
   "updateInternalDependencies": "patch",
   "ignore": []
