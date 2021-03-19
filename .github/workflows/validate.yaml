@@ -76,9 +76,9 @@ jobs:
       - name: Install
         run: yarn install
       - name: Build
-        run: yarn lerna run build --stream
+        run: yarn build
       - name: Generate coverage report
-        run: yarn jest --coverage
+        run: yarn test:cover
       - name: Upload coverage report
         uses: codecov/codecov-action@v1
 
@@ -106,9 +106,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Build
-        run: yarn lerna run build --stream
+        run: yarn build
       - name: Test
-        run: yarn jest
+        run: yarn test
 
   test-e2e:
     name: E2E
@@ -129,6 +129,6 @@ jobs:
       - name: Install
         run: yarn install
       - name: Build
-        run: yarn lerna run build --stream
+        run: yarn build
       - name: Cypress
         run: yarn test:cypress

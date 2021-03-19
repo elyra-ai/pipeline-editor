@@ -33,6 +33,10 @@ jobs:
         node-version: 15
     - name: Install
       run: yarn install --frozen-lockfile
+    - name: Build
+      run: yarn build
+    - name: Test
+      run: yarn test
     - name: Create Release Pull Request or Publish to npm
       uses: changesets/action@master
       with:
