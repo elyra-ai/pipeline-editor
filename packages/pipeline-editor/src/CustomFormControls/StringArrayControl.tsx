@@ -103,10 +103,10 @@ const ListItemValue = styled.div`
   margin-left: 2px;
   line-height: 24px;
   max-width: 90%;
-  font-family: var(--elyra-font-family-sans);
-  font-weight: var(--elyra-font-weight-sans);
-  font-size: var(--elyra-font-size-sans);
-  color: var(--elyra-color-text-primary);
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-size: ${({ theme }) => theme.typography.fontSize};
+  color: ${({ theme }) => theme.palette.text.primary};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -121,8 +121,9 @@ const InputGroup = styled.div`
 `;
 
 const InputContainer = styled.div`
-  background-color: var(--elyra-color-arrayInput-bg);
-  border: 1px solid var(--elyra-color-arrayInput-border);
+  background-color: ${({ theme }) =>
+    theme.palette.background.okayThereWasActualAThirdBackgroundColor};
+  border: 1px solid ${({ theme }) => theme.palette.border};
   height: 24px;
   max-width: 320px;
   margin-right: 4px;
@@ -130,7 +131,7 @@ const InputContainer = styled.div`
 
   & input {
     background-color: inherit;
-    color: var(--elyra-color-arrayInput-text);
+    color: ${({ theme }) => theme.palette.text.primary};
     display: inline-block;
     box-sizing: border-box;
     width: 100%;
@@ -144,7 +145,8 @@ const InputContainer = styled.div`
   }
 
   & input:focus {
-    outline: 1px solid var(--elyra-color-focus) !important;
+    /* TODO: styles - try and remove !important */
+    outline: 1px solid ${({ theme }) => theme.palette.focus} !important;
     outline-offset: 0px;
   }
 `;

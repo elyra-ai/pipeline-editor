@@ -32,7 +32,7 @@ const Container = styled.div`
 `;
 
 const Key = styled.div`
-  color: var(--elyra-color-tooltip-text-bold);
+  color: ${({ theme }) => theme.palette.text.primary};
   font-weight: 600;
 `;
 
@@ -43,7 +43,7 @@ const Value = styled.div`
 `;
 
 const ErrorValue = styled(Value)`
-  color: var(--elyra-color-text-error);
+  color: ${({ theme }) => theme.palette.text.error};
 `;
 
 function NodeTooltip({ error, properties }: Props) {

@@ -34,7 +34,7 @@ const defaultTheme: DefaultTheme = {
     },
     text: {
       icon: "#c5c5c5",
-      whySoManyTextColorsThebrightestBesidesWhite: "#f0f0f0",
+      whySoManyTextColorsThebrightestBesidesWhite: "#f0f0f0", // I think we can name this tertiary to be used with tertiary background or we could make it the contrast color of a new type alltogether
       evenMorePrimary: "#e7e7e7", // form labels?
       primary: "#cccccc",
       secondary: "#abb2bf",
@@ -48,8 +48,13 @@ const defaultTheme: DefaultTheme = {
     background: {
       default: "#282c34",
       secondary: "#21252b",
-      okayThereWasActualAThirdBackgroundColor: "#353b45",
+      okayThereWasActualAThirdBackgroundColor: "#353b45", // background for things like dropdown and checkboxes
       ughAndInputsHaveAnotherColor: "#1b1d23",
+    },
+    extraOptionalFormStuff: {
+      border: "rgba(255, 255, 255, 0.12)",
+      hover: "rgba(128, 128, 128, 0.07)",
+      focus: "rgba(128, 128, 128, 0.14)",
     },
   },
   typography: {

@@ -36,10 +36,10 @@ interface Props {
 const Message = styled.div`
   margin-top: 14px;
   padding: 0 22px;
-  font-family: var(--elyra-font-family-sans);
-  font-weight: var(--elyra-font-weight-sans);
-  font-size: var(--elyra-font-size-sans);
-  color: var(--elyra-color-text-primary);
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-size: ${({ theme }) => theme.typography.fontSize};
+  color: ${({ theme }) => theme.palette.text.primary};
   opacity: 0.5;
 `;
 

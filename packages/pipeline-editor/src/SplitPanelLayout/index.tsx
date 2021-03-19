@@ -42,6 +42,7 @@ function RightPanel({ mode, width, children, onMouseDown }: RightPanelProps) {
               position: "absolute",
               top: 0,
               bottom: 0,
+              // TODO: styles
               background: "var(--elyra-color-panel-bg)",
               borderLeft: "1px solid var(--elyra-color-panel-border)",
               width: `${width}px`,

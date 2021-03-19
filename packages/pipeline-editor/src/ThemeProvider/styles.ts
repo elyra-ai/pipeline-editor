@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// alias `createGlobalStyle` to `css` for prettier formatting support.
 import { createGlobalStyle as css } from "styled-components";
 
 // NOTE: This makes the build easier in dev mode for extensions using
@@ -22,15 +23,18 @@ import { createGlobalStyle as css } from "styled-components";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import canvasStyles from "!!raw-loader!@elyra/canvas/dist/styles/common-canvas.min.css";
 
+// TODO: Canvas has options to override some styles in js, try to migrate to use
+// those hooks as much as possible.
+// TODO: styles - try to remove any unnecessary !important
 export const CanvasOverrides = css`
   ${canvasStyles}
 
   .properties-control-description {
     margin-top: -1px;
-    font-family: ${(props) => props.theme.typography.fontFamily};
-    font-weight: ${(props) => props.theme.typography.fontWeight};
-    font-size: ${(props) => props.theme.typography.fontSize};
-    color: ${(props) => props.theme.palette.text.primary};
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-weight: ${({ theme }) => theme.typography.fontWeight};
+    font-size: ${({ theme }) => theme.typography.fontSize};
+    color: ${({ theme }) => theme.palette.text.primary};
     line-height: 1.4em;
     letter-spacing: normal;
     padding: 0;
@@ -38,12 +42,12 @@ export const CanvasOverrides = css`
     user-select: none;
   }
 
-  // Double up to ensure specificity.
-  .properties-control-label.properties-control-label {
-    font-family: ${(props) => props.theme.typography.fontFamily};
+  /* TODO: styles - this needs higher specificity */
+  .properties-control-label {
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 600;
-    font-size: ${(props) => props.theme.typography.fontSize};
-    color: ${(props) => props.theme.palette.text.evenMorePrimary};
+    font-size: ${({ theme }) => theme.typography.fontSize};
+    color: ${({ theme }) => theme.palette.text.evenMorePrimary};
     line-height: 1.4em;
     letter-spacing: normal;
   }
@@ -56,23 +60,24 @@ export const CanvasOverrides = css`
   .properties-wrapper input[type="text" i] {
     box-sizing: border-box;
     padding: 4px;
-    background-color: var(--elyra-color-textInput-bg);
-    color: var(--elyra-color-textInput-text);
-    border: 1px solid var(--elyra-color-textInput-border);
+    background-color: ${({ theme }) =>
+      theme.palette.background.ughAndInputsHaveAnotherColor};
+    color: ${({ theme }) => theme.palette.text.primary};
+    border: 1px solid ${({ theme }) => theme.palette.border};
     width: 100%;
     max-width: 500px;
-    font-size: var(--elyra-font-size-sans);
-    font-weight: var(--elyra-font-weight-sans);
-    font-family: var(--elyra-font-family-sans);
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-weight: ${({ theme }) => theme.typography.fontWeight};
+    font-size: ${({ theme }) => theme.typography.fontSize};
   }
 
   .properties-wrapper input[type="text" i]:focus {
-    outline: 1px solid var(--elyra-color-focus) !important;
+    outline: 1px solid ${({ theme }) => theme.palette.focus} !important;
     outline-offset: -1px;
   }
 
   .properties-wrapper input[type="text" i]:disabled {
-    color: var(--elyra-color-textInput-disabled-text);
+    color: ${({ theme }) => theme.palette.text.disabled};
   }
 
   .d3-node-super-expand-icon-background {
@@ -82,19 +87,19 @@ export const CanvasOverrides = css`
 
   .d3-node-super-expand-icon {
     cursor: pointer !important;
-    fill: var(--elyra-color-icon) !important;
+    fill: ${({ theme }) => theme.palette.text.icon} !important;
   }
 
   .d3-back-to-previous-flow-box {
     transform: translate(13px, 9px);
     height: 38px;
     width: 148px;
-    fill: var(--elyra-color-button-bg);
+    fill: ${({ theme }) => theme.palette.primary.main};
     stroke: none;
   }
 
   .d3-back-to-previous-flow-box[data-pointer-hover="yes"] {
-    fill: var(--elyra-color-button-hover-bg);
+    fill: ${({ theme }) => theme.palette.primary.hover};
     stroke: none;
   }
 
@@ -103,10 +108,10 @@ export const CanvasOverrides = css`
   }
 
   .d3-back-to-previous-flow-text {
-    font-size: var(--elyra-font-size-sans);
-    font-weight: var(--elyra-font-weight-sans);
-    font-family: var(--elyra-font-family-sans);
-    fill: var(--elyra-color-button-text);
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-weight: ${({ theme }) => theme.typography.fontWeight};
+    font-size: ${({ theme }) => theme.typography.fontSize};
+    fill: ${({ theme }) => theme.palette.primary.contrastText};
     transform: translate(-17px, 9px);
     text-rendering: geometricPrecision;
   }
@@ -117,29 +122,28 @@ export const CanvasOverrides = css`
 
   .common-canvas-tooltip {
     max-width: unset;
-    background-color: var(--elyra-color-tooltip-bg);
-    border: 1px solid var(--elyra-color-tooltip-border);
-    font-weight: normal;
+    background-color: ${({ theme }) => theme.palette.background.secondary};
+    border: 1px solid ${({ theme }) => theme.palette.border};
     opacity: 100%;
-    color: var(--elyra-color-tooltip-text);
+    color: ${({ theme }) => theme.palette.text.secondary};
     border-radius: 0;
     transition: opacity 0.1s ease-in-out, visibility 0.1s ease-in-out;
 
     padding: 4px 7px;
     line-height: 1.5;
 
-    font-family: var(--elyra-font-family-sans);
-    font-weight: var(--elyra-font-weight-sans);
-    font-size: var(--elyra-font-size-sans);
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-weight: ${({ theme }) => theme.typography.fontWeight};
+    font-size: ${({ theme }) => theme.typography.fontSize};
   }
 
   .common-canvas-tooltip #tipArrow polyline {
-    fill: var(--elyra-color-tooltip-bg);
+    fill: ${({ theme }) => theme.palette.background.secondary};
     stroke-width: 0;
   }
 
   .common-canvas-tooltip #tipArrow polygon {
-    fill: var(--elyra-color-tooltip-border);
+    fill: ${({ theme }) => theme.palette.border};
   }
 
   /* ========================================================================== */
@@ -201,9 +205,11 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__field {
-    background-color: var(--elyra-color-dropdown-bg);
-    color: var(--elyra-color-dropdown-text);
-    border: 1px solid var(--elyra-color-dropdown-border);
+    background-color: ${({ theme }) =>
+      theme.palette.background.okayThereWasActualAThirdBackgroundColor};
+    color: ${({ theme }) =>
+      theme.palette.text.whySoManyTextColorsThebrightestBesidesWhite};
+    border: 1px solid ${({ theme }) => theme.palette.border};
     display: flex;
     width: 100%;
     height: 26px;
@@ -226,7 +232,8 @@ export const CanvasOverrides = css`
 
   .properties-wrapper .bx--list-box__field:hover {
     /* override button style */
-    background-color: var(--elyra-color-dropdown-bg);
+    background-color: ${({ theme }) =>
+      theme.palette.background.okayThereWasActualAThirdBackgroundColor};
   }
 
   .properties-wrapper .bx--list-box__menu {
@@ -243,8 +250,10 @@ export const CanvasOverrides = css`
     top: 26px;
     left: 0;
     right: 0;
-    color: var(--elyra-color-dropdown-text);
-    background-color: var(--elyra-color-dropdown-bg);
+    color: ${({ theme }) =>
+      theme.palette.text.whySoManyTextColorsThebrightestBesidesWhite};
+    background-color: ${({ theme }) =>
+      theme.palette.background.okayThereWasActualAThirdBackgroundColor};
     padding: 2px;
     padding-bottom: 4px;
   }
@@ -253,7 +262,7 @@ export const CanvasOverrides = css`
     height: 18px;
     line-height: 18px;
     padding-left: 3.5px;
-    color: var(--elyra-color-text-primary);
+    color: ${({ theme }) => theme.palette.text.primary};
   }
 
   .bx--list-box__menu-item__option {
@@ -263,6 +272,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__menu-item:hover {
+    /* TODO: styles - we don't have a color for this in our palette yet... */
     background-color: var(--elyra-color-dropdownItem-hover-bg);
   }
 
@@ -272,12 +282,12 @@ export const CanvasOverrides = css`
 
   .bx--list-box--expanded .bx--list-box__field,
   .bx--list-box--expanded .bx--list-box__menu {
-    outline: 1px solid var(--elyra-color-focus) !important;
+    outline: 1px solid ${({ theme }) => theme.palette.focus} !important;
     outline-offset: -1px;
   }
 
   .bx--list-box__field:focus {
-    outline: 1px solid var(--elyra-color-focus) !important;
+    outline: 1px solid ${({ theme }) => theme.palette.focus} !important;
     outline-offset: -1px;
   }
 
@@ -296,13 +306,17 @@ export const CanvasOverrides = css`
     margin-right: 9px;
     margin-left: 0;
     padding: 0;
-    background-color: var(--elyra-color-checkbox-bg) !important;
-    color: var(--elyra-color-checkbox-text) !important;
-    border-color: var(--elyra-color-checkbox-border) !important;
+    background-color: ${({ theme }) =>
+      theme.palette.background
+        .okayThereWasActualAThirdBackgroundColor} !important;
+    color: ${({ theme }) =>
+      theme.palette.text
+        .whySoManyTextColorsThebrightestBesidesWhite} !important;
+    border-color: ${({ theme }) => theme.palette.border} !important;
   }
 
   .properties-wrapper .properties-checkbox:focus {
-    outline: 1px solid var(--elyra-color-focus) !important;
+    outline: 1px solid ${({ theme }) => theme.palette.focus} !important;
     outline-offset: -1px;
   }
 
@@ -316,11 +330,11 @@ export const CanvasOverrides = css`
 
   /* button */
   .properties-wrapper button {
-    color: var(--elyra-color-formButton-text);
-    background-color: var(--elyra-color-formButton-bg);
-    font-size: var(--elyra-font-size-sans);
-    font-weight: var(--elyra-font-weight-sans);
-    font-family: var(--elyra-font-family-sans);
+    color: ${({ theme }) => theme.palette.primary.contrastText};
+    background-color: ${({ theme }) => theme.palette.primary.main};
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-weight: ${({ theme }) => theme.typography.fontWeight};
+    font-size: ${({ theme }) => theme.typography.fontSize};
     padding: 2px 14px;
     cursor: pointer;
     line-height: 1.4em;
@@ -328,7 +342,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper button:hover {
-    background-color: var(--elyra-color-formButton-hover-bg);
+    background-color: ${({ theme }) => theme.palette.primary.hover};
   }
 
   /* ========================================================================== */
@@ -343,7 +357,7 @@ export const CanvasOverrides = css`
   }
 
   .d3-svg-background {
-    fill: var(--elyra-color-panel-bg);
+    fill: ${({ theme }) => theme.palette.background.default};
     cursor: default !important;
   }
 
@@ -352,80 +366,82 @@ export const CanvasOverrides = css`
   }
 
   .d3-node-body-outline {
-    stroke: var(--elyra-color-node-border);
+    stroke: transparent;
     stroke-width: 1;
-    fill: var(--elyra-color-node-bg);
+    fill: ${({ theme }) => theme.palette.background.secondary};
     filter: none !important;
   }
 
   .d3-node-body-outline[hover="yes"] {
-    stroke: var(--elyra-color-node-hover-border);
+    stroke: transparent;
     stroke-width: 1;
-    fill: var(--elyra-color-node-hover-bg);
+    fill: ${({ theme }) => theme.palette.background.secondary};
   }
 
   .d3-data-link {
-    stroke: var(--elyra-color-node-link) !important;
+    stroke: ${({ theme }) => theme.palette.text.link} !important;
     stroke-width: 2;
   }
 
   .d3-data-link-error {
-    stroke: var(--elyra-color-error-border) !important;
+    stroke: ${({ theme }) => theme.palette.error.main} !important;
     stroke-width: 2;
     stroke-dasharray: 13;
   }
 
   .d3-comment-link {
-    stroke: var(--elyra-color-comment-link) !important;
+    /* TODO: styles - mmm maybe we should make a real style for this */
+    stroke: ${({ theme }) => theme.palette.divider} !important;
     stroke-width: 2 !important;
     stroke-dasharray: 7.3 !important;
   }
 
   .d3-comment-rect {
-    fill: var(--elyra-color-comment-bg);
-    stroke: var(--elyra-color-comment-border) !important;
+    fill: ${({ theme }) => theme.palette.background.default};
+    /* TODO: styles - mmm maybe we should make a real style for this */
+    stroke: ${({ theme }) => theme.palette.divider} !important;
     stroke-width: 1;
-    rx: var(--elyra-border-radius);
+    rx: 0;
   }
 
   .d3-node-label,
   .d3-supernode-label {
-    font-family: var(--elyra-font-family-sans);
-    font-weight: var(--elyra-font-weight-sans);
-    font-size: var(--elyra-font-size-sans);
-    fill: var(--elyra-color-node-text);
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-weight: ${({ theme }) => theme.typography.fontWeight};
+    font-size: ${({ theme }) => theme.typography.fontSize};
+    fill: ${({ theme }) => theme.palette.text.primary};
     font-weight: 500;
     text-rendering: geometricPrecision;
   }
 
   .d3-comment-text-tspan {
-    font-family: var(--elyra-font-family-sans) !important;
-    font-weight: var(--elyra-font-weight-sans) !important;
-    font-size: var(--elyra-font-size-sans) !important;
-    fill: var(--elyra-color-comment-text) !important;
+    font-family: ${({ theme }) => theme.typography.fontFamily} !important;
+    font-weight: ${({ theme }) => theme.typography.fontWeight} !important;
+    font-size: ${({ theme }) => theme.typography.fontSize} !important;
+    fill: ${({ theme }) => theme.palette.text.secondary} !important;
     text-rendering: geometricPrecision;
   }
 
   .d3-comment-entry {
-    background-color: var(--elyra-color-comment-bg);
-    font-family: var(--elyra-font-family-sans) !important;
-    font-weight: var(--elyra-font-weight-sans) !important;
-    font-size: var(--elyra-font-size-sans) !important;
-    color: var(--elyra-color-comment-text) !important;
+    background-color: ${({ theme }) => theme.palette.background.default};
+    font-family: ${({ theme }) => theme.typography.fontFamily} !important;
+    font-weight: ${({ theme }) => theme.typography.fontWeight} !important;
+    font-size: ${({ theme }) => theme.typography.fontSize} !important;
+    color: ${({ theme }) => theme.palette.text.secondary} !important;
     box-sizing: border-box; /* very important! */
   }
 
   .d3-node-selection-highlight[data-selected="yes"] {
-    stroke: var(--elyra-color-node-link);
+    stroke: ${({ theme }) => theme.palette.text.link};
   }
 
   .d3-comment-selection-highlight[data-selected="yes"] {
-    stroke: var(--elyra-color-node-link);
-    rx: var(--elyra-border-radius);
+    stroke: ${({ theme }) => theme.palette.text.link};
+    rx: 0;
   }
 
   .d3-node-ellipsis-group .d3-node-ellipsis {
-    fill: var(--elyra-color-icon);
+    fill: ${({ theme }) => theme.palette.text.icon};
   }
 
   .d3-node-ellipsis-group:hover .d3-node-ellipsis-background {
@@ -435,7 +451,7 @@ export const CanvasOverrides = css`
   .d3-new-connection-line,
   .d3-new-connection-start,
   .d3-new-connection-guide {
-    stroke: var(--elyra-color-node-link) !important;
+    stroke: ${({ theme }) => theme.palette.text.link} !important;
   }
 
   .pipeline-read-only .d3-comment-sizing,
@@ -472,7 +488,7 @@ export const CanvasOverrides = css`
     left: 5px;
     top: 15px;
     bottom: 18px;
-    border-color: var(--elyra-color-error-border);
+    border-color: ${({ theme }) => theme.palette.error.main};
   }
 
   .properties-input-control.error input:not([disabled]) {
@@ -487,13 +503,6 @@ export const CanvasOverrides = css`
     display: none;
   }
 
-  /* ======================================================== */
-  /* ======================================================== */
-  /* ======================================================== */
-  /* --vscode-settings-focusedRowBackground: rgba(128, 128, 128, 0.14);
---vscode-notebook-rowHoverBackground: rgba(128, 128, 128, 0.07);
---vscode-notebook-focusedRowBorder: rgba(255, 255, 255, 0.12); */
-
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
     > .properties-control-panel
     > .properties-control-item {
@@ -503,13 +512,15 @@ export const CanvasOverrides = css`
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
     > .properties-control-panel
     > .properties-control-item:hover {
-    background-color: var(--vscode-notebook-rowHoverBackground);
+    background-color: ${({ theme }) =>
+      theme.palette.extraOptionalFormStuff.hover};
   }
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
     > .properties-control-panel
     > .properties-control-item.selected {
-    background-color: var(--vscode-settings-focusedRowBackground);
+    background-color: ${({ theme }) =>
+      theme.palette.extraOptionalFormStuff.focus};
   }
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
@@ -520,7 +531,8 @@ export const CanvasOverrides = css`
     top: 0;
     left: 0;
     right: 0;
-    border-top: 1px solid var(--vscode-notebook-focusedRowBorder);
+    border-top: 1px solid
+      ${({ theme }) => theme.palette.extraOptionalFormStuff.border};
   }
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
@@ -531,18 +543,16 @@ export const CanvasOverrides = css`
     bottom: 0;
     left: 0;
     right: 0;
-    border-top: 1px solid var(--vscode-notebook-focusedRowBorder);
+    border-top: 1px solid
+      ${({ theme }) => theme.palette.extraOptionalFormStuff.border};
   }
-  /* ======================================================== */
-  /* ======================================================== */
-  /* ======================================================== */
 
   .d3-node-port-input,
   .d3-node-port-output,
   .d3-node-port-input[connected="yes"],
   .d3-node-port-output[connected="yes"] {
-    stroke: var(--elyra-color-comment-text);
-    fill: var(--elyra-color-comment-text);
+    stroke: ${({ theme }) => theme.palette.text.secondary};
+    fill: ${({ theme }) => theme.palette.text.secondary};
     stroke-width: 4;
   }
 
@@ -550,8 +560,8 @@ export const CanvasOverrides = css`
   .d3-node-port-output:hover,
   .d3-node-port-input[connected="yes"]:hover,
   .d3-node-port-output[connected="yes"]:hover {
-    stroke: var(--elyra-color-node-text);
-    fill: var(--elyra-color-node-text);
+    stroke: ${({ theme }) => theme.palette.text.primary};
+    fill: ${({ theme }) => theme.palette.text.primary};
     stroke-width: 4;
   }
 
@@ -564,7 +574,8 @@ export const CanvasOverrides = css`
   .elyra-tabItemIcon {
     cursor: pointer;
     user-select: none;
-    color: var(--vscode-statusBar-foreground);
+    /* TODO: styles - no hardcoded styles */
+    color: #9da5b4;
     display: inline-block;
     height: 35px;
     line-height: 35px;
@@ -637,7 +648,7 @@ export const CanvasOverrides = css`
 
   .react-contextmenu-item:hover::after {
     content: "";
-    background: var(--elyra-color-panel-bg);
+    background: ${({ theme }) => theme.palette.background.default};
     position: absolute;
     top: 0;
     left: 0;

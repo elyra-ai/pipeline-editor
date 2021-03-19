@@ -125,6 +125,7 @@ class PipelineController extends CanvasController {
     this.setObjectsStyle(
       nodeToBeStyled,
       {
+        // TODO: styles - update strings to use theme
         body: { default: "stroke: var(--elyra-color-error-border);" },
         selection_outline: {
           default: "stroke: var(--elyra-color-error-border);",

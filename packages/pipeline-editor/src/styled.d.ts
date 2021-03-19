@@ -47,6 +47,11 @@ declare module "styled-components" {
         okayThereWasActualAThirdBackgroundColor: string;
         ughAndInputsHaveAnotherColor: string;
       };
+      extraOptionalFormStuff: {
+        border: string;
+        hover: string;
+        focus: string;
+      };
     };
     typography: {
       fontFamily: string;
