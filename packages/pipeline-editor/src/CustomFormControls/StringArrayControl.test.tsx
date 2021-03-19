@@ -23,33 +23,20 @@ import { createPropertiesStore } from "./test-utils";
 
 const propertyId = { name: "string-array" };
 
-describe("reducer - ADD_ITEM", () => {
-  it("adds an item an empty item", () => {
-    const result = reducer([] as any[], {
-      type: "ADD_ITEM",
-      payload: { id: "1" },
-    });
-    expect(result).toHaveLength(1);
-    expect(result[0].value).toBe("");
-    expect(result[0].id).toBe("1");
-  });
-});
-
 describe("reducer - DELETE_ITEM", () => {
   it("doesn't delete anything if the item doesn't exist", () => {
-    const result = reducer([{ value: "one", id: "1" }], {
+    const result = reducer(["one"], {
       type: "DELETE_ITEM",
-      payload: { id: "2" },
+      payload: { index: 1 },
     });
     expect(result).toHaveLength(1);
-    expect(result[0].value).toBe("one");
-    expect(result[0].id).toBe("1");
+    expect(result[0]).toBe("one");
   });
 
   it("deletes an item", () => {
-    const result = reducer([{ value: "one", id: "1" }], {
+    const result = reducer(["one"], {
       type: "DELETE_ITEM",
-      payload: { id: "1" },
+      payload: { index: 0 },
     });
     expect(result).toHaveLength(0);
   });
@@ -57,43 +44,39 @@ describe("reducer - DELETE_ITEM", () => {
 
 describe("reducer - UPSERT_ITEM", () => {
   it("appends an item if it doesn't exist", () => {
-    const result = reducer([{ value: "one", id: "1" }], {
+    const result = reducer(["one"], {
       type: "UPSERT_ITEM",
-      payload: { value: "two", id: "2" },
+      payload: { value: "two" },
     });
     expect(result).toHaveLength(2);
-    expect(result[0].value).toBe("one");
-    expect(result[0].id).toBe("1");
-    expect(result[1].value).toBe("two");
-    expect(result[1].id).toBe("2");
+    expect(result[0]).toBe("one");
+    expect(result[1]).toBe("two");
   });
 
   it("updates an item if it exists", () => {
-    const result = reducer([{ value: "one", id: "1" }], {
+    const result = reducer(["one"], {
       type: "UPSERT_ITEM",
-      payload: { value: "new one", id: "1" },
+      payload: { value: "new one", index: 0 },
     });
     expect(result).toHaveLength(1);
-    expect(result[0].value).toBe("new one");
-    expect(result[0].id).toBe("1");
+    expect(result[0]).toBe("new one");
   });
 
   it("removes the item if value is empty", () => {
-    const result = reducer([{ value: "one", id: "1" }], {
+    const result = reducer(["one"], {
       type: "UPSERT_ITEM",
-      payload: { value: "", id: "1" },
+      payload: { value: "", index: 0 },
     });
     expect(result).toHaveLength(0);
   });
 
   it("doesn't add the item if value is empty", () => {
-    const result = reducer([{ value: "one", id: "1" }], {
+    const result = reducer(["one"], {
       type: "UPSERT_ITEM",
-      payload: { value: "", id: "2" },
+      payload: { value: "" },
     });
     expect(result).toHaveLength(1);
-    expect(result[0].value).toBe("one");
-    expect(result[0].id).toBe("1");
+    expect(result[0]).toBe("one");
   });
 });
 
@@ -102,70 +85,45 @@ describe("reducer - UPSERT_ITEMS", () => {
     const result = reducer([] as any[], {
       type: "UPSERT_ITEMS",
       payload: {
-        id: undefined,
-        items: [
-          { value: "one", id: "1" },
-          { value: "two", id: "2" },
-        ],
+        index: undefined,
+        items: ["one", "two"],
       },
     });
     expect(result).toHaveLength(2);
-    expect(result[0].value).toBe("one");
-    expect(result[0].id).toBe("1");
-    expect(result[1].value).toBe("two");
-    expect(result[1].id).toBe("2");
+    expect(result[0]).toBe("one");
+    expect(result[1]).toBe("two");
   });
 
   it("inserts a list of items at id", () => {
-    const result = reducer(
-      [
-        { value: "one", id: "1" },
-        { value: "two", id: "2" },
-        { value: "five", id: "5" },
-        { value: "six", id: "6" },
-      ],
-      {
-        type: "UPSERT_ITEMS",
-        payload: {
-          id: "2",
-          items: [
-            { value: "two", id: "2" },
-            { value: "three", id: "3" },
-            { value: "four", id: "4" },
-          ],
-        },
-      }
-    );
+    const result = reducer(["one", "two", "five", "six"], {
+      type: "UPSERT_ITEMS",
+      payload: {
+        index: 1,
+        items: ["two", "three", "four"],
+      },
+    });
     expect(result).toHaveLength(6);
-    expect(result[0].value).toBe("one");
-    expect(result[1].value).toBe("two");
-    expect(result[2].value).toBe("three");
-    expect(result[3].value).toBe("four");
-    expect(result[4].value).toBe("five");
-    expect(result[5].value).toBe("six");
+    expect(result[0]).toBe("one");
+    expect(result[1]).toBe("two");
+    expect(result[2]).toBe("three");
+    expect(result[3]).toBe("four");
+    expect(result[4]).toBe("five");
+    expect(result[5]).toBe("six");
   });
 
   it("inserts nothing if items is empty", () => {
-    const result = reducer(
-      [
-        { value: "one", id: "1" },
-        { value: "two", id: "2" },
-        { value: "five", id: "5" },
-        { value: "six", id: "6" },
-      ],
-      {
-        type: "UPSERT_ITEMS",
-        payload: {
-          id: "2",
-          items: [],
-        },
-      }
-    );
+    const result = reducer(["one", "two", "five", "six"], {
+      type: "UPSERT_ITEMS",
+      payload: {
+        index: 1,
+        items: [],
+      },
+    });
     expect(result).toHaveLength(4);
-    expect(result[0].value).toBe("one");
-    expect(result[1].value).toBe("two");
-    expect(result[2].value).toBe("five");
-    expect(result[3].value).toBe("six");
+    expect(result[0]).toBe("one");
+    expect(result[1]).toBe("two");
+    expect(result[2]).toBe("five");
+    expect(result[3]).toBe("six");
   });
 });
 
@@ -365,10 +323,7 @@ it("renders only a button when items is empty", () => {
 });
 
 it("renders items", () => {
-  const store = createPropertiesStore(propertyId, [
-    { value: "item one", id: "1" },
-    { value: "item two", id: "2" },
-  ]);
+  const store = createPropertiesStore(propertyId, ["item one", "item two"]);
 
   const data = {
     placeholder: undefined,
@@ -475,10 +430,7 @@ it("adds nothing to list if no files are chosen", async () => {
 });
 
 it("adds appends items to list if files are chosen", async () => {
-  const store = createPropertiesStore(propertyId, [
-    { value: "one", id: "1" },
-    { value: "two", id: "2" },
-  ]);
+  const store = createPropertiesStore(propertyId, ["one", "two"]);
 
   const updatePropertyValue = jest.fn();
 
@@ -506,10 +458,10 @@ it("adds appends items to list if files are chosen", async () => {
   await waitFor(() => {
     expect(updatePropertyValue).toHaveBeenCalledTimes(1);
     expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, [
-      { value: "one", id: "1" },
-      { value: "two", id: "2" },
-      { value: "three", id: expect.any(String) },
-      { value: "four", id: expect.any(String) },
+      "one",
+      "two",
+      "three",
+      "four",
     ]);
   });
 });
@@ -540,15 +492,12 @@ it("calls updatePropertyValue with entered text", async () => {
 
   expect(updatePropertyValue).toHaveBeenCalledTimes(1);
   expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, [
-    {
-      value: "I am user entered text",
-      id: expect.any(String),
-    },
+    "I am user entered text",
   ]);
 });
 
 it("can delete list item", async () => {
-  const store = createPropertiesStore(propertyId, [{ value: "one", id: "1" }]);
+  const store = createPropertiesStore(propertyId, ["one"]);
 
   const updatePropertyValue = jest.fn();
 
@@ -572,7 +521,7 @@ it("can delete list item", async () => {
 });
 
 it("can edit list item", async () => {
-  const store = createPropertiesStore(propertyId, [{ value: "one", id: "1" }]);
+  const store = createPropertiesStore(propertyId, ["one"]);
 
   const updatePropertyValue = jest.fn();
 
@@ -596,13 +545,11 @@ it("can edit list item", async () => {
   userEvent.click(screen.getByText(/ok/i));
 
   expect(updatePropertyValue).toHaveBeenCalledTimes(1);
-  expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, [
-    { value: "updated one", id: "1" },
-  ]);
+  expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, ["updated one"]);
 });
 
 it("doesn't edit list item when canceled", async () => {
-  const store = createPropertiesStore(propertyId, [{ value: "one", id: "1" }]);
+  const store = createPropertiesStore(propertyId, ["one"]);
 
   const updatePropertyValue = jest.fn();
 
@@ -633,7 +580,7 @@ it("doesn't edit list item when canceled", async () => {
 });
 
 it("can browse for files from list item", async () => {
-  const store = createPropertiesStore(propertyId, [{ value: "one", id: "1" }]);
+  const store = createPropertiesStore(propertyId, ["one"]);
 
   const updatePropertyValue = jest.fn();
 
@@ -660,14 +607,12 @@ it("can browse for files from list item", async () => {
 
   await waitFor(() => {
     expect(updatePropertyValue).toHaveBeenCalledTimes(1);
-    expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, [
-      { id: "1", value: "file.py" },
-    ]);
+    expect(updatePropertyValue).toHaveBeenCalledWith(propertyId, ["file.py"]);
   });
 });
 
 it("doesn't call updatePropertyValue when no files are retrieved", async () => {
-  const store = createPropertiesStore(propertyId, [{ value: "one", id: "1" }]);
+  const store = createPropertiesStore(propertyId, ["one"]);
 
   const updatePropertyValue = jest.fn();
 

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
 
 import produce from "immer";
-import { nanoid } from "nanoid";
 import { useSelector } from "react-redux";
 
 interface Props {
@@ -41,44 +40,39 @@ interface ListItemProps {
   onEdit?: () => any;
 }
 
-interface Item {
-  value: string;
-  id: string;
-}
-
-export const reducer = produce((draft: Item[], action) => {
+export const reducer = produce((draft: string[], action) => {
   const { type, payload } = action;
   switch (type) {
-    case "ADD_ITEM": {
-      draft.push({ value: "", id: payload.id });
-      break;
-    }
     case "DELETE_ITEM": {
-      const index = draft.findIndex((i) => i.id === payload.id);
-      if (index !== -1) {
+      const { index } = payload;
+      if (index !== undefined && index < draft.length) {
         draft.splice(index, 1);
       }
       break;
     }
     case "UPSERT_ITEM": {
-      const index = draft.findIndex((i) => i.id === payload.id);
-      if (index !== -1) {
+      const { index } = payload;
+      if (index !== undefined && index < draft.length) {
         // If the item is empty remove it.
         if (payload.value.trim() === "") {
           draft.splice(index, 1);
         } else {
-          draft[index].value = payload.value;
+          draft[index] = payload.value;
         }
       } else if (payload.value.trim() !== "") {
-        draft.push({ value: payload.value, id: payload.id });
+        draft.push(payload.value);
       }
       break;
     }
     case "UPSERT_ITEMS": {
-      const index = draft.findIndex((i) => i.id === payload.id);
-      if (index !== -1 && payload.items.length > 0) {
+      const { index } = payload;
+      if (
+        index !== undefined &&
+        index < draft.length &&
+        payload.items.length > 0
+      ) {
         // Update value of the selected input with the first value in the array.
-        draft[index].value = payload.items[0].value;
+        draft[index] = payload.items[0];
 
         // Insert the remaining items.
         draft.splice(index + 1, 0, ...payload.items.slice(1));
@@ -201,9 +195,9 @@ function StringArrayComponent({
 }: Props) {
   const controllerRef = useRef(controller);
 
-  const [editingID, setEditingID] = useState<string>();
+  const [editingIndex, setEditingIndex] = useState<number | "new">();
 
-  const items: Item[] = useSelector(
+  const items: string[] = useSelector(
     (state: any) => state.propertiesReducer[name] ?? []
   );
 
@@ -216,22 +210,19 @@ function StringArrayComponent({
   );
 
   const handleChooseFiles = useCallback(
-    async (id) => {
+    async (index) => {
       const { actionHandler } = controllerRef.current.getHandlers();
-      const values = await actionHandler?.("browse_file", undefined, {
+      const newItems = await actionHandler?.("browse_file", undefined, {
         canSelectMany: true,
-        defaultUri: items.find((i) => i.id === id)?.value,
+        defaultUri: items[index],
       });
 
-      if (Array.isArray(values)) {
+      if (Array.isArray(newItems)) {
         handleAction({
           type: "UPSERT_ITEMS",
           payload: {
-            id: id,
-            items: values.map((v: string) => ({
-              value: v,
-              id: nanoid(),
-            })),
+            index,
+            items: newItems,
           },
         });
       }
@@ -239,67 +230,63 @@ function StringArrayComponent({
     [handleAction, items]
   );
 
-  const actualItem = items.find((i) => editingID === i.id);
-
   return (
     <div className="elyra-stringArrayControl">
       <div className="elyra-stringArrayControl-listGroup">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <ListItem
-            key={item.id}
-            value={item.value}
+            key={index}
+            value={item}
             placeholder={placeholder}
             canBrowseFiles={canBrowseFiles}
-            isEditing={item.id === editingID}
+            isEditing={index === editingIndex}
             onSubmit={(value) => {
-              setEditingID(undefined);
+              setEditingIndex(undefined);
               handleAction({
                 type: "UPSERT_ITEM",
-                payload: { id: item.id, value },
+                payload: { index, value },
               });
             }}
             onCancel={() => {
-              setEditingID(undefined);
+              setEditingIndex(undefined);
             }}
             onDelete={() => {
               handleAction({
                 type: "DELETE_ITEM",
-                payload: { id: item.id },
+                payload: { index },
               });
             }}
             onChooseFiles={() => {
-              handleChooseFiles(item.id);
+              handleChooseFiles(index);
             }}
             onEdit={() => {
-              setEditingID(item.id);
+              setEditingIndex(index);
             }}
           />
         ))}
-        {editingID !== undefined && actualItem === undefined && (
+        {editingIndex === "new" && (
           <ListItem
             placeholder={placeholder}
             isEditing
             onSubmit={(value) => {
-              setEditingID(undefined);
+              setEditingIndex(undefined);
               handleAction({
                 type: "UPSERT_ITEM",
-                payload: { id: editingID, value },
+                payload: { value },
               });
             }}
             onCancel={() => {
-              setEditingID(undefined);
+              setEditingIndex(undefined);
             }}
           />
         )}
       </div>
 
-      {/* TODO: Clean up this logic */}
-      {!(editingID !== undefined && actualItem === undefined) && (
+      {editingIndex !== "new" && (
         <div className="elyra-stringArrayControl-buttonGroup">
           <button
             onClick={() => {
-              const id = nanoid();
-              setEditingID(id);
+              setEditingIndex("new");
             }}
           >
             Add {singleItemLabel ?? "Item"}

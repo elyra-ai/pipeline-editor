@@ -153,22 +153,8 @@ export const selectedNode = {
     runtime_image: "example/runtime:2020.07",
     env_vars: [],
     include_subdirectories: false,
-    outputs: [
-      {
-        value: "file1.csv",
-        id: "Dkab7Ue1kg16BNy9muH0v",
-      },
-      {
-        value: "file2.zip",
-        id: "784X1_3yUJY9N_hmbPszs",
-      },
-    ],
-    dependencies: [
-      {
-        value: "file.ipynb",
-        id: "N7ohLGA_xMaMdElCIEW2X",
-      },
-    ],
+    outputs: ["file1.csv", "file2.zip"],
+    dependencies: ["file.ipynb"],
   },
 };
 
@@ -266,12 +252,7 @@ export const samplePipeline = {
             runtime_image: "continuumio/anaconda3:2020.07",
             dependencies: [],
             include_subdirectories: false,
-            env_vars: [
-              {
-                value: "bloop",
-                id: "QWoTNwmZLqF5DRl6YY_7M",
-              },
-            ],
+            env_vars: ["bloop"],
             outputs: [],
             ui_data: {
               label: "goodbye.ipynb",
