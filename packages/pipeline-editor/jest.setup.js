@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+jest.mock(
+  `!!raw-loader!@elyra/canvas/dist/styles/common-canvas.min.css`,
+  () => "",
+  {
+    virtual: true,
+  }
+);
+
 global.crypto = {
   getRandomValues: () => {
     return new Uint8Array(256);
