@@ -54,9 +54,9 @@ jobs:
       - name: Install
         run: yarn install
       - name: Lint
-        run: yarn eslint . --ignore-path .gitignore --ext .ts,.tsx --max-warnings=0
-      - name: Prettier
-        run: yarn prettier --ignore-path .gitignore --check "**/*.{tsx,ts,js,css,html,json}"
+        run: yarn lint
+      - name: Check format
+        run: yarn format:check
 
   test-coverage:
     name: Generate Coverage Report

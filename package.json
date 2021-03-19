@@ -70,6 +70,9 @@
     "test:cypress": "start-server-and-test sb:ci http://localhost:6006 cy:run",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
+    "lint": "yarn eslint . --ignore-path .gitignore --ext .ts,.tsx --max-warnings=0",
+    "format": "yarn prettier --ignore-path .gitignore --write \"**/*.{tsx,ts,js,css,html,json}\"",
+    "format:check": "yarn prettier --ignore-path .gitignore --check \"**/*.{tsx,ts,js,css,html,json}\"",
     "changeset": "changeset",
     "release": "changeset publish"
   },
