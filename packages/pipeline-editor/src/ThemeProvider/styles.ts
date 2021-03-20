@@ -151,7 +151,7 @@ export const CanvasOverrides = css`
   /* ========================================================================== */
   .properties-wrapper,
   .properties-wrapper * {
-    outline: none !important;
+    outline: none;
   }
 
   .properties-category {

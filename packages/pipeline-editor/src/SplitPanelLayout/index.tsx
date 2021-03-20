@@ -16,6 +16,8 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+import styled, { useTheme } from "styled-components";
+
 const DEFAULT_PANEL_WIDTH = 500;
 const MIN_PANEL_WIDTH = 300;
 
@@ -32,25 +34,28 @@ interface RightPanelProps {
   onMouseDown: () => any;
 }
 
+const Panel = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: ${({ theme }) => theme.palette.background.default};
+`;
+
 function RightPanel({ mode, width, children, onMouseDown }: RightPanelProps) {
+  const theme = useTheme();
   switch (mode) {
     case "open":
       return (
         <div>
-          <div
+          <Panel
             style={{
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              // TODO: styles
-              background: "var(--elyra-color-panel-bg)",
-              borderLeft: "1px solid var(--elyra-color-panel-border)",
+              borderLeft: `1px solid ${theme.palette.divider}`,
               width: `${width}px`,
               right: 0,
             }}
           >
             {children}
-          </div>
+          </Panel>
           <div
             data-testid="drag-handle"
             style={{
@@ -67,18 +72,15 @@ function RightPanel({ mode, width, children, onMouseDown }: RightPanelProps) {
       );
     case "collapsed":
       return (
-        <div
+        <Panel
           style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            background: "var(--vscode-statusBar-background)",
-            width: `${32}px`,
+            background: theme.palette.background.secondary,
+            width: "32px",
             right: 0,
           }}
         >
           {children}
-        </div>
+        </Panel>
       );
     case "closed":
       return null;
@@ -127,18 +129,14 @@ function SplitPanelLayout({ left, right, mode }: Props) {
 
   return (
     <React.Fragment>
-      <div
+      <Panel
         style={{
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          background: "var(--elyra-color-panel-bg)",
           left: 0,
           right: `${width}px`,
         }}
       >
         {left}
-      </div>
+      </Panel>
       <RightPanel mode={mode} width={width} onMouseDown={handleMouseDown}>
         {right}
       </RightPanel>

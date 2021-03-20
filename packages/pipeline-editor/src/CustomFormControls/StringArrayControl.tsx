@@ -145,8 +145,7 @@ const InputContainer = styled.div`
   }
 
   & input:focus {
-    /* TODO: styles - try and remove !important */
-    outline: 1px solid ${({ theme }) => theme.palette.focus} !important;
+    outline: 1px solid ${({ theme }) => theme.palette.focus};
     outline-offset: 0px;
   }
 `;

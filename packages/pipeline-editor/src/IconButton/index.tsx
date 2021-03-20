@@ -28,9 +28,8 @@ const Container = styled.div`
   }
 `;
 
-/* TODO: styles */
 const Icon = styled.div`
-  color: var(--vscode-foreground);
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 function IconButton(props: React.HTMLAttributes<HTMLDivElement>) {
