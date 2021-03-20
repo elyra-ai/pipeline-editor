@@ -122,12 +122,15 @@ class PipelineController extends CanvasController {
   }
 
   setNodeErrors(nodeToBeStyled: { [key: string]: string[] }) {
+    // TODO: styles - Can we find a better way to handle object styles? This
+    // tightly couples style to the controller which isn't great.
     this.setObjectsStyle(
       nodeToBeStyled,
       {
-        // TODO: styles - update strings to use theme
+        // TODO: styles - we can't use var(--elyra-xxx) anymore
         body: { default: "stroke: var(--elyra-color-error-border);" },
         selection_outline: {
+          // TODO: styles - we can't use var(--elyra-xxx) anymore
           default: "stroke: var(--elyra-color-error-border);",
         },
       },
@@ -196,6 +199,8 @@ class PipelineController extends CanvasController {
       linkToBeStyled,
       {
         line: {
+          // TODO: styles - we can't use var(--elyra-xxx) anymore
+          // TODO: styles - don't use !important
           default: `
             stroke: var(--elyra-color-error-border) !important; 
             stroke-width: 2;

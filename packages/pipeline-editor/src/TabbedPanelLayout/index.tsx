@@ -49,12 +49,10 @@ const Tab = styled.div`
     margin: 3px 0;
   }
   ${VerticalTabGroup} &:hover {
-    /* TODO: styles */
-    background-color: var(--vscode-statusBarItem-hoverBackground);
+    background-color: ${({ theme }) => theme.palette.randomTabsStuff.hover};
   }
   ${VerticalTabGroup} &:active {
-    /* TODO: styles */
-    background-color: rgba(255, 255, 255, 0.18);
+    background-color: ${({ theme }) => theme.palette.randomTabsStuff.active};
   }
   ${HorizontalTabGroup} & {
     cursor: pointer;
@@ -91,24 +89,34 @@ interface LabelProps {
 }
 
 const Label = styled.div<LabelProps>`
-  /* TODO: styles */
   line-height: 27px;
   font-family: ${({ theme }) => theme.typography.fontFamily};
   font-weight: ${({ theme }) => theme.typography.fontWeight};
   font-size: 11px;
 
-  color: ${({ active }) =>
+  color: ${({ active, theme }) =>
     active
-      ? "var(--vscode-panelTitle-activeForeground)"
-      : "var(--vscode-panelTitle-inactiveForeground)"};
+      ? theme.palette.text.evenMorePrimary
+      : theme.palette.text.nonActiveEvenMorePrimary};
 
   border-bottom: 1px solid
-    ${({ active }) =>
-      active ? "var(--vscode-panelTitle-activeBorder)" : "transparent"};
+    ${({ active, theme }) =>
+      active ? theme.palette.text.evenMorePrimary : "transparent"};
 
   &:hover {
-    color: var(--vscode-panelTitle-activeForeground);
+    color: ${({ theme }) => theme.palette.text.evenMorePrimary};
   }
+`;
+
+const TabIcon = styled.div`
+  cursor: pointer;
+  user-select: none;
+  color: ${({ theme }) => theme.palette.text.alternativeIconOnSecondaryBgColor};
+  display: inline-block;
+  height: 35px;
+  line-height: 35px;
+  min-width: 28px;
+  margin-right: 4px;
 `;
 
 function TabbedPanelLayout({
@@ -124,10 +132,9 @@ function TabbedPanelLayout({
       <VerticalTabGroup>
         {tabs.map((t) => (
           <Tab key={t.id}>
-            <div
+            <TabIcon
               title={t.label}
-              // TODO: styles
-              className={`elyra-icon elyra-tabItemIcon ${t.id}`}
+              className={`elyra-icon ${t.id}`}
               onClick={() => {
                 onTabClick?.(t.id);
               }}

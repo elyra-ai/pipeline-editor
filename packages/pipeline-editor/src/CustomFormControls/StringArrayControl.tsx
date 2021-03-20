@@ -161,7 +161,7 @@ const ListRow = styled.div`
   position: relative;
 
   &:hover {
-    background-color: var(--vscode-list-hoverBackground);
+    background-color: ${({ theme }) => theme.palette.hoverForListRowThing};
   }
 
   &:hover ${Actions} {

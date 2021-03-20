@@ -34,13 +34,15 @@ const defaultTheme: DefaultTheme = {
     },
     text: {
       icon: "#c5c5c5",
+      alternativeIconOnSecondaryBgColor: "#9da5b4",
       whySoManyTextColorsThebrightestBesidesWhite: "#f0f0f0", // I think we can name this tertiary to be used with tertiary background or we could make it the contrast color of a new type alltogether
-      evenMorePrimary: "#e7e7e7", // form labels?
+      evenMorePrimary: "#e7e7e7", // form labels?, tabs
       primary: "#cccccc",
       secondary: "#abb2bf",
       disabled: "rgba(215, 218, 224, 0.25)",
       link: "#3794ff",
       error: "#f48771",
+      nonActiveEvenMorePrimary: "rgba(231, 231, 231, 0.6)",
     },
     focus: "#528bff",
     border: "#181a1f",
@@ -51,10 +53,15 @@ const defaultTheme: DefaultTheme = {
       okayThereWasActualAThirdBackgroundColor: "#353b45", // background for things like dropdown and checkboxes
       ughAndInputsHaveAnotherColor: "#1b1d23",
     },
+    hoverForListRowThing: "rgba(44, 49, 58, 0.4)",
     extraOptionalFormStuff: {
       border: "rgba(255, 255, 255, 0.12)",
       hover: "rgba(128, 128, 128, 0.07)",
       focus: "rgba(128, 128, 128, 0.14)",
+    },
+    randomTabsStuff: {
+      hover: "#2c313a",
+      active: "rgba(255, 255, 255, 0.18)",
     },
   },
   typography: {

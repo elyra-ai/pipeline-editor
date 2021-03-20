@@ -42,8 +42,7 @@ export const CanvasOverrides = css`
     user-select: none;
   }
 
-  /* TODO: styles - this needs higher specificity */
-  .properties-control-label {
+  .properties-control-label.properties-control-label {
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 600;
     font-size: ${({ theme }) => theme.typography.fontSize};
@@ -72,7 +71,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper input[type="text" i]:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus} !important;
+    outline: 1px solid ${({ theme }) => theme.palette.focus};
     outline-offset: -1px;
   }
 
@@ -272,8 +271,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__menu-item:hover {
-    /* TODO: styles - we don't have a color for this in our palette yet... */
-    background-color: var(--elyra-color-dropdownItem-hover-bg);
+    background-color: ${({ theme }) => theme.palette.randomTabsStuff.hover};
   }
 
   .properties-wrapper .bx--list-box__menu-item__selected-icon {
@@ -282,12 +280,12 @@ export const CanvasOverrides = css`
 
   .bx--list-box--expanded .bx--list-box__field,
   .bx--list-box--expanded .bx--list-box__menu {
-    outline: 1px solid ${({ theme }) => theme.palette.focus} !important;
+    outline: 1px solid ${({ theme }) => theme.palette.focus};
     outline-offset: -1px;
   }
 
   .bx--list-box__field:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus} !important;
+    outline: 1px solid ${({ theme }) => theme.palette.focus};
     outline-offset: -1px;
   }
 
@@ -316,7 +314,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .properties-checkbox:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus} !important;
+    outline: 1px solid ${({ theme }) => theme.palette.focus};
     outline-offset: -1px;
   }
 
@@ -390,7 +388,6 @@ export const CanvasOverrides = css`
   }
 
   .d3-comment-link {
-    /* TODO: styles - mmm maybe we should make a real style for this */
     stroke: ${({ theme }) => theme.palette.divider} !important;
     stroke-width: 2 !important;
     stroke-dasharray: 7.3 !important;
@@ -398,7 +395,6 @@ export const CanvasOverrides = css`
 
   .d3-comment-rect {
     fill: ${({ theme }) => theme.palette.background.default};
-    /* TODO: styles - mmm maybe we should make a real style for this */
     stroke: ${({ theme }) => theme.palette.divider} !important;
     stroke-width: 1;
     rx: 0;
@@ -567,20 +563,6 @@ export const CanvasOverrides = css`
 
   .d3-node-port-input-arrow {
     display: none;
-  }
-
-  /* tabs */
-
-  .elyra-tabItemIcon {
-    cursor: pointer;
-    user-select: none;
-    /* TODO: styles - no hardcoded styles */
-    color: #9da5b4;
-    display: inline-block;
-    height: 35px;
-    line-height: 35px;
-    min-width: 28px;
-    margin-right: 4px;
   }
 
   /* context menu */

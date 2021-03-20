@@ -30,6 +30,7 @@ declare module "styled-components" {
       };
       text: {
         icon: string;
+        alternativeIconOnSecondaryBgColor: string;
         whySoManyTextColorsThebrightestBesidesWhite: string;
         evenMorePrimary: string;
         primary: string;
@@ -37,6 +38,7 @@ declare module "styled-components" {
         disabled: string;
         link: string;
         error: string;
+        nonActiveEvenMorePrimary: string;
       };
       focus: string;
       border: string;
@@ -46,6 +48,11 @@ declare module "styled-components" {
         secondary: string;
         okayThereWasActualAThirdBackgroundColor: string;
         ughAndInputsHaveAnotherColor: string;
+      };
+      hoverForListRowThing: string;
+      randomTabsStuff: {
+        hover: string;
+        active: string;
       };
       extraOptionalFormStuff: {
         border: string;
