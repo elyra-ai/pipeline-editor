@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// eslint-disable-next-line import/no-extraneous-dependencies
+import canvasStyles from "@elyra/canvas/dist/styles/common-canvas.min.css";
 // alias `createGlobalStyle` to `css` for prettier formatting support.
 import { createGlobalStyle as css } from "styled-components";
 
@@ -21,7 +23,7 @@ import { createGlobalStyle as css } from "styled-components";
 // pipeline-editor. This is normally frowned upon, because it couples our code
 // to webpack. This should be the only time we ever do this.
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import canvasStyles from "!!raw-loader!@elyra/canvas/dist/styles/common-canvas.min.css";
+// import canvasStyles from "!!raw-loader!@elyra/canvas/dist/styles/common-canvas.min.css";
 
 export const CanvasOverrides = css`
   ${canvasStyles}

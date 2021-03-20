@@ -16,6 +16,7 @@
 
 import React, { useEffect, useRef } from "react";
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { CommonProperties } from "@elyra/canvas";
 import styled from "styled-components";
 

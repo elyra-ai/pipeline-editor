@@ -33,6 +33,7 @@ import {
   NodeTypeDef,
   TipEvent,
   TipNode,
+  // eslint-disable-next-line import/no-extraneous-dependencies
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
 import { useTheme } from "styled-components";

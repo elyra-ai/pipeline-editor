@@ -12,7 +12,7 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsc",
+    "build": "microbundle --css inline",
     "watch": "tsc -w --preserveWatchOutput",
     "link": "yarn link"
   },
