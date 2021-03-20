@@ -123,13 +123,13 @@ class PipelineController extends CanvasController {
 
   setNodeErrors(
     nodeToBeStyled: { [key: string]: string[] },
-    { redColor }: { redColor: string }
+    styleOptions?: { redColor: string }
   ) {
     this.setObjectsStyle(
       nodeToBeStyled,
       {
-        body: { default: `stroke: ${redColor};` },
-        selection_outline: { default: `stroke: ${redColor};` },
+        body: { default: `stroke: ${styleOptions?.redColor};` },
+        selection_outline: { default: `stroke: ${styleOptions?.redColor};` },
       },
       true
     );
@@ -193,7 +193,7 @@ class PipelineController extends CanvasController {
 
   setLinkErrors(
     linkToBeStyled: { [key: string]: string[] },
-    { redColor }: { redColor: string }
+    styleOptions?: { redColor: string }
   ) {
     this.setLinksStyle(
       linkToBeStyled,
@@ -201,7 +201,7 @@ class PipelineController extends CanvasController {
         line: {
           // TODO: styles - don't use !important
           default: `
-            stroke: ${redColor} !important; 
+            stroke: ${styleOptions?.redColor} !important; 
             stroke-width: 2;
             stroke-dasharray: 13;
             `,
@@ -280,7 +280,7 @@ class PipelineController extends CanvasController {
 
   setSupernodeErrors(
     pipelineIDs: string[],
-    { redColor }: { redColor: string }
+    styleOptions?: { redColor: string }
   ) {
     let supernodesWithErrors: { [key: string]: string[] } = {};
     for (const pipelineID of pipelineIDs) {
@@ -293,13 +293,13 @@ class PipelineController extends CanvasController {
       } catch {}
     }
 
-    this.setNodeErrors(supernodesWithErrors, { redColor });
+    this.setNodeErrors(supernodesWithErrors, styleOptions);
   }
 
   // TODO: Can we find a better way to handle setting error styles? This tightly
   // couples style to the controller which isn't great. Setting a classname
   // would be better, but the CommonCanvas implementation is very buggy.
-  validate({ redColor }: { redColor: string }) {
+  validate(styleOptions?: { redColor: string }) {
     this.resetStyles();
 
     const problems = validate(
@@ -330,8 +330,8 @@ class PipelineController extends CanvasController {
           break;
       }
     }
-    this.setLinkErrors(linksWithErrors, { redColor });
-    this.setNodeErrors(nodesWithErrors, { redColor });
+    this.setLinkErrors(linksWithErrors, styleOptions);
+    this.setNodeErrors(nodesWithErrors, styleOptions);
 
     // Pass a list of all pipelineIDs that have errors. This will find and style
     // any supernodes that have the pipeline as a subflow.
@@ -342,7 +342,7 @@ class PipelineController extends CanvasController {
           ...Object.keys(nodesWithErrors),
         ]),
       ],
-      { redColor }
+      styleOptions
     );
 
     for (const pipeline of this.getPipelineFlow().pipelines) {

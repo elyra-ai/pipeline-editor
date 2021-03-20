@@ -373,7 +373,7 @@ describe("setSupernodeErrors", () => {
     controller.setSupernodeErrors(["pipeline1"]);
 
     expect(setNodeErrors).toHaveBeenCalledTimes(1);
-    expect(setNodeErrors).toHaveBeenCalledWith({});
+    expect(setNodeErrors.mock.calls[0][0]).toEqual({});
   });
 
   it("styles a supernode when a pipeline with errors is a subflow of it", () => {
@@ -412,7 +412,9 @@ describe("setSupernodeErrors", () => {
     controller.setSupernodeErrors(["pipeline1", "pipeline2"]);
 
     expect(setNodeErrors).toHaveBeenCalledTimes(1);
-    expect(setNodeErrors).toHaveBeenCalledWith({ pipeline1: ["supernode1"] });
+    expect(setNodeErrors.mock.calls[0][0]).toEqual({
+      pipeline1: ["supernode1"],
+    });
   });
 
   it("styles multiple supernodes when a pipeline with errors is a subflow of it", () => {
@@ -463,7 +465,7 @@ describe("setSupernodeErrors", () => {
     controller.setSupernodeErrors(["pipeline1", "pipeline2", "pipeline3"]);
 
     expect(setNodeErrors).toHaveBeenCalledTimes(1);
-    expect(setNodeErrors).toHaveBeenCalledWith({
+    expect(setNodeErrors.mock.calls[0][0]).toEqual({
       pipeline1: ["supernode1", "supernode2"],
     });
   });
