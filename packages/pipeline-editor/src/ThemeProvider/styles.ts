@@ -23,7 +23,6 @@ import { createGlobalStyle as css } from "styled-components";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import canvasStyles from "!!raw-loader!@elyra/canvas/dist/styles/common-canvas.min.css";
 
-// TODO: styles - try to remove any unnecessary !important
 export const CanvasOverrides = css`
   ${canvasStyles}
 
@@ -76,42 +75,6 @@ export const CanvasOverrides = css`
 
   .properties-wrapper input[type="text" i]:disabled {
     color: ${({ theme }) => theme.palette.text.disabled};
-  }
-
-  .d3-node-super-expand-icon-background {
-    cursor: pointer !important;
-    fill: transparent !important;
-  }
-
-  .d3-node-super-expand-icon {
-    cursor: pointer !important;
-    fill: ${({ theme }) => theme.palette.text.icon} !important;
-  }
-
-  .d3-back-to-previous-flow-box {
-    transform: translate(13px, 9px);
-    height: 38px;
-    width: 148px;
-    fill: ${({ theme }) => theme.palette.primary.main};
-    stroke: none;
-  }
-
-  .d3-back-to-previous-flow-box[data-pointer-hover="yes"] {
-    fill: ${({ theme }) => theme.palette.primary.hover};
-    stroke: none;
-  }
-
-  .d3-back-to-previous-flow-text svg {
-    display: none;
-  }
-
-  .d3-back-to-previous-flow-text {
-    font-family: ${({ theme }) => theme.typography.fontFamily};
-    font-weight: ${({ theme }) => theme.typography.fontWeight};
-    font-size: ${({ theme }) => theme.typography.fontSize};
-    fill: ${({ theme }) => theme.palette.primary.contrastText};
-    transform: translate(-17px, 9px);
-    text-rendering: geometricPrecision;
   }
 
   /* ========================================================================== */
@@ -304,12 +267,10 @@ export const CanvasOverrides = css`
     margin-left: 0;
     padding: 0;
     background-color: ${({ theme }) =>
-      theme.palette.background
-        .okayThereWasActualAThirdBackgroundColor} !important;
+      theme.palette.background.okayThereWasActualAThirdBackgroundColor};
     color: ${({ theme }) =>
-      theme.palette.text
-        .whySoManyTextColorsThebrightestBesidesWhite} !important;
-    border-color: ${({ theme }) => theme.palette.border} !important;
+      theme.palette.text.whySoManyTextColorsThebrightestBesidesWhite};
+    border-color: ${({ theme }) => theme.palette.border};
   }
 
   .properties-wrapper .properties-checkbox:focus {
@@ -356,6 +317,46 @@ export const CanvasOverrides = css`
   .d3-svg-background {
     fill: ${({ theme }) => theme.palette.background.default};
     cursor: default !important; /* set via element.style (must override with important) */
+  }
+
+  .d3-node-super-expand-icon-group .d3-node-super-expand-icon-background {
+    cursor: pointer;
+    fill: transparent;
+  }
+
+  .d3-node-super-expand-icon-group .d3-node-super-expand-icon {
+    cursor: pointer;
+    fill: ${({ theme }) => theme.palette.text.icon};
+  }
+
+  .d3-node-super-expand-icon-group:hover .d3-node-super-expand-icon-background {
+    fill: transparent;
+  }
+
+  .d3-back-to-previous-flow-box {
+    transform: translate(13px, 9px);
+    height: 38px;
+    width: 148px;
+    fill: ${({ theme }) => theme.palette.primary.main};
+    stroke: none;
+  }
+
+  .d3-back-to-previous-flow-box[data-pointer-hover="yes"] {
+    fill: ${({ theme }) => theme.palette.primary.hover};
+    stroke: none;
+  }
+
+  .d3-back-to-previous-flow-text svg {
+    display: none;
+  }
+
+  .d3-back-to-previous-flow-text {
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-weight: ${({ theme }) => theme.typography.fontWeight};
+    font-size: ${({ theme }) => theme.typography.fontSize};
+    fill: ${({ theme }) => theme.palette.primary.contrastText};
+    transform: translate(-17px, 9px);
+    text-rendering: geometricPrecision;
   }
 
   .d3-link-group {
@@ -651,12 +652,12 @@ export const CanvasOverrides = css`
   .react-contextmenu-item:active,
   .react-contextmenu-item:focus,
   .react-contextmenu-item.react-contextmenu-item--disabled {
-    background: transparent !important;
+    background: transparent;
   }
 
   .react-contextmenu-item.react-contextmenu-item--disabled::before,
   .react-contextmenu-item.react-contextmenu-item--disabled::after {
-    display: none !important;
+    display: none;
   }
 
   /* ========================================================================== */
