@@ -387,10 +387,10 @@ export const CanvasOverrides = css`
     stroke-dasharray: 13;
   }
 
-  .d3-comment-link {
-    stroke: ${({ theme }) => theme.palette.divider} !important;
-    stroke-width: 2 !important;
-    stroke-dasharray: 7.3 !important;
+  .d3-link-group:hover .d3-link-line.d3-comment-link,
+  .d3-link-line.d3-comment-link {
+    stroke: ${({ theme }) => theme.palette.divider};
+    stroke-width: 2;
   }
 
   .d3-comment-rect {
