@@ -40,6 +40,7 @@ export const CanvasOverrides = css`
     user-select: none;
   }
 
+  /* elevate specificity */
   .properties-control-label.properties-control-label {
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 600;
@@ -389,7 +390,6 @@ export const CanvasOverrides = css`
     fill: ${({ theme }) => theme.palette.background.default};
     stroke: ${({ theme }) => theme.palette.divider};
     stroke-width: 1;
-    rx: 0;
   }
 
   .d3-node-label,
@@ -403,21 +403,24 @@ export const CanvasOverrides = css`
   }
 
   .d3-comment-text-tspan {
-    font-family: ${({ theme }) => theme.typography.fontFamily} !important;
-    font-weight: ${({ theme }) => theme.typography.fontWeight} !important;
-    font-size: ${({ theme }) => theme.typography.fontSize} !important;
-    fill: ${({ theme }) => theme.palette.text.secondary} !important;
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-weight: ${({ theme }) => theme.typography.fontWeight};
+    font-size: ${({ theme }) => theme.typography.fontSize};
+    fill: ${({ theme }) => theme.palette.text.secondary};
     text-rendering: geometricPrecision;
   }
 
   .d3-comment-entry {
-    outline: none !important;
     background-color: ${({ theme }) => theme.palette.background.default};
-    font-family: ${({ theme }) => theme.typography.fontFamily} !important;
-    font-weight: ${({ theme }) => theme.typography.fontWeight} !important;
-    font-size: ${({ theme }) => theme.typography.fontSize} !important;
-    color: ${({ theme }) => theme.palette.text.secondary} !important;
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-weight: ${({ theme }) => theme.typography.fontWeight};
+    font-size: ${({ theme }) => theme.typography.fontSize};
+    color: ${({ theme }) => theme.palette.text.secondary};
     box-sizing: border-box; /* very important! */
+  }
+
+  .d3-comment-entry:focus {
+    outline: none;
   }
 
   .d3-node-selection-highlight[data-selected="yes"] {
@@ -426,7 +429,6 @@ export const CanvasOverrides = css`
 
   .d3-comment-selection-highlight[data-selected="yes"] {
     stroke: ${({ theme }) => theme.palette.text.link};
-    rx: 0;
   }
 
   .d3-node-ellipsis-group .d3-node-ellipsis {
@@ -437,10 +439,14 @@ export const CanvasOverrides = css`
     fill: transparent;
   }
 
-  .d3-new-connection-line,
-  .d3-new-connection-start,
-  .d3-new-connection-guide {
-    stroke: ${({ theme }) => theme.palette.text.link} !important;
+  .d3-new-connection-line[linkType="nodeLink"] {
+    stroke: ${({ theme }) => theme.palette.text.link};
+  }
+
+  .d3-new-connection-start[linkType="nodeLink"],
+  .d3-new-connection-guide[linkType="nodeLink"] {
+    stroke: ${({ theme }) => theme.palette.text.link};
+    fill: ${({ theme }) => theme.palette.text.link};
   }
 
   .pipeline-read-only .d3-comment-sizing,
@@ -469,7 +475,7 @@ export const CanvasOverrides = css`
     > .properties-control-item
     .error::before {
     display: block;
-    content: " ";
+    content: "";
     position: absolute;
     width: 6px;
     border-left-width: 2px;
