@@ -23,8 +23,6 @@ import { createGlobalStyle as css } from "styled-components";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import canvasStyles from "!!raw-loader!@elyra/canvas/dist/styles/common-canvas.min.css";
 
-// TODO: Canvas has options to override some styles in js, try to migrate to use
-// those hooks as much as possible.
 // TODO: styles - try to remove any unnecessary !important
 export const CanvasOverrides = css`
   ${canvasStyles}
@@ -356,7 +354,7 @@ export const CanvasOverrides = css`
 
   .d3-svg-background {
     fill: ${({ theme }) => theme.palette.background.default};
-    cursor: default !important;
+    cursor: default !important; /* set via element.style (must override with important) */
   }
 
   .d3-link-group {
@@ -365,37 +363,31 @@ export const CanvasOverrides = css`
 
   .d3-node-body-outline {
     stroke: transparent;
-    stroke-width: 1;
     fill: ${({ theme }) => theme.palette.background.secondary};
-    filter: none !important;
+    filter: none !important; /* set via element.style (must override with important) */
   }
 
   .d3-node-body-outline[hover="yes"] {
     stroke: transparent;
-    stroke-width: 1;
     fill: ${({ theme }) => theme.palette.background.secondary};
   }
 
-  .d3-data-link {
-    stroke: ${({ theme }) => theme.palette.text.link} !important;
+  .d3-link-group:hover .d3-link-line.d3-data-link,
+  .d3-link-line.d3-data-link {
+    stroke: ${({ theme }) => theme.palette.text.link};
     stroke-width: 2;
-  }
-
-  .d3-data-link-error {
-    stroke: ${({ theme }) => theme.palette.error.main} !important;
-    stroke-width: 2;
-    stroke-dasharray: 13;
   }
 
   .d3-link-group:hover .d3-link-line.d3-comment-link,
   .d3-link-line.d3-comment-link {
     stroke: ${({ theme }) => theme.palette.divider};
     stroke-width: 2;
+    stroke-dasharray: 7.3;
   }
 
   .d3-comment-rect {
     fill: ${({ theme }) => theme.palette.background.default};
-    stroke: ${({ theme }) => theme.palette.divider} !important;
+    stroke: ${({ theme }) => theme.palette.divider};
     stroke-width: 1;
     rx: 0;
   }
@@ -419,6 +411,7 @@ export const CanvasOverrides = css`
   }
 
   .d3-comment-entry {
+    outline: none !important;
     background-color: ${({ theme }) => theme.palette.background.default};
     font-family: ${({ theme }) => theme.typography.fontFamily} !important;
     font-weight: ${({ theme }) => theme.typography.fontWeight} !important;
