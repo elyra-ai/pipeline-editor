@@ -35,6 +35,7 @@ import {
   TipNode,
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
+import { useTheme } from "styled-components";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
@@ -127,6 +128,7 @@ const PipelineEditor = forwardRef(
     }: Props,
     ref
   ) => {
+    const theme = useTheme();
     const controller = useRef(new PipelineController());
 
     const [supernodeOpen, setSupernodeOpen] = useState(false);
@@ -165,7 +167,7 @@ const PipelineEditor = forwardRef(
         controller.current.open(pipeline);
         if (!readOnly) {
           controller.current.setNodes(nodes);
-          controller.current.validate();
+          controller.current.validate({ redColor: theme.palette.error.main });
         } else {
           controller.current.resetStyles();
         }
@@ -173,7 +175,7 @@ const PipelineEditor = forwardRef(
       } catch (e) {
         onError?.(e);
       }
-    }, [nodes, onError, pipeline, readOnly]);
+    }, [nodes, onError, pipeline, readOnly, theme.palette.error.main]);
 
     useImperativeHandle(
       ref,
