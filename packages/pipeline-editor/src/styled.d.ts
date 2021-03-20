@@ -19,42 +19,43 @@ import "styled-components";
 declare module "styled-components" {
   export interface DefaultTheme {
     palette: {
+      focus: string;
+      border: string;
+      divider: string;
+      hover: string;
+      active: string;
       primary: {
         main: string;
         hover: string;
+        contrastText: string;
+      };
+      secondary: {
+        main: string;
         contrastText: string;
       };
       error: {
         main: string;
         contrastText: string;
       };
-      text: {
-        icon: string;
-        alternativeIconOnSecondaryBgColor: string;
-        whySoManyTextColorsThebrightestBesidesWhite: string;
-        evenMorePrimary: string;
+      icon: {
         primary: string;
         secondary: string;
+      };
+      text: {
+        primary: string;
+        secondary: string;
+        bold: string;
+        inactive: string;
         disabled: string;
         link: string;
         error: string;
-        nonActiveEvenMorePrimary: string;
       };
-      focus: string;
-      border: string;
-      divider: string;
       background: {
         default: string;
         secondary: string;
-        okayThereWasActualAThirdBackgroundColor: string;
-        ughAndInputsHaveAnotherColor: string;
+        input: string;
       };
-      hoverForListRowThing: string;
-      randomTabsStuff: {
-        hover: string;
-        active: string;
-      };
-      extraOptionalFormStuff: {
+      highlight: {
         border: string;
         hover: string;
         focus: string;

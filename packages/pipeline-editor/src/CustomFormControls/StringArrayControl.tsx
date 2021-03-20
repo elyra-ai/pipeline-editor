@@ -121,8 +121,7 @@ const InputGroup = styled.div`
 `;
 
 const InputContainer = styled.div`
-  background-color: ${({ theme }) =>
-    theme.palette.background.okayThereWasActualAThirdBackgroundColor};
+  background-color: ${({ theme }) => theme.palette.secondary.main};
   border: 1px solid ${({ theme }) => theme.palette.border};
   height: 24px;
   max-width: 320px;
@@ -159,10 +158,6 @@ const Actions = styled.div`
 
 const ListRow = styled.div`
   position: relative;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.palette.hoverForListRowThing};
-  }
 
   &:hover ${Actions} {
     display: flex;

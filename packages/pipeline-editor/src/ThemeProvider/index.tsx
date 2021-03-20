@@ -23,45 +23,46 @@ import { CanvasOverrides } from "./styles";
 
 const defaultTheme: DefaultTheme = {
   palette: {
+    focus: "#528bff",
+    border: "#181a1f",
+    divider: "rgba(128, 128, 128, 0.35)",
+    hover: "#2c313a",
+    active: "rgba(255, 255, 255, 0.18)",
     primary: {
       main: "#4d78cc",
       hover: "#6087cf",
       contrastText: "#fff",
     },
+    secondary: {
+      main: "#353b45",
+      contrastText: "#f0f0f0",
+    },
     error: {
       main: "#be1100",
       contrastText: "#fff",
     },
+    icon: {
+      primary: "#c5c5c5",
+      secondary: "#9da5b4",
+    },
     text: {
-      icon: "#c5c5c5",
-      alternativeIconOnSecondaryBgColor: "#9da5b4",
-      whySoManyTextColorsThebrightestBesidesWhite: "#f0f0f0", // I think we can name this tertiary to be used with tertiary background or we could make it the contrast color of a new type alltogether
-      evenMorePrimary: "#e7e7e7", // form labels?, tabs
       primary: "#cccccc",
       secondary: "#abb2bf",
+      bold: "#e7e7e7",
+      inactive: "rgba(231, 231, 231, 0.6)",
       disabled: "rgba(215, 218, 224, 0.25)",
       link: "#3794ff",
       error: "#f48771",
-      nonActiveEvenMorePrimary: "rgba(231, 231, 231, 0.6)",
     },
-    focus: "#528bff",
-    border: "#181a1f",
-    divider: "rgba(128, 128, 128, 0.35)",
     background: {
       default: "#282c34",
       secondary: "#21252b",
-      okayThereWasActualAThirdBackgroundColor: "#353b45", // background for things like dropdown and checkboxes
-      ughAndInputsHaveAnotherColor: "#1b1d23",
+      input: "#1b1d23",
     },
-    hoverForListRowThing: "rgba(44, 49, 58, 0.4)",
-    extraOptionalFormStuff: {
+    highlight: {
       border: "rgba(255, 255, 255, 0.12)",
       hover: "rgba(128, 128, 128, 0.07)",
       focus: "rgba(128, 128, 128, 0.14)",
-    },
-    randomTabsStuff: {
-      hover: "#2c313a",
-      active: "rgba(255, 255, 255, 0.18)",
     },
   },
   typography: {

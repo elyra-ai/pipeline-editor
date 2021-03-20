@@ -49,10 +49,10 @@ const Tab = styled.div`
     margin: 3px 0;
   }
   ${VerticalTabGroup} &:hover {
-    background-color: ${({ theme }) => theme.palette.randomTabsStuff.hover};
+    background-color: ${({ theme }) => theme.palette.hover};
   }
   ${VerticalTabGroup} &:active {
-    background-color: ${({ theme }) => theme.palette.randomTabsStuff.active};
+    background-color: ${({ theme }) => theme.palette.active};
   }
   ${HorizontalTabGroup} & {
     cursor: pointer;
@@ -95,23 +95,20 @@ const Label = styled.div<LabelProps>`
   font-size: 11px;
 
   color: ${({ active, theme }) =>
-    active
-      ? theme.palette.text.evenMorePrimary
-      : theme.palette.text.nonActiveEvenMorePrimary};
+    active ? theme.palette.text.bold : theme.palette.text.inactive};
 
   border-bottom: 1px solid
-    ${({ active, theme }) =>
-      active ? theme.palette.text.evenMorePrimary : "transparent"};
+    ${({ active, theme }) => (active ? theme.palette.text.bold : "transparent")};
 
   &:hover {
-    color: ${({ theme }) => theme.palette.text.evenMorePrimary};
+    color: ${({ theme }) => theme.palette.text.bold};
   }
 `;
 
 const TabIcon = styled.div`
   cursor: pointer;
   user-select: none;
-  color: ${({ theme }) => theme.palette.text.alternativeIconOnSecondaryBgColor};
+  color: ${({ theme }) => theme.palette.icon.secondary};
   display: inline-block;
   height: 35px;
   line-height: 35px;

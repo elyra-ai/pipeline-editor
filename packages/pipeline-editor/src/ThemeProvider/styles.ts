@@ -44,7 +44,7 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 600;
     font-size: ${({ theme }) => theme.typography.fontSize};
-    color: ${({ theme }) => theme.palette.text.evenMorePrimary};
+    color: ${({ theme }) => theme.palette.text.bold};
     line-height: 1.4em;
     letter-spacing: normal;
   }
@@ -57,8 +57,7 @@ export const CanvasOverrides = css`
   .properties-wrapper input[type="text" i] {
     box-sizing: border-box;
     padding: 4px;
-    background-color: ${({ theme }) =>
-      theme.palette.background.ughAndInputsHaveAnotherColor};
+    background-color: ${({ theme }) => theme.palette.background.input};
     color: ${({ theme }) => theme.palette.text.primary};
     border: 1px solid ${({ theme }) => theme.palette.border};
     width: 100%;
@@ -166,10 +165,8 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__field {
-    background-color: ${({ theme }) =>
-      theme.palette.background.okayThereWasActualAThirdBackgroundColor};
-    color: ${({ theme }) =>
-      theme.palette.text.whySoManyTextColorsThebrightestBesidesWhite};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
+    color: ${({ theme }) => theme.palette.secondary.contrastText};
     border: 1px solid ${({ theme }) => theme.palette.border};
     display: flex;
     width: 100%;
@@ -192,9 +189,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__field:hover {
-    /* override button style */
-    background-color: ${({ theme }) =>
-      theme.palette.background.okayThereWasActualAThirdBackgroundColor};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
   }
 
   .properties-wrapper .bx--list-box__menu {
@@ -211,10 +206,8 @@ export const CanvasOverrides = css`
     top: 26px;
     left: 0;
     right: 0;
-    color: ${({ theme }) =>
-      theme.palette.text.whySoManyTextColorsThebrightestBesidesWhite};
-    background-color: ${({ theme }) =>
-      theme.palette.background.okayThereWasActualAThirdBackgroundColor};
+    color: ${({ theme }) => theme.palette.secondary.contrastText};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
     padding: 2px;
     padding-bottom: 4px;
   }
@@ -233,7 +226,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__menu-item:hover {
-    background-color: ${({ theme }) => theme.palette.randomTabsStuff.hover};
+    background-color: ${({ theme }) => theme.palette.hover};
   }
 
   .properties-wrapper .bx--list-box__menu-item__selected-icon {
@@ -266,10 +259,8 @@ export const CanvasOverrides = css`
     margin-right: 9px;
     margin-left: 0;
     padding: 0;
-    background-color: ${({ theme }) =>
-      theme.palette.background.okayThereWasActualAThirdBackgroundColor};
-    color: ${({ theme }) =>
-      theme.palette.text.whySoManyTextColorsThebrightestBesidesWhite};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
+    color: ${({ theme }) => theme.palette.secondary.contrastText};
     border-color: ${({ theme }) => theme.palette.border};
   }
 
@@ -326,7 +317,7 @@ export const CanvasOverrides = css`
 
   .d3-node-super-expand-icon-group .d3-node-super-expand-icon {
     cursor: pointer;
-    fill: ${({ theme }) => theme.palette.text.icon};
+    fill: ${({ theme }) => theme.palette.icon.primary};
   }
 
   .d3-node-super-expand-icon-group:hover .d3-node-super-expand-icon-background {
@@ -433,7 +424,7 @@ export const CanvasOverrides = css`
   }
 
   .d3-node-ellipsis-group .d3-node-ellipsis {
-    fill: ${({ theme }) => theme.palette.text.icon};
+    fill: ${({ theme }) => theme.palette.icon.primary};
   }
 
   .d3-node-ellipsis-group:hover .d3-node-ellipsis-background {
@@ -508,15 +499,13 @@ export const CanvasOverrides = css`
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
     > .properties-control-panel
     > .properties-control-item:hover {
-    background-color: ${({ theme }) =>
-      theme.palette.extraOptionalFormStuff.hover};
+    background-color: ${({ theme }) => theme.palette.highlight.hover};
   }
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
     > .properties-control-panel
     > .properties-control-item.selected {
-    background-color: ${({ theme }) =>
-      theme.palette.extraOptionalFormStuff.focus};
+    background-color: ${({ theme }) => theme.palette.highlight.focus};
   }
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
@@ -527,8 +516,7 @@ export const CanvasOverrides = css`
     top: 0;
     left: 0;
     right: 0;
-    border-top: 1px solid
-      ${({ theme }) => theme.palette.extraOptionalFormStuff.border};
+    border-top: 1px solid ${({ theme }) => theme.palette.highlight.border};
   }
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
@@ -539,8 +527,7 @@ export const CanvasOverrides = css`
     bottom: 0;
     left: 0;
     right: 0;
-    border-top: 1px solid
-      ${({ theme }) => theme.palette.extraOptionalFormStuff.border};
+    border-top: 1px solid ${({ theme }) => theme.palette.highlight.border};
   }
 
   .d3-node-port-input,
