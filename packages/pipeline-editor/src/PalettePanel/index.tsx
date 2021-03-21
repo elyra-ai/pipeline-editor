@@ -71,7 +71,6 @@ const Item = styled.div.attrs({ draggable: true })`
   margin: 0 22px 8px;
   background-color: ${({ theme }) => theme.palette.background.secondary};
   border: 1px solid transparent;
-  color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
 const Icon = styled.img.attrs({ draggable: false, alt: "" })`
@@ -83,6 +82,7 @@ const Label = styled.div`
   font-family: ${({ theme }) => theme.typography.fontFamily};
   font-weight: ${({ theme }) => theme.typography.fontWeight};
   font-size: ${({ theme }) => theme.typography.fontSize};
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 function PalettePanel({ nodes }: Props) {
