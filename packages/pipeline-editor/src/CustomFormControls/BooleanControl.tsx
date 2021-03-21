@@ -38,8 +38,8 @@ function BooleanComponent({ name, controller, helperText }: Props) {
       <div
         className={
           isChecked
-            ? "elyra-icon properties-checkbox checked"
-            : "elyra-icon properties-checkbox"
+            ? "elyricon elyricon-check checked"
+            : "elyricon elyricon-check"
         }
         tabIndex={0}
         role="checkbox"

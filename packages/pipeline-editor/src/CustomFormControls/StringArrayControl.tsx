@@ -233,7 +233,7 @@ export function ListItem({
       <Actions>
         <StyledIconButton
           title="Edit"
-          className="elyra-icon elyra-item-edit"
+          className="elyricon elyricon-edit"
           onClick={() => {
             onEdit?.();
           }}
@@ -242,7 +242,7 @@ export function ListItem({
         {!!canBrowseFiles && (
           <StyledIconButton
             title="Browse"
-            className="elyra-icon elyra-item-folder"
+            className="elyricon elyricon-folder"
             onClick={() => {
               onChooseFiles?.();
             }}
@@ -250,7 +250,7 @@ export function ListItem({
         )}
         <StyledIconButton
           title="Delete"
-          className="elyra-icon  elyra-item-delete"
+          className="elyricon elyricon-delete"
           onClick={() => {
             onDelete?.();
           }}

@@ -131,7 +131,7 @@ function TabbedPanelLayout({
           <Tab key={t.id}>
             <TabIcon
               title={t.label}
-              className={`elyra-icon ${t.id}`}
+              className={`elyricon elyricon-${t.id}`}
               onClick={() => {
                 onTabClick?.(t.id);
               }}
@@ -164,7 +164,7 @@ function TabbedPanelLayout({
         {showCloseButton === true && (
           <StyledIconButton
             title="Close Panel"
-            className="elyra-icon elyra-panel-close"
+            className="elyricon elyricon-close"
             onClick={() => {
               onClose?.();
             }}
