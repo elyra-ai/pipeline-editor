@@ -26,6 +26,7 @@ import {
   StringArrayControl,
 } from "../CustomFormControls";
 import { fillPropertiesWithSavedData } from "./properties-utils";
+import useActiveFormItemShim from "./useActiveFormItemShim";
 
 interface Props {
   selectedNodes?: any[];
@@ -50,6 +51,8 @@ function PropertiesPanel({
   onFileRequested,
   onChange,
 }: Props) {
+  useActiveFormItemShim();
+
   const controller = useRef<any>();
 
   // always be validating

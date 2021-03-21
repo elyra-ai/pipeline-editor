@@ -20,8 +20,9 @@ import {
 } from "styled-components";
 
 import { CanvasOverrides } from "./styles";
+import useSystemInfo from "./useSystemInfo";
 
-const defaultTheme: DefaultTheme = {
+const defaultTheme: Omit<DefaultTheme, "mode" | "platform"> = {
   palette: {
     focus: "#528bff",
     border: "#181a1f",
@@ -72,8 +73,15 @@ const defaultTheme: DefaultTheme = {
   },
 };
 
-function createTheme(overides: Partial<DefaultTheme>) {
-  return { ...defaultTheme, ...overides };
+function createTheme(systemInfo: {
+  mode: "dark" | "light";
+  platform: "mac" | "win" | "other";
+}) {
+  return (overides: Partial<DefaultTheme>): DefaultTheme => ({
+    ...defaultTheme,
+    ...systemInfo,
+    ...overides,
+  });
 }
 
 const ThemeProvider: React.FC<{ theme: Partial<DefaultTheme> }> = ({
@@ -86,8 +94,9 @@ const ThemeProvider: React.FC<{ theme: Partial<DefaultTheme> }> = ({
 };
 
 export const InternalThemeProvider: React.FC = ({ children }) => {
+  const systemInfo = useSystemInfo();
   return (
-    <StyledThemeProvider theme={createTheme}>
+    <StyledThemeProvider theme={createTheme(systemInfo)}>
       <CanvasOverrides />
       {children}
     </StyledThemeProvider>

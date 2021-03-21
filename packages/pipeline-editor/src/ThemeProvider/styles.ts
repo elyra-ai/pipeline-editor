@@ -649,64 +649,44 @@ export const CanvasOverrides = css`
     display: none;
   }
 
-  /* ========================================================================== */
-  /* LIGHT THEME */
-  /* ========================================================================== */
   .context-menu-popover {
-    background: rgba(231, 231, 231, 0.76);
+    background: ${({ theme }) =>
+      theme.mode === "dark"
+        ? "rgba(46, 46, 46, 0.72)"
+        : "rgba(231, 231, 231, 0.76)"};
   }
 
   .context-menu-popover::before {
-    /* box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.22),
-    inset 0px 0px 0px 2px rgba(255, 255, 255, 0.1); */
-    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.22),
-      inset 0px 0px 0px 1px rgba(255, 255, 255, 0.1);
+    box-shadow: ${({ theme }) =>
+      theme.mode === "dark"
+        ? "box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.86), inset 0px 0px 0px 3px rgba(255, 255, 255, 0.2)"
+        : "box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.22), inset 0px 0px 0px 1px rgba(255, 255, 255, 0.1)"};
   }
 
   .react-contextmenu-item {
-    color: rgba(0, 0, 0, 0.85);
+    color: ${({ theme }) =>
+      theme.mode === "dark"
+        ? "rgba(255, 255, 255, 0.9)"
+        : "rgba(0, 0, 0, 0.85)"};
   }
 
   .react-contextmenu-item:hover {
-    color: rgba(255, 255, 255, 1);
+    color: ${({ theme }) =>
+      theme.mode === "dark"
+        ? "rgba(255, 255, 255, 0.9)"
+        : "rgba(255, 255, 255, 1)"};
   }
 
   .react-contextmenu-item.react-contextmenu-item--disabled {
-    color: rgba(0, 0, 0, 0.315); /* 0.27, 0.36 */
+    color: ${({ theme }) =>
+      theme.mode === "dark"
+        ? "rgba(255, 255, 255, 0.355)"
+        : "rgba(0, 0, 0, 0.315)"};
   }
 
   .react-contextmenu-item.contextmenu-divider {
-    background-color: #000000;
-    opacity: 0.13; /* 0.11, 0.15 */
-  }
-
-  /* ========================================================================== */
-  /* DARK THEME */
-  /* ========================================================================== */
-
-  body.elyra-dark .context-menu-popover {
-    background: rgba(46, 46, 46, 0.72);
-  }
-
-  body.elyra-dark .context-menu-popover::before {
-    box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.86),
-      inset 0px 0px 0px 3px rgba(255, 255, 255, 0.2);
-  }
-
-  body.elyra-dark .react-contextmenu-item {
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  body.elyra-dark .react-contextmenu-item:hover {
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  body.elyra-dark .react-contextmenu-item.react-contextmenu-item--disabled {
-    color: rgba(255, 255, 255, 0.355); /* 0.29, 0.42 */
-  }
-
-  body.elyra-dark .react-contextmenu-item.contextmenu-divider {
-    background-color: #ffffff;
-    opacity: 0.205; /* 0.17, 0.24 */
+    background-color: ${({ theme }) =>
+      theme.mode === "dark" ? "#ffffff" : "#000000"};
+    opacity: ${({ theme }) => (theme.mode === "dark" ? 0.205 : 0.13)};
   }
 `;

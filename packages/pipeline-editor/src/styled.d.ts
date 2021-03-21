@@ -18,6 +18,8 @@ import "styled-components";
 
 declare module "styled-components" {
   export interface DefaultTheme {
+    mode: "dark" | "light";
+    platform: "mac" | "win" | "other";
     palette: {
       focus: string;
       border: string;
