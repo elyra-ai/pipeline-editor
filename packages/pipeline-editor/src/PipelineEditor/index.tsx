@@ -36,7 +36,7 @@ import {
   // eslint-disable-next-line import/no-extraneous-dependencies
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
-import { useTheme } from "styled-components";
+import styled, { useTheme } from "styled-components";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
@@ -82,6 +82,14 @@ function isMenuItemEnabled(menu: ContextMenu, action: string) {
 
   return item.enable !== false;
 }
+
+const Container = styled.div`
+  height: 100%;
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-size: ${({ theme }) => theme.typography.fontSize};
+`;
 
 function useCloseContextMenu(controller: React.MutableRefObject<any>) {
   useEffect(() => {
@@ -508,11 +516,7 @@ const PipelineEditor = forwardRef(
 
     if (readOnly) {
       return (
-        <div
-          className="pipeline-read-only"
-          style={{ height: "100%" }}
-          ref={blockingRef}
-        >
+        <Container className="pipeline-read-only" ref={blockingRef}>
           <IntlProvider locale="en">
             <CommonCanvas
               canvasController={controller.current}
@@ -535,12 +539,12 @@ const PipelineEditor = forwardRef(
               }}
             />
           </IntlProvider>
-        </div>
+        </Container>
       );
     }
 
     return (
-      <div style={{ height: "100%" }} ref={blockingRef}>
+      <Container ref={blockingRef}>
         <IntlProvider locale="en">
           {supernodeOpen === true && (
             <button
@@ -651,7 +655,7 @@ const PipelineEditor = forwardRef(
             }
           />
         </IntlProvider>
-      </div>
+      </Container>
     );
   }
 );
