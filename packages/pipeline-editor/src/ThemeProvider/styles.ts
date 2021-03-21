@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import canvasStyles from "@elyra/canvas/dist/styles/common-canvas.min.css";
 // alias `createGlobalStyle` to `css` for prettier formatting support.
 import { createGlobalStyle as css } from "styled-components";
