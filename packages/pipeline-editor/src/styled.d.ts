@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import React from "react";
 import "styled-components";
 
 declare module "styled-components" {
@@ -67,6 +68,9 @@ declare module "styled-components" {
       fontFamily: string;
       fontWeight: string;
       fontSize: string;
+    };
+    overrides?: {
+      deleteIcon?: React.ReactNode;
     };
   }
 }

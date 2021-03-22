@@ -19,7 +19,7 @@ import { useEffect } from "react";
 
 import produce from "immer";
 import { useSelector } from "react-redux";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 
 import IconButton from "../IconButton";
 
@@ -175,6 +175,7 @@ export function ListItem({
   onChooseFiles,
   onEdit,
 }: ListItemProps) {
+  const theme = useTheme();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -254,7 +255,9 @@ export function ListItem({
           onClick={() => {
             onDelete?.();
           }}
-        />
+        >
+          {theme.overrides?.deleteIcon}
+        </StyledIconButton>
       </Actions>
     </ListRow>
   );

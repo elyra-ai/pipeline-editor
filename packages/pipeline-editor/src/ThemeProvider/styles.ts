@@ -245,39 +245,6 @@ export const CanvasOverrides = css`
     outline-offset: -1px;
   }
 
-  /* checkbox */
-  .properties-wrapper .properties-checkbox {
-    box-sizing: border-box;
-    flex-shrink: 0;
-    cursor: pointer;
-    display: inline-block;
-    text-align: center;
-    font-size: 16px;
-    height: 18px;
-    width: 18px;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    margin-right: 9px;
-    margin-left: 0;
-    padding: 0;
-    background-color: ${({ theme }) => theme.palette.secondary.main};
-    color: ${({ theme }) => theme.palette.secondary.contrastText};
-    border-color: ${({ theme }) => theme.palette.border};
-  }
-
-  .properties-wrapper .properties-checkbox:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
-    outline-offset: -1px;
-  }
-
-  .properties-wrapper .properties-checkbox::before {
-    opacity: 0;
-  }
-
-  .properties-wrapper .properties-checkbox.checked::before {
-    opacity: 1;
-  }
-
   /* button */
   .properties-wrapper button {
     color: ${({ theme }) => theme.palette.primary.contrastText};
