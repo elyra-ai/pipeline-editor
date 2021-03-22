@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-jest.mock(
-  `!!raw-loader!@elyra/canvas/dist/styles/common-canvas.min.css`,
-  () => "",
-  {
-    virtual: true,
-  }
-);
+jest.mock("@elyra/canvas/dist/styles/common-canvas.min.css", () => "", {
+  virtual: true,
+});
 
 global.crypto = {
   getRandomValues: () => {
     return new Uint8Array(256);
   },
+};
+
+window.matchMedia = () => {
+  return {
+    matches: true,
+    addEventListener: () => {},
+  };
 };
 
 window.scrollTo = () => {
