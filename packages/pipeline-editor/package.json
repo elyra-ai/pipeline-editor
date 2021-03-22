@@ -11,6 +11,9 @@
     "url": "https://github.com/elyra-ai/pipeline-editor"
   },
   "license": "Apache-2.0",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "microbundle --css inline -f cjs",
     "watch": "tsc -w --preserveWatchOutput",
