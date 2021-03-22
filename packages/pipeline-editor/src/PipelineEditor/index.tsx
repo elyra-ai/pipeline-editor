@@ -622,6 +622,7 @@ const PipelineEditor = forwardRef(
                   {
                     id: "properties",
                     label: "Node Properties",
+                    icon: theme.overrides?.propertiesIcon,
                     content: (
                       <PropertiesPanel
                         selectedNodes={selectedNodes}
@@ -634,6 +635,7 @@ const PipelineEditor = forwardRef(
                   {
                     id: "palette",
                     label: "Palette",
+                    icon: theme.overrides?.paletteIcon,
                     content: <PalettePanel nodes={nodes} />,
                   },
                 ]}

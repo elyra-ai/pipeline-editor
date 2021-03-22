@@ -16,7 +16,7 @@
 
 import React from "react";
 
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 
 import IconButton from "../IconButton";
 
@@ -24,6 +24,7 @@ interface Props {
   tabs: {
     id: string;
     label: string;
+    icon?: React.ReactNode;
     content: React.ReactNode;
   }[];
   collapsed?: boolean;
@@ -77,7 +78,9 @@ const Content = styled.div`
 `;
 
 const StyledIconButton = styled(IconButton)`
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 35px;
   line-height: 35px;
   min-width: 28px;
@@ -109,7 +112,9 @@ const TabIcon = styled.div`
   cursor: pointer;
   user-select: none;
   color: ${({ theme }) => theme.palette.icon.secondary};
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 35px;
   line-height: 35px;
   min-width: 28px;
@@ -124,6 +129,8 @@ function TabbedPanelLayout({
   collapsed,
   onClose,
 }: Props) {
+  const theme = useTheme();
+
   if (collapsed === true) {
     return (
       <VerticalTabGroup>
@@ -135,7 +142,9 @@ function TabbedPanelLayout({
               onClick={() => {
                 onTabClick?.(t.id);
               }}
-            />
+            >
+              {t.icon}
+            </TabIcon>
           </Tab>
         ))}
       </VerticalTabGroup>
@@ -168,7 +177,9 @@ function TabbedPanelLayout({
             onClick={() => {
               onClose?.();
             }}
-          />
+          >
+            {theme.overrides?.closeIcon}
+          </StyledIconButton>
         )}
       </ActionBar>
       <Content>

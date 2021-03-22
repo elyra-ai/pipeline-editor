@@ -17,7 +17,7 @@
 import React, { useCallback, useRef } from "react";
 
 import { useSelector } from "react-redux";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 
 interface Props {
   name: string;
@@ -48,12 +48,14 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
     outline-offset: -1px;
   }
 
-  &::before {
+  &::before,
+  & > svg {
     opacity: ${({ isChecked }) => (isChecked ? 1 : 0)};
   }
 `;
 
 function BooleanComponent({ name, controller, helperText }: Props) {
+  const theme = useTheme();
   const controllerRef = useRef(controller);
 
   const isChecked = useSelector((state: any) => state.propertiesReducer[name]);
@@ -71,7 +73,9 @@ function BooleanComponent({ name, controller, helperText }: Props) {
         role="checkbox"
         aria-checked={isChecked ? "true" : "false"}
         aria-label=""
-      />
+      >
+        {theme.overrides?.checkIcon}
+      </Checkbox>
       <div className="properties-control-description">{helperText}</div>
     </div>
   );

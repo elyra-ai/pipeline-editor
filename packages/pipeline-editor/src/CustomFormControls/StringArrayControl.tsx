@@ -238,7 +238,9 @@ export function ListItem({
           onClick={() => {
             onEdit?.();
           }}
-        />
+        >
+          {theme.overrides?.editIcon}
+        </StyledIconButton>
 
         {!!canBrowseFiles && (
           <StyledIconButton
@@ -247,7 +249,9 @@ export function ListItem({
             onClick={() => {
               onChooseFiles?.();
             }}
-          />
+          >
+            {theme.overrides?.folderIcon}
+          </StyledIconButton>
         )}
         <StyledIconButton
           title="Delete"

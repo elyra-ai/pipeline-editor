@@ -71,6 +71,12 @@ declare module "styled-components" {
     };
     overrides?: {
       deleteIcon?: React.ReactNode;
+      editIcon?: React.ReactNode;
+      folderIcon?: React.ReactNode;
+      closeIcon?: React.ReactNode;
+      propertiesIcon?: React.ReactNode;
+      paletteIcon?: React.ReactNode;
+      checkIcon?: React.ReactNode;
     };
   }
 }
