@@ -14,15 +14,45 @@
  * limitations under the License.
  */
 
-import {
-  DefaultTheme,
-  ThemeProvider as StyledThemeProvider,
-} from "styled-components";
+import { ThemeProvider as StyledThemeProvider } from "styled-components";
 
+import { Theme } from "../types";
 import { CanvasOverrides } from "./styles";
 import useSystemInfo from "./useSystemInfo";
 
-const defaultTheme: Omit<DefaultTheme, "mode" | "platform"> = {
+type Primitive = null | undefined | string | number | boolean;
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends Primitive ? Partial<T> : DeepPartial<T[P]>;
+};
+
+function isPlainObject(item: any) {
+  return item && typeof item === "object" && item.constructor === Object;
+}
+
+function deepmerge<T>(target: T, source: DeepPartial<T>) {
+  const output = { ...target };
+
+  if (isPlainObject(target) && isPlainObject(source)) {
+    for (let _key of Object.keys(source)) {
+      const key = _key as keyof DeepPartial<T>;
+
+      const tVal = target[key];
+      const sVal = source[key] as DeepPartial<typeof tVal>;
+
+      if (sVal !== undefined && tVal !== undefined) {
+        if (isPlainObject(sVal)) {
+          output[key] = deepmerge<typeof tVal>(tVal, sVal);
+        } else {
+          output[key] = sVal as T[keyof T];
+        }
+      }
+    }
+  }
+
+  return output;
+}
+
+const defaultTheme: Omit<Theme, "mode" | "platform"> = {
   palette: {
     focus: "#528bff",
     border: "#181a1f",
@@ -73,18 +103,19 @@ const defaultTheme: Omit<DefaultTheme, "mode" | "platform"> = {
   },
 };
 
-function createTheme(systemInfo: {
+function mergeThemes(systemInfo: {
   mode: "dark" | "light";
   platform: "mac" | "win" | "other";
 }) {
-  return (overides: Partial<DefaultTheme>): DefaultTheme => ({
-    ...defaultTheme,
-    ...systemInfo,
-    ...overides,
-  });
+  return (overides: Partial<Theme>): Theme => {
+    return deepmerge<Theme>(
+      { ...defaultTheme, ...systemInfo },
+      overides as DeepPartial<Theme>
+    );
+  };
 }
 
-const ThemeProvider: React.FC<{ theme: Partial<DefaultTheme> }> = ({
+const ThemeProvider: React.FC<{ theme: DeepPartial<Theme> }> = ({
   theme,
   children,
 }) => {
@@ -96,11 +127,15 @@ const ThemeProvider: React.FC<{ theme: Partial<DefaultTheme> }> = ({
 export const InternalThemeProvider: React.FC = ({ children }) => {
   const systemInfo = useSystemInfo();
   return (
-    <StyledThemeProvider theme={createTheme(systemInfo)}>
+    <StyledThemeProvider theme={mergeThemes(systemInfo)}>
       <CanvasOverrides />
       {children}
     </StyledThemeProvider>
   );
 };
+
+export function createTheme(theme: DeepPartial<Theme>) {
+  return theme;
+}
 
 export default ThemeProvider;

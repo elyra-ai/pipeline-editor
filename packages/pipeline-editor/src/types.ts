@@ -27,3 +27,65 @@ export interface CustomNodeSpecification {
   image?: string;
   properties?: PropertyDefinitions;
 }
+
+export interface Theme {
+  mode: "dark" | "light";
+  platform: "mac" | "win" | "other";
+  palette: {
+    focus: string;
+    border: string;
+    divider: string;
+    hover: string;
+    active: string;
+    primary: {
+      main: string;
+      hover: string;
+      contrastText: string;
+    };
+    secondary: {
+      main: string;
+      contrastText: string;
+    };
+    error: {
+      main: string;
+      contrastText: string;
+    };
+    icon: {
+      primary: string;
+      secondary: string;
+    };
+    text: {
+      primary: string;
+      secondary: string;
+      bold: string;
+      inactive: string;
+      disabled: string;
+      link: string;
+      error: string;
+    };
+    background: {
+      default: string;
+      secondary: string;
+      input: string;
+    };
+    highlight: {
+      border: string;
+      hover: string;
+      focus: string;
+    };
+  };
+  typography: {
+    fontFamily: string;
+    fontWeight: string;
+    fontSize: string;
+  };
+  overrides?: {
+    deleteIcon?: React.ReactNode;
+    editIcon?: React.ReactNode;
+    folderIcon?: React.ReactNode;
+    closeIcon?: React.ReactNode;
+    propertiesIcon?: React.ReactNode;
+    paletteIcon?: React.ReactNode;
+    checkIcon?: React.ReactNode;
+  };
+}

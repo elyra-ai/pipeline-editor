@@ -15,5 +15,5 @@
  */
 
 export * from "./errors";
-export { default as ThemeProvider } from "./ThemeProvider";
+export { default as ThemeProvider, createTheme } from "./ThemeProvider";
 export { default as PipelineEditor } from "./PipelineEditor";
