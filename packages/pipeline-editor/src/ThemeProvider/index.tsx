@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 
