@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import React, { useEffect, useMemo } from "react";
+
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 
 import { Theme } from "../types";
@@ -126,8 +128,10 @@ const ThemeProvider: React.FC<{ theme: DeepPartial<Theme> }> = ({
 
 export const InternalThemeProvider: React.FC = ({ children }) => {
   const systemInfo = useSystemInfo();
+  const theme = useMemo(() => mergeThemes(systemInfo), [systemInfo]);
+
   return (
-    <StyledThemeProvider theme={mergeThemes(systemInfo)}>
+    <StyledThemeProvider theme={theme}>
       <CanvasOverrides />
       {children}
     </StyledThemeProvider>

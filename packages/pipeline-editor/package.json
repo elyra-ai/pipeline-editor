@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "build": "microbundle --css inline -f cjs",
-    "watch": "tsc -w --preserveWatchOutput",
+    "watch": "microbundle --css inline -f cjs --watch",
     "link": "yarn link"
   },
   "dependencies": {

@@ -43,7 +43,7 @@ function useSystemInfo() {
     return "other";
   }, []);
 
-  return { mode, platform };
+  return useMemo(() => ({ mode, platform }), [mode, platform]);
 }
 
 export default useSystemInfo;
