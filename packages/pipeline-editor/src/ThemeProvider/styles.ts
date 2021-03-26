@@ -532,11 +532,8 @@ export const CanvasOverrides = css`
     padding: 6px 0;
     backdrop-filter: saturate(180%) blur(20px);
     border-radius: 6px;
-    /* box-shadow: 0px 4px 17.64px 3.36px rgba(0, 0, 0, 0.2); */
     user-select: none;
     cursor: default;
-    /* box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.05),
-    0px 8px 15px 2px rgba(0, 0, 0, 0.18); */
     box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05),
       0px 4px 15px 2px rgba(0, 0, 0, 0.18);
   }
@@ -570,8 +567,6 @@ export const CanvasOverrides = css`
 
   .react-contextmenu-item:hover::before {
     content: "";
-
-    /* rgba(10, 130, 255, 0.75); */
     background-color: rgba(54, 131, 247, 0.75);
     backdrop-filter: saturate(0%);
     position: absolute;
@@ -625,8 +620,8 @@ export const CanvasOverrides = css`
   .context-menu-popover::before {
     box-shadow: ${({ theme }) =>
       theme.mode === "dark"
-        ? "box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.86), inset 0px 0px 0px 3px rgba(255, 255, 255, 0.2)"
-        : "box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.22), inset 0px 0px 0px 1px rgba(255, 255, 255, 0.1)"};
+        ? "inset 0px 0px 0px 1px rgba(0, 0, 0, 0.86), inset 0px 0px 0px 3px rgba(255, 255, 255, 0.2)"
+        : "0px 0px 0px 1px rgba(0, 0, 0, 0.22), inset 0px 0px 0px 1px rgba(255, 255, 255, 0.1)"};
   }
 
   .react-contextmenu-item {
