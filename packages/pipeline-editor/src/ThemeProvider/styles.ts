@@ -650,4 +650,8 @@ export const CanvasOverrides = css`
       theme.mode === "dark" ? "#ffffff" : "#000000"};
     opacity: ${({ theme }) => (theme.mode === "dark" ? 0.205 : 0.13)};
   }
+
+  .empty-canvas svg {
+    opacity: ${({ theme }) => (theme.mode === "dark" ? 0.3 : 0.05)};
+  }
 `;
