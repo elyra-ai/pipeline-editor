@@ -24,7 +24,7 @@ import useSystemInfo from "./useSystemInfo";
 
 type Primitive = null | undefined | string | number | boolean;
 type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends Primitive ? Partial<T> : DeepPartial<T[P]>;
+  [P in keyof T]?: T[P] extends Primitive ? Partial<T[P]> : DeepPartial<T[P]>;
 };
 
 function isPlainObject(item: any) {
