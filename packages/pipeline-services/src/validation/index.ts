@@ -34,7 +34,7 @@ export function getLinkProblems(pipeline: any) {
     const target = findNode(pipeline, link.trgNodeId);
     problems.push({
       message: `The connection between nodes '${source.app_data.ui_data.label}' and '${target.app_data.ui_data.label}' is part of a circular reference.`,
-      path: [...link.path, "node_id_ref"],
+      path: [...link.path, "id"],
       info: {
         type: "circularReference",
         pipelineID: pipeline.id,
