@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import path from "path";
+
 import { CanvasController, PipelineFlowV3 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
@@ -26,6 +28,9 @@ import {
 import { createPalette } from "./create-palette";
 
 export const PIPELINE_CURRENT_VERSION = 3;
+
+// TODO: Experiment with pipeline editor settings.
+const SHOW_EXTENSIONS = true;
 
 // NOTE: This is extremely basic validation.
 export function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
@@ -231,10 +236,16 @@ class PipelineController extends CanvasController {
           continue;
         }
 
-        const newLabel =
-          nodeDef.labelField && node.app_data![nodeDef.labelField]
-            ? node.app_data![nodeDef.labelField]
-            : nodeDef.label;
+        let filename;
+        if (typeof node.app_data!.filename === "string") {
+          const extension = path.extname(node.app_data!.filename);
+          filename = path.basename(
+            node.app_data!.filename,
+            SHOW_EXTENSIONS ? undefined : extension
+          );
+        }
+
+        const newLabel = node.app_data!.label ?? filename ?? nodeDef.label;
 
         // `setNodeLabel` is VERY slow, so make sure we HAVE to set it before
         // setting it.
