@@ -176,7 +176,6 @@ class PipelineController extends CanvasController {
       {
         app_data: {
           ...node.app_data,
-          invalidNodeError: `"${node.op}" is an unsupported node type`,
         },
         description: undefined,
         image: image,
@@ -245,8 +244,7 @@ class PipelineController extends CanvasController {
         if (
           // `app_data` and `ui_data` should be guaranteed.
           node.app_data!.ui_data!.description !== nodeDef.description ||
-          node.app_data!.ui_data!.image !== nodeDef.image ||
-          node.app_data!.invalidNodeError !== undefined
+          node.app_data!.ui_data!.image !== nodeDef.image
         ) {
           this.setNodeProperties(
             node.id,
@@ -255,7 +253,6 @@ class PipelineController extends CanvasController {
               image: nodeDef.image,
               app_data: {
                 ...node.app_data,
-                invalidNodeError: undefined,
               },
             },
             pipeline.id
@@ -322,43 +319,6 @@ class PipelineController extends CanvasController {
         ...Object.keys(nodesWithErrors),
       ]),
     ]);
-
-    for (const pipeline of this.getPipelineFlow().pipelines) {
-      for (const node of pipeline.nodes) {
-        if (node.type !== "execution_node") {
-          continue;
-        }
-
-        const nodeProblems = missingProperties.filter(
-          (p) => p.nodeID === node.id
-        );
-        if (nodeProblems.length > 0) {
-          // All of this information should be defined, otherwise we wouldn't
-          // have had any problems reported.
-          const nodeDef = this.nodes.find((n) => n.op === node.op)!;
-
-          const message = nodeProblems
-            .map((problem) => {
-              const label = nodeDef.properties!.uihints!.parameter_info.find(
-                (p) => p.parameter_ref === problem.property
-              )!.label.default;
-              return `property "${label}" is required`;
-            })
-            .join("\n");
-
-          this.setNodeProperties(
-            node.id,
-            {
-              app_data: {
-                ...node.app_data,
-                invalidNodeError: message,
-              },
-            },
-            pipeline.id
-          );
-        }
-      }
-    }
   }
 
   findExecutionNode(nodeID: string) {
@@ -379,6 +339,46 @@ class PipelineController extends CanvasController {
       }
     }
     return undefined;
+  }
+
+  errors(nodeID: string) {
+    let node = this.findExecutionNode(nodeID);
+
+    if (node?.type === "execution_node") {
+      const problems = validate(
+        JSON.stringify(this.getPipelineFlow()),
+        this.nodes
+      );
+
+      const missingProperties = [];
+
+      for (const p of problems) {
+        switch (p.info.type) {
+          case "missingProperty":
+            if (p.info.nodeID === nodeID) {
+              missingProperties.push(p.info.property);
+            }
+            break;
+        }
+      }
+
+      if (missingProperties.length > 0) {
+        // All of this information should be defined, otherwise we wouldn't
+        // have had any problems reported.
+        const nodeDef = this.nodes.find((n) => n.op === node!.op)!;
+
+        return missingProperties
+          .map((property) => {
+            const label = nodeDef.properties!.uihints!.parameter_info.find(
+              (p) => p.parameter_ref === property
+            )!.label.default;
+            return `property "${label}" is required`;
+          })
+          .join("\n");
+      }
+    }
+
+    return "";
   }
 
   properties(nodeID: string) {
