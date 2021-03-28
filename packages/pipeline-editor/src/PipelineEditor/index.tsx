@@ -35,7 +35,6 @@ import {
   TipNode,
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
-import { useSelector } from "react-redux";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
