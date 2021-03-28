@@ -460,7 +460,7 @@ const PipelineEditor = forwardRef(
         return type === "tipTypeNode";
       }
       if (isNodeTipEvent(tipType, e) && e.node.type === "execution_node") {
-        const error = e.node.app_data.invalidNodeError;
+        const error = controller.current.errors(e.node.id);
         const properties = controller.current.properties(e.node.id);
         return <NodeTooltip error={error} properties={properties} />;
       }
