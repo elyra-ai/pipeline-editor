@@ -8,30 +8,36 @@
   fill: var(--elyra-color-icon) !important;
 }
 
+/* TODO: This will break if we merge css-in-js PR */
 .d3-back-to-previous-flow-box {
-  transform: translate(13px, 9px);
-  height: 38px;
-  width: 148px;
-  fill: var(--elyra-color-button-bg);
-  stroke: none;
-}
-
-.d3-back-to-previous-flow-box[data-pointer-hover="yes"] {
-  fill: var(--elyra-color-button-hover-bg);
-  stroke: none;
-}
-
-.d3-back-to-previous-flow-text svg {
   display: none;
 }
 
 .d3-back-to-previous-flow-text {
+  display: none;
+}
+
+.elyra-back-to-previous-flow {
+  cursor: pointer;
+  position: absolute;
+  top: 24px;
+  left: 28px;
+  z-index: 1;
+  padding: 10px;
+  background-color: var(--elyra-color-button-bg);
+  border: none;
   font-size: var(--elyra-font-size-sans);
   font-weight: var(--elyra-font-weight-sans);
   font-family: var(--elyra-font-family-sans);
-  fill: var(--elyra-color-button-text);
-  transform: translate(-17px, 9px);
-  text-rendering: geometricPrecision;
+  color: var(--elyra-color-button-text);
+}
+
+.elyra-back-to-previous-flow:hover {
+  background-color: var(--elyra-color-button-hover-bg);
+}
+
+.elyra-back-to-previous-flow:focus {
+  outline: none;
 }
 
 /* ========================================================================== */

@@ -35,6 +35,7 @@ import {
   TipNode,
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
+import { useSelector } from "react-redux";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
@@ -122,6 +123,28 @@ const PipelineEditor = forwardRef(
     ref
   ) => {
     const controller = useRef(new PipelineController());
+
+    const [supernodeOpen, setSupernodeOpen] = useState(false);
+
+    useEffect(() => {
+      // @ts-ignore
+      const store = controller.current.objectModel.store.store;
+
+      let currentlyOpen: boolean;
+      function handleChange() {
+        let previouslyOpen = currentlyOpen;
+        currentlyOpen = store.getState().breadcrumbs.length > 1;
+
+        if (previouslyOpen !== currentlyOpen) {
+          setSupernodeOpen(currentlyOpen);
+        }
+      }
+
+      const unsubscribe = store.subscribe(handleChange);
+      return () => {
+        unsubscribe();
+      };
+    }, []);
 
     const [currentTab, setCurrentTab] = useState<string | undefined>();
     const [panelOpen, setPanelOpen] = useState(false);
@@ -507,6 +530,18 @@ const PipelineEditor = forwardRef(
     return (
       <div style={{ height: "100%" }} ref={blockingRef}>
         <IntlProvider locale="en">
+          {supernodeOpen === true && (
+            <button
+              className="elyra-back-to-previous-flow"
+              onClick={() => {
+                controller.current.editActionHandler({
+                  editType: "displayPreviousPipeline",
+                });
+              }}
+            >
+              Return to previous flow
+            </button>
+          )}
           <SplitPanelLayout
             left={
               <CommonCanvas
