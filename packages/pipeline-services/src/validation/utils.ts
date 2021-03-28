@@ -50,8 +50,10 @@ export function findNode(pipeline: any, id: string) {
 }
 
 export function rangeForLocation(location: Node | undefined) {
+  const length =
+    (location?.parent?.colonOffset ?? 0) - (location?.parent?.offset ?? 0);
   return {
-    offset: location?.offset ?? 0,
-    length: location?.length ?? 0,
+    offset: location?.parent?.offset ?? 0,
+    length: length,
   };
 }
