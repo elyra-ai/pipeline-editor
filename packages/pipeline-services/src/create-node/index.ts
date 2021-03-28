@@ -14,12 +14,24 @@
  * limitations under the License.
  */
 
-interface NodeSchema {
+type NodeSchema = SimpleNodeSchema | FileNodeSchema;
+
+interface NodeSchemaCommon {
   op: string; // ID for a node type. For example: `execute-notebook-node`
-  image: string; // SVG that will show up on the node
+  icon: string; // SVG that will show up on the node
   label: string; // default label (the rendered label is dynamic)
   description: string; // description that could show up in the palette or when hovering on the node in the pipeline
   properties: NodeProperty[]; // fixed properties for the node (dynamic and runtime specific properties don't go here)
+}
+
+interface SimpleNodeSchema extends NodeSchemaCommon {
+  fileNode?: false;
+}
+
+interface FileNodeSchema extends NodeSchemaCommon {
+  fileNode: true;
+  extensions: string[]; // a file node will probably only ever be linked to one file type, but a list of extensions is needed. For example: ["yaml", "yml"]
+  language?: string; // a combination of this and extension will help determine an icon for the node.
 }
 
 interface NodePropertyCommon {
@@ -96,18 +108,31 @@ interface CommonProperties {
 }
 
 function toCommonProperties(items: NodeProperty[]) {
+  // TODO: We should dynamically generate fixed fields as well
+  // TODO: Inject file field for file nodes.
   let commonProperties: CommonProperties = {
-    current_parameters: {},
-    parameters: [],
+    current_parameters: {
+      label: "",
+    },
+    parameters: [{ id: "label", type: "string", required: false }],
     uihints: {
       id: "nodeProperties",
-      parameter_info: [],
+      parameter_info: [
+        {
+          parameter_ref: "label",
+          label: {
+            default: "Label",
+          },
+        },
+      ],
       action_info: [],
       group_info: [
         {
           id: "nodeGroupInfo",
           type: "panels",
-          group_info: [],
+          group_info: [
+            { id: "label", type: "controls", parameter_refs: ["label"] },
+          ],
         },
       ],
     },
