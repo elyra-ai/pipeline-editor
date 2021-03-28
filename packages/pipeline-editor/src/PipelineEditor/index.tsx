@@ -50,6 +50,7 @@ interface Props {
   nodes?: any;
   onAction?: (action: { type: string; payload?: any }) => any;
   onChange?: (pipeline: any) => any;
+  onDoubleClickNode?: (e: CanvasClickEvent) => any;
   onError?: (error: Error) => any;
   onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
   readOnly?: boolean;
@@ -113,6 +114,7 @@ const PipelineEditor = forwardRef(
       toolbar,
       onAction,
       onChange,
+      onDoubleClickNode,
       onError,
       onFileRequested,
       readOnly,
@@ -377,13 +379,19 @@ const PipelineEditor = forwardRef(
       []
     );
 
-    const handleClickAction = useCallback((e: CanvasClickEvent) => {
-      if (e.clickType === "DOUBLE_CLICK" && e.objectType === "node") {
-        // TODO: callback to let parent decide what to do instead.
-        setCurrentTab("properties");
-        controller.current.editActionHandler({ editType: "properties" });
-      }
-    }, []);
+    const handleClickAction = useCallback(
+      (e: CanvasClickEvent) => {
+        if (e.clickType === "DOUBLE_CLICK" && e.objectType === "node") {
+          if (onDoubleClickNode !== undefined) {
+            return onDoubleClickNode(e);
+          }
+          // TODO: callback to let parent decide what to do instead.
+          setCurrentTab("properties");
+          controller.current.editActionHandler({ editType: "properties" });
+        }
+      },
+      [onDoubleClickNode]
+    );
 
     const [selectedNodes, setSelectedNodes] = useState<NodeTypeDef[]>();
     const handleSelectionChange = useCallback((e: CanvasSelectionEvent) => {
