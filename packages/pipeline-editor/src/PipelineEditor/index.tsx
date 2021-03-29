@@ -385,7 +385,6 @@ const PipelineEditor = forwardRef(
           if (onDoubleClickNode !== undefined) {
             return onDoubleClickNode(e);
           }
-          // TODO: callback to let parent decide what to do instead.
           setCurrentTab("properties");
           controller.current.editActionHandler({ editType: "properties" });
         }
