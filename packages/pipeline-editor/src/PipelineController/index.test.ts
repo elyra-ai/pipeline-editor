@@ -1139,6 +1139,44 @@ describe("resetStyles", () => {
     );
   });
 
+  it("updates the label with user supplied label", () => {
+    const controller = new PipelineController();
+
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "execution_node",
+              op: "execute-notebook-node",
+              app_data: {
+                label: "user label",
+                filename: "example.py",
+                ui_data: {
+                  label: "old label",
+                },
+              },
+            },
+          ],
+        },
+      ],
+    };
+    controller.open(pipeline);
+    controller.setNodes([nodeSpec as any]);
+
+    controller.resetStyles();
+
+    const flow = controller.getPipelineFlow();
+    expect(flow.pipelines[0].nodes[0].app_data?.ui_data?.label).toBe(
+      "user label"
+    );
+  });
+
   it("doesn't unnecessarily update properties", () => {
     const controller = new PipelineController();
 

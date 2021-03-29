@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import path from "path";
-
 import { CanvasController, PipelineFlowV3 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
@@ -26,6 +24,7 @@ import {
   InvalidPipelineError,
 } from "./../errors";
 import { createPalette } from "./create-palette";
+import { getFileName } from "./utils";
 
 export const PIPELINE_CURRENT_VERSION = 3;
 
@@ -238,11 +237,9 @@ class PipelineController extends CanvasController {
 
         let filename;
         if (typeof node.app_data!.filename === "string") {
-          const extension = path.extname(node.app_data!.filename);
-          filename = path.basename(
-            node.app_data!.filename,
-            SHOW_EXTENSIONS ? undefined : extension
-          );
+          filename = getFileName(node.app_data!.filename, {
+            withExtension: SHOW_EXTENSIONS,
+          });
         }
 
         const newLabel = node.app_data!.label ?? filename ?? nodeDef.label;
