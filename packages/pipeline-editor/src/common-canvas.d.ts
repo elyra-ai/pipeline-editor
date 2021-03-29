@@ -144,6 +144,11 @@ declare module "@elyra/canvas" {
   function CommonProperties(props: any);
 
   class CanvasController {
+    objectModel: {
+      store: {
+        store: any;
+      };
+    };
     getSupernodeObjReferencing(pipelineId: string): any;
     setLinksStyle(
       linkObjectIds: { [key: string]: string[] },

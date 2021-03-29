@@ -126,7 +126,6 @@ const PipelineEditor = forwardRef(
     const [supernodeOpen, setSupernodeOpen] = useState(false);
 
     useEffect(() => {
-      // @ts-ignore
       const store = controller.current.objectModel.store.store;
 
       let currentlyOpen: boolean;
