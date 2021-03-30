@@ -114,6 +114,9 @@ declare module "@elyra/canvas" {
         imageHeight?: number;
         labelPosX?: number;
         labelMaxWidth?: number;
+        defaultNodeHeight?: number;
+        inputPortLeftPosY?: number;
+        outputPortRightPosY?: number;
       };
     };
     notificationConfig?: {
