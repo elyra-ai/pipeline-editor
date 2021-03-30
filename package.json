@@ -15,6 +15,8 @@
   "main": "./packages/extension/dist/index.js",
   "devDependencies": {
     "@babel/core": "^7.13.8",
+    "@changesets/changelog-github": "^0.3.0",
+    "@changesets/cli": "^2.14.1",
     "@storybook/addon-actions": "^6.1.20",
     "@storybook/addon-essentials": "^6.1.20",
     "@storybook/addon-links": "^6.1.20",
@@ -67,7 +69,9 @@
     "test:cypress:dev": "start-server-and-test sb:ci http://localhost:6006 cy:open",
     "test:cypress": "start-server-and-test sb:ci http://localhost:6006 cy:run",
     "cy:run": "cypress run",
-    "cy:open": "cypress open"
+    "cy:open": "cypress open",
+    "changeset": "changeset",
+    "release": "changeset publish"
   },
   "dependencies": {}
 }
