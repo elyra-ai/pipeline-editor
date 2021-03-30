@@ -24,8 +24,12 @@ import {
   InvalidPipelineError,
 } from "./../errors";
 import { createPalette } from "./create-palette";
+import { getFileName } from "./utils";
 
 export const PIPELINE_CURRENT_VERSION = 3;
+
+// TODO: Experiment with pipeline editor settings.
+const SHOW_EXTENSIONS = true;
 
 // NOTE: This is extremely basic validation.
 export function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
@@ -231,10 +235,14 @@ class PipelineController extends CanvasController {
           continue;
         }
 
-        const newLabel =
-          nodeDef.labelField && node.app_data![nodeDef.labelField]
-            ? node.app_data![nodeDef.labelField]
-            : nodeDef.label;
+        let filename;
+        if (typeof node.app_data!.filename === "string") {
+          filename = getFileName(node.app_data!.filename, {
+            withExtension: SHOW_EXTENSIONS,
+          });
+        }
+
+        const newLabel = node.app_data!.label ?? filename ?? nodeDef.label;
 
         // `setNodeLabel` is VERY slow, so make sure we HAVE to set it before
         // setting it.
