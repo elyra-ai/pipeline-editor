@@ -41,8 +41,8 @@ function deepmerge<T>(target: T, source: DeepPartial<T>) {
       const tVal = target[key];
       const sVal = source[key] as DeepPartial<typeof tVal>;
 
-      if (sVal !== undefined && tVal !== undefined) {
-        if (isPlainObject(sVal)) {
+      if (sVal !== undefined) {
+        if (isPlainObject(sVal) && tVal !== undefined) {
           output[key] = deepmerge<typeof tVal>(tVal, sVal);
         } else {
           output[key] = sVal as T[keyof T];
