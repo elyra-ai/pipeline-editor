@@ -63,9 +63,6 @@ interface Props {
 const READ_ONLY_NODE_SVG_PATH =
   "M 0 0 h 160 a 6 6 0 0 1 6 6 v 28 a 6 6 0 0 1 -6 6 h -160 a 6 6 0 0 1 -6 -6 v -28 a 6 6 0 0 1 6 -6 z";
 
-const NODE_SVG_PATH =
-  "M 0 0 L 160 0 L 160 11.5 A 6 6 180 0 1 160 23.5 L 160 35 L 0 35 L 0 23.5 A 6 6 180 0 1 0 11.5 Z";
-
 function isMenuItemEnabled(menu: ContextMenu, action: string) {
   const item = menu.find((m) => {
     if (m.menu === undefined) {
@@ -605,8 +602,6 @@ const PipelineEditor = forwardRef(
                     defaultNodeHeight: 35,
                     inputPortLeftPosY: 17.5,
                     outputPortRightPosY: 17.5,
-                    bodyPath: NODE_SVG_PATH,
-                    selectionPath: NODE_SVG_PATH,
                   },
                 }}
                 notificationConfig={{ enable: false }}
