@@ -16,43 +16,13 @@
 
 import React, { useMemo } from "react";
 
+import { DeepPartial } from "redux";
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 
 import { Theme } from "../types";
 import { CanvasOverrides } from "./styles";
 import useSystemInfo from "./useSystemInfo";
-
-type Primitive = null | undefined | string | number | boolean;
-type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends Primitive ? Partial<T[P]> : DeepPartial<T[P]>;
-};
-
-function isPlainObject(item: any) {
-  return item && typeof item === "object" && item.constructor === Object;
-}
-
-function deepmerge<T>(target: T, source: DeepPartial<T>) {
-  const output = { ...target };
-
-  if (isPlainObject(target) && isPlainObject(source)) {
-    for (let _key of Object.keys(source)) {
-      const key = _key as keyof DeepPartial<T>;
-
-      const tVal = target[key];
-      const sVal = source[key] as DeepPartial<typeof tVal>;
-
-      if (sVal !== undefined) {
-        if (isPlainObject(sVal) && tVal !== undefined) {
-          output[key] = deepmerge<typeof tVal>(tVal, sVal);
-        } else {
-          output[key] = sVal as T[keyof T];
-        }
-      }
-    }
-  }
-
-  return output;
-}
+import { deepmerge } from "./utils";
 
 const defaultTheme: Omit<Theme, "mode" | "platform"> = {
   palette: {
