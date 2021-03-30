@@ -293,29 +293,11 @@ export const CanvasOverrides = css`
   }
 
   .d3-back-to-previous-flow-box {
-    transform: translate(13px, 9px);
-    height: 38px;
-    width: 148px;
-    fill: ${({ theme }) => theme.palette.primary.main};
-    stroke: none;
-  }
-
-  .d3-back-to-previous-flow-box[data-pointer-hover="yes"] {
-    fill: ${({ theme }) => theme.palette.primary.hover};
-    stroke: none;
-  }
-
-  .d3-back-to-previous-flow-text svg {
     display: none;
   }
 
   .d3-back-to-previous-flow-text {
-    font-family: ${({ theme }) => theme.typography.fontFamily};
-    font-weight: ${({ theme }) => theme.typography.fontWeight};
-    font-size: ${({ theme }) => theme.typography.fontSize};
-    fill: ${({ theme }) => theme.palette.primary.contrastText};
-    transform: translate(-17px, 9px);
-    text-rendering: geometricPrecision;
+    display: none;
   }
 
   .d3-link-group {

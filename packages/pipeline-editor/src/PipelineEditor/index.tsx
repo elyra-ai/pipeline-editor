@@ -119,6 +119,29 @@ function useCloseContextMenu(controller: React.MutableRefObject<any>) {
   }, [controller]);
 }
 
+const Button = styled.div`
+  cursor: pointer;
+  position: absolute;
+  top: 24px;
+  left: 28px;
+  z-index: 1;
+  padding: 10px;
+  background-color: ${({ theme }) => theme.palette.primary.main};
+  border: none;
+  font-size: ${({ theme }) => theme.typography.fontSize};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  color: ${({ theme }) => theme.palette.primary.contrastText};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.primary.hover};
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
 const PipelineEditor = forwardRef(
   (
     {
@@ -546,8 +569,7 @@ const PipelineEditor = forwardRef(
       <Container ref={blockingRef}>
         <IntlProvider locale="en">
           {supernodeOpen === true && (
-            <button
-              className="elyra-back-to-previous-flow"
+            <Button
               onClick={() => {
                 controller.current.editActionHandler({
                   editType: "displayPreviousPipeline",
@@ -555,7 +577,7 @@ const PipelineEditor = forwardRef(
               }}
             >
               Return to previous flow
-            </button>
+            </Button>
           )}
           <SplitPanelLayout
             left={
