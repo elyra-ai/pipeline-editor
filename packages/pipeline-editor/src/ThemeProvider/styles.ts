@@ -21,6 +21,73 @@ import { createGlobalStyle as css } from "styled-components";
 export const CanvasOverrides = css`
   ${canvasStyles}
 
+  .toolbar-popover-list {
+    border: 1px solid ${({ theme }) => theme.palette.border};
+    background-color: ${({ theme }) => theme.palette.background.secondary};
+  }
+
+  .toolbar-divider {
+    border-right: 1px solid ${({ theme }) => theme.palette.border};
+    background-color: transparent;
+  }
+
+  .toolbar-divider:focus {
+    outline: none;
+  }
+
+  .toolbar-div,
+  .toolbar-item,
+  .toolbar-overflow-item,
+  .toolbar-item.default button,
+  .toolbar-item.ghost button,
+  .toolbar-overflow-item button,
+  .toolbar-overflow-menu-item button {
+    background-color: ${({ theme }) => theme.palette.background.secondary};
+    border: none;
+  }
+
+  .toolbar-item.default button:focus,
+  .toolbar-item.ghost button:focus,
+  .toolbar-overflow-item button:focus,
+  .toolbar-overflow-menu-item button:focus {
+    outline: none;
+  }
+
+  .toolbar-item.default button:hover,
+  .toolbar-item.ghost button:hover,
+  .toolbar-overflow-item button:hover,
+  .toolbar-overflow-menu-item button:hover {
+    background-color: ${({ theme }) => theme.palette.hover};
+  }
+
+  .toolbar-item.default button:disabled:hover,
+  .toolbar-item.ghost button:disabled:hover,
+  .toolbar-overflow-menu-item button:disabled:hover {
+    background-color: ${({ theme }) => theme.palette.background.secondary};
+  }
+
+  .toolbar-item.default button:hover,
+  .toolbar-item.ghost button:hover,
+  .toolbar-overflow-item button:hover,
+  .toolbar-overflow-menu-item button:hover {
+    background-color: var(--vscode-statusBarItem-hoverBackground);
+  }
+
+  .toolbar-item.default button:active,
+  .toolbar-item.ghost button:active,
+  .toolbar-overflow-item button:active,
+  .toolbar-overflow-menu-item button:active {
+    background-color: ${({ theme }) => theme.palette.active};
+  }
+
+  .toolbar-item-content.default {
+    color: ${({ theme }) => theme.palette.text.icon};
+  }
+
+  .toolbar-item-content.disabled.default {
+    color: ${({ theme }) => theme.palette.text.disabled};
+  }
+
   .properties-control-description {
     margin-top: -1px;
     font-family: ${({ theme }) => theme.typography.fontFamily};
