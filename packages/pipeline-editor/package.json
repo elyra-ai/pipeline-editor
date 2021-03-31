@@ -16,7 +16,8 @@
   ],
   "scripts": {
     "build": "microbundle --css inline -f cjs",
-    "watch": "microbundle --css inline -f cjs --watch",
+    "// this regex will make all modules external in dev mode": "",
+    "watch": "microbundle --css inline -f modern --external '[A-Za-z0-9_@$]+[A-Za-z0-9_/-]+[\\.]?[A-Za-z0-9_]+' --watch --no-compress",
     "link": "yarn link"
   },
   "dependencies": {
