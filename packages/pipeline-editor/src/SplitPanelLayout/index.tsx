@@ -65,7 +65,7 @@ function RightPanel({
   const theme = useTheme();
 
   const [isHover, setIsHover] = useState(false);
-  const timerRef = useRef<NodeJS.Timeout>();
+  const timerRef = useRef<number>();
 
   const handleMouseLeave = useCallback(() => {
     if (timerRef.current) {
@@ -81,7 +81,8 @@ function RightPanel({
       }
       setIsHover(true);
     } else {
-      timerRef.current = setTimeout(() => {
+      // window is needed so typescript uses DOM setTimeout and not NodeJS
+      timerRef.current = window.setTimeout(() => {
         setIsHover(true);
       }, hoverDelay);
     }
