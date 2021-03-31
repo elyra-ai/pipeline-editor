@@ -21,7 +21,7 @@ function useActiveFormItemShim() {
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       const els = document.querySelectorAll(
-        " .properties-control-panel[data-id='properties-nodeGroupInfo'] > .properties-control-panel > .properties-control-item"
+        ".properties-control-panel[data-id='properties-nodeGroupInfo'] > .properties-control-panel > .properties-ctrl-wrapper"
       );
 
       for (const el of els) {

@@ -18,12 +18,6 @@ import canvasStyles from "@elyra/canvas/dist/styles/common-canvas.min.css";
 // alias `createGlobalStyle` to `css` for prettier formatting support.
 import { createGlobalStyle as css } from "styled-components";
 
-// NOTE: This makes the build easier in dev mode for extensions using
-// pipeline-editor. This is normally frowned upon, because it couples our code
-// to webpack. This should be the only time we ever do this.
-// eslint-disable-next-line import/no-webpack-loader-syntax
-// import canvasStyles from "!!raw-loader!@elyra/canvas/dist/styles/common-canvas.min.css";
-
 export const CanvasOverrides = css`
   ${canvasStyles}
 
@@ -51,7 +45,7 @@ export const CanvasOverrides = css`
   }
 
   /* text input */
-  .properties-textfield {
+  .bx--text-input__field-outer-wrapper {
     margin-top: 9px;
   }
 
@@ -60,7 +54,7 @@ export const CanvasOverrides = css`
     padding: 4px;
     background-color: ${({ theme }) => theme.palette.background.input};
     color: ${({ theme }) => theme.palette.text.primary};
-    border: 1px solid ${({ theme }) => theme.palette.border};
+    border: 1px solid ${({ theme }) => theme.palette.inputBorder};
     width: 100%;
     max-width: 500px;
     font-family: ${({ theme }) => theme.typography.fontFamily};
@@ -133,7 +127,7 @@ export const CanvasOverrides = css`
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
     > .properties-control-panel
-    > .properties-control-item {
+    > .properties-ctrl-wrapper {
     padding-left: 14px;
     padding-right: 14px;
     padding-top: 12px;
@@ -155,9 +149,8 @@ export const CanvasOverrides = css`
 
   /* select */
 
-  .properties-dropdown {
+  .bx--dropdown {
     margin-top: 9px;
-    padding: 0;
   }
 
   .properties-wrapper .bx--list-box {
@@ -168,7 +161,7 @@ export const CanvasOverrides = css`
   .properties-wrapper .bx--list-box__field {
     background-color: ${({ theme }) => theme.palette.secondary.main};
     color: ${({ theme }) => theme.palette.secondary.contrastText};
-    border: 1px solid ${({ theme }) => theme.palette.border};
+    border: 1px solid ${({ theme }) => theme.palette.inputBorder};
     display: flex;
     width: 100%;
     height: 26px;
@@ -285,7 +278,7 @@ export const CanvasOverrides = css`
 
   .d3-node-super-expand-icon-group .d3-node-super-expand-icon {
     cursor: pointer;
-    fill: ${({ theme }) => theme.palette.icon.primary};
+    fill: ${({ theme }) => theme.palette.text.icon};
   }
 
   .d3-node-super-expand-icon-group:hover .d3-node-super-expand-icon-background {
@@ -300,38 +293,37 @@ export const CanvasOverrides = css`
     display: none;
   }
 
+  .d3-node-body-outline {
+    stroke: transparent;
+    fill: ${({ theme }) => theme.palette.background.secondary};
+  }
+
+  .d3-node-group:hover .d3-node-body-outline {
+    stroke: transparent;
+    fill: ${({ theme }) => theme.palette.background.secondary};
+  }
+
   .d3-link-group {
     cursor: pointer;
   }
 
-  .d3-node-body-outline {
-    stroke: transparent;
-    fill: ${({ theme }) => theme.palette.background.secondary};
-    filter: none !important; /* set via element.style (must override with important) */
-  }
-
-  .d3-node-body-outline[hover="yes"] {
-    stroke: transparent;
-    fill: ${({ theme }) => theme.palette.background.secondary};
-  }
-
-  .d3-link-group:hover .d3-link-line.d3-data-link,
-  .d3-link-line.d3-data-link {
+  .d3-link-group.d3-data-link:hover .d3-link-line,
+  .d3-link-group.d3-data-link .d3-link-line {
     stroke: ${({ theme }) => theme.palette.text.link};
     stroke-width: 2;
   }
 
-  .d3-link-group:hover .d3-link-line.d3-comment-link,
-  .d3-link-line.d3-comment-link {
-    stroke: ${({ theme }) => theme.palette.divider};
+  .d3-link-group.d3-comment-link:hover .d3-link-line,
+  .d3-link-group.d3-comment-link .d3-link-line {
+    stroke: ${({ theme }) => theme.palette.text.inactive};
     stroke-width: 2;
     stroke-dasharray: 7.3;
   }
 
   .d3-comment-rect {
     fill: ${({ theme }) => theme.palette.background.default};
-    stroke: ${({ theme }) => theme.palette.divider};
-    stroke-width: 1;
+    stroke: transparent;
+    stroke-width: 0;
   }
 
   .d3-node-label,
@@ -339,17 +331,14 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
-    fill: ${({ theme }) => theme.palette.text.primary};
-    font-weight: 500;
-    text-rendering: geometricPrecision;
+    color: ${({ theme }) => theme.palette.text.primary};
   }
 
-  .d3-comment-text-tspan {
+  .d3-comment-text {
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
-    fill: ${({ theme }) => theme.palette.text.secondary};
-    text-rendering: geometricPrecision;
+    color: ${({ theme }) => theme.palette.text.inactive};
   }
 
   .d3-comment-entry {
@@ -357,24 +346,31 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
-    color: ${({ theme }) => theme.palette.text.secondary};
+    color: ${({ theme }) => theme.palette.text.inactive};
     box-sizing: border-box; /* very important! */
   }
 
   .d3-comment-entry:focus {
     outline: none;
+    box-shadow: none;
   }
 
   .d3-node-selection-highlight[data-selected="yes"] {
     stroke: ${({ theme }) => theme.palette.text.link};
   }
 
+  .d3-comment-selection-highlight {
+    stroke: ${({ theme }) => theme.palette.text.inactive};
+    stroke-width: 1;
+  }
+
   .d3-comment-selection-highlight[data-selected="yes"] {
-    stroke: ${({ theme }) => theme.palette.text.link};
+    stroke: ${({ theme }) => theme.palette.text.inactive};
+    stroke-width: 3;
   }
 
   .d3-node-ellipsis-group .d3-node-ellipsis {
-    fill: ${({ theme }) => theme.palette.icon.primary};
+    fill: ${({ theme }) => theme.palette.text.icon};
   }
 
   .d3-node-ellipsis-group:hover .d3-node-ellipsis-background {
@@ -389,6 +385,17 @@ export const CanvasOverrides = css`
   .d3-new-connection-guide[linkType="nodeLink"] {
     stroke: ${({ theme }) => theme.palette.text.link};
     fill: ${({ theme }) => theme.palette.text.link};
+  }
+
+  .d3-new-connection-line[linkType="commentLink"] {
+    stroke: ${({ theme }) => theme.palette.text.inactive};
+    stroke-width: 2;
+  }
+
+  .d3-new-connection-start[linkType="commentLink"],
+  .d3-new-connection-guide[linkType="commentLink"] {
+    stroke: ${({ theme }) => theme.palette.text.primary};
+    fill: ${({ theme }) => theme.palette.text.primary};
   }
 
   .pipeline-read-only .d3-comment-sizing,
@@ -408,13 +415,13 @@ export const CanvasOverrides = css`
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
     > .properties-control-panel
-    > .properties-control-item {
+    > .properties-ctrl-wrapper {
     position: relative;
   }
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
     > .properties-control-panel
-    > .properties-control-item
+    > .properties-ctrl-wrapper
     .error::before {
     display: block;
     content: "";
@@ -442,42 +449,22 @@ export const CanvasOverrides = css`
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
     > .properties-control-panel
-    > .properties-control-item {
+    > .properties-ctrl-wrapper {
     position: relative;
+    border: 1px solid transparent;
   }
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
     > .properties-control-panel
-    > .properties-control-item:hover {
+    > .properties-ctrl-wrapper:hover {
     background-color: ${({ theme }) => theme.palette.highlight.hover};
   }
 
   .properties-control-panel[data-id="properties-nodeGroupInfo"]
     > .properties-control-panel
-    > .properties-control-item.selected {
+    > .properties-ctrl-wrapper.selected {
     background-color: ${({ theme }) => theme.palette.highlight.focus};
-  }
-
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
-    > .properties-control-panel
-    > .properties-control-item.selected::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    border-top: 1px solid ${({ theme }) => theme.palette.highlight.border};
-  }
-
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
-    > .properties-control-panel
-    > .properties-control-item.selected::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-top: 1px solid ${({ theme }) => theme.palette.highlight.border};
+    border: 1px solid ${({ theme }) => theme.palette.highlight.border};
   }
 
   .d3-node-port-input,
@@ -496,6 +483,16 @@ export const CanvasOverrides = css`
     stroke: ${({ theme }) => theme.palette.text.primary};
     fill: ${({ theme }) => theme.palette.text.primary};
     stroke-width: 4;
+  }
+
+  .d3-comment-port-circle {
+    stroke: ${({ theme }) => theme.palette.text.secondary};
+    fill: ${({ theme }) => theme.palette.text.secondary};
+  }
+
+  .d3-comment-port-circle:hover {
+    stroke: ${({ theme }) => theme.palette.text.primary};
+    fill: ${({ theme }) => theme.palette.text.primary};
   }
 
   .d3-node-port-input-arrow {

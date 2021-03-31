@@ -37,6 +37,8 @@ export interface Theme {
     divider: string;
     hover: string;
     active: string;
+    tabBorder: string;
+    inputBorder: string;
     primary: {
       main: string;
       hover: string;
@@ -50,11 +52,8 @@ export interface Theme {
       main: string;
       contrastText: string;
     };
-    icon: {
-      primary: string;
-      secondary: string;
-    };
     text: {
+      icon: string;
       primary: string;
       secondary: string;
       bold: string;

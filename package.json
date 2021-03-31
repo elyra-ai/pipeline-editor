@@ -4,10 +4,6 @@
   "description": "",
   "version": "0.0.0",
   "workspaces": {
-    "nohoist": [
-      "**/@elyra/canvas",
-      "**/@elyra/pipeline-editor"
-    ],
     "packages": [
       "packages/*"
     ]

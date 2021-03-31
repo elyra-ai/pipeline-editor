@@ -134,6 +134,7 @@ class PipelineController extends CanvasController {
       true
     );
 
+    // TODO: this shouldn't be hard-coded but we cant use css variables.
     const indicator = {
       id: "error",
       image:
@@ -158,6 +159,7 @@ class PipelineController extends CanvasController {
     if (node.type !== "execution_node") {
       return;
     }
+    // TODO: this shouldn't be "red"
     const image =
       "data:image/svg+xml;utf8," +
       encodeURIComponent(`<svg
@@ -169,7 +171,7 @@ class PipelineController extends CanvasController {
               x="11"
               y="16.5"
               text-anchor="middle"
-              fill="red"
+              fill="red" 
               font-family="'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
               font-size="15px"
             >

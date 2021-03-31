@@ -554,6 +554,7 @@ const PipelineEditor = forwardRef(
                 enableNodeLayout: {
                   bodyPath: READ_ONLY_NODE_SVG_PATH,
                   selectionPath: READ_ONLY_NODE_SVG_PATH,
+                  dropShadow: false,
                 },
               }}
             />
@@ -602,6 +603,8 @@ const PipelineEditor = forwardRef(
                     defaultNodeHeight: 35,
                     inputPortLeftPosY: 17.5,
                     outputPortRightPosY: 17.5,
+                    dropShadow: false,
+                    labelPosY: 12 - 3,
                   },
                 }}
                 notificationConfig={{ enable: false }}

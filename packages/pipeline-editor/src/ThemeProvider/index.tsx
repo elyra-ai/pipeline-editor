@@ -31,6 +31,8 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
     divider: "rgba(128, 128, 128, 0.35)",
     hover: "#2c313a",
     active: "rgba(255, 255, 255, 0.18)",
+    tabBorder: "#e7e7e7",
+    inputBorder: "transparent",
     primary: {
       main: "#4d78cc",
       hover: "#6087cf",
@@ -44,11 +46,8 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
       main: "#be1100",
       contrastText: "#fff",
     },
-    icon: {
-      primary: "#c5c5c5",
-      secondary: "#9da5b4",
-    },
     text: {
+      icon: "#c5c5c5",
       primary: "#cccccc",
       secondary: "#abb2bf",
       bold: "#e7e7e7",

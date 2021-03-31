@@ -101,7 +101,7 @@ const Label = styled.div<LabelProps>`
     active ? theme.palette.text.bold : theme.palette.text.inactive};
 
   border-bottom: 1px solid
-    ${({ active, theme }) => (active ? theme.palette.text.bold : "transparent")};
+    ${({ active, theme }) => (active ? theme.palette.tabBorder : "transparent")};
 
   &:hover {
     color: ${({ theme }) => theme.palette.text.bold};
@@ -111,7 +111,7 @@ const Label = styled.div<LabelProps>`
 const TabIcon = styled.div`
   cursor: pointer;
   user-select: none;
-  color: ${({ theme }) => theme.palette.icon.secondary};
+  color: ${({ theme }) => theme.palette.text.icon};
   display: flex;
   justify-content: center;
   align-items: center;
