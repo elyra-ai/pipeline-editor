@@ -39,6 +39,7 @@ export interface Theme {
     active: string;
     tabBorder: string;
     inputBorder: string;
+    sash: string;
     primary: {
       main: string;
       hover: string;

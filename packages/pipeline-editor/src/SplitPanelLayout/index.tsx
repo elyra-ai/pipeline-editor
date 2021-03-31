@@ -30,6 +30,7 @@ interface Props {
 interface RightPanelProps {
   mode: "open" | "collapsed" | "closed";
   width: number;
+  isActive: boolean;
   children: React.ReactNode;
   onMouseDown: () => any;
 }
@@ -41,8 +42,51 @@ const Panel = styled.div`
   background: ${({ theme }) => theme.palette.background.default};
 `;
 
-function RightPanel({ mode, width, children, onMouseDown }: RightPanelProps) {
+const Sash = styled.div<{ isActive: boolean }>`
+  position: absolute;
+  cursor: col-resize;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  transition: background-color 0.1s ease-out;
+  background: ${({ theme, isActive }) =>
+    isActive ? theme.palette.sash : "transparent"};
+`;
+
+const hoverDelay = 300;
+
+function RightPanel({
+  mode,
+  width,
+  isActive,
+  children,
+  onMouseDown,
+}: RightPanelProps) {
   const theme = useTheme();
+
+  const [isHover, setIsHover] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout>();
+
+  const handleMouseLeave = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    setIsHover(false);
+  }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    if (isActive === true) {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      setIsHover(true);
+    } else {
+      timerRef.current = setTimeout(() => {
+        setIsHover(true);
+      }, hoverDelay);
+    }
+  }, [isActive]);
+
   switch (mode) {
     case "open":
       return (
@@ -56,17 +100,15 @@ function RightPanel({ mode, width, children, onMouseDown }: RightPanelProps) {
           >
             {children}
           </Panel>
-          <div
+          <Sash
             data-testid="drag-handle"
             style={{
-              position: "absolute",
-              cursor: "col-resize",
-              top: 0,
-              bottom: 0,
-              width: "8px",
-              right: `${width - 4}px`,
+              right: `${width - 1}px`,
             }}
+            isActive={isHover || isActive}
             onMouseDown={onMouseDown}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           />
         </div>
       );
@@ -92,6 +134,7 @@ function SplitPanelLayout({ left, right, mode }: Props) {
     undefined
   );
 
+  const [isActive, setIsActive] = useState(false);
   const dragging = useRef(false);
 
   useEffect(() => {
@@ -110,6 +153,7 @@ function SplitPanelLayout({ left, right, mode }: Props) {
 
     function handleMouseUp() {
       dragging.current = false;
+      setIsActive(false);
     }
 
     document.addEventListener("mousemove", handleMouseMove);
@@ -123,6 +167,7 @@ function SplitPanelLayout({ left, right, mode }: Props) {
 
   const handleMouseDown = useCallback(() => {
     dragging.current = true;
+    setIsActive(true);
   }, []);
 
   const width = mode === "open" ? dragPosition ?? DEFAULT_PANEL_WIDTH : 0;
@@ -137,7 +182,12 @@ function SplitPanelLayout({ left, right, mode }: Props) {
       >
         {left}
       </Panel>
-      <RightPanel mode={mode} width={width} onMouseDown={handleMouseDown}>
+      <RightPanel
+        mode={mode}
+        width={width}
+        onMouseDown={handleMouseDown}
+        isActive={isActive}
+      >
         {right}
       </RightPanel>
     </React.Fragment>

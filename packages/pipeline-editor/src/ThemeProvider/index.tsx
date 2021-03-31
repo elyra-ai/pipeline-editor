@@ -33,6 +33,7 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
     active: "rgba(255, 255, 255, 0.18)",
     tabBorder: "#e7e7e7",
     inputBorder: "transparent",
+    sash: "transparent",
     primary: {
       main: "#4d78cc",
       hover: "#6087cf",
