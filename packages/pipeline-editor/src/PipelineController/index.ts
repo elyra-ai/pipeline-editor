@@ -205,7 +205,8 @@ class PipelineController extends CanvasController {
           default: `
             stroke: ${styleOptions?.redColor} !important; 
             stroke-width: 2;
-            stroke-dasharray: 13;
+            stroke-linecap: round;
+            stroke-dasharray: 10 10;
             `,
         },
       },

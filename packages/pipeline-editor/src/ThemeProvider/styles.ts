@@ -383,8 +383,9 @@ export const CanvasOverrides = css`
   .d3-link-group.d3-comment-link:hover .d3-link-line,
   .d3-link-group.d3-comment-link .d3-link-line {
     stroke: ${({ theme }) => theme.palette.text.inactive};
-    stroke-width: 2;
-    stroke-dasharray: 7.3;
+    stroke-width: 1;
+    stroke-dasharray: none;
+    opacity: 0.4;
   }
 
   .d3-comment-rect {
@@ -446,6 +447,9 @@ export const CanvasOverrides = css`
 
   .d3-new-connection-line[linkType="nodeLink"] {
     stroke: ${({ theme }) => theme.palette.text.link};
+    stroke-width: 2;
+    stroke-dasharray: 10 10;
+    stroke-linecap: round;
   }
 
   .d3-new-connection-start[linkType="nodeLink"],
@@ -457,6 +461,8 @@ export const CanvasOverrides = css`
   .d3-new-connection-line[linkType="commentLink"] {
     stroke: ${({ theme }) => theme.palette.text.inactive};
     stroke-width: 2;
+    stroke-dasharray: 10 10;
+    stroke-linecap: round;
   }
 
   .d3-new-connection-start[linkType="commentLink"],
