@@ -27,7 +27,7 @@ interface Props {
 
 export function Node({ image, label }: any) {
   return (
-    <svg className="svg-area" width="172px" height="40px" x="0" y="0">
+    <svg className="svg-area" width="172px" height="35px" x="0" y="0">
       <g className="d3-canvas-group">
         <g className="d3-nodes-links-group">
           <g className="d3-node-group" transform="translate(6, 0)">
@@ -38,20 +38,28 @@ export function Node({ image, label }: any) {
             <image
               className="node-image"
               xlinkHref={image}
-              x="6"
-              y="7"
-              width="26"
-              height="26"
+              x="12.5"
+              y="0"
+              width="16"
+              height="35"
             />
-            <text className="d3-node-label" x="38" y="24.5">
-              {label}
-            </text>
-            <circle className="d3-node-port-input" r="3" cx="0" cy="20" />
+            <foreignObject
+              x="34.5"
+              y="9"
+              width="112"
+              height="19"
+              className="d3-foreign-object"
+            >
+              <div className="d3-node-label  d3-node-label-single-line">
+                <span>{label}</span>
+              </div>
+            </foreignObject>
+            <circle className="d3-node-port-input" r="3" cx="0" cy="17.5" />
             <path
               className="d3-node-port-input-arrow"
               d="M -2 17 L 2 20 -2 23"
             />
-            <circle className="d3-node-port-output" r="3" cx="160" cy="20" />
+            <circle className="d3-node-port-output" r="3" cx="160" cy="17.5" />
           </g>
         </g>
       </g>
