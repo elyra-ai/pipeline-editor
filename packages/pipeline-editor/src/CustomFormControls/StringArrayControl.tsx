@@ -122,7 +122,7 @@ const InputGroup = styled.div`
 
 const InputContainer = styled.div`
   background-color: ${({ theme }) => theme.palette.secondary.main};
-  border: 1px solid ${({ theme }) => theme.palette.border};
+  border: 1px solid ${({ theme }) => theme.palette.inputBorder};
   height: 24px;
   max-width: 320px;
   margin-right: 4px;

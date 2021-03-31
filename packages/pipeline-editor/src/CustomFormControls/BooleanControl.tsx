@@ -34,14 +34,13 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
   font-size: 16px;
   height: 18px;
   width: 18px;
-  border: 1px solid transparent;
+  border: 1px solid ${({ theme }) => theme.palette.inputBorder};
   border-radius: 3px;
   margin-right: 9px;
   margin-left: 0;
   padding: 0;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   color: ${({ theme }) => theme.palette.secondary.contrastText};
-  border-color: ${({ theme }) => theme.palette.border};
 
   &:focus {
     outline: 1px solid ${({ theme }) => theme.palette.focus};
