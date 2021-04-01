@@ -1,5 +1,5 @@
 {
-  "name": "create-react-app",
+  "name": "create-react-app-with-typescript",
   "version": "0.0.0",
   "private": true,
   "dependencies": {
@@ -7,6 +7,11 @@
     "react": "latest",
     "react-dom": "latest",
     "react-scripts": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
