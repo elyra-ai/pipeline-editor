@@ -271,7 +271,7 @@ const PipelineEditor = forwardRef(
             return [
               {
                 action: "newFileNode",
-                label: "New File Node",
+                label: "New Node from File",
               },
               {
                 action: "createComment",
