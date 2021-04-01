@@ -1,4 +1,7 @@
 {
-  "sandboxes": ["new"],
+  "sandboxes": [
+    "github/elyra-ai/pipeline-editor/tree/HEAD/examples/create-react-app",
+    "github/elyra-ai/pipeline-editor/tree/HEAD/examples/create-react-app-with-typescript"
+  ],
   "silent": true
 }
