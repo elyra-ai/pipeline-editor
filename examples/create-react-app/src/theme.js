@@ -19,6 +19,9 @@ const theme = {
     divider: "black",
     hover: "rgba(255, 255, 255, 0.05)",
     active: "rgba(255, 255, 255, 0.18)",
+    tabBorder: "black",
+    inputBorder: "transparent",
+    sash: "transparent",
     primary: {
       main: "blue",
       hover: "lightblue",
@@ -32,11 +35,8 @@ const theme = {
       main: "red",
       contrastText: "white",
     },
-    icon: {
-      primary: "black",
-      secondary: "black",
-    },
     text: {
+      icon: "black",
       primary: "black",
       secondary: "darkgrey",
       bold: "black",
