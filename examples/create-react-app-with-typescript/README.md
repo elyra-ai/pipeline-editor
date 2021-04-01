@@ -1,1 +1,1 @@
-This example demonstrates how you can use Create React App.
+This example demonstrates how you can use `@elyra/pipeline-editor` in a Create React App project with typescript support.
