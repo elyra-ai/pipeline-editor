@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { render, screen } from "../test-utils";
 import TabbedPanelLayout from "./";
 
 it("calls onTabClick with correct tab id in collapsed mode", async () => {

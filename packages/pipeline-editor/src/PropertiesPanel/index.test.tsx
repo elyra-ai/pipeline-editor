@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { IntlProvider } from "react-intl";
 
-import { nodeSpec, selectedNode } from "../test-utils";
+import { render, screen, nodeSpec, selectedNode } from "../test-utils";
 import PropertiesPanel from "./";
 
 it("renders with undefined nodes selected", () => {

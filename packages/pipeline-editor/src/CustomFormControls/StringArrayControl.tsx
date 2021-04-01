@@ -19,6 +19,9 @@ import { useEffect } from "react";
 
 import produce from "immer";
 import { useSelector } from "react-redux";
+import styled, { useTheme } from "styled-components";
+
+import IconButton from "../IconButton";
 
 interface Props {
   name: string;
@@ -84,6 +87,83 @@ export const reducer = produce((draft: string[], action) => {
   }
 });
 
+const StyledIconButton = styled(IconButton)`
+  width: 16px;
+  height: 20px;
+  padding: 2px;
+  margin-right: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ListItemValue = styled.div`
+  display: block;
+  margin-right: 47px;
+  margin-left: 2px;
+  line-height: 24px;
+  max-width: 90%;
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-size: ${({ theme }) => theme.typography.fontSize};
+  color: ${({ theme }) => theme.palette.text.primary};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const InputGroup = styled.div`
+  display: flex;
+
+  & button:first-of-type {
+    margin: 0 4px;
+  }
+`;
+
+const InputContainer = styled.div`
+  background-color: ${({ theme }) => theme.palette.secondary.main};
+  border: 1px solid ${({ theme }) => theme.palette.inputBorder};
+  height: 24px;
+  max-width: 320px;
+  margin-right: 4px;
+  box-sizing: border-box;
+
+  & input {
+    background-color: inherit;
+    color: ${({ theme }) => theme.palette.text.primary};
+    display: inline-block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    line-height: inherit;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    resize: none;
+    padding: 4px;
+  }
+
+  & input:focus {
+    outline: 1px solid ${({ theme }) => theme.palette.focus};
+    outline-offset: 0px;
+  }
+`;
+
+const Actions = styled.div`
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+`;
+
+const ListRow = styled.div`
+  position: relative;
+
+  &:hover ${Actions} {
+    display: flex;
+  }
+`;
+
 export function ListItem({
   value,
   isEditing,
@@ -95,6 +175,7 @@ export function ListItem({
   onChooseFiles,
   onEdit,
 }: ListItemProps) {
+  const theme = useTheme();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -107,8 +188,8 @@ export function ListItem({
 
   if (isEditing) {
     return (
-      <div className="elyra-stringArrayControl-inputWrapper">
-        <div className="elyra-stringArrayControl-input">
+      <InputGroup>
+        <InputContainer>
           <input
             ref={inputRef}
             defaultValue={value ?? ""}
@@ -124,7 +205,7 @@ export function ListItem({
               }
             }}
           />
-        </div>
+        </InputContainer>
         <button
           onClick={() => {
             onSubmit?.(inputRef.current!.value);
@@ -139,52 +220,69 @@ export function ListItem({
         >
           Cancel
         </button>
-      </div>
+      </InputGroup>
     );
   }
   return (
-    <div
+    <ListRow
       data-testid="list-row"
-      className="elyra-stringArrayControl-listRow"
       onDoubleClick={() => {
         onEdit?.();
       }}
     >
-      <div className="elyra-stringArrayControl-listItem">{value}</div>
-      <div className="elyra-stringArrayControl-listActions">
-        <div className="elyra-actionItem">
-          <div
-            title="Edit"
-            className="elyra-icon elyra-actionItemIcon elyra-item-edit"
-            onClick={() => {
-              onEdit?.();
-            }}
-          />
-        </div>
+      <ListItemValue>{value}</ListItemValue>
+      <Actions>
+        <StyledIconButton
+          title="Edit"
+          className="elyricon elyricon-edit"
+          onClick={() => {
+            onEdit?.();
+          }}
+        >
+          {theme.overrides?.editIcon}
+        </StyledIconButton>
+
         {!!canBrowseFiles && (
-          <div className="elyra-actionItem">
-            <div
-              title="Browse"
-              className="elyra-icon elyra-actionItemIcon elyra-item-folder"
-              onClick={() => {
-                onChooseFiles?.();
-              }}
-            />
-          </div>
-        )}
-        <div className="elyra-actionItem">
-          <div
-            title="Delete"
-            className="elyra-icon elyra-actionItemIcon elyra-item-delete"
+          <StyledIconButton
+            title="Browse"
+            className="elyricon elyricon-folder"
             onClick={() => {
-              onDelete?.();
+              onChooseFiles?.();
             }}
-          />
-        </div>
-      </div>
-    </div>
+          >
+            {theme.overrides?.folderIcon}
+          </StyledIconButton>
+        )}
+        <StyledIconButton
+          title="Delete"
+          className="elyricon elyricon-delete"
+          onClick={() => {
+            onDelete?.();
+          }}
+        >
+          {theme.overrides?.deleteIcon}
+        </StyledIconButton>
+      </Actions>
+    </ListRow>
   );
 }
+
+const Container = styled.div`
+  margin-top: 9px;
+`;
+
+const ListGroup = styled.div`
+  padding: 1px;
+  margin-bottom: 1px;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  margin-top: 4px;
+  & button {
+    margin-right: 4px;
+  }
+`;
 
 function StringArrayComponent({
   name,
@@ -231,8 +329,8 @@ function StringArrayComponent({
   );
 
   return (
-    <div className="elyra-stringArrayControl">
-      <div className="elyra-stringArrayControl-listGroup">
+    <Container>
+      <ListGroup>
         {items.map((item, index) => (
           <ListItem
             key={index}
@@ -280,10 +378,10 @@ function StringArrayComponent({
             }}
           />
         )}
-      </div>
+      </ListGroup>
 
       {editingIndex !== "new" && (
-        <div className="elyra-stringArrayControl-buttonGroup">
+        <ButtonGroup>
           <button
             onClick={() => {
               setEditingIndex("new");
@@ -300,9 +398,9 @@ function StringArrayComponent({
               Browse
             </button>
           )}
-        </div>
+        </ButtonGroup>
       )}
-    </div>
+    </Container>
   );
 }
 

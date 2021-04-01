@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import "@elyra/canvas/dist/styles/common-canvas.min.css";
-import "../style/index.css";
-
 export * from "./errors";
+export { default as ThemeProvider, createTheme } from "./ThemeProvider";
 export { default as PipelineEditor } from "./PipelineEditor";

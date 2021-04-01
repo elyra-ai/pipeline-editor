@@ -16,6 +16,8 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+import styled, { useTheme } from "styled-components";
+
 const DEFAULT_PANEL_WIDTH = 500;
 const MIN_PANEL_WIDTH = 300;
 
@@ -28,56 +30,100 @@ interface Props {
 interface RightPanelProps {
   mode: "open" | "collapsed" | "closed";
   width: number;
+  isActive: boolean;
   children: React.ReactNode;
   onMouseDown: () => any;
 }
 
-function RightPanel({ mode, width, children, onMouseDown }: RightPanelProps) {
+const Panel = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: ${({ theme }) => theme.palette.background.default};
+`;
+
+const Sash = styled.div<{ isActive: boolean }>`
+  position: absolute;
+  cursor: col-resize;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  transition: background-color 0.1s ease-out;
+  background: ${({ theme, isActive }) =>
+    isActive ? theme.palette.sash : "transparent"};
+`;
+
+const hoverDelay = 300;
+
+function RightPanel({
+  mode,
+  width,
+  isActive,
+  children,
+  onMouseDown,
+}: RightPanelProps) {
+  const theme = useTheme();
+
+  const [isHover, setIsHover] = useState(false);
+  const timerRef = useRef<number>();
+
+  const handleMouseLeave = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    setIsHover(false);
+  }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    if (isActive === true) {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      setIsHover(true);
+    } else {
+      // window is needed so typescript uses DOM setTimeout and not NodeJS
+      timerRef.current = window.setTimeout(() => {
+        setIsHover(true);
+      }, hoverDelay);
+    }
+  }, [isActive]);
+
   switch (mode) {
     case "open":
       return (
         <div>
-          <div
+          <Panel
             style={{
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              background: "var(--elyra-color-panel-bg)",
-              borderLeft: "1px solid var(--elyra-color-panel-border)",
+              borderLeft: `1px solid ${theme.palette.divider}`,
               width: `${width}px`,
               right: 0,
             }}
           >
             {children}
-          </div>
-          <div
+          </Panel>
+          <Sash
             data-testid="drag-handle"
             style={{
-              position: "absolute",
-              cursor: "col-resize",
-              top: 0,
-              bottom: 0,
-              width: "8px",
-              right: `${width - 4}px`,
+              right: `${width - 1}px`,
             }}
+            isActive={isHover || isActive}
             onMouseDown={onMouseDown}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           />
         </div>
       );
     case "collapsed":
       return (
-        <div
+        <Panel
           style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            background: "var(--vscode-statusBar-background)",
-            width: `${32}px`,
+            background: theme.palette.background.secondary,
+            width: "32px",
             right: 0,
           }}
         >
           {children}
-        </div>
+        </Panel>
       );
     case "closed":
       return null;
@@ -89,6 +135,7 @@ function SplitPanelLayout({ left, right, mode }: Props) {
     undefined
   );
 
+  const [isActive, setIsActive] = useState(false);
   const dragging = useRef(false);
 
   useEffect(() => {
@@ -107,6 +154,7 @@ function SplitPanelLayout({ left, right, mode }: Props) {
 
     function handleMouseUp() {
       dragging.current = false;
+      setIsActive(false);
     }
 
     document.addEventListener("mousemove", handleMouseMove);
@@ -120,25 +168,27 @@ function SplitPanelLayout({ left, right, mode }: Props) {
 
   const handleMouseDown = useCallback(() => {
     dragging.current = true;
+    setIsActive(true);
   }, []);
 
   const width = mode === "open" ? dragPosition ?? DEFAULT_PANEL_WIDTH : 0;
 
   return (
     <React.Fragment>
-      <div
+      <Panel
         style={{
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          background: "var(--elyra-color-panel-bg)",
           left: 0,
           right: `${width}px`,
         }}
       >
         {left}
-      </div>
-      <RightPanel mode={mode} width={width} onMouseDown={handleMouseDown}>
+      </Panel>
+      <RightPanel
+        mode={mode}
+        width={width}
+        onMouseDown={handleMouseDown}
+        isActive={isActive}
+      >
         {right}
       </RightPanel>
     </React.Fragment>

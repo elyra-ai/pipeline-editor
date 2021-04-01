@@ -14,27 +14,9 @@
  * limitations under the License.
  */
 
-jest.mock("@elyra/canvas/dist/styles/common-canvas.min.css", () => "", {
-  virtual: true,
-});
+import "styled-components";
+import { Theme } from "./types";
 
-global.crypto = {
-  getRandomValues: () => {
-    return new Uint8Array(256);
-  },
-};
-
-window.matchMedia = () => {
-  return {
-    matches: true,
-    addEventListener: () => {},
-  };
-};
-
-window.scrollTo = () => {
-  return;
-};
-
-window.Element.prototype.getComputedTextLength = () => {
-  return 200;
-};
+declare module "styled-components" {
+  export interface DefaultTheme extends Theme {}
+}

@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+import { render as rtlRender } from "@testing-library/react";
+
+import { InternalThemeProvider } from "./ThemeProvider";
+
 export const nodeSpec = {
   op: "execute-notebook-node",
   description: "Notebook file",
@@ -304,3 +308,22 @@ export const samplePipeline = {
   ],
   schemas: [],
 };
+
+function render(
+  ui: Parameters<typeof rtlRender>[0],
+  renderOptions?: Parameters<typeof rtlRender>[1]
+) {
+  const Wrapper: React.FC = ({ children }) => {
+    return <InternalThemeProvider>{children}</InternalThemeProvider>;
+  };
+
+  return {
+    ...rtlRender(ui, {
+      wrapper: Wrapper,
+      ...renderOptions,
+    }),
+  };
+}
+
+export * from "@testing-library/react";
+export { render };

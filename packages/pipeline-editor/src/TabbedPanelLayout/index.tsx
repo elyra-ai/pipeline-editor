@@ -16,8 +16,17 @@
 
 import React from "react";
 
+import styled, { useTheme } from "styled-components";
+
+import IconButton from "../IconButton";
+
 interface Props {
-  tabs: Tab[];
+  tabs: {
+    id: string;
+    label: string;
+    icon?: React.ReactNode;
+    content: React.ReactNode;
+  }[];
   collapsed?: boolean;
   showCloseButton?: boolean;
   currentTab?: string;
@@ -25,11 +34,92 @@ interface Props {
   onTabClick?: (id: string) => any;
 }
 
-interface Tab {
-  id: string;
-  label: string;
-  content: React.ReactNode;
+const VerticalTabGroup = styled.div`
+  padding: 7px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const HorizontalTabGroup = styled.div`
+  display: flex;
+`;
+
+const Tab = styled.div`
+  ${VerticalTabGroup} & {
+    margin: 3px 0;
+  }
+  ${VerticalTabGroup} &:hover {
+    background-color: ${({ theme }) => theme.palette.hover};
+  }
+  ${VerticalTabGroup} &:active {
+    background-color: ${({ theme }) => theme.palette.active};
+  }
+  ${HorizontalTabGroup} & {
+    cursor: pointer;
+    user-select: none;
+    text-transform: uppercase;
+    padding: 4px 10px 3px;
+  }
+`;
+
+const ActionBar = styled.div`
+  padding: 0 8px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Content = styled.div`
+  position: absolute;
+  top: 35px;
+  bottom: 0;
+  overflow: auto;
+  width: 100%;
+`;
+
+const StyledIconButton = styled(IconButton)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  line-height: 35px;
+  min-width: 28px;
+  margin-right: 4px;
+`;
+
+interface LabelProps {
+  active: boolean;
 }
+
+const Label = styled.div<LabelProps>`
+  line-height: 27px;
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-size: 11px;
+
+  color: ${({ active, theme }) =>
+    active ? theme.palette.text.bold : theme.palette.text.inactive};
+
+  border-bottom: 1px solid
+    ${({ active, theme }) => (active ? theme.palette.tabBorder : "transparent")};
+
+  &:hover {
+    color: ${({ theme }) => theme.palette.text.bold};
+  }
+`;
+
+const TabIcon = styled.div`
+  cursor: pointer;
+  user-select: none;
+  color: ${({ theme }) => theme.palette.text.icon};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  line-height: 35px;
+  min-width: 28px;
+  margin-right: 4px;
+`;
 
 function TabbedPanelLayout({
   currentTab,
@@ -39,73 +129,64 @@ function TabbedPanelLayout({
   collapsed,
   onClose,
 }: Props) {
+  const theme = useTheme();
+
   if (collapsed === true) {
     return (
-      <div className="elyra-verticalTabGroup">
+      <VerticalTabGroup>
         {tabs.map((t) => (
-          <div key={t.id} className="elyra-tabItem">
-            <div
+          <Tab key={t.id}>
+            <TabIcon
               title={t.label}
-              className={`elyra-icon elyra-tabItemIcon ${t.id}`}
+              className={`elyricon elyricon-${t.id}`}
               onClick={() => {
                 onTabClick?.(t.id);
               }}
-            />
-          </div>
+            >
+              {t.icon}
+            </TabIcon>
+          </Tab>
         ))}
-      </div>
+      </VerticalTabGroup>
     );
   }
 
   const resolvedCurrentTab = currentTab === undefined ? tabs[0].id : currentTab;
 
   return (
-    <div className="elyra-tabPanel">
-      <div className="elyra-actionBar">
-        <div className="elyra-tabGroup">
+    <React.Fragment>
+      <ActionBar>
+        <HorizontalTabGroup>
           {tabs.map((t) => (
-            <div key={t.id} className="elyra-tab">
-              <div
-                className={
-                  resolvedCurrentTab === t.id
-                    ? "elyra-tabText activeTab"
-                    : "elyra-tabText"
-                }
+            <Tab key={t.id}>
+              <Label
+                active={resolvedCurrentTab === t.id}
                 onClick={() => {
                   onTabClick?.(t.id);
                 }}
               >
                 {t.label}
-              </div>
-            </div>
+              </Label>
+            </Tab>
           ))}
-        </div>
+        </HorizontalTabGroup>
         {showCloseButton === true && (
-          <div className="elyra-actionItem">
-            <div
-              title="Close Panel"
-              className="elyra-icon elyra-actionItemIcon elyra-panel-close"
-              onClick={() => {
-                onClose?.();
-              }}
-            />
-          </div>
+          <StyledIconButton
+            title="Close Panel"
+            className="elyricon elyricon-close"
+            onClick={() => {
+              onClose?.();
+            }}
+          >
+            {theme.overrides?.closeIcon}
+          </StyledIconButton>
         )}
-      </div>
-      <div
-        className="elyra-tabContent"
-        style={{
-          position: "absolute",
-          top: "35px",
-          bottom: 0,
-          overflow: "auto",
-          width: "100%",
-        }}
-      >
+      </ActionBar>
+      <Content>
         {tabs.find((t) => t.id === resolvedCurrentTab)?.content ??
           "Invalid tab id."}
-      </div>
-    </div>
+      </Content>
+    </React.Fragment>
   );
 }
 

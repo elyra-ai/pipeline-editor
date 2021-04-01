@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
-jest.mock("@elyra/canvas/dist/styles/common-canvas.min.css", () => "", {
-  virtual: true,
-});
+import styled from "styled-components";
 
-global.crypto = {
-  getRandomValues: () => {
-    return new Uint8Array(256);
-  },
-};
+const Container = styled.div`
+  cursor: pointer;
+  user-select: none;
+  display: inline-block;
+  transition: transform 50ms ease;
+  position: relative;
 
-window.matchMedia = () => {
-  return {
-    matches: true,
-    addEventListener: () => {},
-  };
-};
+  &:active {
+    transform: scale(1.272019649);
+  }
+`;
 
-window.scrollTo = () => {
-  return;
-};
+const Icon = styled.div`
+  color: ${({ theme }) => theme.palette.text.primary};
+`;
 
-window.Element.prototype.getComputedTextLength = () => {
-  return 200;
-};
+function IconButton(props: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <Container>
+      <Icon {...props} />
+    </Container>
+  );
+}
+
+export default IconButton;

@@ -35,6 +35,7 @@ import {
   TipNode,
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
+import styled, { useTheme } from "styled-components";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
@@ -42,6 +43,7 @@ import PipelineController from "../PipelineController";
 import PropertiesPanel from "../PropertiesPanel";
 import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
+import { InternalThemeProvider } from "../ThemeProvider";
 import useBlockEvents from "./useBlockEvents";
 
 interface Props {
@@ -61,9 +63,6 @@ interface Props {
 const READ_ONLY_NODE_SVG_PATH =
   "M 0 0 h 160 a 6 6 0 0 1 6 6 v 28 a 6 6 0 0 1 -6 6 h -160 a 6 6 0 0 1 -6 -6 v -28 a 6 6 0 0 1 6 -6 z";
 
-const NODE_SVG_PATH =
-  "M 0 0 L 160 0 L 160 11.5 A 6 6 180 0 1 160 23.5 L 160 35 L 0 35 L 0 23.5 A 6 6 180 0 1 0 11.5 Z";
-
 function isMenuItemEnabled(menu: ContextMenu, action: string) {
   const item = menu.find((m) => {
     if (m.menu === undefined) {
@@ -79,6 +78,14 @@ function isMenuItemEnabled(menu: ContextMenu, action: string) {
 
   return item.enable !== false;
 }
+
+const Container = styled.div`
+  height: 100%;
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-size: ${({ theme }) => theme.typography.fontSize};
+`;
 
 function useCloseContextMenu(controller: React.MutableRefObject<any>) {
   useEffect(() => {
@@ -109,6 +116,29 @@ function useCloseContextMenu(controller: React.MutableRefObject<any>) {
   }, [controller]);
 }
 
+const Button = styled.div`
+  cursor: pointer;
+  position: absolute;
+  top: 24px;
+  left: 28px;
+  z-index: 1;
+  padding: 10px;
+  background-color: ${({ theme }) => theme.palette.primary.main};
+  border: none;
+  font-size: ${({ theme }) => theme.typography.fontSize};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  color: ${({ theme }) => theme.palette.primary.contrastText};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.primary.hover};
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
 const PipelineEditor = forwardRef(
   (
     {
@@ -126,6 +156,7 @@ const PipelineEditor = forwardRef(
     }: Props,
     ref
   ) => {
+    const theme = useTheme();
     const controller = useRef(new PipelineController());
 
     const [supernodeOpen, setSupernodeOpen] = useState(false);
@@ -164,7 +195,7 @@ const PipelineEditor = forwardRef(
         controller.current.open(pipeline);
         if (!readOnly) {
           controller.current.setNodes(nodes);
-          controller.current.validate();
+          controller.current.validate({ redColor: theme.palette.error.main });
         } else {
           controller.current.resetStyles();
         }
@@ -172,7 +203,7 @@ const PipelineEditor = forwardRef(
       } catch (e) {
         onError?.(e);
       }
-    }, [nodes, onError, pipeline, readOnly]);
+    }, [nodes, onError, pipeline, readOnly, theme.palette.error.main]);
 
     useImperativeHandle(
       ref,
@@ -504,11 +535,7 @@ const PipelineEditor = forwardRef(
 
     if (readOnly) {
       return (
-        <div
-          className="pipeline-read-only"
-          style={{ height: "100%" }}
-          ref={blockingRef}
-        >
+        <Container className="pipeline-read-only" ref={blockingRef}>
           <IntlProvider locale="en">
             <CommonCanvas
               canvasController={controller.current}
@@ -527,20 +554,20 @@ const PipelineEditor = forwardRef(
                 enableNodeLayout: {
                   bodyPath: READ_ONLY_NODE_SVG_PATH,
                   selectionPath: READ_ONLY_NODE_SVG_PATH,
+                  dropShadow: false,
                 },
               }}
             />
           </IntlProvider>
-        </div>
+        </Container>
       );
     }
 
     return (
-      <div style={{ height: "100%" }} ref={blockingRef}>
+      <Container ref={blockingRef}>
         <IntlProvider locale="en">
           {supernodeOpen === true && (
-            <button
-              className="elyra-back-to-previous-flow"
+            <Button
               onClick={() => {
                 controller.current.editActionHandler({
                   editType: "displayPreviousPipeline",
@@ -548,7 +575,7 @@ const PipelineEditor = forwardRef(
               }}
             >
               Return to previous flow
-            </button>
+            </Button>
           )}
           <SplitPanelLayout
             left={
@@ -576,8 +603,8 @@ const PipelineEditor = forwardRef(
                     defaultNodeHeight: 35,
                     inputPortLeftPosY: 17.5,
                     outputPortRightPosY: 17.5,
-                    bodyPath: NODE_SVG_PATH,
-                    selectionPath: NODE_SVG_PATH,
+                    dropShadow: false,
+                    labelPosY: 12 - 3,
                   },
                 }}
                 notificationConfig={{ enable: false }}
@@ -615,6 +642,7 @@ const PipelineEditor = forwardRef(
                   {
                     id: "properties",
                     label: "Node Properties",
+                    icon: theme.overrides?.propertiesIcon,
                     content: (
                       <PropertiesPanel
                         selectedNodes={selectedNodes}
@@ -627,6 +655,7 @@ const PipelineEditor = forwardRef(
                   {
                     id: "palette",
                     label: "Palette",
+                    icon: theme.overrides?.paletteIcon,
                     content: <PalettePanel nodes={nodes} />,
                   },
                 ]}
@@ -647,9 +676,17 @@ const PipelineEditor = forwardRef(
             }
           />
         </IntlProvider>
-      </div>
+      </Container>
     );
   }
 );
 
-export default PipelineEditor;
+const ThemedPipelineEditor = forwardRef((props: Props, ref) => {
+  return (
+    <InternalThemeProvider>
+      <PipelineEditor {...props} ref={ref} />
+    </InternalThemeProvider>
+  );
+});
+
+export default ThemedPipelineEditor;

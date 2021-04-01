@@ -17,6 +17,7 @@
 import React, { useEffect, useRef } from "react";
 
 import { CommonProperties } from "@elyra/canvas";
+import styled from "styled-components";
 
 import {
   BooleanControl,
@@ -24,6 +25,7 @@ import {
   StringArrayControl,
 } from "../CustomFormControls";
 import { fillPropertiesWithSavedData } from "./properties-utils";
+import useActiveFormItemShim from "./useActiveFormItemShim";
 
 interface Props {
   selectedNodes?: any[];
@@ -32,12 +34,24 @@ interface Props {
   onChange?: (nodeID: string, data: any) => any;
 }
 
+const Message = styled.div`
+  margin-top: 14px;
+  padding: 0 22px;
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-size: ${({ theme }) => theme.typography.fontSize};
+  color: ${({ theme }) => theme.palette.text.primary};
+  opacity: 0.5;
+`;
+
 function PropertiesPanel({
   selectedNodes,
   nodes,
   onFileRequested,
   onChange,
 }: Props) {
+  useActiveFormItemShim();
+
   const controller = useRef<any>();
 
   // always be validating
@@ -48,19 +62,15 @@ function PropertiesPanel({
   });
 
   if (selectedNodes === undefined || selectedNodes.length === 0) {
-    return (
-      <div className="elyra-noContentMessage">
-        Select a node to edit its properties.
-      </div>
-    );
+    return <Message>Select a node to edit its properties.</Message>;
   }
 
   if (selectedNodes.length > 1) {
     return (
-      <div className="elyra-noContentMessage">
+      <Message>
         Multiple nodes are selected. Select a single node to edit its
         properties.
-      </div>
+      </Message>
     );
   }
 
@@ -68,9 +78,7 @@ function PropertiesPanel({
 
   if (selectedNode.type !== "execution_node") {
     return (
-      <div className="elyra-noContentMessage">
-        This node type doesn't have any editable properties.
-      </div>
+      <Message>This node type doesn't have any editable properties.</Message>
     );
   }
 
@@ -78,9 +86,7 @@ function PropertiesPanel({
 
   if (nodePropertiesSchema === undefined) {
     return (
-      <div className="elyra-noContentMessage">
-        This node type doesn't have any editable properties.
-      </div>
+      <Message>This node type doesn't have any editable properties.</Message>
     );
   }
 

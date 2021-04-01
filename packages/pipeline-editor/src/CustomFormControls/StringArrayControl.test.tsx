@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { render, waitFor, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 
+import { render, waitFor, screen, fireEvent } from "../test-utils";
 import StringArrayControl, { reducer, ListItem } from "./StringArrayControl";
 import { createPropertiesStore } from "./test-utils";
 

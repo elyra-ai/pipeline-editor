@@ -57,7 +57,7 @@ module.exports = {
     "import/no-extraneous-dependencies": [
       "warn",
       {
-        devDependencies: false,
+        devDependencies: true, // dev dependencies will be bundled
         optionalDependencies: false,
         peerDependencies: false,
         bundledDependencies: true,
@@ -106,7 +106,12 @@ module.exports = {
       rules: { "import/no-anonymous-default-export": ["off"] },
     },
     {
-      files: ["webpack.*.js", "*.test.tsx", "*.test.ts", "cypress/**"],
+      files: [
+        "webpack.*.js",
+        "*.test.{ts,tsx}",
+        "test-utils.{ts,tsx}",
+        "cypress/**",
+      ],
       rules: {
         "import/no-extraneous-dependencies": [
           "warn",

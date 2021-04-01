@@ -121,18 +121,20 @@ class PipelineController extends CanvasController {
     this.editActionHandler(data);
   }
 
-  setNodeErrors(nodeToBeStyled: { [key: string]: string[] }) {
+  setNodeErrors(
+    nodeToBeStyled: { [key: string]: string[] },
+    styleOptions?: { redColor: string }
+  ) {
     this.setObjectsStyle(
       nodeToBeStyled,
       {
-        body: { default: "stroke: var(--elyra-color-error-border);" },
-        selection_outline: {
-          default: "stroke: var(--elyra-color-error-border);",
-        },
+        body: { default: `stroke: ${styleOptions?.redColor};` },
+        selection_outline: { default: `stroke: ${styleOptions?.redColor};` },
       },
       true
     );
 
+    // TODO: this shouldn't be hard-coded but we cant use css variables.
     const indicator = {
       id: "error",
       image:
@@ -157,6 +159,7 @@ class PipelineController extends CanvasController {
     if (node.type !== "execution_node") {
       return;
     }
+    // TODO: this shouldn't be "red"
     const image =
       "data:image/svg+xml;utf8," +
       encodeURIComponent(`<svg
@@ -168,7 +171,7 @@ class PipelineController extends CanvasController {
               x="11"
               y="16.5"
               text-anchor="middle"
-              fill="red"
+              fill="red" 
               font-family="'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
               font-size="15px"
             >
@@ -190,15 +193,20 @@ class PipelineController extends CanvasController {
     this.setNodeLabel(node.id, "unsupported node", pipelineID);
   }
 
-  setLinkErrors(linkToBeStyled: { [key: string]: string[] }) {
+  setLinkErrors(
+    linkToBeStyled: { [key: string]: string[] },
+    styleOptions?: { redColor: string }
+  ) {
     this.setLinksStyle(
       linkToBeStyled,
       {
         line: {
+          // TODO: styles - don't use !important
           default: `
-            stroke: var(--elyra-color-error-border) !important; 
+            stroke: ${styleOptions?.redColor} !important; 
             stroke-width: 2;
-            stroke-dasharray: 13;
+            stroke-linecap: round;
+            stroke-dasharray: 10 10;
             `,
         },
       },
@@ -273,7 +281,10 @@ class PipelineController extends CanvasController {
     }
   }
 
-  setSupernodeErrors(pipelineIDs: string[]) {
+  setSupernodeErrors(
+    pipelineIDs: string[],
+    styleOptions?: { redColor: string }
+  ) {
     let supernodesWithErrors: { [key: string]: string[] } = {};
     for (const pipelineID of pipelineIDs) {
       try {
@@ -285,10 +296,13 @@ class PipelineController extends CanvasController {
       } catch {}
     }
 
-    this.setNodeErrors(supernodesWithErrors);
+    this.setNodeErrors(supernodesWithErrors, styleOptions);
   }
 
-  validate() {
+  // TODO: Can we find a better way to handle setting error styles? This tightly
+  // couples style to the controller which isn't great. Setting a classname
+  // would be better, but the CommonCanvas implementation is very buggy.
+  validate(styleOptions?: { redColor: string }) {
     this.resetStyles();
 
     const problems = validate(
@@ -319,17 +333,20 @@ class PipelineController extends CanvasController {
           break;
       }
     }
-    this.setLinkErrors(linksWithErrors);
-    this.setNodeErrors(nodesWithErrors);
+    this.setLinkErrors(linksWithErrors, styleOptions);
+    this.setNodeErrors(nodesWithErrors, styleOptions);
 
     // Pass a list of all pipelineIDs that have errors. This will find and style
     // any supernodes that have the pipeline as a subflow.
-    this.setSupernodeErrors([
-      ...new Set([
-        ...Object.keys(linksWithErrors),
-        ...Object.keys(nodesWithErrors),
-      ]),
-    ]);
+    this.setSupernodeErrors(
+      [
+        ...new Set([
+          ...Object.keys(linksWithErrors),
+          ...Object.keys(nodesWithErrors),
+        ]),
+      ],
+      styleOptions
+    );
 
     for (const pipeline of this.getPipelineFlow().pipelines) {
       for (const node of pipeline.nodes) {
