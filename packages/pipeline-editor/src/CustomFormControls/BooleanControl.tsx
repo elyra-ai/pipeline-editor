@@ -55,7 +55,10 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
 function BooleanComponent({ name, controller, helperText }: Props) {
   const theme = useTheme();
 
-  const [isChecked, setIsChecked] = useControlState<boolean>(name, controller);
+  const [isChecked = false, setIsChecked] = useControlState<boolean>(
+    name,
+    controller
+  );
 
   const handleToggle = useCallback(() => {
     setIsChecked(!isChecked);
