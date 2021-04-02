@@ -21,9 +21,9 @@ import produce from "immer";
 import styled, { useTheme } from "styled-components";
 
 import IconButton from "../IconButton";
-import { createControl, useControlState, BaseProps } from "./utils";
+import { createControl, useControlState, useHandlers } from "./utils";
 
-interface Props extends BaseProps {
+interface Props {
   placeholder?: string;
   singleItemLabel?: string;
   canBrowseFiles?: boolean;
@@ -283,13 +283,11 @@ const ButtonGroup = styled.div`
 `;
 
 function StringArrayComponent({
-  name,
-  controller,
   placeholder,
   singleItemLabel,
   canBrowseFiles,
 }: Props) {
-  const [items = [], setItems] = useControlState<string[]>(name, controller);
+  const [items = [], setItems] = useControlState<string[]>();
 
   const [editingIndex, setEditingIndex] = useState<number | "new">();
 
@@ -301,10 +299,9 @@ function StringArrayComponent({
     [items, setItems]
   );
 
-  const controllerRef = useRef(controller);
+  const { actionHandler } = useHandlers();
   const handleChooseFiles = useCallback(
     async (index) => {
-      const { actionHandler } = controllerRef.current.getHandlers();
       const newItems = await actionHandler?.("browse_file", undefined, {
         canSelectMany: true,
         defaultUri: items[index],
@@ -320,7 +317,7 @@ function StringArrayComponent({
         });
       }
     },
-    [handleAction, items]
+    [actionHandler, handleAction, items]
   );
 
   return (
@@ -399,7 +396,4 @@ function StringArrayComponent({
   );
 }
 
-export default createControl(
-  "pipeline-editor-string-array-control",
-  StringArrayComponent
-);
+export default createControl("string-array", StringArrayComponent);

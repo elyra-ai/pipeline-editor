@@ -18,9 +18,9 @@ import { useCallback } from "react";
 
 import styled, { useTheme } from "styled-components";
 
-import { createControl, useControlState, BaseProps } from "./utils";
+import { createControl, useControlState } from "./utils";
 
-interface Props extends BaseProps {
+interface Props {
   helperText: string;
 }
 
@@ -52,13 +52,10 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
   }
 `;
 
-function BooleanComponent({ name, controller, helperText }: Props) {
+function BooleanComponent({ helperText }: Props) {
   const theme = useTheme();
 
-  const [isChecked = false, setIsChecked] = useControlState<boolean>(
-    name,
-    controller
-  );
+  const [isChecked = false, setIsChecked] = useControlState<boolean>();
 
   const handleToggle = useCallback(() => {
     setIsChecked(!isChecked);
@@ -81,7 +78,4 @@ function BooleanComponent({ name, controller, helperText }: Props) {
   );
 }
 
-export default createControl(
-  "pipeline-editor-boolean-control",
-  BooleanComponent
-);
+export default createControl("boolean", BooleanComponent);

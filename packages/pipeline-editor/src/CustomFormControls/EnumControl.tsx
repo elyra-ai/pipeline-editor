@@ -18,14 +18,14 @@ import { useCallback } from "react";
 
 import { useSelect } from "downshift";
 
-import { createControl, useControlState, BaseProps } from "./utils";
+import { createControl, useControlState } from "./utils";
 
-interface Props extends BaseProps {
+interface Props {
   items: string[];
 }
 
-function EnumComponent({ name, controller, items }: Props) {
-  const [value, setValue] = useControlState<string>(name, controller);
+function EnumComponent({ items }: Props) {
+  const [value, setValue] = useControlState<string>();
 
   const handleSelectedItemChange = useCallback(
     ({ selectedItem }) => {
@@ -71,4 +71,4 @@ function EnumComponent({ name, controller, items }: Props) {
   );
 }
 
-export default createControl("pipeline-editor-enum-control", EnumComponent);
+export default createControl("enum", EnumComponent);

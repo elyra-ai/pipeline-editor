@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 
-import { useSelector } from "react-redux";
 import styled from "styled-components";
 
-import { createControl, useControlState, BaseProps } from "./utils";
+import {
+  createControl,
+  useControlState,
+  useErrorMessage,
+  useHandlers,
+} from "./utils";
 
-interface Props extends BaseProps {
+interface Props {
   placeholder?: string;
 }
 
@@ -32,16 +36,13 @@ const Container = styled.div`
   display: flex;
 `;
 
-function FileComponent({ name, controller, placeholder }: Props) {
-  const [path, setPath] = useControlState<string>(name, controller);
+function FileComponent({ placeholder }: Props) {
+  const [path, setPath] = useControlState<string>();
 
-  const isError: boolean = useSelector(
-    (state: any) => state.errorMessagesReducer[name]?.type === "error"
-  );
+  const isError = useErrorMessage()?.type === "error";
 
-  const controllerRef = useRef(controller);
+  const { actionHandler } = useHandlers();
   const handleChooseFile = useCallback(async () => {
-    const { actionHandler } = controllerRef.current.getHandlers();
     const values = await actionHandler?.("browse_file", undefined, {
       canSelectMany: false,
       defaultUri: path,
@@ -51,7 +52,7 @@ function FileComponent({ name, controller, placeholder }: Props) {
     if (values !== undefined && values.length > 0) {
       setPath(values[0]);
     }
-  }, [path, setPath]);
+  }, [actionHandler, path, setPath]);
 
   return (
     <Container className={isError ? "error" : undefined}>
@@ -72,4 +73,4 @@ function FileComponent({ name, controller, placeholder }: Props) {
   );
 }
 
-export default createControl("pipeline-editor-file-control", FileComponent);
+export default createControl("file", FileComponent);

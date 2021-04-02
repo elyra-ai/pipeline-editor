@@ -14,16 +14,33 @@
  * limitations under the License.
  */
 
-import { useCallback, useRef } from "react";
+import React, { useCallback, useContext, useMemo, useRef } from "react";
 
 import { useSelector } from "react-redux";
 
-export interface BaseProps {
+interface ContextValue {
   name: string;
   controller: any;
 }
 
-export function useControlState<T>(name: string, controller: any) {
+const ControlContext = React.createContext<ContextValue>({
+  name: "",
+  controller: {},
+});
+
+export function useHandlers() {
+  const { controller } = useContext(ControlContext);
+  const controllerRef = useRef(controller);
+  return useMemo(() => controllerRef.current.getHandlers(), []);
+}
+
+export function useErrorMessage(): { type: "error" } | undefined {
+  const { name } = useContext(ControlContext);
+  return useSelector((state: any) => state.errorMessagesReducer[name]);
+}
+
+export function useControlState<T>() {
+  const { name, controller } = useContext(ControlContext);
   const controllerRef = useRef(controller);
   const value: T = useSelector((state: any) => state.propertiesReducer[name]);
   const setValue = useCallback(
@@ -32,7 +49,6 @@ export function useControlState<T>(name: string, controller: any) {
     },
     [name]
   );
-
   return [value, setValue] as [T | undefined, (value: T) => void];
 }
 
@@ -43,20 +59,17 @@ export function createControl(id: string, Component: any) {
     controller: any,
     data: any
   ) {
-    this.propertyId = propertyId;
-    this.controller = controller;
+    this.value = { name: propertyId.name, controller };
     this.data = data;
   }
 
-  Control.id = () => id;
+  Control.id = () => `pipeline-editor-${id}-control`;
 
   Control.prototype.renderControl = function () {
     return (
-      <Component
-        name={this.propertyId.name}
-        controller={this.controller}
-        {...this.data}
-      />
+      <ControlContext.Provider value={this.value}>
+        <Component {...this.data} />
+      </ControlContext.Provider>
     );
   };
 
