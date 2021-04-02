@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import styled, { useTheme } from "styled-components";
 
 import IconButton from "../IconButton";
+import createControl from "./createControl";
 
 interface Props {
   name: string;
@@ -404,25 +405,7 @@ function StringArrayComponent({
   );
 }
 
-export class StringArrayControl {
-  static id() {
-    return "pipeline-editor-string-array-control";
-  }
-
-  constructor(
-    private propertyId: { name: string },
-    private controller: any,
-    private data: any
-  ) {}
-
-  renderControl() {
-    return (
-      <StringArrayComponent
-        name={this.propertyId.name}
-        controller={this.controller}
-        {...this.data}
-      />
-    );
-  }
-}
-export default StringArrayControl;
+export default createControl(
+  "pipeline-editor-string-array-control",
+  StringArrayComponent
+);

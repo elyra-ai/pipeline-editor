@@ -16,11 +16,13 @@
   ],
   "scripts": {
     "build": "microbundle --css inline -f cjs",
-    "watch": "microbundle --css inline -f cjs --watch",
+    "watch": "microbundle --css inline -f modern --watch --no-compress",
     "link": "yarn link"
   },
+  "DO NOT MERGE THIS IF I FORGOT TO CHANGE THIS BACK, WE ADD FIX THIS FOR REAL IN 'Faster build' PR!!!!": "",
   "dependencies": {
-    "@elyra/pipeline-services": "^0.2.0-dev",
+    "@elyra/canvas": "10.3.0",
+    "@elyra/pipeline-services":  "^0.2.0-dev",
     "immer": "^8.0.1",
     "nanoid": "^3.1.20",
     "react": "^17.0.1",
@@ -31,7 +33,6 @@
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
-    "@elyra/canvas": "10.3.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.0",

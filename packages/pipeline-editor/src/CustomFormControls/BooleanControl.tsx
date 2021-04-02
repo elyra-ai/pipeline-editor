@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useRef } from "react";
+import { useCallback, useRef } from "react";
 
 import { useSelector } from "react-redux";
 import styled, { useTheme } from "styled-components";
+
+import createControl from "./createControl";
 
 interface Props {
   name: string;
@@ -80,26 +82,7 @@ function BooleanComponent({ name, controller, helperText }: Props) {
   );
 }
 
-export class BooleanControl {
-  static id() {
-    return "pipeline-editor-boolean-control";
-  }
-
-  constructor(
-    private propertyId: { name: string },
-    private controller: any,
-    private data: any
-  ) {}
-
-  renderControl() {
-    return (
-      <BooleanComponent
-        name={this.propertyId.name}
-        controller={this.controller}
-        {...this.data}
-      />
-    );
-  }
-}
-
-export default BooleanControl;
+export default createControl(
+  "pipeline-editor-boolean-control",
+  BooleanComponent
+);

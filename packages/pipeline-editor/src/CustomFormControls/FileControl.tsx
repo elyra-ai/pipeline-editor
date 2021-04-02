@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useRef } from "react";
+import { useCallback, useRef } from "react";
 
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+
+import createControl from "./createControl";
 
 interface Props {
   name: string;
@@ -75,25 +77,4 @@ function FileComponent({ name, controller, placeholder }: Props) {
   );
 }
 
-export class FileControl {
-  static id() {
-    return "pipeline-editor-file-control";
-  }
-
-  constructor(
-    private propertyId: { name: string },
-    private controller: any,
-    private data: any
-  ) {}
-
-  renderControl() {
-    return (
-      <FileComponent
-        name={this.propertyId.name}
-        controller={this.controller}
-        {...this.data}
-      />
-    );
-  }
-}
-export default FileControl;
+export default createControl("pipeline-editor-file-control", FileComponent);
