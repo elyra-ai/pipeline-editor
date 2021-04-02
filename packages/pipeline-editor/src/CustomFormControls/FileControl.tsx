@@ -23,6 +23,7 @@ interface Props {
   name: string;
   controller: any;
   placeholder?: string;
+  extensions?: string[];
 }
 
 const Container = styled.div`
@@ -32,7 +33,7 @@ const Container = styled.div`
   display: flex;
 `;
 
-function FileComponent({ name, controller, placeholder }: Props) {
+function FileComponent({ name, controller, placeholder, extensions }: Props) {
   const controllerRef = useRef(controller);
 
   const path: string = useSelector(
@@ -48,13 +49,13 @@ function FileComponent({ name, controller, placeholder }: Props) {
     const values = await actionHandler?.("browse_file", undefined, {
       canSelectMany: false,
       defaultUri: path,
-      filters: { Notebook: ["ipynb"] }, // TODO: this should be specified via node definition
+      filters: { File: extensions },
     });
     //  Don't set if nothing was chosen.
     if (values !== undefined && values.length > 0) {
       controllerRef.current.updatePropertyValue({ name }, values[0]);
     }
-  }, [name, path]);
+  }, [extensions, name, path]);
 
   return (
     <Container className={isError ? "error" : undefined}>
