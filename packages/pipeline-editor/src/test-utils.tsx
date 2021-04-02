@@ -60,6 +60,9 @@ export const nodeSpec = {
             default: "The path to the notebook file.",
             placement: "on_panel",
           },
+          data: {
+            extensions: [".ipynb"],
+          },
         },
         {
           parameter_ref: "runtime_image",

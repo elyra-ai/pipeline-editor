@@ -88,7 +88,7 @@ it("calls onFileRequested when a browse button is pressed", async () => {
   expect(handleFileRequested).toHaveBeenCalledWith({
     canSelectMany: false,
     defaultUri: "example.ipynb",
-    filters: { Notebook: ["ipynb"] },
+    filters: { File: [".ipynb"] },
   });
 });
 

@@ -30,7 +30,9 @@ it("has an id", () => {
 it("renders nothing when path is an undefined", () => {
   const store = createPropertiesStore(propertyId, undefined);
 
-  const data = {};
+  const data = {
+    extensions: [".ipynb"],
+  };
 
   const control = new FileControl(propertyId, {}, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
@@ -44,7 +46,9 @@ it("renders nothing when path is an undefined", () => {
 it("renders nothing when path is an empty string", () => {
   const store = createPropertiesStore(propertyId, "");
 
-  const data = {};
+  const data = {
+    extensions: [".ipynb"],
+  };
 
   const control = new FileControl(propertyId, {}, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
@@ -88,7 +92,9 @@ it("renders placeholder when path is an empty string", () => {
 it("renders errors", () => {
   const store = createPropertiesStore(propertyId, "", { type: "error" });
 
-  const data = {};
+  const data = {
+    extensions: [".ipynb"],
+  };
 
   const control = new FileControl(propertyId, {}, data);
   const { container } = render(
@@ -101,7 +107,9 @@ it("renders errors", () => {
 it("renders a path", () => {
   const store = createPropertiesStore(propertyId, "path/example.ipynb");
 
-  const data = {};
+  const data = {
+    extensions: [".ipynb"],
+  };
 
   const control = new FileControl(propertyId, {}, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
@@ -114,7 +122,9 @@ it("renders a path", () => {
 it("has input dissabled", () => {
   const store = createPropertiesStore(propertyId, "");
 
-  const data = {};
+  const data = {
+    extensions: [".ipynb"],
+  };
 
   const control = new FileControl(propertyId, {}, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
@@ -139,7 +149,9 @@ it("does not call updatePropertyValue when no files are chosen", async () => {
     getHandlers,
   };
 
-  const data = {};
+  const data = {
+    extensions: [".ipynb"],
+  };
 
   const control = new FileControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
@@ -150,7 +162,7 @@ it("does not call updatePropertyValue when no files are chosen", async () => {
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
     canSelectMany: false,
     defaultUri: "",
-    filters: { Notebook: ["ipynb"] },
+    filters: { File: [".ipynb"] },
   });
 
   await waitFor(() => {
@@ -173,7 +185,9 @@ it("calls updatePropertyValue when one file is chosen", async () => {
     getHandlers,
   };
 
-  const data = {};
+  const data = {
+    extensions: [".ipynb"],
+  };
 
   const control = new FileControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
@@ -184,7 +198,7 @@ it("calls updatePropertyValue when one file is chosen", async () => {
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
     canSelectMany: false,
     defaultUri: "",
-    filters: { Notebook: ["ipynb"] },
+    filters: { File: [".ipynb"] },
   });
 
   await waitFor(() => {
@@ -210,7 +224,9 @@ it("calls updatePropertyValue with the first file if multiple are chosen", async
     getHandlers,
   };
 
-  const data = {};
+  const data = {
+    extensions: [".ipynb"],
+  };
 
   const control = new FileControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
@@ -221,7 +237,7 @@ it("calls updatePropertyValue with the first file if multiple are chosen", async
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
     canSelectMany: false,
     defaultUri: "",
-    filters: { Notebook: ["ipynb"] },
+    filters: { File: [".ipynb"] },
   });
 
   await waitFor(() => {
@@ -244,7 +260,9 @@ it("calls actionHandler with a default uri if a path is already selected", async
     getHandlers,
   };
 
-  const data = {};
+  const data = {
+    extensions: [".ipynb"],
+  };
 
   const control = new FileControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
@@ -255,7 +273,7 @@ it("calls actionHandler with a default uri if a path is already selected", async
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
     canSelectMany: false,
     defaultUri: "some/path/example.ipynb",
-    filters: { Notebook: ["ipynb"] },
+    filters: { File: [".ipynb"] },
   });
 
   await waitFor(() => {
@@ -275,7 +293,9 @@ it("doesn't crash when actionHandler is not defined", async () => {
     getHandlers,
   };
 
-  const data = {};
+  const data = {
+    extensions: [".ipynb"],
+  };
 
   const control = new FileControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
