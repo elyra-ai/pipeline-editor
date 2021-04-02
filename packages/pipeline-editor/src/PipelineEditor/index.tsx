@@ -453,7 +453,7 @@ const PipelineEditor = forwardRef(
           const extensions = nodes.map((n: any) => n.extension);
           const [file] = await onFileRequested?.({
             canSelectMany: false,
-            filters: { Files: extensions },
+            filters: { File: extensions },
           });
 
           const node = nodes.find(
