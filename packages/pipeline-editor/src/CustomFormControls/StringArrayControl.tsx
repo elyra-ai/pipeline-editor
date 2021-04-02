@@ -18,15 +18,12 @@ import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
 
 import produce from "immer";
-import { useSelector } from "react-redux";
 import styled, { useTheme } from "styled-components";
 
 import IconButton from "../IconButton";
-import createControl from "./createControl";
+import { createControl, useControlState, BaseProps } from "./utils";
 
-interface Props {
-  name: string;
-  controller: any;
+interface Props extends BaseProps {
   placeholder?: string;
   singleItemLabel?: string;
   canBrowseFiles?: boolean;
@@ -292,22 +289,19 @@ function StringArrayComponent({
   singleItemLabel,
   canBrowseFiles,
 }: Props) {
-  const controllerRef = useRef(controller);
+  const [items = [], setItems] = useControlState<string[]>(name, controller);
 
   const [editingIndex, setEditingIndex] = useState<number | "new">();
-
-  const items: string[] = useSelector(
-    (state: any) => state.propertiesReducer[name] ?? []
-  );
 
   const handleAction = useCallback(
     (action) => {
       const newItems = reducer(items, action);
-      controllerRef.current.updatePropertyValue({ name }, newItems);
+      setItems(newItems);
     },
-    [items, name]
+    [items, setItems]
   );
 
+  const controllerRef = useRef(controller);
   const handleChooseFiles = useCallback(
     async (index) => {
       const { actionHandler } = controllerRef.current.getHandlers();

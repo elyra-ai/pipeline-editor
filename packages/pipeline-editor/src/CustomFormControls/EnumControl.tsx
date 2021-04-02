@@ -14,27 +14,44 @@
  * limitations under the License.
  */
 
+import { useCallback } from "react";
+
 import { useSelect } from "downshift";
 
-import createControl from "./createControl";
+import { createControl, useControlState, BaseProps } from "./utils";
 
-const items: string[] = ["one", "two", "three"];
+interface Props extends BaseProps {
+  items: string[];
+}
 
-function EnumComponent() {
+function EnumComponent({ name, controller, items }: Props) {
+  const [value, setValue] = useControlState<string>(name, controller);
+
+  const handleSelectedItemChange = useCallback(
+    ({ selectedItem }) => {
+      setValue(selectedItem);
+    },
+    [setValue]
+  );
+
   const {
     isOpen,
-    selectedItem,
     getToggleButtonProps,
     getLabelProps,
     getMenuProps,
     highlightedIndex,
     getItemProps,
-  } = useSelect({ items });
+  } = useSelect({
+    items,
+    selectedItem: value,
+    onSelectedItemChange: handleSelectedItemChange,
+  });
+
   return (
     <div>
       <label {...getLabelProps()}>Choose an element:</label>
       <button type="button" {...getToggleButtonProps()}>
-        {selectedItem || "Elements"}
+        {value || "Elements"}
       </button>
       <ul {...getMenuProps()}>
         {isOpen &&

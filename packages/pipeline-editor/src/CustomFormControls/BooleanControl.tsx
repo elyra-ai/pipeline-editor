@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 
-import { useSelector } from "react-redux";
 import styled, { useTheme } from "styled-components";
 
-import createControl from "./createControl";
+import { createControl, useControlState, BaseProps } from "./utils";
 
-interface Props {
-  name: string;
-  controller: any;
+interface Props extends BaseProps {
   helperText: string;
 }
 
@@ -57,13 +54,12 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
 
 function BooleanComponent({ name, controller, helperText }: Props) {
   const theme = useTheme();
-  const controllerRef = useRef(controller);
 
-  const isChecked = useSelector((state: any) => state.propertiesReducer[name]);
+  const [isChecked, setIsChecked] = useControlState<boolean>(name, controller);
 
   const handleToggle = useCallback(() => {
-    controllerRef.current.updatePropertyValue({ name }, !isChecked);
-  }, [isChecked, name]);
+    setIsChecked(!isChecked);
+  }, [isChecked, setIsChecked]);
 
   return (
     <div style={{ display: "flex" }} onClick={handleToggle}>

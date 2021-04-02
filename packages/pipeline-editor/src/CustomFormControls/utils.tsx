@@ -14,7 +14,29 @@
  * limitations under the License.
  */
 
-function createControl(id: string, Component: any) {
+import { useCallback, useRef } from "react";
+
+import { useSelector } from "react-redux";
+
+export interface BaseProps {
+  name: string;
+  controller: any;
+}
+
+export function useControlState<T>(name: string, controller: any) {
+  const controllerRef = useRef(controller);
+  const value: T = useSelector((state: any) => state.propertiesReducer[name]);
+  const setValue = useCallback(
+    (value: T) => {
+      controllerRef.current.updatePropertyValue({ name }, value);
+    },
+    [name]
+  );
+
+  return [value, setValue] as [T | undefined, (value: T) => void];
+}
+
+export function createControl(id: string, Component: any) {
   function Control(
     this: any,
     propertyId: { name: string },
@@ -40,5 +62,3 @@ function createControl(id: string, Component: any) {
 
   return Control as any;
 }
-
-export default createControl;

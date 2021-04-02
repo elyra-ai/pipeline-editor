@@ -19,11 +19,9 @@ import { useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 
-import createControl from "./createControl";
+import { createControl, useControlState, BaseProps } from "./utils";
 
-interface Props {
-  name: string;
-  controller: any;
+interface Props extends BaseProps {
   placeholder?: string;
 }
 
@@ -35,16 +33,13 @@ const Container = styled.div`
 `;
 
 function FileComponent({ name, controller, placeholder }: Props) {
-  const controllerRef = useRef(controller);
-
-  const path: string = useSelector(
-    (state: any) => state.propertiesReducer[name]
-  );
+  const [path, setPath] = useControlState<string>(name, controller);
 
   const isError: boolean = useSelector(
     (state: any) => state.errorMessagesReducer[name]?.type === "error"
   );
 
+  const controllerRef = useRef(controller);
   const handleChooseFile = useCallback(async () => {
     const { actionHandler } = controllerRef.current.getHandlers();
     const values = await actionHandler?.("browse_file", undefined, {
@@ -54,9 +49,9 @@ function FileComponent({ name, controller, placeholder }: Props) {
     });
     //  Don't set if nothing was chosen.
     if (values !== undefined && values.length > 0) {
-      controllerRef.current.updatePropertyValue({ name }, values[0]);
+      setPath(values[0]);
     }
-  }, [name, path]);
+  }, [path, setPath]);
 
   return (
     <Container className={isError ? "error" : undefined}>
