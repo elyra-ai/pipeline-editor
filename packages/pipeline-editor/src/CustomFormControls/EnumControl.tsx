@@ -14,10 +14,44 @@
  * limitations under the License.
  */
 
+import { useSelect } from "downshift";
+
 import createControl from "./createControl";
 
+const items: string[] = ["one", "two", "three"];
+
 function EnumComponent() {
-  return <div />;
+  const {
+    isOpen,
+    selectedItem,
+    getToggleButtonProps,
+    getLabelProps,
+    getMenuProps,
+    highlightedIndex,
+    getItemProps,
+  } = useSelect({ items });
+  return (
+    <div>
+      <label {...getLabelProps()}>Choose an element:</label>
+      <button type="button" {...getToggleButtonProps()}>
+        {selectedItem || "Elements"}
+      </button>
+      <ul {...getMenuProps()}>
+        {isOpen &&
+          items.map((item, index) => (
+            <li
+              style={
+                highlightedIndex === index ? { backgroundColor: "#bde4ff" } : {}
+              }
+              key={`${item}${index}`}
+              {...getItemProps({ item, index })}
+            >
+              {item}
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
 }
 
 export default createControl("pipeline-editor-enum-control", EnumComponent);

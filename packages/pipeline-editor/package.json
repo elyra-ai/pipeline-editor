@@ -16,13 +16,14 @@
   ],
   "scripts": {
     "build": "microbundle --css inline -f cjs",
-    "watch": "microbundle --css inline -f modern --watch --no-compress",
+    "watch": "microbundle --css inline -o dist/index.js --no-pkg-main -f modern --watch --no-compress",
     "link": "yarn link"
   },
   "DO NOT MERGE THIS IF I FORGOT TO CHANGE THIS BACK, WE ADD FIX THIS FOR REAL IN 'Faster build' PR!!!!": "",
   "dependencies": {
     "@elyra/canvas": "10.3.0",
     "@elyra/pipeline-services":  "^0.2.0-dev",
+    "downshift": "^6.1.2",
     "immer": "^8.0.1",
     "nanoid": "^3.1.20",
     "react": "^17.0.1",

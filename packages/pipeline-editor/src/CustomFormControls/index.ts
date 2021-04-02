@@ -19,3 +19,4 @@
 export { default as FileControl } from "./FileControl";
 export { default as StringArrayControl } from "./StringArrayControl";
 export { default as BooleanControl } from "./BooleanControl";
+export { default as EnumControl } from "./EnumControl";

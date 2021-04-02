@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { CommonProperties } from "@elyra/canvas";
 import styled from "styled-components";
 
 import {
   BooleanControl,
+  EnumControl,
   FileControl,
   StringArrayControl,
 } from "../CustomFormControls";
@@ -120,7 +121,12 @@ function PropertiesPanel({
           }
         },
       }}
-      customControls={[StringArrayControl, BooleanControl, FileControl]}
+      customControls={[
+        StringArrayControl,
+        BooleanControl,
+        FileControl,
+        EnumControl,
+      ]}
     />
   );
 }
