@@ -24,7 +24,7 @@ import { createPropertiesStore } from "./test-utils";
 const propertyId = { name: "file" };
 
 it("has an id", () => {
-  expect(FileControl.id()).toBe("pipeline-editor-file-control");
+  expect(FileControl.id()).toBe("FileControl");
 });
 
 it("renders nothing when path is an undefined", () => {

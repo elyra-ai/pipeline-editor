@@ -49,7 +49,7 @@ export function useControlState<T>() {
     },
     [name]
   );
-  return [value, setValue] as [T | undefined, (value: T) => void];
+  return [value, setValue] as [T | undefined, (value: T | undefined) => void];
 }
 
 export function createControl(Component: any) {

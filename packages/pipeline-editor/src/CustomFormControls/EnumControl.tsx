@@ -29,7 +29,6 @@ const Container = styled.div`
   margin-top: 9px;
   width: 100%;
   max-width: 320px;
-  display: flex;
 `;
 
 function EnumControl({ items }: Props) {
@@ -45,7 +44,6 @@ function EnumControl({ items }: Props) {
   const {
     isOpen,
     getToggleButtonProps,
-    getLabelProps,
     getMenuProps,
     highlightedIndex,
     getItemProps,
@@ -57,9 +55,8 @@ function EnumControl({ items }: Props) {
 
   return (
     <Container>
-      <label {...getLabelProps()}>Choose an element:</label>
       <button type="button" {...getToggleButtonProps()}>
-        {value || "Elements"}
+        {value}
       </button>
       <ul {...getMenuProps()}>
         {isOpen &&

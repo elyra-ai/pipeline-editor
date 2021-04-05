@@ -24,7 +24,7 @@ import { createPropertiesStore } from "./test-utils";
 const propertyId = { name: "boolean" };
 
 it("has an id", () => {
-  expect(BooleanControl.id()).toBe("pipeline-editor-boolean-control");
+  expect(BooleanControl.id()).toBe("BooleanControl");
 });
 
 it("renders helper text", () => {

@@ -116,7 +116,8 @@ export const CanvasOverrides = css`
     margin-top: 9px;
   }
 
-  .properties-wrapper input[type="text" i] {
+  .properties-wrapper input[type="text" i],
+  .properties-wrapper input[type="number" i] {
     box-sizing: border-box;
     padding: 4px;
     background-color: ${({ theme }) => theme.palette.background.input};
@@ -129,12 +130,14 @@ export const CanvasOverrides = css`
     font-size: ${({ theme }) => theme.typography.fontSize};
   }
 
-  .properties-wrapper input[type="text" i]:focus {
+  .properties-wrapper input[type="text" i]:focus,
+  .properties-wrapper input[type="number" i]:focus {
     outline: 1px solid ${({ theme }) => theme.palette.focus};
     outline-offset: -1px;
   }
 
-  .properties-wrapper input[type="text" i]:disabled {
+  .properties-wrapper input[type="text" i]:disabled,
+  .properties-wrapper input[type="number" i]:disabled {
     color: ${({ theme }) => theme.palette.text.disabled};
   }
 

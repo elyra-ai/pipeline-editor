@@ -23,7 +23,9 @@ import {
   BooleanControl,
   EnumControl,
   FileControl,
+  NumberControl,
   StringArrayControl,
+  StringControl,
 } from "../CustomFormControls";
 import { fillPropertiesWithSavedData } from "./properties-utils";
 import useActiveFormItemShim from "./useActiveFormItemShim";
@@ -122,10 +124,12 @@ function PropertiesPanel({
         },
       }}
       customControls={[
+        StringControl,
         StringArrayControl,
         BooleanControl,
         FileControl,
         EnumControl,
+        NumberControl,
       ]}
     />
   );

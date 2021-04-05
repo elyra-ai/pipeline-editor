@@ -284,7 +284,7 @@ describe("ListItem", () => {
 });
 
 it("has an id", () => {
-  expect(StringArrayControl.id()).toBe("pipeline-editor-string-array-control");
+  expect(StringArrayControl.id()).toBe("StringArrayControl");
 });
 
 it("renders only a button when items is undefined", () => {
