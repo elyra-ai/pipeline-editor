@@ -34,11 +34,6 @@ export function useHandlers() {
   return useMemo(() => controllerRef.current.getHandlers(), []);
 }
 
-export function useErrorMessage(): { type: "error" } | undefined {
-  const { name } = useContext(ControlContext);
-  return useSelector((state: any) => state.errorMessagesReducer[name]);
-}
-
 export function useControlState<T>() {
   const { name, controller } = useContext(ControlContext);
   const controllerRef = useRef(controller);

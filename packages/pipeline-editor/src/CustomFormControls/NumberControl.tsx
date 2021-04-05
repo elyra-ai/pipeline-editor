@@ -18,7 +18,7 @@ import { useCallback } from "react";
 
 import styled from "styled-components";
 
-import { createControl, useControlState, useErrorMessage } from "./control";
+import { createControl, useControlState } from "./control";
 
 const Container = styled.div`
   margin-top: 9px;
@@ -38,14 +38,14 @@ const Input = styled.input`
 function NumberControl() {
   const [value, setValue] = useControlState<number>();
 
-  const isError = useErrorMessage()?.type === "error";
-
   const handleChange = useCallback(
     (e) => {
       setValue(e.target.value);
     },
     [setValue]
   );
+
+  const isError = value === undefined;
 
   return (
     <Container className={isError ? "error" : undefined}>

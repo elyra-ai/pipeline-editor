@@ -18,7 +18,7 @@ import { useCallback } from "react";
 
 import styled from "styled-components";
 
-import { createControl, useControlState, useErrorMessage } from "./control";
+import { createControl, useControlState } from "./control";
 
 interface Props {
   placeholder?: string;
@@ -34,14 +34,14 @@ const Container = styled.div`
 function StringControl({ placeholder }: Props) {
   const [value, setValue] = useControlState<string>();
 
-  const isError = useErrorMessage()?.type === "error";
-
   const handleChange = useCallback(
     (e) => {
       setValue(e.target.value);
     },
     [setValue]
   );
+
+  const isError = value === undefined || value.trim() === "";
 
   return (
     <Container className={isError ? "error" : undefined}>

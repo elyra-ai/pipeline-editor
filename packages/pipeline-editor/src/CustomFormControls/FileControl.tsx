@@ -18,12 +18,7 @@ import { useCallback } from "react";
 
 import styled from "styled-components";
 
-import {
-  createControl,
-  useControlState,
-  useErrorMessage,
-  useHandlers,
-} from "./control";
+import { createControl, useControlState, useHandlers } from "./control";
 
 interface Props {
   placeholder?: string;
@@ -39,8 +34,6 @@ const Container = styled.div`
 function FileControl({ placeholder }: Props) {
   const [path, setPath] = useControlState<string>();
 
-  const isError = useErrorMessage()?.type === "error";
-
   const { actionHandler } = useHandlers();
   const handleChooseFile = useCallback(async () => {
     const values = await actionHandler?.("browse_file", undefined, {
@@ -53,6 +46,8 @@ function FileControl({ placeholder }: Props) {
       setPath(values[0]);
     }
   }, [actionHandler, path, setPath]);
+
+  const isError = path === undefined || path.trim() === "";
 
   return (
     <Container className={isError ? "error" : undefined}>
