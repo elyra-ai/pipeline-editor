@@ -108,7 +108,6 @@ export const nodeSpec = {
       ],
       group_info: [
         {
-          id: "nodeGroupInfo",
           type: "panels",
           group_info: [
             { id: "filename", type: "controls", parameter_refs: ["filename"] },

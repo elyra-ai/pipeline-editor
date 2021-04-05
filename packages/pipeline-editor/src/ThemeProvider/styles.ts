@@ -187,7 +187,8 @@ export const CanvasOverrides = css`
     margin-top: 14px;
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel {
     padding-left: 33px;
     padding-right: 24px;
@@ -195,7 +196,8 @@ export const CanvasOverrides = css`
     max-width: 822px;
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper {
     padding-left: 14px;
@@ -489,13 +491,15 @@ export const CanvasOverrides = css`
     display: none;
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper {
     position: relative;
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper
     .error::before {
@@ -522,21 +526,23 @@ export const CanvasOverrides = css`
   .properties-required-indicator {
     display: none;
   }
-
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper {
     position: relative;
     border: 1px solid transparent;
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper:hover {
     background-color: ${({ theme }) => theme.palette.highlight.hover};
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper.selected {
     background-color: ${({ theme }) => theme.palette.highlight.focus};
