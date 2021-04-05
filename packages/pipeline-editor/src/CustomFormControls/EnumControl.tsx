@@ -17,14 +17,22 @@
 import { useCallback } from "react";
 
 import { useSelect } from "downshift";
+import styled from "styled-components";
 
-import { createControl, useControlState } from "./utils";
+import { createControl, useControlState } from "./control";
 
 interface Props {
   items: string[];
 }
 
-function EnumComponent({ items }: Props) {
+const Container = styled.div`
+  margin-top: 9px;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+`;
+
+function EnumControl({ items }: Props) {
   const [value, setValue] = useControlState<string>();
 
   const handleSelectedItemChange = useCallback(
@@ -48,7 +56,7 @@ function EnumComponent({ items }: Props) {
   });
 
   return (
-    <div>
+    <Container>
       <label {...getLabelProps()}>Choose an element:</label>
       <button type="button" {...getToggleButtonProps()}>
         {value || "Elements"}
@@ -67,8 +75,8 @@ function EnumComponent({ items }: Props) {
             </li>
           ))}
       </ul>
-    </div>
+    </Container>
   );
 }
 
-export default createControl("enum", EnumComponent);
+export default createControl(EnumControl);

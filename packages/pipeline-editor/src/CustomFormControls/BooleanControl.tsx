@@ -18,11 +18,15 @@ import { useCallback } from "react";
 
 import styled, { useTheme } from "styled-components";
 
-import { createControl, useControlState } from "./utils";
+import { createControl, useControlState } from "./control";
 
 interface Props {
   helperText: string;
 }
+
+const Container = styled.div`
+  display: flex;
+`;
 
 const Checkbox = styled.div<{ isChecked: boolean }>`
   box-sizing: border-box;
@@ -52,7 +56,7 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
   }
 `;
 
-function BooleanComponent({ helperText }: Props) {
+function BooleanControl({ helperText }: Props) {
   const theme = useTheme();
 
   const [isChecked = false, setIsChecked] = useControlState<boolean>();
@@ -62,7 +66,7 @@ function BooleanComponent({ helperText }: Props) {
   }, [isChecked, setIsChecked]);
 
   return (
-    <div style={{ display: "flex" }} onClick={handleToggle}>
+    <Container onClick={handleToggle}>
       <Checkbox
         isChecked={isChecked}
         className="elyricon elyricon-check"
@@ -74,8 +78,8 @@ function BooleanComponent({ helperText }: Props) {
         {theme.overrides?.checkIcon}
       </Checkbox>
       <div className="properties-control-description">{helperText}</div>
-    </div>
+    </Container>
   );
 }
 
-export default createControl("boolean", BooleanComponent);
+export default createControl(BooleanControl);

@@ -23,7 +23,7 @@ import {
   useControlState,
   useErrorMessage,
   useHandlers,
-} from "./utils";
+} from "./control";
 
 interface Props {
   placeholder?: string;
@@ -36,7 +36,7 @@ const Container = styled.div`
   display: flex;
 `;
 
-function FileComponent({ placeholder }: Props) {
+function FileControl({ placeholder }: Props) {
   const [path, setPath] = useControlState<string>();
 
   const isError = useErrorMessage()?.type === "error";
@@ -73,4 +73,4 @@ function FileComponent({ placeholder }: Props) {
   );
 }
 
-export default createControl("file", FileComponent);
+export default createControl(FileControl);

@@ -21,7 +21,7 @@ import produce from "immer";
 import styled, { useTheme } from "styled-components";
 
 import IconButton from "../IconButton";
-import { createControl, useControlState, useHandlers } from "./utils";
+import { createControl, useControlState, useHandlers } from "./control";
 
 interface Props {
   placeholder?: string;
@@ -41,49 +41,22 @@ interface ListItemProps {
   onEdit?: () => any;
 }
 
-export const reducer = produce((draft: string[], action) => {
-  const { type, payload } = action;
-  switch (type) {
-    case "DELETE_ITEM": {
-      const { index } = payload;
-      if (index !== undefined && index < draft.length) {
-        draft.splice(index, 1);
-      }
-      break;
-    }
-    case "UPSERT_ITEM": {
-      const { index } = payload;
-      if (index !== undefined && index < draft.length) {
-        // If the item is empty remove it.
-        if (payload.value.trim() === "") {
-          draft.splice(index, 1);
-        } else {
-          draft[index] = payload.value;
-        }
-      } else if (payload.value.trim() !== "") {
-        draft.push(payload.value);
-      }
-      break;
-    }
-    case "UPSERT_ITEMS": {
-      const { index } = payload;
-      if (
-        index !== undefined &&
-        index < draft.length &&
-        payload.items.length > 0
-      ) {
-        // Update value of the selected input with the first value in the array.
-        draft[index] = payload.items[0];
+const Container = styled.div`
+  margin-top: 9px;
+`;
 
-        // Insert the remaining items.
-        draft.splice(index + 1, 0, ...payload.items.slice(1));
-      } else {
-        draft.push(...payload.items);
-      }
-      break;
-    }
+const ListGroup = styled.div`
+  padding: 1px;
+  margin-bottom: 1px;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  margin-top: 4px;
+  & button {
+    margin-right: 4px;
   }
-});
+`;
 
 const StyledIconButton = styled(IconButton)`
   width: 16px;
@@ -161,6 +134,50 @@ const ListRow = styled.div`
     display: flex;
   }
 `;
+
+export const reducer = produce((draft: string[], action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case "DELETE_ITEM": {
+      const { index } = payload;
+      if (index !== undefined && index < draft.length) {
+        draft.splice(index, 1);
+      }
+      break;
+    }
+    case "UPSERT_ITEM": {
+      const { index } = payload;
+      if (index !== undefined && index < draft.length) {
+        // If the item is empty remove it.
+        if (payload.value.trim() === "") {
+          draft.splice(index, 1);
+        } else {
+          draft[index] = payload.value;
+        }
+      } else if (payload.value.trim() !== "") {
+        draft.push(payload.value);
+      }
+      break;
+    }
+    case "UPSERT_ITEMS": {
+      const { index } = payload;
+      if (
+        index !== undefined &&
+        index < draft.length &&
+        payload.items.length > 0
+      ) {
+        // Update value of the selected input with the first value in the array.
+        draft[index] = payload.items[0];
+
+        // Insert the remaining items.
+        draft.splice(index + 1, 0, ...payload.items.slice(1));
+      } else {
+        draft.push(...payload.items);
+      }
+      break;
+    }
+  }
+});
 
 export function ListItem({
   value,
@@ -265,24 +282,7 @@ export function ListItem({
   );
 }
 
-const Container = styled.div`
-  margin-top: 9px;
-`;
-
-const ListGroup = styled.div`
-  padding: 1px;
-  margin-bottom: 1px;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  margin-top: 4px;
-  & button {
-    margin-right: 4px;
-  }
-`;
-
-function StringArrayComponent({
+function StringArrayControl({
   placeholder,
   singleItemLabel,
   canBrowseFiles,
@@ -396,4 +396,4 @@ function StringArrayComponent({
   );
 }
 
-export default createControl("string-array", StringArrayComponent);
+export default createControl(StringArrayControl);

@@ -52,7 +52,7 @@ export function useControlState<T>() {
   return [value, setValue] as [T | undefined, (value: T) => void];
 }
 
-export function createControl(id: string, Component: any) {
+export function createControl(Component: any) {
   function Control(
     this: any,
     propertyId: { name: string },
@@ -63,7 +63,7 @@ export function createControl(id: string, Component: any) {
     this.data = data;
   }
 
-  Control.id = () => `pipeline-editor-${id}-control`;
+  Control.id = () => Component.name;
 
   Control.prototype.renderControl = function () {
     return (
