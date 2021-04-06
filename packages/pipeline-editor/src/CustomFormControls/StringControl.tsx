@@ -18,20 +18,52 @@ import { useCallback } from "react";
 
 import styled from "styled-components";
 
-import { createControl, useControlState } from "./control";
+import { createControl, useControlState, useHandlers } from "./control";
 
-interface Props {
+export interface Props {
+  pattern?: string; // for restricting strings to a given regular expression
+  patternErrorMessage?: string; // for giving a tailored error message when a pattern does not match
+  minLength?: number; // for restricting string length
+  maxLength?: number; // for restricting string length
+  format?: "date" | "time" | "ipv4" | "email" | "uri" | "file"; // for restricting strings to well-known formats
+  required?: boolean;
   placeholder?: string;
 }
 
 const Container = styled.div`
   margin-top: 9px;
-  width: 100%;
-  max-width: 500px;
   display: flex;
 `;
 
-function StringControl({ placeholder }: Props) {
+const InputContainer = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+`;
+
+const ErrorMessage = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  box-sizing: border-box;
+  margin-top: -1px;
+  z-index: 1;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #be1100;
+  background-color: #5a1d1d;
+`;
+
+function StringControl({
+  pattern,
+  patternErrorMessage,
+  minLength,
+  maxLength,
+  format,
+  required,
+  placeholder,
+}: Props) {
   const [value, setValue] = useControlState<string>();
 
   const handleChange = useCallback(
@@ -41,16 +73,68 @@ function StringControl({ placeholder }: Props) {
     [setValue]
   );
 
-  const isError = value === undefined || value.trim() === "";
+  const { actionHandler } = useHandlers();
+  const handleChooseFile = useCallback(async () => {
+    const values = await actionHandler?.("browse_file", undefined, {
+      canSelectMany: false,
+      defaultUri: value,
+      // TODO: "filters", this should be specified via node definition
+    });
+    //  Don't set if nothing was chosen.
+    if (values !== undefined && values.length > 0) {
+      setValue(values[0]);
+    }
+  }, [actionHandler, value, setValue]);
+
+  const missing =
+    required === true && (value === undefined || value.trim() === "");
+  const tooShort =
+    (value?.trim().length ?? 0) > 0 &&
+    minLength !== undefined &&
+    (value?.length ?? 0) < minLength;
+  const tooLong =
+    (value?.trim().length ?? 0) > 0 &&
+    maxLength !== undefined &&
+    (value?.length ?? 0) > maxLength;
+  const patternError =
+    (value?.trim().length ?? 0) > 0 &&
+    pattern !== undefined &&
+    new RegExp(pattern).test(value ?? "") === false;
+
+  const isError = missing || tooShort || tooLong || patternError;
+
+  let message;
+  if (tooShort === true) {
+    message = "too short";
+  }
+  if (tooLong === true) {
+    message = "too long";
+  }
+  if (patternError === true) {
+    message = patternErrorMessage;
+  }
 
   return (
     <Container className={isError ? "error" : undefined}>
-      <input
-        type="text"
-        value={value ?? ""}
-        placeholder={placeholder}
-        onChange={handleChange}
-      />
+      <InputContainer>
+        <input
+          type="text"
+          value={value ?? ""}
+          placeholder={placeholder}
+          onChange={handleChange}
+          disabled={format === "file"}
+        />
+        {message !== undefined && <ErrorMessage>{message}</ErrorMessage>}
+      </InputContainer>
+      {format === "file" && (
+        <button
+          onClick={() => {
+            handleChooseFile();
+          }}
+        >
+          Browse
+        </button>
+      )}
     </Container>
   );
 }

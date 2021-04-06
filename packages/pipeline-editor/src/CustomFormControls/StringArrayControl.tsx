@@ -22,11 +22,12 @@ import styled, { useTheme } from "styled-components";
 
 import IconButton from "../IconButton";
 import { createControl, useControlState, useHandlers } from "./control";
+import { Props as StringProps } from "./StringControl";
 
-interface Props {
-  placeholder?: string;
-  singleItemLabel?: string;
-  canBrowseFiles?: boolean;
+interface Props extends StringProps {
+  uniqueItems?: boolean;
+  minItems?: number; // for restricting array length
+  maxItems?: number; // for restricting array length
 }
 
 interface ListItemProps {
@@ -282,11 +283,7 @@ export function ListItem({
   );
 }
 
-function StringArrayControl({
-  placeholder,
-  singleItemLabel,
-  canBrowseFiles,
-}: Props) {
+function StringArrayControl({ placeholder, format }: Props) {
   const [items = [], setItems] = useControlState<string[]>();
 
   const [editingIndex, setEditingIndex] = useState<number | "new">();
@@ -328,7 +325,7 @@ function StringArrayControl({
             key={index}
             value={item}
             placeholder={placeholder}
-            canBrowseFiles={canBrowseFiles}
+            canBrowseFiles={format === "file"}
             isEditing={index === editingIndex}
             onSubmit={(value) => {
               setEditingIndex(undefined);
@@ -379,9 +376,9 @@ function StringArrayControl({
               setEditingIndex("new");
             }}
           >
-            Add {singleItemLabel ?? "Item"}
+            Add Item
           </button>
-          {!!canBrowseFiles && (
+          {format === "file" && (
             <button
               onClick={() => {
                 handleChooseFiles(undefined);

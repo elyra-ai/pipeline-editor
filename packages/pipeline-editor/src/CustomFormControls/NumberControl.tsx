@@ -20,6 +20,16 @@ import styled from "styled-components";
 
 import { createControl, useControlState } from "./control";
 
+interface Props {
+  type: "number" | "integer";
+  multipleOf?: number;
+  minimum?: number; // for restricting numeric values
+  maximum?: number; // for restricting numeric values
+  exclusiveMinimum?: boolean | number;
+  exclusiveMaximum?: boolean | number;
+  required?: boolean;
+}
+
 const Container = styled.div`
   margin-top: 9px;
   width: 100%;
@@ -28,14 +38,17 @@ const Container = styled.div`
 `;
 
 const Input = styled.input`
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+  &[type="number"]::-webkit-outer-spin-button,
+  &[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
     margin: 0;
+  }
+  &[type="number"] {
+    -moz-appearance: textfield !important;
   }
 `;
 
-function NumberControl() {
+function NumberControl({}: Props) {
   const [value, setValue] = useControlState<number>();
 
   const handleChange = useCallback(
