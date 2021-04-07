@@ -77,7 +77,7 @@
     "release:changelog": "ts-node scripts/changelog.ts",
     "release:version": "ts-node scripts/version.ts",
     "release:publish": "ts-node scripts/publish.ts",
-    "release:publish:dry-run": "ts-node scripts/publish.ts --dryRun"
+    "release:publish:dry-run": "ts-node scripts/publish.ts --dry-run"
   },
   "dependencies": {}
 }

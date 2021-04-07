@@ -15,7 +15,7 @@
  */
 
 const IS_DRY_RUN =
-  process.argv.slice(2).findIndex((arg) => /--dryrun/i.test(arg)) !== -1;
+  process.argv.slice(2).findIndex((arg) => /--dry-{0,1}run/i.test(arg)) !== -1;
 
 export function createSafetyNet<T extends (...args: any) => any>(cmd: T) {
   if (IS_DRY_RUN) {
