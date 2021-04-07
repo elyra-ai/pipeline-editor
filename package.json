@@ -2,7 +2,7 @@
   "private": true,
   "name": "pipeline-editor",
   "description": "",
-  "version": "0.2.0-dev",
+  "version": "0.1.0",
   "workspaces": {
     "packages": [
       "packages/*"
@@ -17,6 +17,7 @@
     "@storybook/react": "^6.1.20",
     "@testing-library/cypress": "^7.0.4",
     "@types/jest": "^26.0.20",
+    "@types/semver": "^7.3.4",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
     "@typescript-eslint/parser": "^4.5.0",
     "babel-eslint": "^10.0.0",
@@ -41,12 +42,11 @@
     "lint-staged": "^9.4.3",
     "microbundle": "^0.13.0",
     "prettier": "^2.2.1",
+    "semver": "^7.3.5",
     "start-server-and-test": "^1.12.0",
     "ts-jest": "^26.5.1",
     "ts-node": "^9.1.1",
-    "typescript": "4.1.3",
-    "yargs": "^16.2.0",
-    "yargs-parser": "^20.2.7"
+    "typescript": "4.1.3"
   },
   "husky": {
     "hooks": {
@@ -74,7 +74,10 @@
     "lint": "yarn eslint . --ignore-path .gitignore --ext .ts,.tsx --max-warnings=0",
     "format": "yarn prettier --ignore-path .gitignore --write \"**/*.{tsx,ts,js,css,html,json}\"",
     "format:check": "yarn prettier --ignore-path .gitignore --check \"**/*.{tsx,ts,js,css,html,json}\"",
-    "release": "ts-node scripts/release.ts"
+    "release:changelog": "ts-node scripts/changelog.ts",
+    "release:version": "ts-node scripts/version.ts",
+    "release:publish": "ts-node scripts/publish.ts",
+    "release:publish:dry-run": "ts-node scripts/publish.ts --dryRun"
   },
   "dependencies": {}
 }
