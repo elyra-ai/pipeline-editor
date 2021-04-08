@@ -21,7 +21,7 @@ import styled, { useTheme } from "styled-components";
 import { createControl, useControlState } from "./control";
 
 interface Props {
-  helperText: string;
+  description: string;
 }
 
 const Container = styled.div`
@@ -56,7 +56,7 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
   }
 `;
 
-function BooleanControl({ helperText }: Props) {
+function BooleanControl({ description }: Props) {
   const theme = useTheme();
 
   const [isChecked = false, setIsChecked] = useControlState<boolean>();
@@ -77,7 +77,7 @@ function BooleanControl({ helperText }: Props) {
       >
         {theme.overrides?.checkIcon}
       </Checkbox>
-      <div className="properties-control-description">{helperText}</div>
+      <div className="properties-control-description">{description}</div>
     </Container>
   );
 }

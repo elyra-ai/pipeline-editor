@@ -19,15 +19,15 @@ import { useCallback } from "react";
 import styled from "styled-components";
 
 import { createControl, useControlState, useHandlers } from "./control";
+import {
+  getErrorMessages,
+  getStringValidators,
+  StringValidatorOptions,
+} from "./validators";
 
-export interface Props {
-  pattern?: string; // for restricting strings to a given regular expression
-  patternErrorMessage?: string; // for giving a tailored error message when a pattern does not match
-  minLength?: number; // for restricting string length
-  maxLength?: number; // for restricting string length
-  format?: "date" | "time" | "ipv4" | "email" | "uri" | "file"; // for restricting strings to well-known formats
-  required?: boolean;
+export interface Props extends StringValidatorOptions {
   placeholder?: string;
+  extensions?: string[];
 }
 
 const Container = styled.div`
@@ -63,6 +63,7 @@ function StringControl({
   format,
   required,
   placeholder,
+  extensions,
 }: Props) {
   const [value, setValue] = useControlState<string>();
 
@@ -78,44 +79,27 @@ function StringControl({
     const values = await actionHandler?.("browse_file", undefined, {
       canSelectMany: false,
       defaultUri: value,
-      // TODO: "filters", this should be specified via node definition
+      filters: { File: extensions },
     });
     //  Don't set if nothing was chosen.
     if (values !== undefined && values.length > 0) {
       setValue(values[0]);
     }
-  }, [actionHandler, value, setValue]);
+  }, [actionHandler, value, extensions, setValue]);
 
-  const missing =
-    required === true && (value === undefined || value.trim() === "");
-  const tooShort =
-    (value?.trim().length ?? 0) > 0 &&
-    minLength !== undefined &&
-    (value?.length ?? 0) < minLength;
-  const tooLong =
-    (value?.trim().length ?? 0) > 0 &&
-    maxLength !== undefined &&
-    (value?.length ?? 0) > maxLength;
-  const patternError =
-    (value?.trim().length ?? 0) > 0 &&
-    pattern !== undefined &&
-    new RegExp(pattern).test(value ?? "") === false;
+  const validators = getStringValidators({
+    pattern,
+    patternErrorMessage,
+    minLength,
+    maxLength,
+    format,
+    required,
+  });
 
-  const isError = missing || tooShort || tooLong || patternError;
-
-  let message;
-  if (tooShort === true) {
-    message = "too short";
-  }
-  if (tooLong === true) {
-    message = "too long";
-  }
-  if (patternError === true) {
-    message = patternErrorMessage;
-  }
+  const errorMessages = getErrorMessages(value?.trim() ?? "", validators);
 
   return (
-    <Container className={isError ? "error" : undefined}>
+    <Container className={errorMessages.length > 0 ? "error" : undefined}>
       <InputContainer>
         <input
           type="text"
@@ -124,7 +108,9 @@ function StringControl({
           onChange={handleChange}
           disabled={format === "file"}
         />
-        {message !== undefined && <ErrorMessage>{message}</ErrorMessage>}
+        {errorMessages[0] !== undefined && (
+          <ErrorMessage>{errorMessages[0]}</ErrorMessage>
+        )}
       </InputContainer>
       {format === "file" && (
         <button

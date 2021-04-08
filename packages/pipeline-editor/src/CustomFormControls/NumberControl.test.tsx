@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import StringControl from "./StringControl";
+import NumberControl from "./NumberControl";
 
 it("has an id", () => {
-  expect(StringControl.id()).toBe("StringControl");
+  expect(NumberControl.id()).toBe("NumberControl");
 });

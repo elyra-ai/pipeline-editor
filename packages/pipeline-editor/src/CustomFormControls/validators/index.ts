@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-/* istanbul ignore file */
+export interface Validator<T> {
+  enabled: boolean;
+  isValid: (value: T) => boolean;
+  message?: string;
+}
 
-export { default as StringControl } from "./StringControl";
-export { default as StringArrayControl } from "./StringArrayControl";
-export { default as BooleanControl } from "./BooleanControl";
-export { default as EnumControl } from "./EnumControl";
-export { default as NumberControl } from "./NumberControl";
+export function getErrorMessages<T>(value: T, validators: Validator<T>[]) {
+  return validators
+    .filter((v) => v.enabled && !v.isValid(value))
+    .map((v) => v.message);
+}
+
+export * from "./string-validators";
+export * from "./number-validators";
+export * from "./string-array-validators";

@@ -22,12 +22,15 @@ import styled, { useTheme } from "styled-components";
 
 import IconButton from "../IconButton";
 import { createControl, useControlState, useHandlers } from "./control";
-import { Props as StringProps } from "./StringControl";
+import {
+  getErrorMessages,
+  getStringArrayValidators,
+  StringArrayValidatorOptions,
+} from "./validators";
 
-interface Props extends StringProps {
-  uniqueItems?: boolean;
-  minItems?: number; // for restricting array length
-  maxItems?: number; // for restricting array length
+interface Props extends StringArrayValidatorOptions {
+  placeholder?: string;
+  format?: "file";
 }
 
 interface ListItemProps {
@@ -283,7 +286,13 @@ export function ListItem({
   );
 }
 
-function StringArrayControl({ placeholder, format }: Props) {
+function StringArrayControl({
+  maxItems,
+  minItems,
+  uniqueItems,
+  placeholder,
+  format,
+}: Props) {
   const [items = [], setItems] = useControlState<string[]>();
 
   const [editingIndex, setEditingIndex] = useState<number | "new">();
@@ -316,6 +325,14 @@ function StringArrayControl({ placeholder, format }: Props) {
     },
     [actionHandler, handleAction, items]
   );
+
+  const validators = getStringArrayValidators({
+    maxItems,
+    minItems,
+    uniqueItems,
+  });
+
+  const errorMessages = getErrorMessages(items, validators);
 
   return (
     <Container>

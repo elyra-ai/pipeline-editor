@@ -19,21 +19,16 @@ import { useCallback } from "react";
 import styled from "styled-components";
 
 import { createControl, useControlState } from "./control";
+import {
+  getErrorMessages,
+  getNumberValidators,
+  NumberValidatorOptions,
+} from "./validators";
 
-interface Props {
-  type: "number" | "integer";
-  multipleOf?: number;
-  minimum?: number; // for restricting numeric values
-  maximum?: number; // for restricting numeric values
-  exclusiveMinimum?: boolean | number;
-  exclusiveMaximum?: boolean | number;
-  required?: boolean;
-}
+interface Props extends NumberValidatorOptions {}
 
 const Container = styled.div`
   margin-top: 9px;
-  width: 100%;
-  max-width: 200px;
   display: flex;
 `;
 
@@ -48,8 +43,37 @@ const Input = styled.input`
   }
 `;
 
-function NumberControl({}: Props) {
-  const [value, setValue] = useControlState<number>();
+const InputContainer = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 200px;
+`;
+
+// TODO: Make this a shared component maybe?
+const ErrorMessage = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  box-sizing: border-box;
+  margin-top: -1px;
+  z-index: 1;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #be1100;
+  background-color: #5a1d1d;
+`;
+
+function NumberControl({
+  type,
+  multipleOf,
+  minimum,
+  maximum,
+  exclusiveMinimum,
+  exclusiveMaximum,
+  required,
+}: Props) {
+  const [value, setValue] = useControlState<string>();
 
   const handleChange = useCallback(
     (e) => {
@@ -58,11 +82,26 @@ function NumberControl({}: Props) {
     [setValue]
   );
 
-  const isError = value === undefined;
+  const validators = getNumberValidators({
+    type,
+    multipleOf,
+    minimum,
+    maximum,
+    exclusiveMinimum,
+    exclusiveMaximum,
+    required,
+  });
+
+  const errorMessages = getErrorMessages(value?.trim() ?? "", validators);
 
   return (
-    <Container className={isError ? "error" : undefined}>
-      <Input type="number" value={value ?? ""} onChange={handleChange} />
+    <Container className={errorMessages.length > 0 ? "error" : undefined}>
+      <InputContainer>
+        <Input type="number" value={value ?? ""} onChange={handleChange} />
+        {errorMessages[0] !== undefined && (
+          <ErrorMessage>{errorMessages[0]}</ErrorMessage>
+        )}
+      </InputContainer>
     </Container>
   );
 }

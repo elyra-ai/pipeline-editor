@@ -19,14 +19,7 @@ import { useEffect, useRef } from "react";
 import { CommonProperties } from "@elyra/canvas";
 import styled from "styled-components";
 
-import {
-  BooleanControl,
-  EnumControl,
-  FileControl,
-  NumberControl,
-  StringArrayControl,
-  StringControl,
-} from "../CustomFormControls";
+import * as controls from "../CustomFormControls";
 import { fillPropertiesWithSavedData } from "./properties-utils";
 import useActiveFormItemShim from "./useActiveFormItemShim";
 
@@ -123,14 +116,7 @@ function PropertiesPanel({
           }
         },
       }}
-      customControls={[
-        StringControl,
-        StringArrayControl,
-        BooleanControl,
-        FileControl,
-        EnumControl,
-        NumberControl,
-      ]}
+      customControls={Object.values(controls)}
     />
   );
 }
