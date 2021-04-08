@@ -22,11 +22,7 @@ import styled, { useTheme } from "styled-components";
 
 import IconButton from "../IconButton";
 import { createControl, useControlState, useHandlers } from "./control";
-import {
-  getErrorMessages,
-  getStringArrayValidators,
-  StringArrayValidatorOptions,
-} from "./validators";
+import { StringArrayValidatorOptions } from "./validators";
 
 interface Props extends StringArrayValidatorOptions {
   placeholder?: string;
@@ -286,13 +282,7 @@ export function ListItem({
   );
 }
 
-function StringArrayControl({
-  maxItems,
-  minItems,
-  uniqueItems,
-  placeholder,
-  format,
-}: Props) {
+function StringArrayControl({ placeholder, format }: Props) {
   const [items = [], setItems] = useControlState<string[]>();
 
   const [editingIndex, setEditingIndex] = useState<number | "new">();
@@ -326,13 +316,7 @@ function StringArrayControl({
     [actionHandler, handleAction, items]
   );
 
-  const validators = getStringArrayValidators({
-    maxItems,
-    minItems,
-    uniqueItems,
-  });
-
-  const errorMessages = getErrorMessages(items, validators);
+  // TODO: validate string arrays.
 
   return (
     <Container>
