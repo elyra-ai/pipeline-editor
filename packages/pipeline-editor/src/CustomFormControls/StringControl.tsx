@@ -55,6 +55,7 @@ const ErrorMessage = styled.div`
   background-color: #5a1d1d;
 `;
 
+// TODO: Make the file clearable
 function StringControl({
   pattern,
   patternErrorMessage,

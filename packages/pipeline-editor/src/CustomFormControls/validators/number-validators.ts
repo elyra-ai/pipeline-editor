@@ -52,10 +52,17 @@ export function getNumberValidators<T extends string>({
     exclusiveMin = exclusiveMinimum;
   }
 
+  const isNumber = (value: T) => !isNaN(+value) && !isNaN(parseFloat(value));
+
   const validators: Validator<T>[] = [
     {
       enabled: required === true,
-      isValid: (value: T) => value === "" || isNaN(+value),
+      isValid: (value: T) => value !== "",
+    },
+    {
+      enabled: true,
+      isValid: (value: T) => value === "" || isNumber(value),
+      message: "Value must be a number.",
     },
     {
       enabled:
@@ -93,7 +100,8 @@ export function getNumberValidators<T extends string>({
     },
     {
       enabled: type === "integer",
-      isValid: (value: T) => +value % 1 === 0,
+      // check if the string includes a decimal to prevent something like "10.0"
+      isValid: (value: T) => +value % 1 === 0 && !value.includes("."),
       message: "Value must be an integer.",
     },
   ];

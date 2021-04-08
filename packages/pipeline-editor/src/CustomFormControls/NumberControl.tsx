@@ -97,7 +97,16 @@ function NumberControl({
   return (
     <Container className={errorMessages.length > 0 ? "error" : undefined}>
       <InputContainer>
-        <Input type="number" value={value ?? ""} onChange={handleChange} />
+        <Input
+          // Don't use type="number" see: https://technology.blog.gov.uk/2020/02/24/why-the-gov-uk-design-system-team-changed-the-input-type-for-numbers/
+          type="text"
+          inputMode="numeric"
+          value={value ?? ""}
+          onChange={handleChange}
+          onWheel={(e) => {
+            (e.target as any).blur();
+          }}
+        />
         {errorMessages[0] !== undefined && (
           <ErrorMessage>{errorMessages[0]}</ErrorMessage>
         )}
