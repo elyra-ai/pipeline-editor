@@ -35,6 +35,7 @@ function generateVersion(
     | "premajor"
     | "preminor"
     | "prepatch"
+    | "prerelease"
     | "graduate"
 ) {
   if (bump === "graduate") {
@@ -65,6 +66,7 @@ function main() {
     case "premajor":
     case "preminor":
     case "prepatch":
+    case "prerelease":
     case "graduate":
       nextVersion = generateVersion(bump);
       break;

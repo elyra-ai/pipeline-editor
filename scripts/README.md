@@ -10,7 +10,7 @@ Update package versions, update the changelog and open a PR to propose a new rel
 yarn release:version <bump>
 
 version options:
-- major | minor | patch | premajor | preminor | prepatch | graduate
+- major | minor | patch | premajor | preminor | prepatch | prerelease | graduate
 ```
 
 Creating a prerelease, example:
