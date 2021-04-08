@@ -51,7 +51,7 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
   }
 
   &::before,
-  & > svg {
+  & > * {
     opacity: ${({ isChecked }) => (isChecked ? 1 : 0)};
   }
 `;
