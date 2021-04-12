@@ -83,7 +83,7 @@ export const nodeSpec = {
               "Local file dependencies that need to be copied to remote execution environment.",
             placement: "on_panel",
           },
-          data: { placeholder: "*.py", format: "file" },
+          data: { placeholder: "*.py" },
         },
         {
           control: "custom",
