@@ -394,4 +394,4 @@ function StringArrayControl({ placeholder, format }: Props) {
   );
 }
 
-export default createControl(StringArrayControl);
+export default createControl("StringArrayControl", StringArrayControl);

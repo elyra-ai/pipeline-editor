@@ -104,4 +104,4 @@ function NumberControl({
   );
 }
 
-export default createControl(NumberControl);
+export default createControl("NumberControl", NumberControl);

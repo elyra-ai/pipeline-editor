@@ -82,4 +82,4 @@ function BooleanControl({ description }: Props) {
   );
 }
 
-export default createControl(BooleanControl);
+export default createControl("BooleanControl", BooleanControl);

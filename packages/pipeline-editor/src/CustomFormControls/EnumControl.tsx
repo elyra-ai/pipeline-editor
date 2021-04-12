@@ -151,4 +151,4 @@ function EnumControl({ items }: Props) {
   );
 }
 
-export default createControl(EnumControl);
+export default createControl("EnumControl", EnumControl);

@@ -126,4 +126,4 @@ function StringControl({
   );
 }
 
-export default createControl(StringControl);
+export default createControl("StringControl", StringControl);

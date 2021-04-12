@@ -47,7 +47,7 @@ export function useControlState<T>() {
   return [value, setValue] as [T | undefined, (value: T | undefined) => void];
 }
 
-export function createControl(Component: any) {
+export function createControl(id: string, Component: any) {
   function Control(
     this: any,
     propertyId: { name: string },
@@ -58,7 +58,7 @@ export function createControl(Component: any) {
     this.data = data;
   }
 
-  Control.id = () => Component.name;
+  Control.id = () => id;
 
   Control.prototype.renderControl = function () {
     return (
