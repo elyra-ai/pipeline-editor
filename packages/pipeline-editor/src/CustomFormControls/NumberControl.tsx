@@ -32,17 +32,6 @@ const Container = styled.div`
   display: flex;
 `;
 
-const Input = styled.input`
-  &[type="number"]::-webkit-outer-spin-button,
-  &[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none !important;
-    margin: 0;
-  }
-  &[type="number"] {
-    -moz-appearance: textfield !important;
-  }
-`;
-
 const InputContainer = styled.div`
   position: relative;
   width: 100%;
@@ -97,7 +86,7 @@ function NumberControl({
   return (
     <Container className={errorMessages.length > 0 ? "error" : undefined}>
       <InputContainer>
-        <Input
+        <input
           // Don't use type="number" see: https://technology.blog.gov.uk/2020/02/24/why-the-gov-uk-design-system-team-changed-the-input-type-for-numbers/
           type="text"
           inputMode="numeric"

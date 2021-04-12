@@ -290,13 +290,21 @@ it("has an id", () => {
 it("renders only a button when items is undefined", () => {
   const store = createPropertiesStore(propertyId, undefined);
 
-  const data = {
-    placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: undefined,
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
+
+  const controller = {
+    getHandlers,
   };
 
-  const control = new StringArrayControl(propertyId, {}, data);
+  const data = {
+    placeholder: undefined,
+    format: undefined,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   const button = screen.getByRole("button");
@@ -307,13 +315,21 @@ it("renders only a button when items is undefined", () => {
 it("renders only a button when items is empty", () => {
   const store = createPropertiesStore(propertyId, []);
 
-  const data = {
-    placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: undefined,
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
+
+  const controller = {
+    getHandlers,
   };
 
-  const control = new StringArrayControl(propertyId, {}, data);
+  const data = {
+    placeholder: undefined,
+    format: undefined,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   const button = screen.getByRole("button");
@@ -325,13 +341,21 @@ it("renders only a button when items is empty", () => {
 it("renders items", () => {
   const store = createPropertiesStore(propertyId, ["item one", "item two"]);
 
-  const data = {
-    placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: undefined,
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
+
+  const controller = {
+    getHandlers,
   };
 
-  const control = new StringArrayControl(propertyId, {}, data);
+  const data = {
+    placeholder: undefined,
+    format: undefined,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
   const { container } = render(
     <Provider store={store}>{control.renderControl()}</Provider>
   );
@@ -340,32 +364,24 @@ it("renders items", () => {
   expect(container).toHaveTextContent(/item two/i);
 });
 
-it("renders custom add item button", () => {
-  const store = createPropertiesStore(propertyId, []);
-
-  const data = {
-    placeholder: undefined,
-    singleItemLabel: "Custom Item",
-    canBrowseFiles: undefined,
-  };
-
-  const control = new StringArrayControl(propertyId, {}, data);
-  render(<Provider store={store}>{control.renderControl()}</Provider>);
-
-  const button = screen.getByRole("button");
-  expect(button).toHaveTextContent(/add custom item/i);
-});
-
 it("renders as second button 'browse' when canBrowseFiles is true", () => {
   const store = createPropertiesStore(propertyId, []);
 
-  const data = {
-    placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: true,
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
+
+  const controller = {
+    getHandlers,
   };
 
-  const control = new StringArrayControl(propertyId, {}, data);
+  const data = {
+    placeholder: undefined,
+    format: "file",
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   const buttons = screen.getAllByRole("button");
@@ -375,13 +391,21 @@ it("renders as second button 'browse' when canBrowseFiles is true", () => {
 it("shows an input with 'ok' and 'cancel' buttons when 'add item' is clicked", async () => {
   const store = createPropertiesStore(propertyId, []);
 
-  const data = {
-    placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: undefined,
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
+
+  const controller = {
+    getHandlers,
   };
 
-  const control = new StringArrayControl(propertyId, {}, data);
+  const data = {
+    placeholder: undefined,
+    format: undefined,
+  };
+
+  const control = new StringArrayControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   userEvent.click(screen.getByText(/add item/i));
@@ -414,8 +438,7 @@ it("adds nothing to list if no files are chosen", async () => {
 
   const data = {
     placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: true,
+    format: "file",
   };
 
   const control = new StringArrayControl(propertyId, controller, data);
@@ -446,8 +469,7 @@ it("adds appends items to list if files are chosen", async () => {
 
   const data = {
     placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: true,
+    format: "file",
   };
 
   const control = new StringArrayControl(propertyId, controller, data);
@@ -470,15 +492,19 @@ it("calls updatePropertyValue with entered text", async () => {
   const store = createPropertiesStore(propertyId, []);
 
   const updatePropertyValue = jest.fn();
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
 
   const controller = {
     updatePropertyValue,
+    getHandlers,
   };
 
   const data = {
     placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: undefined,
+    format: undefined,
   };
 
   const control = new StringArrayControl(propertyId, controller, data);
@@ -500,15 +526,19 @@ it("can delete list item", async () => {
   const store = createPropertiesStore(propertyId, ["one"]);
 
   const updatePropertyValue = jest.fn();
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
 
   const controller = {
     updatePropertyValue,
+    getHandlers,
   };
 
   const data = {
     placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: undefined,
+    format: undefined,
   };
 
   const control = new StringArrayControl(propertyId, controller, data);
@@ -524,15 +554,19 @@ it("can edit list item", async () => {
   const store = createPropertiesStore(propertyId, ["one"]);
 
   const updatePropertyValue = jest.fn();
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
 
   const controller = {
     updatePropertyValue,
+    getHandlers,
   };
 
   const data = {
     placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: undefined,
+    format: undefined,
   };
 
   const control = new StringArrayControl(propertyId, controller, data);
@@ -552,15 +586,19 @@ it("doesn't edit list item when canceled", async () => {
   const store = createPropertiesStore(propertyId, ["one"]);
 
   const updatePropertyValue = jest.fn();
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
 
   const controller = {
     updatePropertyValue,
+    getHandlers,
   };
 
   const data = {
     placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: undefined,
+    format: undefined,
   };
 
   const control = new StringArrayControl(propertyId, controller, data);
@@ -596,8 +634,7 @@ it("can browse for files from list item", async () => {
 
   const data = {
     placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: true,
+    format: "file",
   };
 
   const control = new StringArrayControl(propertyId, controller, data);
@@ -625,8 +662,7 @@ it("doesn't call updatePropertyValue when no files are retrieved", async () => {
 
   const data = {
     placeholder: undefined,
-    singleItemLabel: undefined,
-    canBrowseFiles: true,
+    format: "file",
   };
 
   const control = new StringArrayControl(propertyId, controller, data);
