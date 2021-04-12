@@ -52,7 +52,7 @@
   },
   "lint-staged": {
     "*.{tsx,ts,js,md,css,html,json}": [
-      "yarn format",
+      "prettier --write",
       "git add"
     ]
   },
