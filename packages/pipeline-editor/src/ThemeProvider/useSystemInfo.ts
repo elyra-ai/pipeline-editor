@@ -22,15 +22,29 @@ function useSystemInfo() {
   );
 
   useEffect(() => {
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (e) => {
+    const darkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    try {
+      // Chrome & Firefox
+      darkMediaQuery.addEventListener("change", (e) => {
         if (e.matches) {
           setMode("dark");
         } else {
           setMode("light");
         }
       });
+    } catch {
+      try {
+        // Old Safari
+        darkMediaQuery.addListener((e) => {
+          if (e.matches) {
+            setMode("dark");
+          } else {
+            setMode("light");
+          }
+        });
+      } catch {}
+    }
   }, []);
 
   const platform = useMemo<"mac" | "win" | "other">(() => {
