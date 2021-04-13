@@ -81,7 +81,12 @@ function NumberControl({
     required,
   });
 
-  const errorMessages = getErrorMessages(value?.trim() ?? "", validators);
+  const trimmedValue = value?.trim() ?? "";
+
+  let errorMessages = getErrorMessages(trimmedValue, validators);
+  if (!required && trimmedValue === "") {
+    errorMessages = [];
+  }
 
   return (
     <Container className={errorMessages.length > 0 ? "error" : undefined}>
