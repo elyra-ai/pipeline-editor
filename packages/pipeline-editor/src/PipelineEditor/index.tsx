@@ -116,10 +116,10 @@ function useCloseContextMenu(controller: React.MutableRefObject<any>) {
   }, [controller]);
 }
 
-const Button = styled.div`
+const Button = styled.div<{ hasToolbar: boolean }>`
   cursor: pointer;
   position: absolute;
-  top: 24px;
+  top: ${({ hasToolbar }) => (hasToolbar ? 64 : 24)}px;
   left: 28px;
   z-index: 1;
   padding: 10px;
@@ -568,6 +568,7 @@ const PipelineEditor = forwardRef(
         <IntlProvider locale="en">
           {supernodeOpen === true && (
             <Button
+              hasToolbar={toolbar !== undefined}
               onClick={() => {
                 controller.current.editActionHandler({
                   editType: "displayPreviousPipeline",
