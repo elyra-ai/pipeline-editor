@@ -16,6 +16,7 @@
 
 import { CanvasController, PipelineFlowV3 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
+import { nanoid } from "nanoid";
 
 import { CustomNodeSpecification } from "../types";
 import {
@@ -64,14 +65,28 @@ class PipelineController extends CanvasController {
   open(pipelineJson: any) {
     // if pipeline is undefined/null create a new one from scratch.
     if (pipelineJson === undefined || pipelineJson === null) {
-      this.clearPipelineFlow();
-      // fixes bug where clearing the pipeline doesn't clear the selection.
-      const emptyPipelineJson = JSON.parse(
-        JSON.stringify(this.getPipelineFlow())
-      );
-      // NOTE: We should be guaranteed app_data is defined here.
-      emptyPipelineJson.pipelines[0].app_data!.version = PIPELINE_CURRENT_VERSION;
-      pipelineJson = emptyPipelineJson;
+      const flowID = nanoid();
+      const pipelineID = nanoid();
+      pipelineJson = {
+        doc_type: "pipeline",
+        version: "3.0",
+        json_schema:
+          "http://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
+        id: flowID,
+        primary_pipeline: pipelineID,
+        pipelines: [
+          {
+            id: pipelineID,
+            nodes: [],
+            app_data: {
+              ui_data: { comments: [] },
+              version: PIPELINE_CURRENT_VERSION,
+            },
+            runtime_ref: "",
+          },
+        ],
+        schemas: [],
+      };
     }
 
     // This must happen after the pipeline has been finalized, but before any
@@ -89,7 +104,6 @@ class PipelineController extends CanvasController {
     const version = pipelineJson.pipelines[0].app_data?.version ?? 0;
 
     if (version === PIPELINE_CURRENT_VERSION) {
-      // canvas bug, doesn't clear the selection when clearing the pipeline
       this.setPipelineFlow(pipelineJson);
       return;
     }
