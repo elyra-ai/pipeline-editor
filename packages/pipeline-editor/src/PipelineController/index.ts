@@ -89,7 +89,6 @@ class PipelineController extends CanvasController {
     const version = pipelineJson.pipelines[0].app_data?.version ?? 0;
 
     if (version === PIPELINE_CURRENT_VERSION) {
-      // canvas bug, doesn't clear the selection when clearing the pipeline
       this.setPipelineFlow(pipelineJson);
       return;
     }
