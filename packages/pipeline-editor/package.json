@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "build": "microbundle --css inline -f cjs",
-    "watch": "microbundle --css inline -f cjs --watch",
+    "watch": "microbundle --css inline -o dist/index.js --no-pkg-main -f modern --watch --no-compress",
     "link": "yarn link"
   },
   "dependencies": {

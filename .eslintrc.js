@@ -57,7 +57,7 @@ module.exports = {
     "import/no-extraneous-dependencies": [
       "warn",
       {
-        devDependencies: true, // dev dependencies will be bundled
+        devDependencies: false,
         optionalDependencies: false,
         peerDependencies: false,
         bundledDependencies: true,
