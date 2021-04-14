@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import path from "path";
+
 import React, {
   forwardRef,
   useCallback,
@@ -54,7 +56,7 @@ interface Props {
   onChange?: (pipeline: any) => any;
   onDoubleClickNode?: (e: CanvasClickEvent) => any;
   onError?: (error: Error) => any;
-  onFileRequested?: (startPath?: string, multiselect?: boolean) => any;
+  onFileRequested?: (options: any) => any;
   readOnly?: boolean;
   children?: React.ReactNode;
   nativeKeyboardActions?: boolean;
@@ -226,23 +228,6 @@ const PipelineEditor = forwardRef(
           "expandSuperNodeInPlace"
         );
 
-        if (e.type === "canvas") {
-          return [
-            {
-              action: "createComment",
-              label: "New Comment",
-            },
-            {
-              divider: true,
-            },
-            {
-              action: "paste",
-              label: "Paste",
-              enable: canPaste,
-            },
-          ];
-        }
-
         if (e.selectedObjectIds.length > 1) {
           return [
             {
@@ -284,6 +269,10 @@ const PipelineEditor = forwardRef(
         switch (e.type) {
           case "canvas":
             return [
+              {
+                action: "newFileNode",
+                label: "New Node from File",
+              },
               {
                 action: "createComment",
                 label: "New Comment",
@@ -460,6 +449,34 @@ const PipelineEditor = forwardRef(
         }
         onAction?.({ type: e.editType, payload });
 
+        if (e.editType === "newFileNode") {
+          const extensions = nodes.map((n: any) => n.extension);
+          const [file] = await onFileRequested?.({
+            canSelectMany: false,
+            filters: { File: extensions },
+          });
+
+          const node = nodes.find(
+            (n: any) => n.extension === path.extname(file)
+          );
+
+          const nodeTemplate = controller.current.getPaletteNode(node.op);
+          if (nodeTemplate) {
+            const convertedTemplate = controller.current.convertNodeTemplate(
+              nodeTemplate
+            );
+            convertedTemplate.app_data.filename = file;
+            const action = {
+              editType: "createNode",
+              nodeTemplate: convertedTemplate,
+              pipelineId: e.pipelineId,
+              offsetX: e.mousePos.x,
+              offsetY: e.mousePos.y,
+            };
+            controller.current.editActionHandler(action);
+          }
+        }
+
         if (e.editType === "properties") {
           setCurrentTab("properties");
           setPanelOpen(true);
@@ -499,7 +516,7 @@ const PipelineEditor = forwardRef(
 
         onChange?.(controller.current.getPipelineFlow());
       },
-      [onAction, onChange]
+      [nodes, onAction, onChange, onFileRequested]
     );
 
     const handlePropertiesChange = useCallback(
