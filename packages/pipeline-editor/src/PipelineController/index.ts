@@ -64,6 +64,7 @@ class PipelineController extends CanvasController {
   open(pipelineJson: any) {
     // if pipeline is undefined/null create a new one from scratch.
     if (pipelineJson === undefined || pipelineJson === null) {
+      this.clearPipelineFlow();
       const emptyPipelineJson = this.getPipelineFlow();
       // NOTE: We should be guaranteed app_data is defined here.
       emptyPipelineJson.pipelines[0].app_data!.version = PIPELINE_CURRENT_VERSION;
