@@ -65,7 +65,10 @@ class PipelineController extends CanvasController {
     // if pipeline is undefined/null create a new one from scratch.
     if (pipelineJson === undefined || pipelineJson === null) {
       this.clearPipelineFlow();
-      const emptyPipelineJson = this.getPipelineFlow();
+      // fixes bug where clearing the pipeline doesn't clear the selection.
+      const emptyPipelineJson = JSON.parse(
+        JSON.stringify(this.getPipelineFlow())
+      );
       // NOTE: We should be guaranteed app_data is defined here.
       emptyPipelineJson.pipelines[0].app_data!.version = PIPELINE_CURRENT_VERSION;
       pipelineJson = emptyPipelineJson;
@@ -86,6 +89,7 @@ class PipelineController extends CanvasController {
     const version = pipelineJson.pipelines[0].app_data?.version ?? 0;
 
     if (version === PIPELINE_CURRENT_VERSION) {
+      // canvas bug, doesn't clear the selection when clearing the pipeline
       this.setPipelineFlow(pipelineJson);
       return;
     }
