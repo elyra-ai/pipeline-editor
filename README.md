@@ -43,6 +43,7 @@ yarn add @elyra/pipeline-editor
 ```
 
 Or can be linked locally:
+
 ```sh
 git clone git@github.com:elyra-ai/pipeline-editor.git
 cd pipeline-editor
@@ -51,10 +52,14 @@ make clean install link
 ```
 
 ## Usage
+
 ```jsx
-import { PipelineEditor } from '@elyra/pipeline-editor';
+import { PipelineEditor } from "@elyra/pipeline-editor";
 
 function App() {
-  return <PipelineEditor />;
+  const [pipeline, setPipeline] = useState();
+  return (
+    <PipelineEditor pipeline={pipeline} nodes={[]} onChange={setPipeline} />
+  );
 }
 ```

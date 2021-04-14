@@ -1,4 +1,7 @@
 {
-  "sandboxes": ["new"],
+  "sandboxes": [
+    "/examples/create-react-app",
+    "/examples/create-react-app-with-typescript"
+  ],
   "silent": true
 }
