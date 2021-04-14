@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-/* istanbul ignore file */
+import EnumControl from "./EnumControl";
 
-export { default as StringControl } from "./StringControl";
-export { default as StringArrayControl } from "./StringArrayControl";
-export { default as BooleanControl } from "./BooleanControl";
-export { default as EnumControl } from "./EnumControl";
-export { default as NumberControl } from "./NumberControl";
+it("has an id", () => {
+  expect(EnumControl.id()).toBe("EnumControl");
+});

@@ -80,6 +80,7 @@ export interface Theme {
     fontSize: string;
   };
   overrides?: {
+    chevronDownIcon?: React.ReactNode;
     deleteIcon?: React.ReactNode;
     editIcon?: React.ReactNode;
     folderIcon?: React.ReactNode;

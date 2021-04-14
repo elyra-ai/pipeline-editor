@@ -18,17 +18,15 @@ import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
 
 import produce from "immer";
-import { useSelector } from "react-redux";
 import styled, { useTheme } from "styled-components";
 
 import IconButton from "../IconButton";
+import { createControl, useControlState, useHandlers } from "./control";
+import { StringArrayValidatorOptions } from "./validators";
 
-interface Props {
-  name: string;
-  controller: any;
+interface Props extends StringArrayValidatorOptions {
   placeholder?: string;
-  singleItemLabel?: string;
-  canBrowseFiles?: boolean;
+  format?: "file";
 }
 
 interface ListItemProps {
@@ -43,49 +41,22 @@ interface ListItemProps {
   onEdit?: () => any;
 }
 
-export const reducer = produce((draft: string[], action) => {
-  const { type, payload } = action;
-  switch (type) {
-    case "DELETE_ITEM": {
-      const { index } = payload;
-      if (index !== undefined && index < draft.length) {
-        draft.splice(index, 1);
-      }
-      break;
-    }
-    case "UPSERT_ITEM": {
-      const { index } = payload;
-      if (index !== undefined && index < draft.length) {
-        // If the item is empty remove it.
-        if (payload.value.trim() === "") {
-          draft.splice(index, 1);
-        } else {
-          draft[index] = payload.value;
-        }
-      } else if (payload.value.trim() !== "") {
-        draft.push(payload.value);
-      }
-      break;
-    }
-    case "UPSERT_ITEMS": {
-      const { index } = payload;
-      if (
-        index !== undefined &&
-        index < draft.length &&
-        payload.items.length > 0
-      ) {
-        // Update value of the selected input with the first value in the array.
-        draft[index] = payload.items[0];
+const Container = styled.div`
+  margin-top: 9px;
+`;
 
-        // Insert the remaining items.
-        draft.splice(index + 1, 0, ...payload.items.slice(1));
-      } else {
-        draft.push(...payload.items);
-      }
-      break;
-    }
+const ListGroup = styled.div`
+  padding: 1px;
+  margin-bottom: 1px;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  margin-top: 4px;
+  & button {
+    margin-right: 4px;
   }
-});
+`;
 
 const StyledIconButton = styled(IconButton)`
   width: 16px;
@@ -163,6 +134,50 @@ const ListRow = styled.div`
     display: flex;
   }
 `;
+
+export const reducer = produce((draft: string[], action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case "DELETE_ITEM": {
+      const { index } = payload;
+      if (index !== undefined && index < draft.length) {
+        draft.splice(index, 1);
+      }
+      break;
+    }
+    case "UPSERT_ITEM": {
+      const { index } = payload;
+      if (index !== undefined && index < draft.length) {
+        // If the item is empty remove it.
+        if (payload.value.trim() === "") {
+          draft.splice(index, 1);
+        } else {
+          draft[index] = payload.value;
+        }
+      } else if (payload.value.trim() !== "") {
+        draft.push(payload.value);
+      }
+      break;
+    }
+    case "UPSERT_ITEMS": {
+      const { index } = payload;
+      if (
+        index !== undefined &&
+        index < draft.length &&
+        payload.items.length > 0
+      ) {
+        // Update value of the selected input with the first value in the array.
+        draft[index] = payload.items[0];
+
+        // Insert the remaining items.
+        draft.splice(index + 1, 0, ...payload.items.slice(1));
+      } else {
+        draft.push(...payload.items);
+      }
+      break;
+    }
+  }
+});
 
 export function ListItem({
   value,
@@ -267,49 +282,22 @@ export function ListItem({
   );
 }
 
-const Container = styled.div`
-  margin-top: 9px;
-`;
-
-const ListGroup = styled.div`
-  padding: 1px;
-  margin-bottom: 1px;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  margin-top: 4px;
-  & button {
-    margin-right: 4px;
-  }
-`;
-
-function StringArrayComponent({
-  name,
-  controller,
-  placeholder,
-  singleItemLabel,
-  canBrowseFiles,
-}: Props) {
-  const controllerRef = useRef(controller);
+function StringArrayControl({ placeholder, format }: Props) {
+  const [items = [], setItems] = useControlState<string[]>();
 
   const [editingIndex, setEditingIndex] = useState<number | "new">();
-
-  const items: string[] = useSelector(
-    (state: any) => state.propertiesReducer[name] ?? []
-  );
 
   const handleAction = useCallback(
     (action) => {
       const newItems = reducer(items, action);
-      controllerRef.current.updatePropertyValue({ name }, newItems);
+      setItems(newItems);
     },
-    [items, name]
+    [items, setItems]
   );
 
+  const { actionHandler } = useHandlers();
   const handleChooseFiles = useCallback(
     async (index) => {
-      const { actionHandler } = controllerRef.current.getHandlers();
       const newItems = await actionHandler?.("browse_file", undefined, {
         canSelectMany: true,
         defaultUri: items[index],
@@ -325,8 +313,10 @@ function StringArrayComponent({
         });
       }
     },
-    [handleAction, items]
+    [actionHandler, handleAction, items]
   );
+
+  // TODO: validate string arrays.
 
   return (
     <Container>
@@ -336,7 +326,7 @@ function StringArrayComponent({
             key={index}
             value={item}
             placeholder={placeholder}
-            canBrowseFiles={canBrowseFiles}
+            canBrowseFiles={format === "file"}
             isEditing={index === editingIndex}
             onSubmit={(value) => {
               setEditingIndex(undefined);
@@ -387,9 +377,9 @@ function StringArrayComponent({
               setEditingIndex("new");
             }}
           >
-            Add {singleItemLabel ?? "Item"}
+            Add Item
           </button>
-          {!!canBrowseFiles && (
+          {format === "file" && (
             <button
               onClick={() => {
                 handleChooseFiles(undefined);
@@ -404,25 +394,4 @@ function StringArrayComponent({
   );
 }
 
-export class StringArrayControl {
-  static id() {
-    return "pipeline-editor-string-array-control";
-  }
-
-  constructor(
-    private propertyId: { name: string },
-    private controller: any,
-    private data: any
-  ) {}
-
-  renderControl() {
-    return (
-      <StringArrayComponent
-        name={this.propertyId.name}
-        controller={this.controller}
-        {...this.data}
-      />
-    );
-  }
-}
-export default StringArrayControl;
+export default createControl("StringArrayControl", StringArrayControl);

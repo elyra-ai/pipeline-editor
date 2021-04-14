@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { CommonProperties } from "@elyra/canvas";
 import styled from "styled-components";
 
-import {
-  BooleanControl,
-  FileControl,
-  StringArrayControl,
-} from "../CustomFormControls";
+import * as controls from "../CustomFormControls";
 import { fillPropertiesWithSavedData } from "./properties-utils";
 import useActiveFormItemShim from "./useActiveFormItemShim";
 
@@ -120,7 +116,7 @@ function PropertiesPanel({
           }
         },
       }}
-      customControls={[StringArrayControl, BooleanControl, FileControl]}
+      customControls={Object.values(controls)}
     />
   );
 }

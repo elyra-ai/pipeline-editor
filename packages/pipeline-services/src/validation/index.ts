@@ -59,28 +59,26 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       continue;
     }
 
-    for (const prop of nodeDef.properties?.parameters ?? []) {
+    for (const prop of nodeDef.properties?.uihints.parameter_info ?? []) {
       // If the property isn't in the json, report the error one level higher.
       let path = ["nodes", n, "app_data"];
-      if (node.app_data[prop.id] !== undefined) {
-        path.push(prop.id);
+      if (node.app_data[prop.parameter_ref] !== undefined) {
+        path.push(prop.parameter_ref);
       }
 
       // this should be safe because a boolean can't be required
       // otherwise we would need to check strings for undefined or empty string
       // NOTE: 0 is also falsy, but we don't have any number inputs right now?
       // TODO: We should update this to do type checking.
-      if (prop.required && !node.app_data[prop.id]) {
-        const paramInfo = nodeDef.properties.uihints.parameter_info;
-        const param = paramInfo.find((p: any) => p.parameter_ref === prop.id);
+      if (prop.data?.required && !node.app_data[prop.parameter_ref]) {
         problems.push({
-          message: `The property '${param.label.default}' on node '${node.app_data.ui_data.label}' is required.`,
+          message: `The property '${prop.label.default}' on node '${node.app_data.ui_data.label}' is required.`,
           path,
           info: {
             type: "missingProperty",
             pipelineID: pipeline.id,
             nodeID: node.id,
-            property: prop.id,
+            property: prop.parameter_ref,
           },
         });
       }

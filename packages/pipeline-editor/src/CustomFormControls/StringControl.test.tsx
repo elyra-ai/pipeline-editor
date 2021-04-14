@@ -18,21 +18,32 @@ import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 
 import { render, waitFor, screen } from "../test-utils";
-import FileControl from "./FileControl";
+import StringControl from "./StringControl";
 import { createPropertiesStore } from "./test-utils";
 
-const propertyId = { name: "file" };
+const propertyId = { name: "string" };
 
 it("has an id", () => {
-  expect(FileControl.id()).toBe("pipeline-editor-file-control");
+  expect(StringControl.id()).toBe("StringControl");
 });
 
 it("renders nothing when path is an undefined", () => {
   const store = createPropertiesStore(propertyId, undefined);
 
-  const data = {};
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
 
-  const control = new FileControl(propertyId, {}, data);
+  const controller = {
+    getHandlers,
+  };
+
+  const data = {
+    format: "file",
+  };
+
+  const control = new StringControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   const input = screen.getByRole("textbox");
@@ -44,9 +55,20 @@ it("renders nothing when path is an undefined", () => {
 it("renders nothing when path is an empty string", () => {
   const store = createPropertiesStore(propertyId, "");
 
-  const data = {};
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
 
-  const control = new FileControl(propertyId, {}, data);
+  const controller = {
+    getHandlers,
+  };
+
+  const data = {
+    format: "file",
+  };
+
+  const control = new StringControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   const input = screen.getByRole("textbox");
@@ -58,9 +80,21 @@ it("renders nothing when path is an empty string", () => {
 it("renders placeholder when path is undefined", () => {
   const store = createPropertiesStore(propertyId, undefined);
 
-  const data = { placeholder: "placeholder text" };
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
 
-  const control = new FileControl(propertyId, {}, data);
+  const controller = {
+    getHandlers,
+  };
+
+  const data = {
+    placeholder: "placeholder text",
+    format: "file",
+  };
+
+  const control = new StringControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   expect(screen.getByPlaceholderText("placeholder text")).toBeTruthy();
@@ -73,9 +107,20 @@ it("renders placeholder when path is undefined", () => {
 it("renders placeholder when path is an empty string", () => {
   const store = createPropertiesStore(propertyId, "");
 
-  const data = { placeholder: "placeholder text" };
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
 
-  const control = new FileControl(propertyId, {}, data);
+  const controller = {
+    getHandlers,
+  };
+
+  const data = {
+    placeholder: "placeholder text",
+  };
+
+  const control = new StringControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   expect(screen.getByPlaceholderText("placeholder text")).toBeTruthy();
@@ -85,25 +130,23 @@ it("renders placeholder when path is an empty string", () => {
   expect(input).toHaveValue("");
 });
 
-it("renders errors", () => {
-  const store = createPropertiesStore(propertyId, "", { type: "error" });
-
-  const data = {};
-
-  const control = new FileControl(propertyId, {}, data);
-  const { container } = render(
-    <Provider store={store}>{control.renderControl()}</Provider>
-  );
-
-  expect(container.firstChild).toHaveClass("error");
-});
-
 it("renders a path", () => {
   const store = createPropertiesStore(propertyId, "path/example.ipynb");
 
-  const data = {};
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
 
-  const control = new FileControl(propertyId, {}, data);
+  const controller = {
+    getHandlers,
+  };
+
+  const data = {
+    format: "file",
+  };
+
+  const control = new StringControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   const input = screen.getByRole("textbox");
@@ -114,9 +157,20 @@ it("renders a path", () => {
 it("has input dissabled", () => {
   const store = createPropertiesStore(propertyId, "");
 
-  const data = {};
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
 
-  const control = new FileControl(propertyId, {}, data);
+  const controller = {
+    getHandlers,
+  };
+
+  const data = {
+    format: "file",
+  };
+
+  const control = new StringControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   const input = screen.getByRole("textbox");
@@ -139,9 +193,11 @@ it("does not call updatePropertyValue when no files are chosen", async () => {
     getHandlers,
   };
 
-  const data = {};
+  const data = {
+    format: "file",
+  };
 
-  const control = new FileControl(propertyId, controller, data);
+  const control = new StringControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   userEvent.click(screen.getByRole("button"));
@@ -150,7 +206,7 @@ it("does not call updatePropertyValue when no files are chosen", async () => {
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
     canSelectMany: false,
     defaultUri: "",
-    filters: { Notebook: ["ipynb"] },
+    filters: { File: undefined },
   });
 
   await waitFor(() => {
@@ -173,9 +229,11 @@ it("calls updatePropertyValue when one file is chosen", async () => {
     getHandlers,
   };
 
-  const data = {};
+  const data = {
+    format: "file",
+  };
 
-  const control = new FileControl(propertyId, controller, data);
+  const control = new StringControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   userEvent.click(screen.getByRole("button"));
@@ -184,7 +242,7 @@ it("calls updatePropertyValue when one file is chosen", async () => {
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
     canSelectMany: false,
     defaultUri: "",
-    filters: { Notebook: ["ipynb"] },
+    filters: { File: undefined },
   });
 
   await waitFor(() => {
@@ -210,9 +268,11 @@ it("calls updatePropertyValue with the first file if multiple are chosen", async
     getHandlers,
   };
 
-  const data = {};
+  const data = {
+    format: "file",
+  };
 
-  const control = new FileControl(propertyId, controller, data);
+  const control = new StringControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   userEvent.click(screen.getByRole("button"));
@@ -221,7 +281,7 @@ it("calls updatePropertyValue with the first file if multiple are chosen", async
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
     canSelectMany: false,
     defaultUri: "",
-    filters: { Notebook: ["ipynb"] },
+    filters: { File: undefined },
   });
 
   await waitFor(() => {
@@ -244,9 +304,11 @@ it("calls actionHandler with a default uri if a path is already selected", async
     getHandlers,
   };
 
-  const data = {};
+  const data = {
+    format: "file",
+  };
 
-  const control = new FileControl(propertyId, controller, data);
+  const control = new StringControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   userEvent.click(screen.getByRole("button"));
@@ -255,11 +317,41 @@ it("calls actionHandler with a default uri if a path is already selected", async
   expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
     canSelectMany: false,
     defaultUri: "some/path/example.ipynb",
-    filters: { Notebook: ["ipynb"] },
+    filters: { File: undefined },
   });
 
   await waitFor(() => {
     expect(updatePropertyValue).not.toHaveBeenCalled();
+  });
+});
+
+it("can filter by extension", async () => {
+  const store = createPropertiesStore(propertyId, "");
+
+  const actionHandler = jest.fn().mockResolvedValue([]);
+  const getHandlers = jest.fn(() => ({
+    actionHandler,
+  }));
+
+  const controller = {
+    getHandlers,
+  };
+
+  const data = {
+    format: "file",
+    extensions: [".ipynb"],
+  };
+
+  const control = new StringControl(propertyId, controller, data);
+  render(<Provider store={store}>{control.renderControl()}</Provider>);
+
+  userEvent.click(screen.getByRole("button"));
+
+  expect(actionHandler).toHaveBeenCalledTimes(1);
+  expect(actionHandler).toHaveBeenCalledWith("browse_file", undefined, {
+    canSelectMany: false,
+    defaultUri: "",
+    filters: { File: [".ipynb"] },
   });
 });
 
@@ -275,9 +367,11 @@ it("doesn't crash when actionHandler is not defined", async () => {
     getHandlers,
   };
 
-  const data = {};
+  const data = {
+    format: "file",
+  };
 
-  const control = new FileControl(propertyId, controller, data);
+  const control = new StringControl(propertyId, controller, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
 
   userEvent.click(screen.getByRole("button"));
