@@ -66,11 +66,7 @@ export function fillPropertiesWithSavedData(
 ) {
   return produce(properties, (draftState) => {
     for (const [key, val] of Object.entries(appData)) {
-      if (
-        val !== undefined &&
-        val !== null &&
-        draftState.current_parameters.hasOwnProperty(key)
-      ) {
+      if (val !== undefined && val !== null) {
         draftState.current_parameters[key] = val;
       }
     }
