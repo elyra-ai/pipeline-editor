@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import styled from "styled-components";
 
@@ -53,6 +53,18 @@ const ErrorMessage = styled.div`
   background-color: #5a1d1d;
 `;
 
+function serialize(value: string) {
+  const parsed = parseFloat(value);
+  if (isNaN(parsed)) {
+    return undefined;
+  }
+  return parsed;
+}
+
+function deserialize(value: number | undefined) {
+  return value?.toString();
+}
+
 function NumberControl({
   type,
   multipleOf,
@@ -62,14 +74,21 @@ function NumberControl({
   exclusiveMaximum,
   required,
 }: Props) {
-  const [value, setValue] = useControlState<string>();
+  const [value, setValue] = useControlState<number>();
+
+  const [localValue, setLocalValue] = useState<string>();
 
   const handleChange = useCallback(
     (e) => {
-      setValue(e.target.value);
+      setLocalValue(e.target.value);
+      setValue(serialize(e.target.value));
     },
     [setValue]
   );
+
+  const handleBlur = useCallback(() => {
+    setLocalValue(undefined);
+  }, []);
 
   const validators = getNumberValidators({
     type,
@@ -81,7 +100,9 @@ function NumberControl({
     required,
   });
 
-  const trimmedValue = value?.trim() ?? "";
+  const renderedValue = localValue ?? deserialize(value) ?? "";
+
+  const trimmedValue = renderedValue.trim();
 
   let errorMessages = getErrorMessages(trimmedValue, validators);
   if (!required && trimmedValue === "") {
@@ -95,11 +116,9 @@ function NumberControl({
           // Don't use type="number" see: https://technology.blog.gov.uk/2020/02/24/why-the-gov-uk-design-system-team-changed-the-input-type-for-numbers/
           type="text"
           inputMode="numeric"
-          value={value ?? ""}
+          value={renderedValue}
           onChange={handleChange}
-          onWheel={(e) => {
-            (e.target as any).blur();
-          }}
+          onBlur={handleBlur}
         />
         {errorMessages[0] !== undefined && (
           <ErrorMessage>{errorMessages[0]}</ErrorMessage>
