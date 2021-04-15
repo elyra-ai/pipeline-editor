@@ -259,14 +259,22 @@ class PipelineController extends CanvasController {
           continue;
         }
 
-        let filename;
-        if (typeof node.app_data!.filename === "string") {
-          filename = getFileName(node.app_data!.filename, {
+        let newLabel = nodeDef.label;
+        if (
+          typeof node.app_data!.filename === "string" &&
+          node.app_data!.filename !== ""
+        ) {
+          newLabel = getFileName(node.app_data!.filename, {
             withExtension: SHOW_EXTENSIONS,
           });
         }
 
-        const newLabel = node.app_data!.label ?? filename ?? nodeDef.label;
+        if (
+          typeof node.app_data!.label === "string" &&
+          node.app_data!.label !== ""
+        ) {
+          newLabel = node.app_data!.label;
+        }
 
         // `setNodeLabel` is VERY slow, so make sure we HAVE to set it before
         // setting it.
