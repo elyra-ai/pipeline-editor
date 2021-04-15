@@ -37,42 +37,45 @@ export const nodeSpec = {
       outputs: [],
     },
     parameters: [
-      { id: "filename", type: "string", required: true },
-      {
-        id: "runtime_image",
-        enum: ["continuumio/anaconda3:2020.07", "amancevice/pandas:1.0.3"],
-        required: true,
-      },
-      { id: "dependencies", type: "array[string]", required: false },
-      { id: "include_subdirectories", type: "cboolean", required: false },
-      { id: "env_vars", type: "array[string]", required: false },
-      { id: "outputs", type: "array[string]", required: false },
+      { id: "filename" },
+      { id: "runtime_image" },
+      { id: "dependencies" },
+      { id: "include_subdirectories" },
+      { id: "env_vars" },
+      { id: "outputs" },
     ],
     uihints: {
-      id: "nodeProperties",
       parameter_info: [
         {
           control: "custom",
-          custom_control_id: "pipeline-editor-file-control",
+          custom_control_id: "StringControl",
           parameter_ref: "filename",
           label: { default: "File" },
           description: {
             default: "The path to the notebook file.",
             placement: "on_panel",
           },
-        },
-        {
-          parameter_ref: "runtime_image",
-          label: { default: "Runtime Image" },
-          control: "oneofselect",
-          description: {
-            default: "Docker image used as execution environment.",
-            placement: "on_panel",
+          data: {
+            format: "file",
+            required: true,
           },
         },
         {
           control: "custom",
-          custom_control_id: "pipeline-editor-string-array-control",
+          custom_control_id: "EnumControl",
+          parameter_ref: "runtime_image",
+          label: { default: "Runtime Image" },
+          description: {
+            default: "Docker image used as execution environment.",
+            placement: "on_panel",
+          },
+          data: {
+            items: ["continuumio/anaconda3:2020.07", "amancevice/pandas:1.0.3"],
+          },
+        },
+        {
+          control: "custom",
+          custom_control_id: "StringArrayControl",
           parameter_ref: "dependencies",
           label: { default: "File Dependencies" },
           description: {
@@ -80,21 +83,21 @@ export const nodeSpec = {
               "Local file dependencies that need to be copied to remote execution environment.",
             placement: "on_panel",
           },
-          data: { placeholder: "*.py", fileBrowser: true },
+          data: { placeholder: "*.py" },
         },
         {
           control: "custom",
-          custom_control_id: "pipeline-editor-boolean-control",
+          custom_control_id: "BooleanControl",
           parameter_ref: "include_subdirectories",
           label: { default: "Include Subdirectories" },
           data: {
-            helperText:
+            description:
               "Wether or not to include recursively include subdirectories when submitting a pipeline (This may increase submission time).",
           },
         },
         {
           control: "custom",
-          custom_control_id: "pipeline-editor-string-array-control",
+          custom_control_id: "StringArrayControl",
           parameter_ref: "env_vars",
           label: { default: "Environment Variables" },
           description: {
@@ -106,7 +109,7 @@ export const nodeSpec = {
         },
         {
           control: "custom",
-          custom_control_id: "pipeline-editor-string-array-control",
+          custom_control_id: "StringArrayControl",
           parameter_ref: "outputs",
           label: { default: "Output Files" },
           description: {
@@ -119,10 +122,13 @@ export const nodeSpec = {
       ],
       group_info: [
         {
-          id: "nodeGroupInfo",
           type: "panels",
           group_info: [
-            { id: "filename", type: "controls", parameter_refs: ["filename"] },
+            {
+              id: "filename",
+              type: "controls",
+              parameter_refs: ["filename"],
+            },
             {
               id: "runtime_image",
               type: "controls",
@@ -138,13 +144,20 @@ export const nodeSpec = {
               type: "controls",
               parameter_refs: ["include_subdirectories"],
             },
-            { id: "env_vars", type: "controls", parameter_refs: ["env_vars"] },
-            { id: "outputs", type: "controls", parameter_refs: ["outputs"] },
+            {
+              id: "env_vars",
+              type: "controls",
+              parameter_refs: ["env_vars"],
+            },
+            {
+              id: "outputs",
+              type: "controls",
+              parameter_refs: ["outputs"],
+            },
           ],
         },
       ],
     },
-    resources: {},
   },
 };
 

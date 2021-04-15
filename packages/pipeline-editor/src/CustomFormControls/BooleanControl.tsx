@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useRef } from "react";
+import { useCallback } from "react";
 
-import { useSelector } from "react-redux";
 import styled, { useTheme } from "styled-components";
 
+import { createControl, useControlState } from "./control";
+
 interface Props {
-  name: string;
-  controller: any;
-  helperText: string;
+  description: string;
 }
+
+const Container = styled.div`
+  display: flex;
+`;
 
 const Checkbox = styled.div<{ isChecked: boolean }>`
   box-sizing: border-box;
@@ -48,23 +51,22 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
   }
 
   &::before,
-  & > svg {
+  & > * {
     opacity: ${({ isChecked }) => (isChecked ? 1 : 0)};
   }
 `;
 
-function BooleanComponent({ name, controller, helperText }: Props) {
+function BooleanControl({ description }: Props) {
   const theme = useTheme();
-  const controllerRef = useRef(controller);
 
-  const isChecked = useSelector((state: any) => state.propertiesReducer[name]);
+  const [isChecked = false, setIsChecked] = useControlState<boolean>();
 
   const handleToggle = useCallback(() => {
-    controllerRef.current.updatePropertyValue({ name }, !isChecked);
-  }, [isChecked, name]);
+    setIsChecked(!isChecked);
+  }, [isChecked, setIsChecked]);
 
   return (
-    <div style={{ display: "flex" }} onClick={handleToggle}>
+    <Container onClick={handleToggle}>
       <Checkbox
         isChecked={isChecked}
         className="elyricon elyricon-check"
@@ -75,31 +77,9 @@ function BooleanComponent({ name, controller, helperText }: Props) {
       >
         {theme.overrides?.checkIcon}
       </Checkbox>
-      <div className="properties-control-description">{helperText}</div>
-    </div>
+      <div className="properties-control-description">{description}</div>
+    </Container>
   );
 }
 
-export class BooleanControl {
-  static id() {
-    return "pipeline-editor-boolean-control";
-  }
-
-  constructor(
-    private propertyId: { name: string },
-    private controller: any,
-    private data: any
-  ) {}
-
-  renderControl() {
-    return (
-      <BooleanComponent
-        name={this.propertyId.name}
-        controller={this.controller}
-        {...this.data}
-      />
-    );
-  }
-}
-
-export default BooleanControl;
+export default createControl("BooleanControl", BooleanControl);

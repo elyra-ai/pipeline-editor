@@ -141,11 +141,9 @@ describe("getNodeProblems", () => {
     };
 
     const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
-    expect(problems).toHaveLength(2);
+    expect(problems).toHaveLength(1);
     expect(problems[0].info.type).toBe("missingProperty");
     expect(problems[0].info.property).toBe("filename");
-    expect(problems[1].info.type).toBe("missingProperty");
-    expect(problems[1].info.property).toBe("runtime_image");
   });
 
   it("should find missing properties for empty strings", () => {
@@ -167,11 +165,9 @@ describe("getNodeProblems", () => {
     };
 
     const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
-    expect(problems).toHaveLength(2);
+    expect(problems).toHaveLength(1);
     expect(problems[0].info.type).toBe("missingProperty");
     expect(problems[0].info.property).toBe("filename");
-    expect(problems[1].info.type).toBe("missingProperty");
-    expect(problems[1].info.property).toBe("runtime_image");
   });
 
   it("should return no problems if required properties are provided", () => {

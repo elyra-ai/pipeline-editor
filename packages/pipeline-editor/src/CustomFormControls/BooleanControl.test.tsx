@@ -24,13 +24,13 @@ import { createPropertiesStore } from "./test-utils";
 const propertyId = { name: "boolean" };
 
 it("has an id", () => {
-  expect(BooleanControl.id()).toBe("pipeline-editor-boolean-control");
+  expect(BooleanControl.id()).toBe("BooleanControl");
 });
 
 it("renders helper text", () => {
   const store = createPropertiesStore(propertyId, true);
 
-  const data = { helperText: "helper text" };
+  const data = { description: "helper text" };
 
   const control = new BooleanControl(propertyId, {}, data);
   const { container } = render(
@@ -43,7 +43,7 @@ it("renders helper text", () => {
 it("renders checked", () => {
   const store = createPropertiesStore(propertyId, true);
 
-  const data = { helperText: "helper text" };
+  const data = { description: "helper text" };
 
   const control = new BooleanControl(propertyId, {}, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
@@ -54,7 +54,7 @@ it("renders checked", () => {
 it("renders not checked", () => {
   const store = createPropertiesStore(propertyId, false);
 
-  const data = { helperText: "helper text" };
+  const data = { description: "helper text" };
 
   const control = new BooleanControl(propertyId, {}, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
@@ -67,7 +67,7 @@ it("calls updatePropertyValue on with true when not checked", () => {
 
   const updatePropertyValue = jest.fn();
 
-  const data = { helperText: "helper text" };
+  const data = { description: "helper text" };
 
   const control = new BooleanControl(propertyId, { updatePropertyValue }, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);
@@ -82,7 +82,7 @@ it("calls updatePropertyValue on with false when checked", () => {
 
   const updatePropertyValue = jest.fn();
 
-  const data = { helperText: "helper text" };
+  const data = { description: "helper text" };
 
   const control = new BooleanControl(propertyId, { updatePropertyValue }, data);
   render(<Provider store={store}>{control.renderControl()}</Provider>);

@@ -116,7 +116,8 @@ export const CanvasOverrides = css`
     margin-top: 9px;
   }
 
-  .properties-wrapper input[type="text" i] {
+  .properties-wrapper input[type="text" i],
+  .properties-wrapper input[type="number" i] {
     box-sizing: border-box;
     padding: 4px;
     background-color: ${({ theme }) => theme.palette.background.input};
@@ -129,12 +130,14 @@ export const CanvasOverrides = css`
     font-size: ${({ theme }) => theme.typography.fontSize};
   }
 
-  .properties-wrapper input[type="text" i]:focus {
+  .properties-wrapper input[type="text" i]:focus,
+  .properties-wrapper input[type="number" i]:focus {
     outline: 1px solid ${({ theme }) => theme.palette.focus};
     outline-offset: -1px;
   }
 
-  .properties-wrapper input[type="text" i]:disabled {
+  .properties-wrapper input[type="text" i]:disabled,
+  .properties-wrapper input[type="number" i]:disabled {
     color: ${({ theme }) => theme.palette.text.disabled};
   }
 
@@ -184,7 +187,8 @@ export const CanvasOverrides = css`
     margin-top: 14px;
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel {
     padding-left: 33px;
     padding-right: 24px;
@@ -192,7 +196,8 @@ export const CanvasOverrides = css`
     max-width: 822px;
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper {
     padding-left: 14px;
@@ -486,13 +491,15 @@ export const CanvasOverrides = css`
     display: none;
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper {
     position: relative;
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper
     .error::before {
@@ -519,21 +526,23 @@ export const CanvasOverrides = css`
   .properties-required-indicator {
     display: none;
   }
-
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper {
     position: relative;
     border: 1px solid transparent;
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper:hover {
     background-color: ${({ theme }) => theme.palette.highlight.hover};
   }
 
-  .properties-control-panel[data-id="properties-nodeGroupInfo"]
+  .properties-editor-form
+    .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper.selected {
     background-color: ${({ theme }) => theme.palette.highlight.focus};

@@ -16,17 +16,10 @@
 
 import { createStore } from "redux";
 
-export function createPropertiesStore(
-  { name }: { name: string },
-  value: any,
-  error?: any
-) {
+export function createPropertiesStore({ name }: { name: string }, value: any) {
   const initialState = {
     propertiesReducer: {
       [name]: value,
-    },
-    errorMessagesReducer: {
-      [name]: error,
     },
   };
 
