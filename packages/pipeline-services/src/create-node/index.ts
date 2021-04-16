@@ -27,7 +27,9 @@ interface NodeSchemaCommon {
   properties?: NodeProperty[]; // fixed properties for the node (dynamic and runtime specific properties don't go here)
 }
 
-interface SimpleNodeSchema extends NodeSchemaCommon {}
+interface SimpleNodeSchema extends NodeSchemaCommon {
+  type: undefined;
+}
 
 interface FileNodeSchema extends NodeSchemaCommon {
   type: "file";
@@ -59,6 +61,7 @@ interface StringProperty extends NodePropertyCommon {
   default?: string; // for defining the default value of a property
   required?: boolean;
   placeholder?: string;
+  extensions?: string[];
 }
 
 interface NumberProperty extends NodePropertyCommon {
@@ -200,31 +203,41 @@ function createGroupInfo(item: NodeProperty): GroupInfo {
   };
 }
 
-function toCommonProperties(items: NodeProperty[]) {
+function toCommonProperties(node: NodeSchema) {
   // TODO: We should dynamically generate fixed fields as well
   // TODO: Inject file field for file nodes.
 
-  const labelItem: StringProperty = {
-    id: "label",
-    title: "Label",
-    type: "string",
-  };
+  const items = [...(node.properties ?? [])];
 
   let commonProperties: CommonProperties = {
-    current_parameters: {
-      ...createCurrentParameter(labelItem),
-    },
-    parameters: [createParameter(labelItem)],
+    current_parameters: {},
+    parameters: [],
     uihints: {
-      parameter_info: [createParameterInfo(labelItem)],
+      parameter_info: [],
       group_info: [
         {
           type: "panels",
-          group_info: [createGroupInfo(labelItem)],
+          group_info: [],
         },
       ],
     },
   };
+
+  items.push({
+    id: "label",
+    title: "Label",
+    type: "string",
+  });
+
+  if (node.type === "file") {
+    items.push({
+      id: "filename",
+      title: "File",
+      type: "string",
+      format: "file",
+      extensions: node.extensions,
+    });
+  }
 
   for (const item of items) {
     commonProperties.current_parameters = {
@@ -244,6 +257,6 @@ function toCommonProperties(items: NodeProperty[]) {
 export function createNode(node: NodeSchema) {
   return {
     ...node,
-    properties: toCommonProperties(node.properties ?? []),
+    properties: toCommonProperties(node),
   };
 }
