@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-type NodeSchema = SimpleNodeSchema | FileNodeSchema;
+export type NodeTypes = "file";
+
+export type NodeSchema = SimpleNodeSchema | FileNodeSchema;
 
 interface NodeSchemaCommon {
   op: string; // ID for a node type. For example: `execute-notebook-node`
-  icon: string; // SVG that will show up on the node
-  label: string; // default label (the rendered label is dynamic)
-  description: string; // description that could show up in the palette or when hovering on the node in the pipeline
-  properties: NodeProperty[]; // fixed properties for the node (dynamic and runtime specific properties don't go here)
+  label?: string; // default label (the rendered label is dynamic)
+  description?: string; // description that could show up in the palette or when hovering on the node in the pipeline
+  icon?: string;
+  type?: NodeTypes;
+  properties?: NodeProperty[]; // fixed properties for the node (dynamic and runtime specific properties don't go here)
 }
 
-interface SimpleNodeSchema extends NodeSchemaCommon {
-  fileNode?: false;
-}
+interface SimpleNodeSchema extends NodeSchemaCommon {}
 
 interface FileNodeSchema extends NodeSchemaCommon {
-  fileNode: true;
-  extensions: string[]; // a file node will probably only ever be linked to one file type, but a list of extensions is needed. For example: ["yaml", "yml"]
+  type: "file";
+  extensions: string[]; // a file node will probably only ever be linked to one file type, but a list of extensions is needed. For example: [".yaml", ".yml"]
   language?: string; // a combination of this and extension will help determine an icon for the node.
 }
 
@@ -41,7 +42,7 @@ interface NodePropertyCommon {
   markdownDescription?: string;
 }
 
-type NodeProperty =
+export type NodeProperty =
   | StringProperty
   | NumberProperty
   | ArrayProperty
@@ -71,17 +72,24 @@ interface NumberProperty extends NodePropertyCommon {
   required?: boolean;
 }
 
+// Part of the actual JSON schema spec is the ability to specify an array of `items`.
+// For example: `[{ type: "number" }, { type: "string" }, { type: "number" }]`
+// This would only allow an array with 3 items with the specified types. You can also pass `additionalItems`
+// which would allow more than the 3 items, with the specified type for the overflow.
 interface ArrayProperty extends NodePropertyCommon {
   type: "array";
-  items: StringProperty;
-  // items: NodeProperty | NodeProperty[];  TODO: maybe?
-  // additionalItems: false | NodeProperty; TODO: maybe?
+  items: Omit<StringProperty, keyof NodePropertyCommon>; // I think it we should restrict this to: `items: { type: "string" }`
+  // Part of JSON schema, but probably not worth the complexity:
+  // items: NodeProperty | NodeProperty[];
+  // additionalItems: false | NodeProperty;
   uniqueItems?: boolean;
   minItems?: number; // for restricting array length
   maxItems?: number; // for restricting array length
   default?: any[]; // for defining the default value of a property
   // an array can't really be "required", use minItems: 1 to emulate.
 }
+
+// I don't think we need to support `object`
 
 interface BooleanProperty extends NodePropertyCommon {
   type: "boolean";
@@ -91,197 +99,143 @@ interface BooleanProperty extends NodePropertyCommon {
 
 interface CommonProperties {
   current_parameters: { [key: string]: any };
-  parameters: any[];
+  parameters: { id: string }[];
   uihints: {
-    id: "nodeProperties";
-    parameter_info: any[];
-    action_info: any[];
+    parameter_info: ParameterInfo[];
     group_info: [
       {
-        id: "nodeGroupInfo";
         type: "panels";
-        group_info: any[];
+        group_info: GroupInfo[];
       }
     ];
   };
-  resources: any;
+}
+
+interface ParameterInfo {
+  control: "custom";
+  custom_control_id:
+    | "StringControl"
+    | "NumberControl"
+    | "EnumControl"
+    | "BooleanControl"
+    | "StringArrayControl";
+  parameter_ref: string;
+  label: { default: string };
+  description?: {
+    default: string;
+    placement: "on_panel";
+  };
+  data: any;
+}
+
+interface GroupInfo {
+  id: string;
+  type: "controls";
+  parameter_refs: [string];
+}
+
+function createCurrentParameter(item: NodeProperty) {
+  switch (item.type) {
+    case "boolean":
+      return { [item.id]: item.default ?? false };
+
+    case "number":
+    case "integer":
+      return { [item.id]: item.default };
+
+    case "string":
+      return { [item.id]: item.default ?? "" };
+
+    case "array":
+      return { [item.id]: item.default ?? [] };
+  }
+}
+function createParameter(item: NodeProperty) {
+  return { id: item.id };
+}
+
+function createParameterInfo(item: NodeProperty): ParameterInfo {
+  const baseInfo: Partial<ParameterInfo> = {
+    control: "custom",
+    parameter_ref: item.id,
+    label: { default: item.title },
+    description: item.description
+      ? {
+          default: item.description,
+          placement: "on_panel",
+        }
+      : undefined,
+    data: { ...item }, // just give everything as data.
+  };
+  switch (item.type) {
+    case "boolean":
+      baseInfo.custom_control_id = "BooleanControl";
+      delete baseInfo.description;
+      baseInfo.data = {
+        helperText: item.description,
+      };
+      break;
+
+    case "number":
+    case "integer":
+      baseInfo.custom_control_id = "NumberControl";
+      break;
+
+    case "string":
+      baseInfo.custom_control_id = "StringControl";
+      break;
+
+    case "array":
+      baseInfo.custom_control_id = "StringArrayControl";
+      break;
+  }
+  return baseInfo as ParameterInfo;
+}
+
+function createGroupInfo(item: NodeProperty): GroupInfo {
+  return {
+    id: item.id,
+    type: "controls",
+    parameter_refs: [item.id],
+  };
 }
 
 function toCommonProperties(items: NodeProperty[]) {
   // TODO: We should dynamically generate fixed fields as well
   // TODO: Inject file field for file nodes.
+
+  const labelItem: StringProperty = {
+    id: "label",
+    title: "Label",
+    type: "string",
+  };
+
   let commonProperties: CommonProperties = {
     current_parameters: {
-      label: "",
+      ...createCurrentParameter(labelItem),
     },
-    parameters: [{ id: "label", type: "string", required: false }],
+    parameters: [createParameter(labelItem)],
     uihints: {
-      id: "nodeProperties",
-      parameter_info: [
-        {
-          parameter_ref: "label",
-          label: {
-            default: "Label",
-          },
-        },
-      ],
-      action_info: [],
+      parameter_info: [createParameterInfo(labelItem)],
       group_info: [
         {
-          id: "nodeGroupInfo",
           type: "panels",
-          group_info: [
-            { id: "label", type: "controls", parameter_refs: ["label"] },
-          ],
+          group_info: [createGroupInfo(labelItem)],
         },
       ],
     },
-    resources: {},
   };
 
   for (const item of items) {
-    switch (item.type) {
-      case "boolean": {
-        commonProperties.current_parameters[item.id] = item.default ?? false;
-        commonProperties.parameters.push({
-          id: item.id,
-          type: "cboolean",
-          required: false,
-        });
-        commonProperties.uihints.parameter_info.push({
-          control: "custom",
-          custom_control_id: "pipeline-editor-boolean-control",
-          parameter_ref: item.id,
-          label: {
-            default: item.title,
-          },
-          data: {
-            helperText: item.description,
-          },
-        });
-        commonProperties.uihints.group_info[0].group_info.push({
-          id: item.id,
-          type: "controls",
-          parameter_refs: [item.id],
-        });
-        break;
-      }
-
-      case "string": {
-        if (item.format === "file") {
-          commonProperties.current_parameters[item.id] = item.default ?? "";
-          commonProperties.parameters.push({
-            id: item.id,
-            type: "string",
-            required: item.required ?? false,
-          });
-          commonProperties.uihints.parameter_info.push({
-            parameter_ref: item.id,
-            label: {
-              default: item.title,
-            },
-            description: item.description
-              ? {
-                  default: item.description,
-                  placement: "on_panel",
-                }
-              : undefined,
-          });
-          commonProperties.uihints.group_info[0].group_info.push({
-            id: item.id,
-            type: "controls",
-            parameter_refs: [item.id],
-          });
-          break;
-        }
-
-        commonProperties.current_parameters[item.id] = item.default ?? "";
-        if (item.enum) {
-          commonProperties.parameters.push({
-            id: item.id,
-            enum: item.enum,
-            required: item.required ?? false,
-          });
-          commonProperties.uihints.parameter_info.push({
-            parameter_ref: item.id,
-            label: {
-              default: item.title,
-            },
-            control: "oneofselect",
-            description: item.description
-              ? {
-                  default: item.description,
-                  placement: "on_panel",
-                }
-              : undefined,
-          });
-          commonProperties.uihints.group_info[0].group_info.push({
-            id: item.id,
-            type: "controls",
-            parameter_refs: [item.id],
-          });
-          break;
-        }
-
-        commonProperties.parameters.push({
-          id: item.id,
-          type: "string",
-          required: item.required ?? false,
-        });
-        commonProperties.uihints.parameter_info.push({
-          parameter_ref: item.id,
-          label: {
-            default: item.title,
-          },
-          description: item.description
-            ? {
-                default: item.description,
-                placement: "on_panel",
-              }
-            : undefined,
-          data: {
-            placeholder: item.placeholder,
-          },
-        });
-        commonProperties.uihints.group_info[0].group_info.push({
-          id: item.id,
-          type: "controls",
-          parameter_refs: [item.id],
-        });
-        break;
-      }
-
-      case "array": {
-        commonProperties.current_parameters[item.id] = item.default ?? [];
-        commonProperties.parameters.push({
-          id: item.id,
-          type: "array[string]",
-        });
-        commonProperties.uihints.parameter_info.push({
-          control: "custom",
-          custom_control_id: "pipeline-editor-string-array-control",
-          parameter_ref: item.id,
-          label: {
-            default: item.title,
-          },
-          description: item.description
-            ? {
-                default: item.description,
-                placement: "on_panel",
-              }
-            : undefined,
-          data: {
-            placeholder: item.items.placeholder,
-          },
-        });
-        commonProperties.uihints.group_info[0].group_info.push({
-          id: item.id,
-          type: "controls",
-          parameter_refs: [item.id],
-        });
-        break;
-      }
-    }
+    commonProperties.current_parameters = {
+      ...commonProperties.current_parameters,
+      ...createCurrentParameter(item),
+    };
+    commonProperties.parameters.push(createParameter(item));
+    commonProperties.uihints.parameter_info.push(createParameterInfo(item));
+    commonProperties.uihints.group_info[0].group_info.push(
+      createGroupInfo(item)
+    );
   }
 
   return commonProperties;
@@ -290,6 +244,6 @@ function toCommonProperties(items: NodeProperty[]) {
 export function createNode(node: NodeSchema) {
   return {
     ...node,
-    properties: toCommonProperties(node.properties),
+    properties: toCommonProperties(node.properties ?? []),
   };
 }
