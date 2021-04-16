@@ -172,7 +172,9 @@ describe("rangeForLocation", () => {
   });
 
   it("returns range for range", () => {
-    const range = rangeForLocation({ offset: 10, length: 10 } as Node);
-    expect(range).toEqual({ offset: 10, length: 10 });
+    const range = rangeForLocation({
+      parent: { offset: 10, colonOffset: 15 },
+    } as Node);
+    expect(range).toEqual({ offset: 10, length: 5 });
   });
 });
