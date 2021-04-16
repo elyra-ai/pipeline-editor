@@ -23,18 +23,17 @@ function toCommonProperties(items) {
         commonProperties.current_parameters[item.id] = item.default ?? false;
         commonProperties.parameters.push({
           id: item.id,
-          type: "cboolean",
-          required: false,
         });
         commonProperties.uihints.parameter_info.push({
           control: "custom",
-          custom_control_id: "pipeline-editor-boolean-control",
+          custom_control_id: "BooleanControl",
           parameter_ref: item.id,
           label: {
             default: item.label,
           },
           data: {
             helperText: item.description,
+            required: false,
           },
         });
         commonProperties.uihints.group_info[0].group_info.push({
@@ -47,10 +46,10 @@ function toCommonProperties(items) {
         commonProperties.current_parameters[item.id] = item.default ?? "";
         commonProperties.parameters.push({
           id: item.id,
-          type: "string",
-          required: item.required ?? false,
         });
         commonProperties.uihints.parameter_info.push({
+          control: "custom",
+          custom_control_id: "StringControl",
           parameter_ref: item.id,
           label: {
             default: item.label,
@@ -61,6 +60,10 @@ function toCommonProperties(items) {
                 placement: "on_panel",
               }
             : undefined,
+          data: {
+            format: "file",
+            required: item.required ?? false,
+          },
         });
         commonProperties.uihints.group_info[0].group_info.push({
           id: item.id,
@@ -73,29 +76,32 @@ function toCommonProperties(items) {
         if (item.enum) {
           commonProperties.parameters.push({
             id: item.id,
-            enum: item.enum,
-            required: item.required ?? false,
           });
           commonProperties.uihints.parameter_info.push({
             parameter_ref: item.id,
             label: {
               default: item.label,
             },
-            control: "oneofselect",
+            control: "custom",
+            custom_control_id: "EnumControl",
             description: item.description
               ? {
                   default: item.description,
                   placement: "on_panel",
                 }
               : undefined,
+            data: {
+              items: item.enum,
+              required: item.required ?? false,
+            },
           });
         } else {
           commonProperties.parameters.push({
             id: item.id,
-            type: "string",
-            required: item.required ?? false,
           });
           commonProperties.uihints.parameter_info.push({
+            control: "custom",
+            custom_control_id: "StringControl",
             parameter_ref: item.id,
             label: {
               default: item.label,
@@ -108,6 +114,7 @@ function toCommonProperties(items) {
               : undefined,
             data: {
               placeholder: "*.py",
+              required: item.required ?? false,
             },
           });
         }
@@ -122,12 +129,10 @@ function toCommonProperties(items) {
         commonProperties.current_parameters[item.id] = item.default ?? [];
         commonProperties.parameters.push({
           id: item.id,
-          type: "array[string]",
-          required: item.required ?? false,
         });
         commonProperties.uihints.parameter_info.push({
           control: "custom",
-          custom_control_id: "pipeline-editor-string-array-control",
+          custom_control_id: "StringArrayControl",
           parameter_ref: item.id,
           label: {
             default: item.label,
@@ -140,6 +145,7 @@ function toCommonProperties(items) {
             : undefined,
           data: {
             placeholder: item.placeholder,
+            required: item.required ?? false,
           },
         });
         commonProperties.uihints.group_info[0].group_info.push({
