@@ -17,7 +17,7 @@
 import { fillPropertiesWithSavedData } from "./properties-utils";
 
 describe("fillPropertiesWithSavedData", () => {
-  it("should fill properties that are not defined in schema", () => {
+  it("should fill properties that are not explicitly defined in the defaults", () => {
     const defaults = {
       current_parameters: {
         filename: "",
