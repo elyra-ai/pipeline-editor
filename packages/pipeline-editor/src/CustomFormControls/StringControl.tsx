@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import styled from "styled-components";
 
@@ -55,6 +55,13 @@ const ErrorMessage = styled.div`
   background-color: #5a1d1d;
 `;
 
+function serialize(value: string) {
+  if (value.trim() === "") {
+    return undefined;
+  }
+  return value;
+}
+
 // TODO: Make the file clearable
 function StringControl({
   pattern,
@@ -68,12 +75,26 @@ function StringControl({
 }: Props) {
   const [value, setValue] = useControlState<string>();
 
-  const handleChange = useCallback(
-    (e) => {
-      setValue(e.target.value);
+  const [localValue, setLocalValue] = useState<string>();
+
+  const update = useCallback(
+    (value) => {
+      setLocalValue(value);
+      setValue(serialize(value));
     },
     [setValue]
   );
+
+  const handleChange = useCallback(
+    (e) => {
+      update(e.target.value);
+    },
+    [update]
+  );
+
+  const handleBlur = useCallback(() => {
+    setLocalValue(undefined);
+  }, []);
 
   const { actionHandler } = useHandlers();
   const handleChooseFile = useCallback(async () => {
@@ -84,9 +105,9 @@ function StringControl({
     });
     //  Don't set if nothing was chosen.
     if (values !== undefined && values.length > 0) {
-      setValue(values[0]);
+      update(values[0]);
     }
-  }, [actionHandler, value, extensions, setValue]);
+  }, [actionHandler, value, extensions, update]);
 
   const validators = getStringValidators({
     pattern,
@@ -97,7 +118,9 @@ function StringControl({
     required,
   });
 
-  const trimmedValue = value?.trim() ?? "";
+  const renderedValue = localValue ?? value ?? "";
+
+  const trimmedValue = renderedValue.trim();
 
   let errorMessages = getErrorMessages(trimmedValue, validators);
   if (!required && trimmedValue === "") {
@@ -109,24 +132,17 @@ function StringControl({
       <InputContainer>
         <input
           type="text"
-          value={value ?? ""}
+          value={renderedValue}
           placeholder={placeholder}
           onChange={handleChange}
           disabled={format === "file"}
+          onBlur={handleBlur}
         />
         {errorMessages[0] !== undefined && (
           <ErrorMessage>{errorMessages[0]}</ErrorMessage>
         )}
       </InputContainer>
-      {format === "file" && (
-        <button
-          onClick={() => {
-            handleChooseFile();
-          }}
-        >
-          Browse
-        </button>
-      )}
+      {format === "file" && <button onClick={handleChooseFile}>Browse</button>}
     </Container>
   );
 }
