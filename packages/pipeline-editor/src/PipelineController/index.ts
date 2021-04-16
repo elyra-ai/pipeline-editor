@@ -16,7 +16,6 @@
 
 import { CanvasController, PipelineFlowV3 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
-import { nanoid } from "nanoid";
 
 import { CustomNodeSpecification } from "../types";
 import {
@@ -65,18 +64,16 @@ class PipelineController extends CanvasController {
   open(pipelineJson: any) {
     // if pipeline is undefined/null create a new one from scratch.
     if (pipelineJson === undefined || pipelineJson === null) {
-      const flowID = nanoid();
-      const pipelineID = nanoid();
       pipelineJson = {
         doc_type: "pipeline",
         version: "3.0",
         json_schema:
           "http://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
-        id: flowID,
-        primary_pipeline: pipelineID,
+        id: "elyra-auto-generated-pipeline",
+        primary_pipeline: "primary",
         pipelines: [
           {
-            id: pipelineID,
+            id: "primary",
             nodes: [],
             app_data: {
               ui_data: { comments: [] },
