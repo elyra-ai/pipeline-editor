@@ -111,6 +111,7 @@ module.exports = {
         "*.test.{ts,tsx}",
         "test-utils.{ts,tsx}",
         "cypress/**",
+        "scripts/**",
       ],
       rules: {
         "import/no-extraneous-dependencies": [
