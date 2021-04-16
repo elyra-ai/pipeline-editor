@@ -161,6 +161,7 @@ declare module "@elyra/canvas" {
       temporary: boolean
     ): void;
     removeAllStyles(temporary?: boolean): void;
+    clearPipelineFlow(): void;
     getPipelineFlow(): PipelineFlowV3;
     setPipelineFlow(pipelineFlow: PipelineFlowV3): void;
     getPrimaryPipelineId(): string;

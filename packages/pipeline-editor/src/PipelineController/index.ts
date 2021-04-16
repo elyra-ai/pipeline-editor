@@ -64,10 +64,26 @@ class PipelineController extends CanvasController {
   open(pipelineJson: any) {
     // if pipeline is undefined/null create a new one from scratch.
     if (pipelineJson === undefined || pipelineJson === null) {
-      const emptyPipelineJson = this.getPipelineFlow();
-      // NOTE: We should be guaranteed app_data is defined here.
-      emptyPipelineJson.pipelines[0].app_data!.version = PIPELINE_CURRENT_VERSION;
-      pipelineJson = emptyPipelineJson;
+      pipelineJson = {
+        doc_type: "pipeline",
+        version: "3.0",
+        json_schema:
+          "http://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
+        id: "elyra-auto-generated-pipeline",
+        primary_pipeline: "primary",
+        pipelines: [
+          {
+            id: "primary",
+            nodes: [],
+            app_data: {
+              ui_data: { comments: [] },
+              version: PIPELINE_CURRENT_VERSION,
+            },
+            runtime_ref: "",
+          },
+        ],
+        schemas: [],
+      };
     }
 
     // This must happen after the pipeline has been finalized, but before any
