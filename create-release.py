@@ -156,6 +156,7 @@ def build_and_publish_npm_packages() -> None:
 
     check_run(["make", "clean"], cwd=config.source_dir, capture_output=False)
     check_run(["yarn", "install"], cwd=config.source_dir, capture_output=False)
+    check_run(["yarn", "build"], cwd=config.source_dir, capture_output=False)
 
     print("-----------------------------------------------------------------")
     print("-------------------- Pushing npm packages -----------------------")
