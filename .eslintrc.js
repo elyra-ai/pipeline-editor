@@ -96,6 +96,12 @@ module.exports = {
   },
   overrides: [
     {
+      files: ["examples/**"],
+      rules: {
+        "header/header": ["off"],
+      },
+    },
+    {
       files: ["cypress/**"],
       rules: {
         "testing-library/prefer-screen-queries": "off",

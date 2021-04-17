@@ -1,0 +1,22 @@
+{
+  "name": "create-react-app-with-typescript",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@elyra/pipeline-editor": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-scripts": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
