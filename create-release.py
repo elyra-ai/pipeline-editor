@@ -157,6 +157,18 @@ def build_and_publish_npm_packages() -> None:
     check_run(["make", "clean"], cwd=config.source_dir, capture_output=False)
     check_run(["yarn", "install"], cwd=config.source_dir, capture_output=False)
 
+    print("-----------------------------------------------------------------")
+    print("-------------------- Pushing npm packages -----------------------")
+    print("-----------------------------------------------------------------")
+
+    # publish npm packages
+    print()
+    print(f'publishing npm packages')
+    check_run(['lerna', 'publish', '--yes', 'from-package', '--no-git-tag-version', '--no-verify-access', '--no-push'], cwd=config.source_dir)
+
+
+def publish_git_release() -> None:
+    global config
 
     print("-----------------------------------------------------------------")
     print("--------------- Pushing Release and Tag to git ------------------")
@@ -168,16 +180,6 @@ def build_and_publish_npm_packages() -> None:
     check_run(['git', 'push'], cwd=config.source_dir)
     print('Pushing release tag to git')
     check_run(['git', 'push', '--tags'], cwd=config.source_dir)
-
-
-    print("-----------------------------------------------------------------")
-    print("-------------------- Pushing npm packages -----------------------")
-    print("-----------------------------------------------------------------")
-
-    # publish npm packages
-    print()
-    print(f'publishing npm packages')
-    check_run(['lerna', 'publish', '--yes', 'from-package', '--no-git-tag-version', '--no-verify-access', '--no-push'], cwd=config.source_dir)
 
 
 def release() -> None:
@@ -201,6 +203,8 @@ def release() -> None:
     update_version_to_dev()
     # commit
     check_run(['git', 'commit', '-a', '-m', f'Prepare for next development iteration'], cwd=config.source_dir)
+    # publish git changes
+    publish_git_release()
 
 
 def initialize_config(args=None) -> SimpleNamespace:
@@ -255,17 +259,14 @@ def print_config() -> None:
 
 def print_help() -> str:
     return (
-    """create-release.py [ prepare | publish ] --version VERSION
+    """create-release.py --version VERSION --dev-version NEXT_VERSION
     
     DESCRIPTION
     Creates Elyra release based on git commit hash or from HEAD.
     
-    create-release.py prepare --version 1.3.0 --dev-version 1.4.0 [--rc 0]
-    This form will prepare a release candidate, build it locally and push the changes to a branch for review.  
-    
-    create-release.py publish --version 1.3.0
-    This form will build a previously prepared release, and publish the artifacts to public repositories.
-    
+    create-release.py --version 1.3.0 --dev-version 1.4.0 [--rc 0]
+    This form will prepare a release, build its artifacts and publish
+
     Required software dependencies for building and publishing a release:
      - Git
      - Node
@@ -274,8 +275,7 @@ def print_help() -> str:
      
      Required configurations for publishing a release:
      - GPG with signing key configured
-     
-     
+
     """
     )
 
