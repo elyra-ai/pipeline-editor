@@ -35,20 +35,11 @@ limitations under the License.
 `@elyra/pipeline-editor` is available as an [npm package](https://www.npmjs.com/package/@elyra/pipeline-editor):
 
 ```sh
-// npm
+# npm
 npm install @elyra/pipeline-editor
 
-// yarn
+# yarn
 yarn add @elyra/pipeline-editor
-```
-
-Or can be linked locally:
-
-```sh
-git clone git@github.com:elyra-ai/pipeline-editor.git
-cd pipeline-editor
-
-make clean install link
 ```
 
 ## Usage
