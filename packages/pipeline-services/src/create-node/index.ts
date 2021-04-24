@@ -185,6 +185,11 @@ function createParameterInfo(item: NodeProperty): ParameterInfo {
       break;
 
     case "string":
+      if (item.enum !== undefined) {
+        baseInfo.custom_control_id = "EnumControl";
+        baseInfo.data = { ...baseInfo.data, items: item.enum };
+        break;
+      }
       baseInfo.custom_control_id = "StringControl";
       break;
 
@@ -207,7 +212,7 @@ function toCommonProperties(node: NodeSchema) {
   // TODO: We should dynamically generate fixed fields as well
   // TODO: Inject file field for file nodes.
 
-  const items = [...(node.properties ?? [])];
+  const items: NodeProperty[] = [];
 
   let commonProperties: CommonProperties = {
     current_parameters: {},
@@ -238,6 +243,8 @@ function toCommonProperties(node: NodeSchema) {
       extensions: node.extensions,
     });
   }
+
+  items.push(...(node.properties ?? []));
 
   for (const item of items) {
     commonProperties.current_parameters = {
