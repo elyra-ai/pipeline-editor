@@ -58,7 +58,7 @@ export function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
 // a second type `PipelineFlowV3Opened` because `app_data` is guaranteed once
 // the pipeline file has been opened by canvas.
 class PipelineController extends CanvasController {
-  private nodes: CustomNodeSpecification[] = [];
+  private nodes: any[] = [];
   private lastOpened: PipelineFlowV3 | undefined;
 
   open(pipelineJson: any) {
@@ -388,9 +388,9 @@ class PipelineController extends CanvasController {
 
           const message = nodeProblems
             .map((problem) => {
-              const label = nodeDef.properties!.uihints!.parameter_info.find(
-                (p) => p.parameter_ref === problem.property
-              )!.label.default;
+              const label = nodeDef.properties.find(
+                (p: any) => p.id === problem.property
+              )!.title;
               return `property "${label}" is required`;
             })
             .join("\n");
@@ -437,13 +437,13 @@ class PipelineController extends CanvasController {
       const { op, app_data } = node;
       const nodeDef = this.nodes.find((n) => n.op === op);
 
-      const info = nodeDef?.properties?.uihints?.parameter_info ?? [];
+      const props = nodeDef?.properties ?? [];
 
-      const properties = info.map((i) => {
+      const properties = props.map((p: any) => {
         return {
-          label: i.label.default,
+          label: p.title,
           // `app_data` should never be undefined because canvas injects it.
-          value: app_data![i.parameter_ref],
+          value: app_data![p.id],
         };
       });
       return properties;

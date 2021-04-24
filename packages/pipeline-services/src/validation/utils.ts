@@ -41,6 +41,10 @@ export function getLinks(pipeline: any) {
   return links;
 }
 
+export function getLabel(node: any): string {
+  return node?.app_data?.ui_data?.label ?? node?.id ?? "unknown";
+}
+
 export function getNodes(pipeline: any): any[] {
   return pipeline.nodes;
 }
