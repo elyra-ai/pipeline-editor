@@ -104,15 +104,23 @@ function getStructuralProblems(pipeline: any): string[] {
   // the pipeline contains a `primary_pipeline` field that is a string
   if (pipeline.primary_pipeline === undefined) {
     messages.push("Could not determine the primary pipeline.");
-  } else if (typeof pipeline.primary_pipeline !== "string") {
+    return messages;
+  }
+
+  if (typeof pipeline.primary_pipeline !== "string") {
     messages.push("Field 'primary_pipeline' should be a string.");
+    return messages;
   }
 
   // the pipeline contains a `pipelines` field that is an array
   if (pipeline.pipelines === undefined) {
     messages.push("Pipeline definition not found.");
-  } else if (Array.isArray(pipeline.pipelines) === false) {
+    return messages;
+  }
+
+  if (Array.isArray(pipeline.pipelines) === false) {
     messages.push("Field 'pipelines' should be a list.");
+    return messages;
   }
 
   // the `primary_pipeline` is findable in the `pipelines` array
@@ -121,7 +129,6 @@ function getStructuralProblems(pipeline: any): string[] {
   if (primary === undefined) {
     messages.push(`Primary pipeline '${primaryID}' not found.`);
 
-    // we can't run any of tests without a primary pipeline
     return messages;
   }
 
