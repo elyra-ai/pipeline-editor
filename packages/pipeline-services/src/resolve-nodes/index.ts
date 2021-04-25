@@ -129,6 +129,5 @@ function resolveNode(node: NodeSchema) {
 }
 
 export function resolveNodes(nodes?: NodeSchema[]) {
-  console.log(typeof nodes, nodes);
   return (nodes ?? []).map(resolveNode);
 }
