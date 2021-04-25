@@ -99,13 +99,101 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
   return problems;
 }
 
-export function validate(pipeline: string, nodeDefinitions: any) {
-  const pipelineTreeRoot = parseTree(pipeline);
-  if (pipelineTreeRoot === undefined) {
-    return [];
+function getStructuralProblems(pipeline: any): string[] {
+  let messages = [];
+  // the pipeline contains a `primary_pipeline` field that is a string
+  if (pipeline.primary_pipeline === undefined) {
+    messages.push("Could not determine the primary pipeline.");
+  } else if (pipeline.primary_pipeline !== "string") {
+    messages.push("Field 'primary_pipeline' should be a string.");
   }
 
-  const pipelineJSON = JSON.parse(pipeline);
+  // the pipeline contains a `pipelines` field that is an array
+  if (pipeline.pipelines === undefined) {
+    messages.push("Pipeline definition not found.");
+  } else if (Array.isArray(pipeline.pipelines) === false) {
+    messages.push("Field 'pipelines' should be a list.");
+  }
+
+  // the `primary_pipeline` is findable in the `pipelines` array
+  const primaryID = pipeline.primary_pipeline;
+  const primary = pipeline.pipelines.find((p: any) => p.id === primaryID);
+  if (primary === undefined) {
+    messages.push(`Primary pipeline '${primaryID}' not found.`);
+
+    // we can't run any of tests without a primary pipeline
+    return messages;
+  }
+
+  // the found `primary_pipeline` has an `app_data` field that is an object containing a `version` field that is a number
+  if (primary.app_data === undefined) {
+    messages.push(`Primary pipeline is missing 'app_data' field.`);
+  } else if (primary.app_data.version === undefined) {
+    messages.push(`Could not determine the pipeline version.`);
+  } else if (typeof primary.app_data.version !== "number") {
+    messages.push("Field 'version' should be a number.");
+  }
+
+  // the found `primary_pipeline` has an `nodes` field that is an array
+  if (Array.isArray(primary.nodes) === false) {
+    messages.push("Field 'nodes' should be a list.");
+  }
+
+  return messages;
+}
+
+export function validate(pipeline: string, nodeDefinitions: any): Problem[] {
+  const pipelineTreeRoot = parseTree(pipeline);
+  if (pipelineTreeRoot === undefined) {
+    const invalidJSON: Problem = {
+      info: {
+        type: "invalidJSON",
+      },
+      message: "Unable to parse JSON tree.",
+      severity: 1,
+      range: {
+        offset: 0,
+        length: 0,
+      },
+    };
+    return [invalidJSON];
+  }
+
+  let pipelineJSON;
+  try {
+    pipelineJSON = JSON.parse(pipeline);
+  } catch (e) {
+    const invalidJSON: Problem = {
+      info: {
+        type: "invalidJSON",
+      },
+      message: e.message,
+      severity: 1,
+      range: {
+        offset: 0,
+        length: 0,
+      },
+    };
+    return [invalidJSON];
+  }
+
+  const structuralProblems = getStructuralProblems(pipelineJSON);
+
+  // If there are structural problems we are probably in an irrecoverable state,
+  // so bail now.
+  if (structuralProblems.length > 0) {
+    return structuralProblems.map((message) => ({
+      info: {
+        type: "invalidPipeline",
+      },
+      message,
+      severity: 1,
+      range: {
+        offset: 0,
+        length: 0,
+      },
+    }));
+  }
 
   let problems: Problem[] = [];
   for (const [p, pipeline] of pipelineJSON.pipelines.entries()) {
