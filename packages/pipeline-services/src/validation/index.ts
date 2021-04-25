@@ -104,7 +104,7 @@ function getStructuralProblems(pipeline: any): string[] {
   // the pipeline contains a `primary_pipeline` field that is a string
   if (pipeline.primary_pipeline === undefined) {
     messages.push("Could not determine the primary pipeline.");
-  } else if (pipeline.primary_pipeline !== "string") {
+  } else if (typeof pipeline.primary_pipeline !== "string") {
     messages.push("Field 'primary_pipeline' should be a string.");
   }
 
