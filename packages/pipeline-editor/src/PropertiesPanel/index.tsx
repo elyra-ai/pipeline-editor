@@ -17,7 +17,7 @@
 import { useEffect, useRef } from "react";
 
 import { CommonProperties } from "@elyra/canvas";
-import { createNode } from "@elyra/pipeline-services";
+import { toCommonProperties } from "@elyra/pipeline-services";
 import styled from "styled-components";
 
 import * as controls from "../CustomFormControls";
@@ -92,7 +92,7 @@ function PropertiesPanel({
       key={selectedNode.id}
       propertiesInfo={{
         parameterDef: fillPropertiesWithSavedData(
-          createNode(nodePropertiesSchema).properties,
+          toCommonProperties(nodePropertiesSchema.properties ?? []),
           selectedNode.app_data
         ),
         labelEditable: false,

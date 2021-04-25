@@ -14,29 +14,6 @@
  * limitations under the License.
  */
 
-export type NodeTypes = "file";
-
-export type NodeSchema = SimpleNodeSchema | FileNodeSchema;
-
-interface NodeSchemaCommon {
-  op: string; // ID for a node type. For example: `execute-notebook-node`
-  label?: string; // default label (the rendered label is dynamic)
-  description?: string; // description that could show up in the palette or when hovering on the node in the pipeline
-  icon?: string;
-  type?: NodeTypes;
-  properties?: NodeProperty[]; // fixed properties for the node (dynamic and runtime specific properties don't go here)
-}
-
-interface SimpleNodeSchema extends NodeSchemaCommon {
-  type: undefined;
-}
-
-interface FileNodeSchema extends NodeSchemaCommon {
-  type: "file";
-  extensions: string[]; // a file node will probably only ever be linked to one file type, but a list of extensions is needed. For example: [".yaml", ".yml"]
-  language?: string; // a combination of this and extension will help determine an icon for the node.
-}
-
 interface NodePropertyCommon {
   id: string;
   title: string;
@@ -208,12 +185,7 @@ function createGroupInfo(item: NodeProperty): GroupInfo {
   };
 }
 
-function toCommonProperties(node: NodeSchema) {
-  // TODO: We should dynamically generate fixed fields as well
-  // TODO: Inject file field for file nodes.
-
-  const items: NodeProperty[] = [];
-
+export function toCommonProperties(properties: NodeProperty[]) {
   let commonProperties: CommonProperties = {
     current_parameters: {},
     parameters: [],
@@ -228,42 +200,17 @@ function toCommonProperties(node: NodeSchema) {
     },
   };
 
-  items.push({
-    id: "label",
-    title: "Label",
-    type: "string",
-  });
-
-  if (node.type === "file") {
-    items.push({
-      id: "filename",
-      title: "File",
-      type: "string",
-      format: "file",
-      extensions: node.extensions,
-    });
-  }
-
-  items.push(...(node.properties ?? []));
-
-  for (const item of items) {
+  for (const prop of properties) {
     commonProperties.current_parameters = {
       ...commonProperties.current_parameters,
-      ...createCurrentParameter(item),
+      ...createCurrentParameter(prop),
     };
-    commonProperties.parameters.push(createParameter(item));
-    commonProperties.uihints.parameter_info.push(createParameterInfo(item));
+    commonProperties.parameters.push(createParameter(prop));
+    commonProperties.uihints.parameter_info.push(createParameterInfo(prop));
     commonProperties.uihints.group_info[0].group_info.push(
-      createGroupInfo(item)
+      createGroupInfo(prop)
     );
   }
 
   return commonProperties;
-}
-
-export function createNode(node: NodeSchema) {
-  return {
-    ...node,
-    properties: toCommonProperties(node),
-  };
 }

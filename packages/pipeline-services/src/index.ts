@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
-export { createNode } from "./create-node";
+export { toCommonProperties } from "./common-properties";
+export { resolveNodes } from "./resolve-nodes";
 export { migrate } from "./migration";
 export { validate } from "./validation";
