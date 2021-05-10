@@ -26,7 +26,7 @@ import { StringArrayValidatorOptions } from "./validators";
 
 interface Props extends StringArrayValidatorOptions {
   placeholder?: string;
-  format?: "file";
+  format?: string;
 }
 
 interface ListItemProps {
@@ -316,6 +316,13 @@ function StringArrayControl({ placeholder, format }: Props) {
     [actionHandler, handleAction, items]
   );
 
+  const handleNewValues = useCallback(async () => {
+    const updatedItems = await actionHandler?.("update_properties", undefined, {
+      items: items,
+    });
+    setItems(updatedItems);
+  }, [actionHandler, items]);
+
   // TODO: validate string arrays.
 
   return (
@@ -386,6 +393,15 @@ function StringArrayControl({ placeholder, format }: Props) {
               }}
             >
               Browse
+            </button>
+          )}
+          {format === "properties" && (
+            <button
+              onClick={() => {
+                handleNewValues();
+              }}
+            >
+              Detect Updates
             </button>
           )}
         </ButtonGroup>

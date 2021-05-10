@@ -57,6 +57,7 @@ interface Props {
   onDoubleClickNode?: (e: CanvasClickEvent) => any;
   onError?: (error: Error) => any;
   onFileRequested?: (options: any) => any;
+  onPropertiesUpdateRequested?: (options: any) => any;
   readOnly?: boolean;
   children?: React.ReactNode;
   nativeKeyboardActions?: boolean;
@@ -152,6 +153,7 @@ const PipelineEditor = forwardRef(
       onDoubleClickNode,
       onError,
       onFileRequested,
+      onPropertiesUpdateRequested,
       readOnly,
       children,
       nativeKeyboardActions,
@@ -666,6 +668,9 @@ const PipelineEditor = forwardRef(
                         selectedNodes={selectedNodes}
                         nodes={nodes}
                         onFileRequested={onFileRequested}
+                        onPropertiesUpdateRequested={
+                          onPropertiesUpdateRequested
+                        }
                         onChange={handlePropertiesChange}
                       />
                     ),
