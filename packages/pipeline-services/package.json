@@ -15,6 +15,7 @@
     "dist"
   ],
   "scripts": {
+    "clean": "rm -rf node_modules; rm -rf dist",
     "build": "tsc",
     "watch": "tsc -w --preserveWatchOutput",
     "test": "jest",

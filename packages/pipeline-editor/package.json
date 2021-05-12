@@ -15,9 +15,11 @@
     "dist"
   ],
   "scripts": {
+    "clean": "rm -rf node_modules; rm -rf dist",
     "build": "microbundle --css inline -f cjs",
     "watch": "microbundle --css inline -o dist/index.js --no-pkg-main -f modern --watch --no-compress",
-    "link": "yarn link"
+    "link": "yarn link",
+    "dev-link": "yarn link @types/react"
   },
   "dependencies": {
     "@elyra/canvas": "10.3.0",
