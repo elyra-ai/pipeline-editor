@@ -48,41 +48,21 @@ Or can be built and linked locally:
 git clone git@github.com:elyra-ai/pipeline-editor.git
 cd pipeline-editor
 
-npm run clean
 yarn install
-npm run build
-npm run link
+yarn build
+yarn link-all
 ```
 
 Then in the project you're using the local build run the following:
 
 ```sh
-yarn link @elyra/pipeline-services
-yarn link @elyra/pipeline-editor
-```
-
-If your project depends on `react` you need to link it back to prevent version conflicts
-
-Run in your project:
-
-```sh
-cd node_modules/react
-yarn link
-cd ../node_modules/@types/react
-yarn link
+yarn link @elyra/pipeline-editor @elyra/pipeline-services
 ```
 
 or if you're running with Elyra you can use make:
 
 ```sh
 make dev-link
-```
-
-Run in `pipeline-editor`
-
-```sh
-npm run dev-link
-npm run build
 ```
 
 ## Usage

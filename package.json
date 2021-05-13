@@ -59,7 +59,7 @@
   "scripts": {
     "clean": "lerna run clean; rm -rf node_modules",
     "build": "lerna run build",
-    "link": "lerna run link",
+    "link-all": "lerna run link",
     "watch": "FORCE_COLOR=true lerna run watch --parallel --stream",
     "sb:start": "start-storybook -p 6006",
     "sb:ci": "start-storybook -p 6006 --ci",
@@ -72,8 +72,7 @@
     "lint": "eslint . --ignore-path .gitignore --ext .ts,.tsx --max-warnings=0",
     "format": "prettier --ignore-path .gitignore --write \"**/*.{tsx,ts,js,css,html,json}\"",
     "format:check": "prettier --ignore-path .gitignore --check \"**/*.{tsx,ts,js,css,html,json}\"",
-    "lint-fix": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx",
-    "dev-link": "yarn link react @types/react && lerna run dev-link"
+    "lint-fix": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx"
   },
   "dependencies": {}
 }
