@@ -15,7 +15,7 @@
     "dist"
   ],
   "scripts": {
-    "clean": "rm -rf node_modules; rm -rf dist",
+    "clean": "rm -rf node_modules; rm -rf dist; yarn unlink",
     "build": "microbundle --css inline -f cjs",
     "watch": "microbundle --css inline -o dist/index.js --no-pkg-main -f modern --watch --no-compress",
     "link": "yarn link"

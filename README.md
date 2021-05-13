@@ -48,6 +48,7 @@ Or can be built and linked locally:
 git clone git@github.com:elyra-ai/pipeline-editor.git
 cd pipeline-editor
 
+yarn clean
 yarn install
 yarn build
 yarn link-all
