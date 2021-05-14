@@ -213,6 +213,7 @@ const PipelineEditor = forwardRef(
       ref,
       () => ({
         addFile: (item: any) => {
+          item.onPropertiesUpdateRequested = onPropertiesUpdateRequested;
           controller.current.addNode(item);
         },
       }),
@@ -468,6 +469,10 @@ const PipelineEditor = forwardRef(
               nodeTemplate
             );
             convertedTemplate.app_data.filename = file;
+            const properties = await onPropertiesUpdateRequested?.({
+              filename: file,
+            });
+            convertedTemplate.app_data.env_vars = properties.env_vars;
             const action = {
               editType: "createNode",
               nodeTemplate: convertedTemplate,

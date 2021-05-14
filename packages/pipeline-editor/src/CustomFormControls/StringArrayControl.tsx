@@ -317,11 +317,15 @@ function StringArrayControl({ placeholder, format }: Props) {
   );
 
   const handleNewValues = useCallback(async () => {
-    const updatedItems = await actionHandler?.("update_properties", undefined, {
-      items: items,
-    });
-    setItems(updatedItems);
-  }, [actionHandler, items]);
+    const updatedProperties = await actionHandler?.(
+      "update_properties",
+      undefined,
+      {
+        env_vars: items,
+      }
+    );
+    setItems(updatedProperties.env_vars);
+  }, [actionHandler, items, setItems]);
 
   // TODO: validate string arrays.
 
@@ -398,6 +402,7 @@ function StringArrayControl({ placeholder, format }: Props) {
           {format === "properties" && (
             <button
               onClick={() => {
+                setEditingIndex(undefined);
                 handleNewValues();
               }}
             >
