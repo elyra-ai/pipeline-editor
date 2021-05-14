@@ -20,7 +20,7 @@
     "link": "yarn link"
   },
   "dependencies": {
-    "@elyra/canvas": "10.3.0",
+    "@elyra/canvas": "10.7.0",
     "@elyra/pipeline-services": "^0.3.0-dev",
     "downshift": "^6.1.2",
     "immer": "^8.0.1",
