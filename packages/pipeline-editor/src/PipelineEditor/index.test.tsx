@@ -63,7 +63,7 @@ it("renders", () => {
   expect(handleError).not.toHaveBeenCalled();
 });
 
-it("can add node through imperative handle", () => {
+it("can add node through imperative handle", async () => {
   let handle: any;
   const { container } = render(
     <PipelineEditor
@@ -75,7 +75,7 @@ it("can add node through imperative handle", () => {
 
   expect(container.getElementsByClassName("d3-node-group")).toHaveLength(2);
 
-  handle.addFile({ op: "execute-notebook-node", path: "example.ipynb" });
+  await handle.addFile({ op: "execute-notebook-node", path: "example.ipynb" });
 
   expect(container.getElementsByClassName("d3-node-group")).toHaveLength(3);
 });

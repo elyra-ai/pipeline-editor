@@ -212,12 +212,12 @@ const PipelineEditor = forwardRef(
     useImperativeHandle(
       ref,
       () => ({
-        addFile: (item: any) => {
+        addFile: async (item: any) => {
           item.onPropertiesUpdateRequested = onPropertiesUpdateRequested;
-          controller.current.addNode(item);
+          await controller.current.addNode(item);
         },
       }),
-      []
+      [onPropertiesUpdateRequested]
     );
 
     const handleContextMenu = useCallback(
@@ -523,7 +523,7 @@ const PipelineEditor = forwardRef(
 
         onChange?.(controller.current.getPipelineFlow());
       },
-      [nodes, onAction, onChange, onFileRequested]
+      [nodes, onAction, onChange, onFileRequested, onPropertiesUpdateRequested]
     );
 
     const handlePropertiesChange = useCallback(
