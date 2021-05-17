@@ -107,7 +107,7 @@ function PropertiesPanel({
           switch (id) {
             case "browse_file":
               return await onFileRequested?.(data);
-            case "update_properties":
+            case "refresh_properties":
               data.filename = selectedNode.app_data.filename;
               return await onPropertiesUpdateRequested?.(data);
           }

@@ -26,7 +26,8 @@ import { StringArrayValidatorOptions } from "./validators";
 
 interface Props extends StringArrayValidatorOptions {
   placeholder?: string;
-  format?: string;
+  format?: "file";
+  canRefresh?: boolean;
 }
 
 interface ListItemProps {
@@ -282,7 +283,7 @@ export function ListItem({
   );
 }
 
-function StringArrayControl({ placeholder, format }: Props) {
+function StringArrayControl({ placeholder, format, canRefresh }: Props) {
   const [items = [], setItems] = useControlState<string[]>();
 
   const [editingIndex, setEditingIndex] = useState<number | "new">();
@@ -316,9 +317,9 @@ function StringArrayControl({ placeholder, format }: Props) {
     [actionHandler, handleAction, items]
   );
 
-  const handleNewValues = useCallback(async () => {
+  const handleRefreshProperties = useCallback(async () => {
     const updatedProperties = await actionHandler?.(
-      "update_properties",
+      "refresh_properties",
       undefined,
       {
         env_vars: items,
@@ -399,14 +400,14 @@ function StringArrayControl({ placeholder, format }: Props) {
               Browse
             </button>
           )}
-          {format === "properties" && (
+          {canRefresh && (
             <button
               onClick={() => {
                 setEditingIndex(undefined);
-                handleNewValues();
+                handleRefreshProperties();
               }}
             >
-              Detect Updates
+              Refresh
             </button>
           )}
         </ButtonGroup>
