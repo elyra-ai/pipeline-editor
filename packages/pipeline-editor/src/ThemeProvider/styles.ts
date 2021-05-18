@@ -116,6 +116,10 @@ export const CanvasOverrides = css`
     margin-top: 9px;
   }
 
+  .properties-wrapper {
+    background: none;
+  }
+
   .properties-wrapper input[type="text" i],
   .properties-wrapper input[type="number" i] {
     box-sizing: border-box;
