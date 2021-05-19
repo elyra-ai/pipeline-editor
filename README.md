@@ -48,10 +48,7 @@ Or can be built and linked locally:
 git clone git@github.com:elyra-ai/pipeline-editor.git
 cd pipeline-editor
 
-yarn clean
-yarn install
-yarn build
-yarn link-all
+make clean install dev-link
 ```
 
 Then in the project you're using the local build run the following:
@@ -63,7 +60,7 @@ yarn link @elyra/pipeline-editor @elyra/pipeline-services
 or if you're running with Elyra you can use make:
 
 ```sh
-make dev-link
+make clean dev-link install
 ```
 
 ## Usage

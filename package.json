@@ -70,9 +70,9 @@
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "lint": "eslint . --ignore-path .gitignore --ext .ts,.tsx --max-warnings=0",
+    "lint:fix": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx",
     "format": "prettier --ignore-path .gitignore --write \"**/*.{tsx,ts,js,css,html,json}\"",
-    "format:check": "prettier --ignore-path .gitignore --check \"**/*.{tsx,ts,js,css,html,json}\"",
-    "lint-fix": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx"
+    "format:check": "prettier --ignore-path .gitignore --check \"**/*.{tsx,ts,js,css,html,json}\""
   },
   "dependencies": {}
 }
