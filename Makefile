@@ -14,16 +14,20 @@
 # limitations under the License.
 #
 
-.PHONY: clean install link watch
+.PHONY: help clean install dev-link watch
 
-clean:
+help:
+# http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+clean: ## Make a clean source tree and unlink packages
 	- yarn clean
 
-install:
+install: ## Install dependencies and build packages
 	yarn install && yarn build
 
-dev-link:
+dev-link: ## Link packages
 	yarn link-all
 
-watch:
+watch: ## Watch packages. For use alongside jupyter lab --watch
 	yarn watch
