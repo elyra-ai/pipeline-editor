@@ -23,7 +23,10 @@ help:
 clean: ## Make a clean source tree and unlink packages
 	- yarn clean
 
-install: ## Install dependencies and build packages
+lint: ## Run linters
+	yarn lint
+
+install: lint ## Install dependencies and build packages
 	yarn install && yarn build
 
 dev-link: ## Link packages
