@@ -96,12 +96,6 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["examples/**"],
-      rules: {
-        "header/header": ["off"],
-      },
-    },
-    {
       files: ["cypress/**"],
       rules: {
         "testing-library/prefer-screen-queries": "off",
@@ -109,7 +103,10 @@ module.exports = {
     },
     {
       files: ["stories/**"],
-      rules: { "import/no-anonymous-default-export": ["off"] },
+      rules: {
+        "import/no-anonymous-default-export": ["off"],
+        "import/no-extraneous-dependencies": "off",
+      },
     },
     {
       files: [
