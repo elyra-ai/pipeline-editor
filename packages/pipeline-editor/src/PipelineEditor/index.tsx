@@ -57,6 +57,7 @@ interface Props {
   onDoubleClickNode?: (e: CanvasClickEvent) => any;
   onError?: (error: Error) => any;
   onFileRequested?: (options: any) => any;
+  onPropertiesUpdateRequested?: (options: any) => any;
   readOnly?: boolean;
   children?: React.ReactNode;
   nativeKeyboardActions?: boolean;
@@ -152,6 +153,7 @@ const PipelineEditor = forwardRef(
       onDoubleClickNode,
       onError,
       onFileRequested,
+      onPropertiesUpdateRequested,
       readOnly,
       children,
       nativeKeyboardActions,
@@ -210,11 +212,12 @@ const PipelineEditor = forwardRef(
     useImperativeHandle(
       ref,
       () => ({
-        addFile: (item: any) => {
-          controller.current.addNode(item);
+        addFile: async (item: any) => {
+          item.onPropertiesUpdateRequested = onPropertiesUpdateRequested;
+          await controller.current.addNode(item);
         },
       }),
-      []
+      [onPropertiesUpdateRequested]
     );
 
     const handleContextMenu = useCallback(
@@ -466,6 +469,10 @@ const PipelineEditor = forwardRef(
               nodeTemplate
             );
             convertedTemplate.app_data.filename = file;
+            const properties = await onPropertiesUpdateRequested?.({
+              filename: file,
+            });
+            convertedTemplate.app_data.env_vars = properties.env_vars;
             const action = {
               editType: "createNode",
               nodeTemplate: convertedTemplate,
@@ -516,7 +523,7 @@ const PipelineEditor = forwardRef(
 
         onChange?.(controller.current.getPipelineFlow());
       },
-      [nodes, onAction, onChange, onFileRequested]
+      [nodes, onAction, onChange, onFileRequested, onPropertiesUpdateRequested]
     );
 
     const handlePropertiesChange = useCallback(
@@ -666,6 +673,9 @@ const PipelineEditor = forwardRef(
                         selectedNodes={selectedNodes}
                         nodes={nodes}
                         onFileRequested={onFileRequested}
+                        onPropertiesUpdateRequested={
+                          onPropertiesUpdateRequested
+                        }
                         onChange={handlePropertiesChange}
                       />
                     ),

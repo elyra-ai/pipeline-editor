@@ -122,7 +122,7 @@ class PipelineController extends CanvasController {
     this.setPipelineFlowPalette(palette);
   }
 
-  addNode(item: any) {
+  async addNode(item: any) {
     const nodeTemplate = this.getPaletteNode(item.op);
     const data = {
       editType: "createNode",
@@ -133,6 +133,10 @@ class PipelineController extends CanvasController {
 
     // TODO: We should only set this for file based nodes.
     data.nodeTemplate.app_data.filename = item.path;
+    const properties = await item.onPropertiesUpdateRequested?.({
+      filename: item.path,
+    });
+    data.nodeTemplate.app_data.env_vars = properties?.env_vars;
 
     this.editActionHandler(data);
   }

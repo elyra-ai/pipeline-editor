@@ -15,6 +15,7 @@
     "dist"
   ],
   "scripts": {
+    "clean": "rm -rf node_modules; rm -rf dist; yarn unlink || true",
     "build": "microbundle --css inline -f cjs",
     "watch": "microbundle --css inline -o dist/index.js --no-pkg-main -f modern --watch --no-compress",
     "link": "yarn link"
@@ -25,7 +26,6 @@
     "downshift": "^6.1.2",
     "immer": "^8.0.1",
     "nanoid": "^3.1.20",
-    "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-intl": "^5.0.0",
     "react-redux": "^7.0.0",
@@ -40,7 +40,11 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-intl": "^3.0.0",
     "@types/react-redux": "^7.1.16",
-    "@types/styled-components": "^5.1.7"
+    "@types/styled-components": "^5.1.7",
+    "react": "^17.0.1"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0"
   },
   "publishConfig": {
     "access": "public"

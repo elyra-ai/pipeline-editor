@@ -236,7 +236,7 @@ describe("setNodes", () => {
 });
 
 describe("addNode", () => {
-  it("adds a node at specified location", () => {
+  it("adds a node at specified location", async () => {
     const controller = new PipelineController();
     controller.setNodes([
       {
@@ -249,14 +249,14 @@ describe("addNode", () => {
     const editActionHandler = jest.fn();
     controller.editActionHandler = editActionHandler;
 
-    controller.addNode({ op: "example-op", x: 15, y: 20 });
+    await controller.addNode({ op: "example-op", x: 15, y: 20 });
 
     expect(editActionHandler).toHaveBeenCalledTimes(1);
     expect(editActionHandler.mock.calls[0][0].offsetX).toBe(15);
     expect(editActionHandler.mock.calls[0][0].offsetY).toBe(20);
   });
 
-  it("adds a node at a default location", () => {
+  it("adds a node at a default location", async () => {
     const controller = new PipelineController();
     controller.setNodes([
       {
@@ -269,7 +269,7 @@ describe("addNode", () => {
     const editActionHandler = jest.fn();
     controller.editActionHandler = editActionHandler;
 
-    controller.addNode({ op: "example-op" });
+    await controller.addNode({ op: "example-op" });
 
     expect(editActionHandler).toHaveBeenCalledTimes(1);
     expect(editActionHandler.mock.calls[0][0].offsetX).toBe(40);

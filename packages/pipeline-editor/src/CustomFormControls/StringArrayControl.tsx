@@ -27,6 +27,7 @@ import { StringArrayValidatorOptions } from "./validators";
 interface Props extends StringArrayValidatorOptions {
   placeholder?: string;
   format?: "file";
+  canRefresh?: boolean;
 }
 
 interface ListItemProps {
@@ -282,7 +283,7 @@ export function ListItem({
   );
 }
 
-function StringArrayControl({ placeholder, format }: Props) {
+function StringArrayControl({ placeholder, format, canRefresh }: Props) {
   const [items = [], setItems] = useControlState<string[]>();
 
   const [editingIndex, setEditingIndex] = useState<number | "new">();
@@ -315,6 +316,17 @@ function StringArrayControl({ placeholder, format }: Props) {
     },
     [actionHandler, handleAction, items]
   );
+
+  const handleRefreshProperties = useCallback(async () => {
+    const updatedProperties = await actionHandler?.(
+      "refresh_properties",
+      undefined,
+      {
+        env_vars: items,
+      }
+    );
+    setItems(updatedProperties.env_vars);
+  }, [actionHandler, items, setItems]);
 
   // TODO: validate string arrays.
 
@@ -386,6 +398,16 @@ function StringArrayControl({ placeholder, format }: Props) {
               }}
             >
               Browse
+            </button>
+          )}
+          {canRefresh && (
+            <button
+              onClick={() => {
+                setEditingIndex(undefined);
+                handleRefreshProperties();
+              }}
+            >
+              Refresh
             </button>
           )}
         </ButtonGroup>

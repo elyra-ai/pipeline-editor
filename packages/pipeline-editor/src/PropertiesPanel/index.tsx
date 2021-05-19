@@ -27,6 +27,7 @@ interface Props {
   selectedNodes?: any[];
   nodes: any[];
   onFileRequested?: (options: any) => any;
+  onPropertiesUpdateRequested?: (options: any) => any;
   onChange?: (nodeID: string, data: any) => any;
 }
 
@@ -44,6 +45,7 @@ function PropertiesPanel({
   selectedNodes,
   nodes,
   onFileRequested,
+  onPropertiesUpdateRequested,
   onChange,
 }: Props) {
   useActiveFormItemShim();
@@ -105,6 +107,11 @@ function PropertiesPanel({
           switch (id) {
             case "browse_file":
               return await onFileRequested?.(data);
+            case "refresh_properties":
+              return await onPropertiesUpdateRequested?.({
+                ...data,
+                filename: selectedNode.app_data.filename,
+              });
           }
         },
         controllerHandler: (e: any) => {
