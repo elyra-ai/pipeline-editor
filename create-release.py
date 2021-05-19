@@ -15,15 +15,11 @@
 # limitations under the License.
 #
 
-
 import argparse
 import json
 import os
-import re
-import semantic_version
 import shutil
 import subprocess
-import sys
 
 from types import SimpleNamespace
 
@@ -215,7 +211,7 @@ def initialize_config(args=None) -> SimpleNamespace:
     with open('package.json') as f:
         package_json = json.load(f)
 
-    v = semantic_version.Version(package_json['version'])
+    v = package_json['version']
 
     configuration = {
         'git_url': DEFAULT_GIT_URL,
