@@ -18,7 +18,13 @@ import { parseTree, findNodeAtLocation } from "jsonc-parser";
 
 import checkCircularReferences from "./check-circular-references";
 import { PartialProblem, Problem } from "./types";
-import { findNode, getLinks, getNodes, rangeForLocation } from "./utils";
+import {
+  findNode,
+  getLabel,
+  getLinks,
+  getNodes,
+  rangeForLocation,
+} from "./utils";
 
 export function getLinkProblems(pipeline: any) {
   const links = getLinks(pipeline);
@@ -32,8 +38,12 @@ export function getLinkProblems(pipeline: any) {
 
     const source = findNode(pipeline, link.srcNodeId);
     const target = findNode(pipeline, link.trgNodeId);
+
+    const sourceLabel = getLabel(source);
+    const targetLabel = getLabel(target);
+
     problems.push({
-      message: `The connection between nodes '${source.app_data.ui_data.label}' and '${target.app_data.ui_data.label}' is part of a circular reference.`,
+      message: `The connection between nodes '${sourceLabel}' and '${targetLabel}' is part of a circular reference.`,
       path: [...link.path, "id"],
       info: {
         type: "circularReference",
@@ -59,26 +69,27 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       continue;
     }
 
-    for (const prop of nodeDef.properties?.uihints.parameter_info ?? []) {
+    for (const prop of nodeDef.properties ?? []) {
       // If the property isn't in the json, report the error one level higher.
       let path = ["nodes", n, "app_data"];
-      if (node.app_data[prop.parameter_ref] !== undefined) {
-        path.push(prop.parameter_ref);
+      if (node.app_data[prop.id] !== undefined) {
+        path.push(prop.id);
       }
 
       // this should be safe because a boolean can't be required
       // otherwise we would need to check strings for undefined or empty string
       // NOTE: 0 is also falsy, but we don't have any number inputs right now?
       // TODO: We should update this to do type checking.
-      if (prop.data?.required && !node.app_data[prop.parameter_ref]) {
+      if (prop.required && !node.app_data[prop.id]) {
+        const nodeLabel = getLabel(node);
         problems.push({
-          message: `The property '${prop.label.default}' on node '${node.app_data.ui_data.label}' is required.`,
+          message: `The property '${prop.title}' on node '${nodeLabel}' is required.`,
           path,
           info: {
             type: "missingProperty",
             pipelineID: pipeline.id,
             nodeID: node.id,
-            property: prop.parameter_ref,
+            property: prop.id,
           },
         });
       }
@@ -88,13 +99,108 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
   return problems;
 }
 
-export function validate(pipeline: string, nodeDefinitions: any) {
-  const pipelineTreeRoot = parseTree(pipeline);
-  if (pipelineTreeRoot === undefined) {
-    return [];
+function getStructuralProblems(pipeline: any): string[] {
+  let messages = [];
+  // the pipeline contains a `primary_pipeline` field that is a string
+  if (pipeline.primary_pipeline === undefined) {
+    messages.push("Could not determine the primary pipeline.");
+    return messages;
   }
 
-  const pipelineJSON = JSON.parse(pipeline);
+  if (typeof pipeline.primary_pipeline !== "string") {
+    messages.push("Field 'primary_pipeline' should be a string.");
+    return messages;
+  }
+
+  // the pipeline contains a `pipelines` field that is an array
+  if (pipeline.pipelines === undefined) {
+    messages.push("Pipeline definition not found.");
+    return messages;
+  }
+
+  if (Array.isArray(pipeline.pipelines) === false) {
+    messages.push("Field 'pipelines' should be a list.");
+    return messages;
+  }
+
+  // the `primary_pipeline` is findable in the `pipelines` array
+  const primaryID = pipeline.primary_pipeline;
+  const primary = pipeline.pipelines.find((p: any) => p.id === primaryID);
+  if (primary === undefined) {
+    messages.push(`Primary pipeline '${primaryID}' not found.`);
+
+    return messages;
+  }
+
+  // the found `primary_pipeline` has an `app_data` field that is an object containing a `version` field that is a number
+  if (primary.app_data === undefined) {
+    messages.push(`Primary pipeline is missing 'app_data' field.`);
+  } else if (primary.app_data.version === undefined) {
+    messages.push(`Could not determine the pipeline version.`);
+  } else if (typeof primary.app_data.version !== "number") {
+    messages.push("Field 'version' should be a number.");
+  }
+
+  // the found `primary_pipeline` has an `nodes` field that is an array
+  if (Array.isArray(primary.nodes) === false) {
+    messages.push("Field 'nodes' should be a list.");
+  }
+
+  return messages;
+}
+
+export function validate(pipeline: string, nodeDefinitions: any): Problem[] {
+  const pipelineTreeRoot = parseTree(pipeline);
+  if (pipelineTreeRoot === undefined) {
+    const invalidJSON: Problem = {
+      info: {
+        type: "invalidJSON",
+      },
+      message: "Unable to parse JSON tree.",
+      severity: 1,
+      range: {
+        offset: 0,
+        length: 0,
+      },
+    };
+    return [invalidJSON];
+  }
+
+  let pipelineJSON;
+  try {
+    pipelineJSON = JSON.parse(pipeline);
+  } catch (e) {
+    const invalidJSON: Problem = {
+      info: {
+        type: "invalidJSON",
+      },
+      message: e.message,
+      severity: 1,
+      range: {
+        offset: 0,
+        length: 0,
+      },
+    };
+    return [invalidJSON];
+  }
+
+  const structuralProblems = getStructuralProblems(pipelineJSON);
+
+  // If there are structural problems we are probably in an irrecoverable state,
+  // so bail now.
+  if (structuralProblems.length > 0) {
+    return structuralProblems.map((message) => ({
+      info: {
+        type: "invalidPipeline",
+      },
+      message,
+      severity: 1,
+      range: {
+        offset: 0,
+        length: 0,
+      },
+    }));
+  }
 
   let problems: Problem[] = [];
   for (const [p, pipeline] of pipelineJSON.pipelines.entries()) {

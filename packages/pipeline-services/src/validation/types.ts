@@ -22,6 +22,14 @@ export interface Link {
   path: any[];
 }
 
+export interface InvalidJSONInfo {
+  type: "invalidJSON";
+}
+
+export interface InvalidPipelineInfo {
+  type: "invalidPipeline";
+}
+
 export interface CircularReferenceInfo {
   type: "circularReference";
   pipelineID: string;
@@ -42,6 +50,13 @@ export interface InvalidNodeInfo {
   op: string;
 }
 
+type Info =
+  | CircularReferenceInfo
+  | MissingPropertyInfo
+  | InvalidNodeInfo
+  | InvalidJSONInfo
+  | InvalidPipelineInfo;
+
 export interface Problem {
   severity: 1 | 2 | 3 | 4 | undefined;
   range: {
@@ -49,11 +64,11 @@ export interface Problem {
     length: number;
   };
   message: string;
-  info: CircularReferenceInfo | MissingPropertyInfo | InvalidNodeInfo;
+  info: Info;
 }
 
 export interface PartialProblem {
   message: string;
   path: any[];
-  info: CircularReferenceInfo | MissingPropertyInfo | InvalidNodeInfo;
+  info: Info;
 }
