@@ -211,6 +211,7 @@ declare module "@elyra/canvas" {
    * WDP Pipeline Flow Schema
    */
   interface PipelineFlowV3 {
+    pipeline_properties: any;
     /**
      * Document type
      */

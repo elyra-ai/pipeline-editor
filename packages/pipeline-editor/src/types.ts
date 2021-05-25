@@ -86,6 +86,7 @@ export interface Theme {
     folderIcon?: React.ReactNode;
     closeIcon?: React.ReactNode;
     propertiesIcon?: React.ReactNode;
+    pipelineIcon?: React.ReactNode;
     paletteIcon?: React.ReactNode;
     checkIcon?: React.ReactNode;
   };

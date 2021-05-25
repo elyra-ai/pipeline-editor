@@ -30,6 +30,7 @@ import {
   CanvasEditEvent,
   CanvasSelectionEvent,
   CommonCanvas,
+  CommonProperties,
   ContextMenu,
   ContextMenuEvent,
   NodeTypeDef,
@@ -39,10 +40,12 @@ import {
 import { IntlProvider } from "react-intl";
 import styled, { useTheme } from "styled-components";
 
+import * as controls from "../CustomFormControls";
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
 import PipelineController from "../PipelineController";
 import PropertiesPanel from "../PropertiesPanel";
+import { fillPropertiesWithSavedData } from "../PropertiesPanel/properties-utils";
 import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
 import { InternalThemeProvider } from "../ThemeProvider";
@@ -52,6 +55,7 @@ interface Props {
   pipeline: any;
   toolbar?: any;
   nodes?: any;
+  pipelineProperties?: any;
   onAction?: (action: { type: string; payload?: any }) => any;
   onChange?: (pipeline: any) => any;
   onDoubleClickNode?: (e: CanvasClickEvent) => any;
@@ -147,6 +151,7 @@ const PipelineEditor = forwardRef(
     {
       pipeline,
       nodes,
+      pipelineProperties,
       toolbar,
       onAction,
       onChange,
@@ -162,6 +167,7 @@ const PipelineEditor = forwardRef(
   ) => {
     const theme = useTheme();
     const controller = useRef(new PipelineController());
+    const pipelinePropertyController = useRef<any>();
 
     const [supernodeOpen, setSupernodeOpen] = useState(false);
 
@@ -541,6 +547,18 @@ const PipelineEditor = forwardRef(
       [onChange]
     );
 
+    const handlePipelinePropertiesChange = useCallback(
+      (data) => {
+        const pipeline = controller.current.getPipelineFlow();
+        if (pipeline !== undefined) {
+          pipeline.pipeline_properties = data;
+          controller.current.setPipelineFlow(pipeline);
+          onChange?.(controller.current.getPipelineFlow());
+        }
+      },
+      [onChange]
+    );
+
     const handleTooltip = (tipType: string, e: TipEvent) => {
       function isNodeTipEvent(type: string, _e: TipEvent): _e is TipNode {
         return type === "tipTypeNode";
@@ -685,6 +703,40 @@ const PipelineEditor = forwardRef(
                     label: "Palette",
                     icon: theme.overrides?.paletteIcon,
                     content: <PalettePanel nodes={nodes} />,
+                  },
+                  {
+                    id: "pipeline-properties",
+                    label: "Pipeline Properties",
+                    icon: theme.overrides?.pipelineIcon,
+                    content: (
+                      <CommonProperties
+                        key={"pipeline-properties"}
+                        propertiesInfo={{
+                          parameterDef: fillPropertiesWithSavedData(
+                            pipelineProperties,
+                            pipeline?.pipeline_properties ?? {}
+                          ),
+                          labelEditable: false,
+                        }}
+                        propertiesConfig={{
+                          containerType: "Custom",
+                          rightFlyout: false,
+                        }}
+                        callbacks={{
+                          controllerHandler: (e: any) => {
+                            pipelinePropertyController.current = e;
+                          },
+                          propertyListener: (e: any) => {
+                            if (e.action === "UPDATE_PROPERTY") {
+                              handlePipelinePropertiesChange?.(
+                                pipelinePropertyController.current.getPropertyValues()
+                              );
+                            }
+                          },
+                        }}
+                        customControls={Object.values(controls)}
+                      />
+                    ),
                   },
                 ]}
                 collapsed={panelOpen === false}
