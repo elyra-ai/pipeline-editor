@@ -24,14 +24,15 @@ import { fillPropertiesWithSavedData } from "./properties-utils";
 import useActiveFormItemShim from "./useActiveFormItemShim";
 
 interface Props {
-  selectedNodes?: any[];
-  nodes: any[];
+  currentProperties: any;
+  propertiesSchema: any;
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
-  onChange?: (nodeID: string, data: any) => any;
+  onChange?: (data: any) => any;
+  id?: string;
 }
 
-const Message = styled.div`
+export const Message = styled.div`
   margin-top: 14px;
   padding: 0 22px;
   font-family: ${({ theme }) => theme.typography.fontFamily};
@@ -41,12 +42,13 @@ const Message = styled.div`
   opacity: 0.5;
 `;
 
-function PropertiesPanel({
-  selectedNodes,
-  nodes,
+export function PropertiesPanel({
+  currentProperties,
+  propertiesSchema,
   onFileRequested,
   onPropertiesUpdateRequested,
   onChange,
+  id,
 }: Props) {
   useActiveFormItemShim();
 
@@ -59,42 +61,13 @@ function PropertiesPanel({
     }
   });
 
-  if (selectedNodes === undefined || selectedNodes.length === 0) {
-    return <Message>Select a node to edit its properties.</Message>;
-  }
-
-  if (selectedNodes.length > 1) {
-    return (
-      <Message>
-        Multiple nodes are selected. Select a single node to edit its
-        properties.
-      </Message>
-    );
-  }
-
-  const selectedNode = selectedNodes[0];
-
-  if (selectedNode.type !== "execution_node") {
-    return (
-      <Message>This node type doesn't have any editable properties.</Message>
-    );
-  }
-
-  const nodePropertiesSchema = nodes.find((n: any) => n.op === selectedNode.op);
-
-  if (nodePropertiesSchema === undefined) {
-    return (
-      <Message>This node type doesn't have any editable properties.</Message>
-    );
-  }
-
   return (
     <CommonProperties
-      key={selectedNode.id}
+      key={id}
       propertiesInfo={{
         parameterDef: fillPropertiesWithSavedData(
-          nodePropertiesSchema.properties,
-          selectedNode.app_data
+          propertiesSchema.properties,
+          currentProperties
         ),
         labelEditable: false,
       }}
@@ -110,7 +83,7 @@ function PropertiesPanel({
             case "refresh_properties":
               return await onPropertiesUpdateRequested?.({
                 ...data,
-                filename: selectedNode.app_data.filename,
+                filename: currentProperties.filename,
               });
           }
         },
@@ -119,7 +92,7 @@ function PropertiesPanel({
         },
         propertyListener: (e: any) => {
           if (e.action === "UPDATE_PROPERTY") {
-            onChange?.(selectedNode.id, controller.current.getPropertyValues());
+            onChange?.(controller.current.getPropertyValues());
           }
         },
       }}
@@ -127,5 +100,3 @@ function PropertiesPanel({
     />
   );
 }
-
-export default PropertiesPanel;

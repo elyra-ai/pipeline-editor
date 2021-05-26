@@ -18,10 +18,10 @@ import userEvent from "@testing-library/user-event";
 import { IntlProvider } from "react-intl";
 
 import { render, screen, nodeSpec, selectedNode } from "../test-utils";
-import PropertiesPanel from "./";
+import NodeProperties from "./NodeProperties";
 
 it("renders with undefined nodes selected", () => {
-  const { container } = render(<PropertiesPanel nodes={[]} />);
+  const { container } = render(<NodeProperties nodes={[]} />);
   expect(container.firstChild).toHaveTextContent(
     /select a node to edit its properties/i
   );
@@ -29,7 +29,7 @@ it("renders with undefined nodes selected", () => {
 
 it("renders with no nodes selected", () => {
   const { container } = render(
-    <PropertiesPanel nodes={[]} selectedNodes={[]} />
+    <NodeProperties nodes={[]} selectedNodes={[]} />
   );
   expect(container.firstChild).toHaveTextContent(
     /select a node to edit its properties/i
@@ -38,7 +38,7 @@ it("renders with no nodes selected", () => {
 
 it("renders with multiple nodes selected", () => {
   const { container } = render(
-    <PropertiesPanel nodes={[]} selectedNodes={[{}, {}]} />
+    <NodeProperties nodes={[]} selectedNodes={[{}, {}]} />
   );
   expect(container.firstChild).toHaveTextContent(
     /multiple nodes are selected/i
@@ -47,7 +47,7 @@ it("renders with multiple nodes selected", () => {
 
 it("renders with supernode selected", () => {
   const { container } = render(
-    <PropertiesPanel nodes={[]} selectedNodes={[{ type: "super_node" }]} />
+    <NodeProperties nodes={[]} selectedNodes={[{ type: "super_node" }]} />
   );
   expect(container.firstChild).toHaveTextContent(
     /this node type doesn't have any editable properties/i
@@ -56,7 +56,7 @@ it("renders with supernode selected", () => {
 
 it("renders if selected node op isn't defined in schema", () => {
   const { container } = render(
-    <PropertiesPanel nodes={[]} selectedNodes={[selectedNode]} />
+    <NodeProperties nodes={[]} selectedNodes={[selectedNode]} />
   );
   expect(container.firstChild).toHaveTextContent(
     /this node type doesn't have any editable properties/i
@@ -66,7 +66,7 @@ it("renders if selected node op isn't defined in schema", () => {
 it("renders common properties with one node selected", () => {
   render(
     <IntlProvider locale="en">
-      <PropertiesPanel nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
+      <NodeProperties nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
     </IntlProvider>
   );
   expect(screen.getByLabelText(/properties/i)).toBeInTheDocument();
@@ -76,7 +76,7 @@ it("calls onFileRequested when a browse button is pressed", async () => {
   const handleFileRequested = jest.fn().mockResolvedValue([]);
   render(
     <IntlProvider locale="en">
-      <PropertiesPanel
+      <NodeProperties
         nodes={[nodeSpec]}
         selectedNodes={[selectedNode]}
         onFileRequested={handleFileRequested}
@@ -95,7 +95,7 @@ it("calls onFileRequested when a browse button is pressed", async () => {
 it("doesn't crash when a browse button is pressed and onFileRequested is undefined", async () => {
   render(
     <IntlProvider locale="en">
-      <PropertiesPanel nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
+      <NodeProperties nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
     </IntlProvider>
   );
   userEvent.click(screen.getByText(/browse/i));
@@ -105,7 +105,7 @@ it("calls onChange when a field changes", async () => {
   const handleChange = jest.fn();
   render(
     <IntlProvider locale="en">
-      <PropertiesPanel
+      <NodeProperties
         nodes={[nodeSpec]}
         selectedNodes={[selectedNode]}
         onChange={handleChange}
