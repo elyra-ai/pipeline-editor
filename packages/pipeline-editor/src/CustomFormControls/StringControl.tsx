@@ -72,6 +72,7 @@ function StringControl({
   required,
   placeholder,
   extensions,
+  textarea,
 }: Props) {
   const [value, setValue] = useControlState<string>();
 
@@ -130,14 +131,23 @@ function StringControl({
   return (
     <Container className={errorMessages.length > 0 ? "error" : undefined}>
       <InputContainer>
-        <input
-          type="text"
-          value={renderedValue}
-          placeholder={placeholder}
-          onChange={handleChange}
-          disabled={format === "file"}
-          onBlur={handleBlur}
-        />
+        {textarea ? (
+          <textarea
+            value={renderedValue}
+            placeholder={placeholder}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+        ) : (
+          <input
+            type="text"
+            value={renderedValue}
+            placeholder={placeholder}
+            onChange={handleChange}
+            disabled={format === "file"}
+            onBlur={handleBlur}
+          />
+        )}
         {errorMessages[0] !== undefined && (
           <ErrorMessage>{errorMessages[0]}</ErrorMessage>
         )}

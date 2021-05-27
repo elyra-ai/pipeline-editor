@@ -23,6 +23,7 @@ export interface StringValidatorOptions {
   minLength?: number; // for restricting string length
   maxLength?: number; // for restricting string length
   format?: "file"; // for restricting strings to well-known formats. Potential future formats: "date" | "time" | "ipv4" | "email" | "uri"
+  textarea?: boolean; // Whether to use a text area
 }
 
 export function getStringValidators<T extends string>({

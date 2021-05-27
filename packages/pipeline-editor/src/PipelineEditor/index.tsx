@@ -546,8 +546,8 @@ const PipelineEditor = forwardRef(
     const handlePipelinePropertiesChange = useCallback(
       (data) => {
         const pipeline = controller.current.getPipelineFlow();
-        if (pipeline !== undefined) {
-          pipeline.pipeline_properties = data;
+        if (pipeline?.pipelines?.[0]?.app_data) {
+          pipeline.pipelines[0].app_data.pipeline_properties = data;
           controller.current.setPipelineFlow(pipeline);
           onChange?.(controller.current.getPipelineFlow());
         }
