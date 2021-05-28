@@ -121,7 +121,8 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper input[type="text" i],
-  .properties-wrapper input[type="number" i] {
+  .properties-wrapper input[type="number" i],
+  .properties-wrapper textarea {
     box-sizing: border-box;
     padding: 4px;
     background-color: ${({ theme }) => theme.palette.background.input};
