@@ -18,6 +18,7 @@ import { PropertiesPanel, Message } from "./PropertiesPanel";
 
 interface Props {
   selectedNodes?: any[];
+  pipeline: any;
   nodes: any[];
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
@@ -26,6 +27,7 @@ interface Props {
 
 function NodeProperties({
   selectedNodes,
+  pipeline,
   nodes,
   onFileRequested,
   onPropertiesUpdateRequested,
@@ -44,7 +46,13 @@ function NodeProperties({
     );
   }
 
-  const selectedNode = selectedNodes[0];
+  const selectedNode = pipeline.pipelines?.[0]?.nodes.find(
+    (n: any) => n.id === selectedNodes[0].id
+  );
+
+  if (!selectedNode) {
+    return <Message>Select a node to edit its properties.</Message>;
+  }
 
   if (selectedNode.type !== "execution_node") {
     return (

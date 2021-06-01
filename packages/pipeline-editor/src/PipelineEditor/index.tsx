@@ -685,6 +685,7 @@ const PipelineEditor = forwardRef(
                     content: (
                       <NodeProperties
                         selectedNodes={selectedNodes}
+                        pipeline={pipeline}
                         nodes={nodes}
                         onFileRequested={onFileRequested}
                         onPropertiesUpdateRequested={
