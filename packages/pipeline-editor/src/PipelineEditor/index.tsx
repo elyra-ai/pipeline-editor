@@ -441,9 +441,9 @@ const PipelineEditor = forwardRef(
       [onDoubleClickNode]
     );
 
-    const [selectedNodes, setSelectedNodes] = useState<NodeTypeDef[]>();
+    const [selectedNodes, setSelectedNodes] = useState<string[]>();
     const handleSelectionChange = useCallback((e: CanvasSelectionEvent) => {
-      setSelectedNodes(e.selectedNodes.map((n: any) => n.id));
+      setSelectedNodes(e.selectedNodes.map((n: NodeTypeDef) => n.id));
     }, []);
 
     const handleEditAction = useCallback(
