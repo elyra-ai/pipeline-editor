@@ -211,7 +211,6 @@ declare module "@elyra/canvas" {
    * WDP Pipeline Flow Schema
    */
   interface PipelineFlowV3 {
-    pipeline_properties: any;
     /**
      * Document type
      */
@@ -597,6 +596,7 @@ declare module "@elyra/canvas" {
     app_data?: {
       // NOTE: elyra specific.
       version: number;
+      pipeline_properties: any;
       /**
        * Pipeline level UI information
        */

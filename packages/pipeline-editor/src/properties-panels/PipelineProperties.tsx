@@ -37,7 +37,9 @@ function PipelineProperties({
 
   return (
     <PropertiesPanel
-      currentProperties={pipelineFlow?.pipeline_properties ?? {}}
+      currentProperties={
+        pipelineFlow?.pipelines?.[0]?.app_data?.pipeline_properties ?? {}
+      }
       propertiesSchema={propertiesSchema}
       onFileRequested={onFileRequested}
       onChange={onChange}

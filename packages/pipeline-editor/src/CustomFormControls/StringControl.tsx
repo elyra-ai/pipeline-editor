@@ -73,6 +73,7 @@ function StringControl({
   placeholder,
   extensions,
   textarea,
+  readonly,
 }: Props) {
   const [value, setValue] = useControlState<string>();
 
@@ -146,6 +147,7 @@ function StringControl({
             onChange={handleChange}
             disabled={format === "file"}
             onBlur={handleBlur}
+            readOnly={readonly}
           />
         )}
         {errorMessages[0] !== undefined && (
