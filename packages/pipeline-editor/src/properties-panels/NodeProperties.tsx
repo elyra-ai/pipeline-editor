@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { NodeTypeDef } from "@elyra/canvas";
+
 import { PropertiesPanel, Message } from "./PropertiesPanel";
 
 interface Props {
@@ -47,7 +49,7 @@ function NodeProperties({
   }
 
   const selectedNode = pipeline.pipelines?.[0]?.nodes.find(
-    (n: any) => n.id === selectedNodes[0]
+    (n: NodeTypeDef) => n.id === selectedNodes[0]
   );
 
   if (!selectedNode) {
