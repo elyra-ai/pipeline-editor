@@ -47,7 +47,7 @@ function NodeProperties({
   }
 
   const selectedNode = pipeline.pipelines?.[0]?.nodes.find(
-    (n: any) => n.id === selectedNodes[0].id
+    (n: any) => n.id === selectedNodes[0]
   );
 
   if (!selectedNode) {

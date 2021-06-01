@@ -443,7 +443,7 @@ const PipelineEditor = forwardRef(
 
     const [selectedNodes, setSelectedNodes] = useState<NodeTypeDef[]>();
     const handleSelectionChange = useCallback((e: CanvasSelectionEvent) => {
-      setSelectedNodes(e.selectedNodes);
+      setSelectedNodes(e.selectedNodes.map((n: any) => n.id));
     }, []);
 
     const handleEditAction = useCallback(
