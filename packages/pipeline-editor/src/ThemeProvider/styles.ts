@@ -135,6 +135,10 @@ export const CanvasOverrides = css`
     font-size: ${({ theme }) => theme.typography.fontSize};
   }
 
+  .properties-wrapper textarea {
+    resize: vertical;
+  }
+
   .properties-wrapper input[type="text" i]:focus,
   .properties-wrapper input[type="number" i]:focus {
     outline: 1px solid ${({ theme }) => theme.palette.focus};
