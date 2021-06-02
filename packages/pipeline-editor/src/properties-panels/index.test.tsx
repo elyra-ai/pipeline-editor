@@ -21,7 +21,7 @@ import { render, screen, nodeSpec, selectedNode } from "../test-utils";
 import NodeProperties from "./NodeProperties";
 
 it("renders with undefined nodes selected", () => {
-  const { container } = render(<NodeProperties nodes={[]} />);
+  const { container } = render(<NodeProperties pipeline={{}} nodes={[]} />);
   expect(container.firstChild).toHaveTextContent(
     /select a node to edit its properties/i
   );
@@ -29,7 +29,7 @@ it("renders with undefined nodes selected", () => {
 
 it("renders with no nodes selected", () => {
   const { container } = render(
-    <NodeProperties nodes={[]} selectedNodes={[]} />
+    <NodeProperties pipeline={{}} nodes={[]} selectedNodes={[]} />
   );
   expect(container.firstChild).toHaveTextContent(
     /select a node to edit its properties/i
@@ -38,7 +38,7 @@ it("renders with no nodes selected", () => {
 
 it("renders with multiple nodes selected", () => {
   const { container } = render(
-    <NodeProperties nodes={[]} selectedNodes={[{}, {}]} />
+    <NodeProperties pipeline={{}} nodes={[]} selectedNodes={[{}, {}]} />
   );
   expect(container.firstChild).toHaveTextContent(
     /multiple nodes are selected/i
@@ -47,7 +47,11 @@ it("renders with multiple nodes selected", () => {
 
 it("renders with supernode selected", () => {
   const { container } = render(
-    <NodeProperties nodes={[]} selectedNodes={[{ type: "super_node" }]} />
+    <NodeProperties
+      pipeline={{}}
+      nodes={[]}
+      selectedNodes={[{ type: "super_node" }]}
+    />
   );
   expect(container.firstChild).toHaveTextContent(
     /this node type doesn't have any editable properties/i
@@ -56,7 +60,7 @@ it("renders with supernode selected", () => {
 
 it("renders if selected node op isn't defined in schema", () => {
   const { container } = render(
-    <NodeProperties nodes={[]} selectedNodes={[selectedNode]} />
+    <NodeProperties pipeline={{}} nodes={[]} selectedNodes={[selectedNode]} />
   );
   expect(container.firstChild).toHaveTextContent(
     /this node type doesn't have any editable properties/i
@@ -66,7 +70,11 @@ it("renders if selected node op isn't defined in schema", () => {
 it("renders common properties with one node selected", () => {
   render(
     <IntlProvider locale="en">
-      <NodeProperties nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
+      <NodeProperties
+        pipeline={{}}
+        nodes={[nodeSpec]}
+        selectedNodes={[selectedNode]}
+      />
     </IntlProvider>
   );
   expect(screen.getByLabelText(/properties/i)).toBeInTheDocument();
@@ -78,6 +86,7 @@ it("calls onFileRequested when a browse button is pressed", async () => {
     <IntlProvider locale="en">
       <NodeProperties
         nodes={[nodeSpec]}
+        pipeline={{}}
         selectedNodes={[selectedNode]}
         onFileRequested={handleFileRequested}
       />
@@ -95,7 +104,11 @@ it("calls onFileRequested when a browse button is pressed", async () => {
 it("doesn't crash when a browse button is pressed and onFileRequested is undefined", async () => {
   render(
     <IntlProvider locale="en">
-      <NodeProperties nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
+      <NodeProperties
+        pipeline={{}}
+        nodes={[nodeSpec]}
+        selectedNodes={[selectedNode]}
+      />
     </IntlProvider>
   );
   userEvent.click(screen.getByText(/browse/i));
@@ -107,6 +120,7 @@ it("calls onChange when a field changes", async () => {
     <IntlProvider locale="en">
       <NodeProperties
         nodes={[nodeSpec]}
+        pipeline={{}}
         selectedNodes={[selectedNode]}
         onChange={handleChange}
       />
