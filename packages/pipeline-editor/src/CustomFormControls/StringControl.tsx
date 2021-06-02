@@ -72,7 +72,6 @@ function StringControl({
   required,
   placeholder,
   extensions,
-  textarea,
   readonly,
 }: Props) {
   const [value, setValue] = useControlState<string>();
@@ -132,7 +131,7 @@ function StringControl({
   return (
     <Container className={errorMessages.length > 0 ? "error" : undefined}>
       <InputContainer>
-        {textarea ? (
+        {format === "multiline" ? (
           <textarea
             value={renderedValue}
             placeholder={placeholder}
