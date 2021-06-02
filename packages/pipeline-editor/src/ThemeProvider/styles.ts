@@ -135,6 +135,12 @@ export const CanvasOverrides = css`
     font-size: ${({ theme }) => theme.typography.fontSize};
   }
 
+  .properties-wrapper p {
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-weight: ${({ theme }) => theme.typography.fontWeight};
+    font-size: ${({ theme }) => theme.typography.fontSize};
+  }
+
   .properties-wrapper textarea {
     resize: vertical;
   }

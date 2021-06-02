@@ -138,6 +138,8 @@ function StringControl({
             onChange={handleChange}
             onBlur={handleBlur}
           />
+        ) : readonly ? (
+          <p> {renderedValue} </p>
         ) : (
           <input
             type="text"
@@ -146,7 +148,6 @@ function StringControl({
             onChange={handleChange}
             disabled={format === "file"}
             onBlur={handleBlur}
-            readOnly={readonly}
           />
         )}
         {errorMessages[0] !== undefined && (
