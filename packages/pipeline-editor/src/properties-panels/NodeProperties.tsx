@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-import { NodeTypeDef } from "@elyra/canvas";
-
 import { PropertiesPanel, Message } from "./PropertiesPanel";
 
 interface Props {
   selectedNodes?: any[];
-  pipeline: any;
   nodes: any[];
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
@@ -29,7 +26,6 @@ interface Props {
 
 function NodeProperties({
   selectedNodes,
-  pipeline,
   nodes,
   onFileRequested,
   onPropertiesUpdateRequested,
@@ -48,9 +44,7 @@ function NodeProperties({
     );
   }
 
-  const selectedNode = pipeline.pipelines?.[0]?.nodes.find(
-    (n: NodeTypeDef) => n.id === selectedNodes[0]
-  );
+  const selectedNode = selectedNodes[0];
 
   if (!selectedNode) {
     return <Message>Select a node to edit its properties.</Message>;

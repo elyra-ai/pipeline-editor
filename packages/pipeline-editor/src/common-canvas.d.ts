@@ -596,7 +596,7 @@ declare module "@elyra/canvas" {
     app_data?: {
       // NOTE: elyra specific.
       version: number;
-      pipeline_properties: any;
+      properties: any;
       /**
        * Pipeline level UI information
        */

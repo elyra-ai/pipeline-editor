@@ -547,7 +547,7 @@ const PipelineEditor = forwardRef(
       (data) => {
         const pipeline = controller.current.getPipelineFlow();
         if (pipeline?.pipelines?.[0]?.app_data) {
-          pipeline.pipelines[0].app_data.pipeline_properties = data;
+          pipeline.pipelines[0].app_data.properties = data;
           controller.current.setPipelineFlow(pipeline);
           onChange?.(controller.current.getPipelineFlow());
         }
@@ -684,8 +684,9 @@ const PipelineEditor = forwardRef(
                     icon: theme.overrides?.propertiesIcon,
                     content: (
                       <NodeProperties
-                        selectedNodes={selectedNodes}
-                        pipeline={pipeline}
+                        selectedNodes={pipeline?.pipelines?.[0]?.nodes?.filter(
+                          (n: NodeTypeDef) => selectedNodes?.includes(n.id)
+                        )}
                         nodes={nodes}
                         onFileRequested={onFileRequested}
                         onPropertiesUpdateRequested={
