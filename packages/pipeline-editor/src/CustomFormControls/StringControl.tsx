@@ -72,7 +72,6 @@ function StringControl({
   required,
   placeholder,
   extensions,
-  readonly,
 }: Props) {
   const [value, setValue] = useControlState<string>();
 
@@ -138,8 +137,6 @@ function StringControl({
             onChange={handleChange}
             onBlur={handleBlur}
           />
-        ) : readonly ? (
-          <p> {renderedValue} </p>
         ) : (
           <input
             type="text"

@@ -679,6 +679,22 @@ const PipelineEditor = forwardRef(
                 }}
                 tabs={[
                   {
+                    id: "pipeline-properties",
+                    label: "Pipeline Properties",
+                    icon: theme.overrides?.pipelineIcon,
+                    content: (
+                      <PipelineProperties
+                        pipelineFlow={pipeline}
+                        propertiesSchema={pipelineProperties}
+                        onFileRequested={onFileRequested}
+                        onPropertiesUpdateRequested={
+                          onPropertiesUpdateRequested
+                        }
+                        onChange={handlePipelinePropertiesChange}
+                      />
+                    ),
+                  },
+                  {
                     id: "properties",
                     label: "Node Properties",
                     icon: theme.overrides?.propertiesIcon,
@@ -701,22 +717,6 @@ const PipelineEditor = forwardRef(
                     label: "Palette",
                     icon: theme.overrides?.paletteIcon,
                     content: <PalettePanel nodes={nodes} />,
-                  },
-                  {
-                    id: "pipeline-properties",
-                    label: "Pipeline Properties",
-                    icon: theme.overrides?.pipelineIcon,
-                    content: (
-                      <PipelineProperties
-                        pipelineFlow={pipeline}
-                        propertiesSchema={pipelineProperties}
-                        onFileRequested={onFileRequested}
-                        onPropertiesUpdateRequested={
-                          onPropertiesUpdateRequested
-                        }
-                        onChange={handlePipelinePropertiesChange}
-                      />
-                    ),
                   },
                 ]}
                 collapsed={panelOpen === false}

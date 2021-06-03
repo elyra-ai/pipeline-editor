@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-/* istanbul ignore file */
+import { createControl, useControlState } from "./control";
 
-export { default as StringControl } from "./StringControl";
-export { default as DisplayControl } from "./DisplayControl";
-export { default as StringArrayControl } from "./StringArrayControl";
-export { default as BooleanControl } from "./BooleanControl";
-export { default as EnumControl } from "./EnumControl";
-export { default as NumberControl } from "./NumberControl";
+function DisplayControl() {
+  const [value] = useControlState<string>();
+
+  return <p> {value} </p>;
+}
+
+export default createControl("DisplayControl", DisplayControl);
