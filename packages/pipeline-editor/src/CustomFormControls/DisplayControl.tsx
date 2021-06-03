@@ -19,7 +19,7 @@ import { createControl, useControlState } from "./control";
 function DisplayControl() {
   const [value] = useControlState<string>();
 
-  return <p> {value} </p>;
+  return <p>{value}</p>;
 }
 
 export default createControl("DisplayControl", DisplayControl);
