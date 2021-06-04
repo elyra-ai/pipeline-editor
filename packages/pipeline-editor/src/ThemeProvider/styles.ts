@@ -121,7 +121,8 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper input[type="text" i],
-  .properties-wrapper input[type="number" i] {
+  .properties-wrapper input[type="number" i],
+  .properties-wrapper textarea {
     box-sizing: border-box;
     padding: 4px;
     background-color: ${({ theme }) => theme.palette.background.input};
@@ -132,6 +133,16 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
+  }
+
+  .properties-wrapper p {
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-weight: ${({ theme }) => theme.typography.fontWeight};
+    font-size: ${({ theme }) => theme.typography.fontSize};
+  }
+
+  .properties-wrapper textarea {
+    resize: vertical;
   }
 
   .properties-wrapper input[type="text" i]:focus,

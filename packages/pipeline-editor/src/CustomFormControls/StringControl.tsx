@@ -130,14 +130,23 @@ function StringControl({
   return (
     <Container className={errorMessages.length > 0 ? "error" : undefined}>
       <InputContainer>
-        <input
-          type="text"
-          value={renderedValue}
-          placeholder={placeholder}
-          onChange={handleChange}
-          disabled={format === "file"}
-          onBlur={handleBlur}
-        />
+        {format === "multiline" ? (
+          <textarea
+            value={renderedValue}
+            placeholder={placeholder}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+        ) : (
+          <input
+            type="text"
+            value={renderedValue}
+            placeholder={placeholder}
+            onChange={handleChange}
+            disabled={format === "file"}
+            onBlur={handleBlur}
+          />
+        )}
         {errorMessages[0] !== undefined && (
           <ErrorMessage>{errorMessages[0]}</ErrorMessage>
         )}

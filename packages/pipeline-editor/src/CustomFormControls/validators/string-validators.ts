@@ -22,7 +22,7 @@ export interface StringValidatorOptions {
   patternErrorMessage?: string; // for giving a tailored error message when a pattern does not match
   minLength?: number; // for restricting string length
   maxLength?: number; // for restricting string length
-  format?: "file"; // for restricting strings to well-known formats. Potential future formats: "date" | "time" | "ipv4" | "email" | "uri"
+  format?: "file" | "multiline"; // for restricting strings to well-known formats. Potential future formats: "date" | "time" | "ipv4" | "email" | "uri"
 }
 
 export function getStringValidators<T extends string>({

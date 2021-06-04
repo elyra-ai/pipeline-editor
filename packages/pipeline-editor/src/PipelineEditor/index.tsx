@@ -42,7 +42,7 @@ import styled, { useTheme } from "styled-components";
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
 import PipelineController from "../PipelineController";
-import PropertiesPanel from "../PropertiesPanel";
+import { NodeProperties, PipelineProperties } from "../properties-panels";
 import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
 import { InternalThemeProvider } from "../ThemeProvider";
@@ -52,6 +52,7 @@ interface Props {
   pipeline: any;
   toolbar?: any;
   nodes?: any;
+  pipelineProperties?: any;
   onAction?: (action: { type: string; payload?: any }) => any;
   onChange?: (pipeline: any) => any;
   onDoubleClickNode?: (e: CanvasClickEvent) => any;
@@ -147,6 +148,7 @@ const PipelineEditor = forwardRef(
     {
       pipeline,
       nodes,
+      pipelineProperties,
       toolbar,
       onAction,
       onChange,
@@ -439,9 +441,9 @@ const PipelineEditor = forwardRef(
       [onDoubleClickNode]
     );
 
-    const [selectedNodes, setSelectedNodes] = useState<NodeTypeDef[]>();
+    const [selectedNodes, setSelectedNodes] = useState<string[]>();
     const handleSelectionChange = useCallback((e: CanvasSelectionEvent) => {
-      setSelectedNodes(e.selectedNodes);
+      setSelectedNodes(e.selectedNodes.map((n: NodeTypeDef) => n.id));
     }, []);
 
     const handleEditAction = useCallback(
@@ -535,6 +537,18 @@ const PipelineEditor = forwardRef(
             { app_data: data },
             pipeline.id
           );
+          onChange?.(controller.current.getPipelineFlow());
+        }
+      },
+      [onChange]
+    );
+
+    const handlePipelinePropertiesChange = useCallback(
+      (data) => {
+        const pipeline = controller.current.getPipelineFlow();
+        if (pipeline?.pipelines?.[0]?.app_data) {
+          pipeline.pipelines[0].app_data.properties = data;
+          controller.current.setPipelineFlow(pipeline);
           onChange?.(controller.current.getPipelineFlow());
         }
       },
@@ -665,12 +679,30 @@ const PipelineEditor = forwardRef(
                 }}
                 tabs={[
                   {
+                    id: "pipeline-properties",
+                    label: "Pipeline Properties",
+                    icon: theme.overrides?.pipelineIcon,
+                    content: (
+                      <PipelineProperties
+                        pipelineFlow={pipeline}
+                        propertiesSchema={pipelineProperties}
+                        onFileRequested={onFileRequested}
+                        onPropertiesUpdateRequested={
+                          onPropertiesUpdateRequested
+                        }
+                        onChange={handlePipelinePropertiesChange}
+                      />
+                    ),
+                  },
+                  {
                     id: "properties",
                     label: "Node Properties",
                     icon: theme.overrides?.propertiesIcon,
                     content: (
-                      <PropertiesPanel
-                        selectedNodes={selectedNodes}
+                      <NodeProperties
+                        selectedNodes={pipeline?.pipelines?.[0]?.nodes?.filter(
+                          (n: NodeTypeDef) => selectedNodes?.includes(n.id)
+                        )}
                         nodes={nodes}
                         onFileRequested={onFileRequested}
                         onPropertiesUpdateRequested={
