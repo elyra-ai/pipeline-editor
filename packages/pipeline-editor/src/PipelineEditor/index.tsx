@@ -455,14 +455,15 @@ const PipelineEditor = forwardRef(
         onAction?.({ type: e.editType, payload });
 
         if (e.editType === "newFileNode") {
-          const extensions = nodes.map((n: any) => n.extension);
+          const extensions = nodes.map((n: any) => n.extensions).flat();
+
           const [file] = await onFileRequested?.({
             canSelectMany: false,
             filters: { File: extensions },
           });
 
-          const node = nodes.find(
-            (n: any) => n.extension === path.extname(file)
+          const node = nodes.find((n: any) =>
+            n.extensions.includes(path.extname(file))
           );
 
           const nodeTemplate = controller.current.getPaletteNode(node.op);
