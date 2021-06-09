@@ -67,6 +67,7 @@ function NodeProperties({
   return (
     <PropertiesPanel
       currentProperties={selectedNode.app_data}
+      onPropertiesUpdateRequested={onPropertiesUpdateRequested}
       propertiesSchema={nodePropertiesSchema}
       onFileRequested={onFileRequested}
       onChange={(data: any) => {

@@ -40,6 +40,7 @@ function PipelineProperties({
       currentProperties={
         pipelineFlow?.pipelines?.[0]?.app_data?.properties ?? {}
       }
+      onPropertiesUpdateRequested={onPropertiesUpdateRequested}
       propertiesSchema={propertiesSchema}
       onFileRequested={onFileRequested}
       onChange={onChange}
