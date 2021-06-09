@@ -383,6 +383,8 @@ class PipelineController extends CanvasController {
             nodeID: problem.info.nodeID,
             property: problem.info.property,
           });
+          console.log("!!!!", missingProperties);
+          console.log("END OF CASE");
           break;
         default:
           console.log("BAD TYPE", problem.info.type);
