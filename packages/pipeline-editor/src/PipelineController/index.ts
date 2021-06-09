@@ -146,6 +146,7 @@ class PipelineController extends CanvasController {
     nodeToBeStyled: { [key: string]: string[] },
     styleOptions?: { redColor: string }
   ) {
+    console.log("SETTING NODE STYLES");
     this.setObjectsStyle(
       nodeToBeStyled,
       {
@@ -236,6 +237,7 @@ class PipelineController extends CanvasController {
   }
 
   resetStyles() {
+    console.log("RESETTING STYLES");
     this.removeAllStyles();
 
     for (const pipeline of this.getPipelineFlow().pipelines) {
@@ -349,6 +351,8 @@ class PipelineController extends CanvasController {
     } else {
       problems = validate(JSON.stringify(this.getPipelineFlow()), this.nodes);
     }
+
+    console.log("INTERNAL", problems);
 
     const linksWithErrors: { [key: string]: string[] } = {};
     const nodesWithErrors: { [key: string]: string[] } = {};
