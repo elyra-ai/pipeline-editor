@@ -340,8 +340,6 @@ class PipelineController extends CanvasController {
       node: any
     ) => Promise<Problem[]>
   ) {
-    this.resetStyles();
-
     let problems;
     if (experimentalValidateDelegationHandler !== undefined) {
       problems = await experimentalValidateDelegationHandler(
@@ -352,7 +350,11 @@ class PipelineController extends CanvasController {
       problems = validate(JSON.stringify(this.getPipelineFlow()), this.nodes);
     }
 
+    this.resetStyles();
+
     console.log("INTERNAL", problems);
+
+    console.log("TYPEOF", typeof problems);
 
     const linksWithErrors: { [key: string]: string[] } = {};
     const nodesWithErrors: { [key: string]: string[] } = {};
@@ -383,7 +385,10 @@ class PipelineController extends CanvasController {
         default:
           console.log("BAD TYPE", problem.info.type);
       }
+      console.log("LOOOP");
     }
+
+    console.log("END LOOP");
 
     console.log("LINKS WITH ERRORS", linksWithErrors);
     console.log("NODES WITH ERRORS", nodesWithErrors);
