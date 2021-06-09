@@ -360,12 +360,14 @@ class PipelineController extends CanvasController {
     for (const problem of problems) {
       switch (problem.info.type) {
         case "circularReference":
+          console.log("CIRC");
           linksWithErrors[problem.info.pipelineID] = [
             ...(linksWithErrors[problem.info.pipelineID] ?? []),
             problem.info.linkID,
           ];
           break;
         case "missingProperty":
+          console.log("MISS PROP");
           nodesWithErrors[problem.info.pipelineID] = [
             ...(nodesWithErrors[problem.info.pipelineID] ?? []),
             problem.info.nodeID,
@@ -375,8 +377,14 @@ class PipelineController extends CanvasController {
             property: problem.info.property,
           });
           break;
+        default:
+          console.log("BAD TYPE", problem.info.type);
       }
     }
+
+    console.log("LINKS WITH ERRORS", linksWithErrors);
+    console.log("NODES WITH ERRORS", nodesWithErrors);
+
     this.setLinkErrors(linksWithErrors, styleOptions);
     this.setNodeErrors(nodesWithErrors, styleOptions);
 
