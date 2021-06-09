@@ -146,7 +146,6 @@ class PipelineController extends CanvasController {
     nodeToBeStyled: { [key: string]: string[] },
     styleOptions?: { redColor: string }
   ) {
-    console.log("SETTING NODE STYLES");
     this.setObjectsStyle(
       nodeToBeStyled,
       {
@@ -237,7 +236,6 @@ class PipelineController extends CanvasController {
   }
 
   resetStyles() {
-    console.log("RESETTING STYLES");
     this.removeAllStyles();
 
     for (const pipeline of this.getPipelineFlow().pipelines) {
@@ -339,7 +337,7 @@ class PipelineController extends CanvasController {
       pipeline: any,
       node: any
     ) => Promise<Problem[]>
-  ): Promise<"actually done"> {
+  ) {
     let problems;
     if (experimentalValidateDelegationHandler !== undefined) {
       problems = await experimentalValidateDelegationHandler(
@@ -352,49 +350,31 @@ class PipelineController extends CanvasController {
 
     this.resetStyles();
 
-    console.log("INTERNAL", problems);
-
-    console.log("TYPEOF", typeof problems);
-
-    console.log("IS ARRAY?", Array.isArray(problems));
-
     const linksWithErrors: { [key: string]: string[] } = {};
     const nodesWithErrors: { [key: string]: string[] } = {};
     const missingProperties = [];
     for (const problem of problems) {
       switch (problem.info.type) {
         case "circularReference":
-          console.log("CIRC");
           linksWithErrors[problem.info.pipelineID] = [
             ...(linksWithErrors[problem.info.pipelineID] ?? []),
             problem.info.linkID,
           ];
           break;
         case "missingProperty":
-          console.log("MISS PROP");
-          console.log("MISS PROP PIPELINE ID", problem.info.pipelineID);
-          console.log("MISS PROP NODE ID", problem.info.nodeID);
           nodesWithErrors[problem.info.pipelineID] = [
             ...(nodesWithErrors[problem.info.pipelineID] ?? []),
             problem.info.nodeID,
           ];
-          console.log("????", nodesWithErrors);
+
           missingProperties.push({
             nodeID: problem.info.nodeID,
             property: problem.info.property,
           });
-          console.log("!!!!", missingProperties);
-          console.log("END OF CASE");
+
           break;
       }
-      console.log("LOOOP");
     }
-
-    console.log("END LOOP");
-
-    console.log("LINKS WITH ERRORS", linksWithErrors);
-    console.log("NODES WITH ERRORS", nodesWithErrors);
-    console.log("MISSING PROPS", missingProperties);
 
     this.setLinkErrors(linksWithErrors, styleOptions);
     this.setNodeErrors(nodesWithErrors, styleOptions);
