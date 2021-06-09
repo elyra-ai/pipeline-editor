@@ -339,7 +339,7 @@ class PipelineController extends CanvasController {
       pipeline: any,
       node: any
     ) => Promise<Problem[]>
-  ) {
+  ): Promise<"actually done"> {
     let problems;
     if (experimentalValidateDelegationHandler !== undefined) {
       problems = await experimentalValidateDelegationHandler(
@@ -447,6 +447,8 @@ class PipelineController extends CanvasController {
         }
       }
     }
+
+    return "actually done";
   }
 
   findExecutionNode(nodeID: string) {

@@ -211,8 +211,9 @@ const PipelineEditor = forwardRef(
               { redColor: theme.palette.error.main },
               experimentalValidateDelegationHandler
             )
-            .then(() => {
+            .then((key) => {
               console.log("DONE?????????");
+              console.log("KEY", key);
             });
         } else {
           controller.current.resetStyles();
