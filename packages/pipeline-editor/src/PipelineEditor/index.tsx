@@ -206,10 +206,14 @@ const PipelineEditor = forwardRef(
         controller.current.open(pipeline);
         if (!readOnly) {
           controller.current.setNodes(nodes);
-          controller.current.validate(
-            { redColor: theme.palette.error.main },
-            experimentalValidateDelegationHandler
-          );
+          controller.current
+            .validate(
+              { redColor: theme.palette.error.main },
+              experimentalValidateDelegationHandler
+            )
+            .then(() => {
+              console.log("DONE?????????");
+            });
         } else {
           controller.current.resetStyles();
         }
