@@ -366,16 +366,13 @@ class PipelineController extends CanvasController {
             ...(nodesWithErrors[problem.info.pipelineID] ?? []),
             problem.info.nodeID,
           ];
-
           missingProperties.push({
             nodeID: problem.info.nodeID,
             property: problem.info.property,
           });
-
           break;
       }
     }
-
     this.setLinkErrors(linksWithErrors, styleOptions);
     this.setNodeErrors(nodesWithErrors, styleOptions);
 
@@ -427,8 +424,6 @@ class PipelineController extends CanvasController {
         }
       }
     }
-
-    return "actually done";
   }
 
   findExecutionNode(nodeID: string) {
