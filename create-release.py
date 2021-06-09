@@ -20,6 +20,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 
 from types import SimpleNamespace
 
@@ -98,19 +99,6 @@ def update_version_to_release() -> None:
     try:
         check_run(["lerna", "version", new_version, "--no-git-tag-version", "--no-push", "--yes"], cwd=config.source_dir)
         check_run(["yarn", "version", "--new-version", new_version, "--no-git-tag-version"], cwd=config.source_dir)
-
-    except Exception as ex:
-        raise UpdateVersionException from ex
-
-
-def update_version_to_dev() -> None:
-    global config
-
-    dev_version = config.dev_version
-
-    try:
-        check_run(["lerna", "version", dev_version, "--no-git-tag-version", "--no-push", "--yes"], cwd=config.source_dir)
-        check_run(["yarn", "version", "--new-version", dev_version, "--no-git-tag-version"], cwd=config.source_dir)
 
     except Exception as ex:
         raise UpdateVersionException from ex
@@ -196,10 +184,6 @@ def release() -> None:
     check_run(['git', 'tag', config.tag], cwd=config.source_dir)
     # build and publish npm packages
     build_and_publish_npm_packages()
-    # back to development
-    update_version_to_dev()
-    # commit
-    check_run(['git', 'commit', '-a', '-m', f'Prepare for next development iteration'], cwd=config.source_dir)
     # publish git changes
     publish_git_release()
 
@@ -224,7 +208,6 @@ def initialize_config(args=None) -> SimpleNamespace:
         'old_version': v,
         'new_version': args.version if not args.rc or not str.isdigit(args.rc) else f'{args.version}-rc.{args.rc}',
         'rc': args.rc,
-        'dev_version': f'{args.dev_version}-dev',
         'tag': f'v{args.version}' if not args.rc or not str.isdigit(args.rc) else f'v{args.version}rc{args.rc}'
     }
 
@@ -244,11 +227,10 @@ def print_config() -> None:
     print(f'Git user email \t\t -> {config.git_user_email}')
     print(f'Work dir \t\t -> {config.work_dir}')
     print(f'Source dir \t\t -> {config.source_dir}')
-    print(f'Old Version \t\t -> {config.old_version}')
+    print(f'Current Version \t -> {config.old_version}')
     print(f'New Version \t\t -> {config.new_version}')
     if config.rc is not None:
         print(f'RC number \t\t -> {config.rc}')
-    print(f'Dev Version \t\t -> {config.dev_version}')
     print(f'Release Tag \t\t -> {config.tag}')
     print("-----------------------------------------------------------------")
     print('')
@@ -256,12 +238,12 @@ def print_config() -> None:
 
 def print_help() -> str:
     return (
-    """create-release.py --version VERSION --dev-version NEXT_VERSION
+    """create-release.py --version VERSION
     
     DESCRIPTION
-    Creates Elyra release based on git commit hash or from HEAD.
+    Creates Pipeline-Editor release based on git commit hash or from HEAD.
     
-    create-release.py --version 1.3.0 --dev-version 1.4.0 [--rc 0]
+    create-release.py --version 1.3.0 [--rc 0]
     This form will prepare a release, build its artifacts and publish
 
     Required software dependencies for building and publishing a release:
@@ -281,7 +263,6 @@ def main(args=None):
     """Perform necessary tasks to create and/or publish a new release"""
     parser = argparse.ArgumentParser(usage=print_help())
     parser.add_argument('--version', help='the new release version', type=str, required=True)
-    parser.add_argument('--dev-version', help='the new development version', type=str, required=False, )
     parser.add_argument('--rc', help='the release candidate number', type=str, required=False, )
     args = parser.parse_args()
 
