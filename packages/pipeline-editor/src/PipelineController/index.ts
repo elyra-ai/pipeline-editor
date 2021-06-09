@@ -368,10 +368,13 @@ class PipelineController extends CanvasController {
           break;
         case "missingProperty":
           console.log("MISS PROP");
+          console.log("MISS PROP PIPELINE ID", problem.info.pipelineID);
+          console.log("MISS PROP NODE ID", problem.info.nodeID);
           nodesWithErrors[problem.info.pipelineID] = [
             ...(nodesWithErrors[problem.info.pipelineID] ?? []),
             problem.info.nodeID,
           ];
+          console.log("????", nodesWithErrors);
           missingProperties.push({
             nodeID: problem.info.nodeID,
             property: problem.info.property,
@@ -384,6 +387,7 @@ class PipelineController extends CanvasController {
 
     console.log("LINKS WITH ERRORS", linksWithErrors);
     console.log("NODES WITH ERRORS", nodesWithErrors);
+    console.log("MISSING PROPS", missingProperties);
 
     this.setLinkErrors(linksWithErrors, styleOptions);
     this.setNodeErrors(nodesWithErrors, styleOptions);
