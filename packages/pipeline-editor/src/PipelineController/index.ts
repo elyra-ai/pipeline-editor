@@ -356,6 +356,8 @@ class PipelineController extends CanvasController {
 
     console.log("TYPEOF", typeof problems);
 
+    console.log("IS ARRAY?", Array.isArray(problems));
+
     const linksWithErrors: { [key: string]: string[] } = {};
     const nodesWithErrors: { [key: string]: string[] } = {};
     const missingProperties = [];
