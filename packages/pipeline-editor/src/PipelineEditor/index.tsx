@@ -62,6 +62,10 @@ interface Props {
   readOnly?: boolean;
   children?: React.ReactNode;
   nativeKeyboardActions?: boolean;
+  experimentalValidateDelegationHandler?: (
+    pipeline: any,
+    node: any
+  ) => Promise<any>;
 }
 
 const READ_ONLY_NODE_SVG_PATH =
@@ -159,6 +163,7 @@ const PipelineEditor = forwardRef(
       readOnly,
       children,
       nativeKeyboardActions,
+      experimentalValidateDelegationHandler,
     }: Props,
     ref
   ) => {
@@ -201,7 +206,10 @@ const PipelineEditor = forwardRef(
         controller.current.open(pipeline);
         if (!readOnly) {
           controller.current.setNodes(nodes);
-          controller.current.validate({ redColor: theme.palette.error.main });
+          controller.current.validate(
+            { redColor: theme.palette.error.main },
+            experimentalValidateDelegationHandler
+          );
         } else {
           controller.current.resetStyles();
         }
@@ -209,7 +217,14 @@ const PipelineEditor = forwardRef(
       } catch (e) {
         onError?.(e);
       }
-    }, [nodes, onError, pipeline, readOnly, theme.palette.error.main]);
+    }, [
+      experimentalValidateDelegationHandler,
+      nodes,
+      onError,
+      pipeline,
+      readOnly,
+      theme.palette.error.main,
+    ]);
 
     useImperativeHandle(
       ref,
