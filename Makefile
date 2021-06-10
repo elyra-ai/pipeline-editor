@@ -25,6 +25,7 @@ clean: ## Make a clean source tree and unlink packages
 
 lint: ## Run linters
 	yarn lint
+	yarn format
 
 install: ## Install dependencies and build packages
 	yarn install && yarn build

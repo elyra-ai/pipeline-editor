@@ -138,9 +138,7 @@ def build_and_publish_npm_packages() -> None:
     print("--------------------- Building NPM Packages ---------------------")
     print("-----------------------------------------------------------------")
 
-    check_run(["make", "clean"], cwd=config.source_dir, capture_output=False)
-    check_run(["yarn", "install"], cwd=config.source_dir, capture_output=False)
-    check_run(["yarn", "build"], cwd=config.source_dir, capture_output=False)
+    check_run(["make", "clean", "install"], cwd=config.source_dir, capture_output=False)
 
     print("-----------------------------------------------------------------")
     print("-------------------- Pushing npm packages -----------------------")
@@ -150,6 +148,7 @@ def build_and_publish_npm_packages() -> None:
     print()
     print(f'publishing npm packages')
     check_run(['lerna', 'publish', '--yes', 'from-package', '--no-git-tag-version', '--no-verify-access', '--no-push'], cwd=config.source_dir)
+    check_run(['make', 'lint'], cwd=config.source_dir)
 
 
 def publish_git_release() -> None:
