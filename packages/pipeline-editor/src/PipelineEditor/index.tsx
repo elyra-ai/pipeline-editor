@@ -441,9 +441,9 @@ const PipelineEditor = forwardRef(
       [onDoubleClickNode]
     );
 
-    const [selectedNodes, setSelectedNodes] = useState<string[]>();
+    const [selectedNodeIDs, setSelectedNodeIDs] = useState<string[]>();
     const handleSelectionChange = useCallback((e: CanvasSelectionEvent) => {
-      setSelectedNodes(e.selectedNodes.map((n: NodeTypeDef) => n.id));
+      setSelectedNodeIDs(e.selectedNodes.map((n: NodeTypeDef) => n.id));
     }, []);
 
     const handleEditAction = useCallback(
@@ -602,6 +602,8 @@ const PipelineEditor = forwardRef(
       );
     }
 
+    const selectedNodes = controller.current.idsToNodes(selectedNodeIDs ?? []);
+
     return (
       <Container ref={blockingRef}>
         <IntlProvider locale="en">
@@ -701,9 +703,7 @@ const PipelineEditor = forwardRef(
                     icon: theme.overrides?.propertiesIcon,
                     content: (
                       <NodeProperties
-                        selectedNodes={pipeline?.pipelines?.[0]?.nodes?.filter(
-                          (n: NodeTypeDef) => selectedNodes?.includes(n.id)
-                        )}
+                        selectedNodes={selectedNodes}
                         nodes={nodes}
                         onFileRequested={onFileRequested}
                         onPropertiesUpdateRequested={
