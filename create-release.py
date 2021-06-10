@@ -178,11 +178,13 @@ def release() -> None:
     checkout_code()
     # Update to new release version
     update_version_to_release()
-    # commit and tag
+    # commit release
     check_run(['git', 'commit', '-a', '-m', f'Release v{config.new_version}'], cwd=config.source_dir)
-    check_run(['git', 'tag', config.tag], cwd=config.source_dir)
     # build and publish npm packages
     build_and_publish_npm_packages()
+    # commit and tag release
+    check_run(['git', 'commit', '-a', '--amend', '--no-edit'], cwd=config.source_dir)
+    check_run(['git', 'tag', config.tag], cwd=config.source_dir)
     # publish git changes
     publish_git_release()
 
