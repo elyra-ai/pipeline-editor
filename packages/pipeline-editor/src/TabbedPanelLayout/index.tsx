@@ -24,7 +24,7 @@ interface Props {
   tabs: {
     id: string;
     label: string;
-    title: string;
+    title?: string;
     icon?: React.ReactNode;
     content: React.ReactNode;
   }[];
