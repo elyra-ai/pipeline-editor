@@ -454,8 +454,10 @@ class PipelineController extends CanvasController {
       const properties = info.map((i) => {
         return {
           label: i.label.default,
-          // `app_data` should never be undefined because canvas injects it.
-          value: app_data![i.parameter_ref],
+          // Use the current parameters as a default if `app_data` doesn't have a value.
+          value:
+            app_data?.[i.parameter_ref] ??
+            nodeDef?.properties?.current_parameters?.[i.parameter_ref],
         };
       });
       return properties;
