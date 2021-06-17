@@ -493,6 +493,15 @@ const PipelineEditor = forwardRef(
         }
 
         if (e.editType === "toggleOpenPanel") {
+          if (!panelOpen) {
+            let defaultTab = "palette";
+            if (e.selectedObjectIds.length > 0) {
+              defaultTab = "properties";
+            } else if (controller.current.getNodes().length > 0) {
+              defaultTab = "pipeline-properties";
+            }
+            setCurrentTab(defaultTab);
+          }
           setPanelOpen((prev) => !prev);
         }
 
@@ -526,7 +535,14 @@ const PipelineEditor = forwardRef(
 
         onChange?.(controller.current.getPipelineFlow());
       },
-      [nodes, onAction, onChange, onFileRequested, onPropertiesUpdateRequested]
+      [
+        nodes,
+        onAction,
+        onChange,
+        onFileRequested,
+        onPropertiesUpdateRequested,
+        panelOpen,
+      ]
     );
 
     const handlePropertiesChange = useCallback(
@@ -684,6 +700,7 @@ const PipelineEditor = forwardRef(
                   {
                     id: "pipeline-properties",
                     label: "Pipeline Properties",
+                    title: "Edit pipeline properties",
                     icon: theme.overrides?.pipelineIcon,
                     content: (
                       <PipelineProperties
@@ -700,6 +717,7 @@ const PipelineEditor = forwardRef(
                   {
                     id: "properties",
                     label: "Node Properties",
+                    title: "Edit node properties",
                     icon: theme.overrides?.propertiesIcon,
                     content: (
                       <NodeProperties
@@ -716,6 +734,7 @@ const PipelineEditor = forwardRef(
                   {
                     id: "palette",
                     label: "Palette",
+                    title: "Add nodes to pipeline",
                     icon: theme.overrides?.paletteIcon,
                     content: <PalettePanel nodes={nodes} />,
                   },

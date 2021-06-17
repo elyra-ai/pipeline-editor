@@ -24,6 +24,7 @@ interface Props {
   tabs: {
     id: string;
     label: string;
+    title?: string;
     icon?: React.ReactNode;
     content: React.ReactNode;
   }[];
@@ -160,6 +161,7 @@ function TabbedPanelLayout({
           {tabs.map((t) => (
             <Tab key={t.id}>
               <Label
+                title={t.title}
                 active={resolvedCurrentTab === t.id}
                 onClick={() => {
                   onTabClick?.(t.id);
