@@ -455,7 +455,9 @@ class PipelineController extends CanvasController {
         return {
           label: i.label.default,
           // `app_data` should never be undefined because canvas injects it.
-          value: app_data![i.parameter_ref],
+          value:
+            app_data?.[i.parameter_ref] ??
+            nodeDef?.properties?.current_parameters?.[i.parameter_ref],
         };
       });
       return properties;
