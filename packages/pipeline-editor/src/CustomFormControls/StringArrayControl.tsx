@@ -97,7 +97,6 @@ const InputContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.palette.inputBorder};
   height: 24px;
   max-width: 320px;
-  width: 100%;
   margin-right: 4px;
   box-sizing: border-box;
 
@@ -127,13 +126,10 @@ const Actions = styled.div`
   position: absolute;
   right: 0;
   top: 0;
-  height: 100%;
-  align-items: center;
 `;
 
 const ListRow = styled.div`
   position: relative;
-  margin-bottom: 3px;
 
   &:hover ${Actions} {
     display: flex;
@@ -209,7 +205,7 @@ export function ListItem({
   if (isEditing) {
     return (
       <InputGroup>
-        <InputContainer>
+        <InputContainer className="elyra-inputContainer">
           <input
             ref={inputRef}
             defaultValue={value ?? ""}
@@ -249,9 +245,10 @@ export function ListItem({
       onDoubleClick={() => {
         onEdit?.();
       }}
+      className="elyra-listRow"
     >
       <ListItemValue>{value}</ListItemValue>
-      <Actions>
+      <Actions className="elyra-stringArrayActions">
         <StyledIconButton
           title="Edit"
           className="elyricon elyricon-edit"
