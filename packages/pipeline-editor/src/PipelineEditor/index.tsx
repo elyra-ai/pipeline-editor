@@ -506,7 +506,12 @@ const PipelineEditor = forwardRef(
         }
 
         if (e.editType === "createExternalNode") {
-          controller.current.addNode(e);
+          const item = {
+            op: e.op,
+            x: e.offsetX,
+            y: e.offsetY,
+          };
+          controller.current.addNode(item);
         }
 
         // Catch any events where a save isn't necessary.

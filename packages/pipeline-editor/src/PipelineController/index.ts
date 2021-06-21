@@ -135,8 +135,9 @@ class PipelineController extends CanvasController {
       JSON.stringify(nodeDef?.properties?.current_parameters)
     );
 
-    // TODO: We should only set this for file based nodes.
-    data.nodeTemplate.app_data.filename = item.path;
+    if (item.path) {
+      data.nodeTemplate.app_data.filename = item.path;
+    }
     const properties = await item.onPropertiesUpdateRequested?.({
       filename: item.path,
     });
