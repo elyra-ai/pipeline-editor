@@ -510,6 +510,7 @@ const PipelineEditor = forwardRef(
             op: e.op,
             x: e.offsetX,
             y: e.offsetY,
+            pipelineId: e.pipelineId,
           };
           controller.current.addNode(item);
         }
