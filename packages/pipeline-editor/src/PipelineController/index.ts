@@ -129,6 +129,7 @@ class PipelineController extends CanvasController {
       offsetX: item.x ?? 40,
       offsetY: item.y ?? 40,
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
+      pipelineId: item.pipelineId,
     };
     const nodeDef = this.nodes.find((n) => n.op === item.op);
     data.nodeTemplate.app_data = JSON.parse(
