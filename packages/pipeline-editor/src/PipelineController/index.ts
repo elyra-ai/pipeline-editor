@@ -130,6 +130,10 @@ class PipelineController extends CanvasController {
       offsetY: item.y ?? 40,
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
     };
+    const nodeDef = this.nodes.find((n) => n.op === item.op);
+    data.nodeTemplate.app_data = JSON.parse(
+      JSON.stringify(nodeDef?.properties?.current_parameters)
+    );
 
     // TODO: We should only set this for file based nodes.
     data.nodeTemplate.app_data.filename = item.path;

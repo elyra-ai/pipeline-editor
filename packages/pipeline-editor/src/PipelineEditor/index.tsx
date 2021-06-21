@@ -506,20 +506,7 @@ const PipelineEditor = forwardRef(
         }
 
         if (e.editType === "createExternalNode") {
-          const nodeTemplate = controller.current.getPaletteNode(e.op);
-          if (nodeTemplate) {
-            const convertedTemplate = controller.current.convertNodeTemplate(
-              nodeTemplate
-            );
-            const action = {
-              editType: "createNode",
-              nodeTemplate: convertedTemplate,
-              pipelineId: e.pipelineId,
-              offsetX: e.offsetX,
-              offsetY: e.offsetY,
-            };
-            controller.current.editActionHandler(action);
-          }
+          controller.current.addNode(e);
         }
 
         // Catch any events where a save isn't necessary.
