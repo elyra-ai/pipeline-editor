@@ -137,11 +137,11 @@ class PipelineController extends CanvasController {
 
     if (item.path) {
       data.nodeTemplate.app_data.filename = item.path;
+      const properties = await item.onPropertiesUpdateRequested?.({
+        filename: item.path,
+      });
+      data.nodeTemplate.app_data.env_vars = properties?.env_vars;
     }
-    const properties = await item.onPropertiesUpdateRequested?.({
-      filename: item.path,
-    });
-    data.nodeTemplate.app_data.env_vars = properties?.env_vars;
 
     this.editActionHandler(data);
   }
