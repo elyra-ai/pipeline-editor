@@ -132,9 +132,11 @@ class PipelineController extends CanvasController {
       pipelineId: item.pipelineId,
     };
     const nodeDef = this.nodes.find((n) => n.op === item.op);
-    data.nodeTemplate.app_data = JSON.parse(
-      JSON.stringify(nodeDef?.properties?.current_parameters)
-    );
+    if (nodeDef?.properties?.current_parameters) {
+      data.nodeTemplate.app_data = JSON.parse(
+        JSON.stringify(nodeDef?.properties?.current_parameters)
+      );
+    }
 
     if (item.path) {
       data.nodeTemplate.app_data.filename = item.path;
