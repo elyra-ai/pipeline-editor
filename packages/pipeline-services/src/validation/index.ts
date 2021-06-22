@@ -70,11 +70,7 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       // otherwise we would need to check strings for undefined or empty string
       // NOTE: 0 is also falsy, but we don't have any number inputs right now?
       // TODO: We should update this to do type checking.
-      if (
-        prop.data?.required &&
-        !node.app_data[prop.parameter_ref] &&
-        !nodeDef.properties?.current_parameters[prop.parameter_ref]
-      ) {
+      if (prop.data?.required && !node.app_data[prop.parameter_ref]) {
         problems.push({
           message: `The property '${prop.label.default}' on node '${node.app_data.ui_data.label}' is required.`,
           path,
