@@ -201,8 +201,9 @@ describe("getNodeProblems", () => {
       ],
     };
 
-    const problems = getNodeProblems(pipeline, [nodeSpec]);
+    const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
     expect(problems).toHaveLength(1);
+    expect(problems[0].info.type).toBe("missingProperty");
     expect(problems[0].info.property).toBe("has_default");
   });
 
