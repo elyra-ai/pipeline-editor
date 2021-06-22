@@ -44,7 +44,7 @@ function PipelineProperties({
       propertiesSchema={propertiesSchema}
       onFileRequested={onFileRequested}
       onChange={onChange}
-      id={pipelineFlow.id}
+      id={pipelineFlow?.id}
     />
   );
 }
