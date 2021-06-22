@@ -516,14 +516,7 @@ const PipelineEditor = forwardRef(
 
         onChange?.(controller.current.getPipelineFlow());
       },
-      [
-        nodes,
-        onAction,
-        onChange,
-        onFileRequested,
-        onPropertiesUpdateRequested,
-        panelOpen,
-      ]
+      [nodes, onAction, onChange, onFileRequested, panelOpen]
     );
 
     const handlePropertiesChange = useCallback(
