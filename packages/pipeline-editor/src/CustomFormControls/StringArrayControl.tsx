@@ -92,7 +92,7 @@ const InputGroup = styled.div`
   }
 `;
 
-const InputContainer = styled.div`
+const InputContainer = styled.div.attrs({ className: "elyra-inputContainer" })`
   background-color: ${({ theme }) => theme.palette.secondary.main};
   border: 1px solid ${({ theme }) => theme.palette.inputBorder};
   height: 24px;
@@ -121,14 +121,14 @@ const InputContainer = styled.div`
   }
 `;
 
-const Actions = styled.div`
+const Actions = styled.div.attrs({ className: "elyra-stringArrayActions" })`
   display: none;
   position: absolute;
   right: 0;
   top: 0;
 `;
 
-const ListRow = styled.div`
+const ListRow = styled.div.attrs({ className: "elyra-listRow" })`
   position: relative;
 
   &:hover ${Actions} {
