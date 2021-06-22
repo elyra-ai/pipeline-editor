@@ -129,14 +129,22 @@ class PipelineController extends CanvasController {
       offsetX: item.x ?? 40,
       offsetY: item.y ?? 40,
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
+      pipelineId: item.pipelineId,
     };
+    const nodeDef = this.nodes.find((n) => n.op === item.op);
+    if (nodeDef?.properties?.current_parameters) {
+      data.nodeTemplate.app_data = JSON.parse(
+        JSON.stringify(nodeDef?.properties?.current_parameters)
+      );
+    }
 
-    // TODO: We should only set this for file based nodes.
-    data.nodeTemplate.app_data.filename = item.path;
-    const properties = await item.onPropertiesUpdateRequested?.({
-      filename: item.path,
-    });
-    data.nodeTemplate.app_data.env_vars = properties?.env_vars;
+    if (item.path) {
+      data.nodeTemplate.app_data.filename = item.path;
+      const properties = await item.onPropertiesUpdateRequested?.({
+        filename: item.path,
+      });
+      data.nodeTemplate.app_data.env_vars = properties?.env_vars;
+    }
 
     this.editActionHandler(data);
   }
@@ -454,10 +462,7 @@ class PipelineController extends CanvasController {
       const properties = info.map((i) => {
         return {
           label: i.label.default,
-          // Use the current parameters as a default if `app_data` doesn't have a value.
-          value:
-            app_data?.[i.parameter_ref] ??
-            nodeDef?.properties?.current_parameters?.[i.parameter_ref],
+          value: app_data?.[i.parameter_ref],
         };
       });
       return properties;

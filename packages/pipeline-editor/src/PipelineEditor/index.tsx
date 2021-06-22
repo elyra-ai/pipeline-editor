@@ -466,25 +466,13 @@ const PipelineEditor = forwardRef(
             n.extensions.includes(path.extname(file))
           );
 
-          const nodeTemplate = controller.current.getPaletteNode(node.op);
-          if (nodeTemplate) {
-            const convertedTemplate = controller.current.convertNodeTemplate(
-              nodeTemplate
-            );
-            convertedTemplate.app_data.filename = file;
-            const properties = await onPropertiesUpdateRequested?.({
-              filename: file,
-            });
-            convertedTemplate.app_data.env_vars = properties.env_vars;
-            const action = {
-              editType: "createNode",
-              nodeTemplate: convertedTemplate,
-              pipelineId: e.pipelineId,
-              offsetX: e.mousePos.x,
-              offsetY: e.mousePos.y,
-            };
-            controller.current.editActionHandler(action);
-          }
+          controller.current.addNode({
+            op: node.op,
+            path: file,
+            pipelineId: e.pipelineId,
+            offsetX: e.mousePos.x,
+            offsetY: e.mousePos.y,
+          });
         }
 
         if (e.editType === "properties") {
@@ -506,20 +494,13 @@ const PipelineEditor = forwardRef(
         }
 
         if (e.editType === "createExternalNode") {
-          const nodeTemplate = controller.current.getPaletteNode(e.op);
-          if (nodeTemplate) {
-            const convertedTemplate = controller.current.convertNodeTemplate(
-              nodeTemplate
-            );
-            const action = {
-              editType: "createNode",
-              nodeTemplate: convertedTemplate,
-              pipelineId: e.pipelineId,
-              offsetX: e.offsetX,
-              offsetY: e.offsetY,
-            };
-            controller.current.editActionHandler(action);
-          }
+          const item = {
+            op: e.op,
+            x: e.offsetX,
+            y: e.offsetY,
+            pipelineId: e.pipelineId,
+          };
+          controller.current.addNode(item);
         }
 
         // Catch any events where a save isn't necessary.
@@ -535,14 +516,7 @@ const PipelineEditor = forwardRef(
 
         onChange?.(controller.current.getPipelineFlow());
       },
-      [
-        nodes,
-        onAction,
-        onChange,
-        onFileRequested,
-        onPropertiesUpdateRequested,
-        panelOpen,
-      ]
+      [nodes, onAction, onChange, onFileRequested, panelOpen]
     );
 
     const handlePropertiesChange = useCallback(

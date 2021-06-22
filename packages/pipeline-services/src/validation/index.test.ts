@@ -146,7 +146,7 @@ describe("getNodeProblems", () => {
     expect(problems[0].info.property).toBe("filename");
   });
 
-  it("should not have issues when required property has a default value", () => {
+  it("should have issues when required property has a default value and is empty", () => {
     const nodeSpec = {
       op: "execute-notebook-node",
       properties: {
@@ -201,8 +201,10 @@ describe("getNodeProblems", () => {
       ],
     };
 
-    const problems = getNodeProblems(pipeline, [nodeSpec]);
-    expect(problems).toHaveLength(0);
+    const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
+    expect(problems).toHaveLength(1);
+    expect(problems[0].info.type).toBe("missingProperty");
+    expect(problems[0].info.property).toBe("has_default");
   });
 
   it("should find missing properties for empty strings", () => {
