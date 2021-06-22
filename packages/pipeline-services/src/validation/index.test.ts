@@ -146,6 +146,65 @@ describe("getNodeProblems", () => {
     expect(problems[0].info.property).toBe("filename");
   });
 
+  it("should have issues when required property has a default value and is empty", () => {
+    const nodeSpec = {
+      op: "execute-notebook-node",
+      properties: {
+        current_parameters: {
+          has_default: "default",
+        },
+        parameters: [{ id: "has_default" }],
+        uihints: {
+          parameter_info: [
+            {
+              control: "custom",
+              custom_control_id: "StringControl",
+              parameter_ref: "has_default",
+              label: { default: "Example" },
+              description: {
+                default: "this is an example.",
+                placement: "on_panel",
+              },
+              data: {
+                required: true,
+              },
+            },
+          ],
+          group_info: [
+            {
+              type: "panels",
+              group_info: [
+                {
+                  id: "has_default",
+                  type: "controls",
+                  parameter_refs: ["has_default"],
+                },
+              ],
+            },
+          ],
+        },
+      },
+    };
+
+    const pipeline = {
+      nodes: [
+        {
+          id: "node-1",
+          type: "execution_node",
+          op: "execute-notebook-node",
+          app_data: {
+            ui_data: {
+              label: "Node 1",
+            },
+          },
+        },
+      ],
+    };
+
+    const problems = getNodeProblems(pipeline, [nodeSpec]);
+    expect(problems).toHaveLength(1);
+  });
+
   it("should find missing properties for empty strings", () => {
     const pipeline = {
       nodes: [
