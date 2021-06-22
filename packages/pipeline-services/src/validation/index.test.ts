@@ -203,6 +203,7 @@ describe("getNodeProblems", () => {
 
     const problems = getNodeProblems(pipeline, [nodeSpec]);
     expect(problems).toHaveLength(1);
+    expect(problems[0].info.property).toBe("has_default");
   });
 
   it("should find missing properties for empty strings", () => {
