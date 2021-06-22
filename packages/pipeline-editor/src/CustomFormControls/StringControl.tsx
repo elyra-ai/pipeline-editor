@@ -56,10 +56,14 @@ const ErrorMessage = styled.div`
 `;
 
 function serialize(value: string) {
-  if (value.trim() === "") {
-    return undefined;
+  let serialized: any = value;
+  if (value) {
+    if (value.trim() === "") {
+      serialized = undefined;
+    }
   }
-  return value;
+
+  return serialized;
 }
 
 // TODO: Make the file clearable

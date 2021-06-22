@@ -148,15 +148,16 @@ export const reducer = produce((draft: string[], action) => {
     }
     case "UPSERT_ITEM": {
       const { index } = payload;
+      const payloadValue = payload.value ?? "";
       if (index !== undefined && index < draft.length) {
         // If the item is empty remove it.
-        if (payload.value.trim() === "") {
+        if (payloadValue === "") {
           draft.splice(index, 1);
         } else {
-          draft[index] = payload.value;
+          draft[index] = payloadValue;
         }
-      } else if (payload.value.trim() !== "") {
-        draft.push(payload.value);
+      } else if (payloadValue !== "") {
+        draft.push(payloadValue);
       }
       break;
     }
