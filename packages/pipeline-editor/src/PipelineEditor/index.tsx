@@ -62,6 +62,7 @@ interface Props {
   readOnly?: boolean;
   children?: React.ReactNode;
   nativeKeyboardActions?: boolean;
+  leftPalette?: boolean;
 }
 
 const READ_ONLY_NODE_SVG_PATH =
@@ -159,6 +160,7 @@ const PipelineEditor = forwardRef(
       readOnly,
       children,
       nativeKeyboardActions,
+      leftPalette,
     }: Props,
     ref
   ) => {
@@ -594,6 +596,49 @@ const PipelineEditor = forwardRef(
 
     const selectedNodes = controller.current.idsToNodes(selectedNodeIDs ?? []);
 
+    const panelTabs = [
+      {
+        id: "pipeline-properties",
+        label: "Pipeline Properties",
+        title: "Edit pipeline properties",
+        icon: theme.overrides?.pipelineIcon,
+        content: (
+          <PipelineProperties
+            pipelineFlow={pipeline}
+            propertiesSchema={pipelineProperties}
+            onFileRequested={onFileRequested}
+            onPropertiesUpdateRequested={onPropertiesUpdateRequested}
+            onChange={handlePipelinePropertiesChange}
+          />
+        ),
+      },
+      {
+        id: "properties",
+        label: "Node Properties",
+        title: "Edit node properties",
+        icon: theme.overrides?.propertiesIcon,
+        content: (
+          <NodeProperties
+            selectedNodes={selectedNodes}
+            nodes={nodes}
+            onFileRequested={onFileRequested}
+            onPropertiesUpdateRequested={onPropertiesUpdateRequested}
+            onChange={handlePropertiesChange}
+          />
+        ),
+      },
+    ];
+
+    if (!leftPalette) {
+      panelTabs.push({
+        id: "palette",
+        label: "Palette",
+        title: "Add nodes to pipeline",
+        icon: theme.overrides?.paletteIcon,
+        content: <PalettePanel nodes={nodes} />,
+      });
+    }
+
     return (
       <Container ref={blockingRef}>
         <IntlProvider locale="en">
@@ -622,7 +667,7 @@ const PipelineEditor = forwardRef(
                 config={{
                   enableInternalObjectModel: true,
                   emptyCanvasContent: children,
-                  enablePaletteLayout: "None", // 'Flyout', 'None', 'Modal'
+                  enablePaletteLayout: leftPalette ? "Flyout" : "None", // 'Flyout', 'None', 'Modal'
                   enableNodeFormatType: "Horizontal",
                   enableToolbarLayout: toolbar === undefined ? "None" : "Top",
                   enableNodeLayout: {
@@ -670,49 +715,7 @@ const PipelineEditor = forwardRef(
                   onAction?.({ type: "openPanel" });
                   setPanelOpen(true);
                 }}
-                tabs={[
-                  {
-                    id: "pipeline-properties",
-                    label: "Pipeline Properties",
-                    title: "Edit pipeline properties",
-                    icon: theme.overrides?.pipelineIcon,
-                    content: (
-                      <PipelineProperties
-                        pipelineFlow={pipeline}
-                        propertiesSchema={pipelineProperties}
-                        onFileRequested={onFileRequested}
-                        onPropertiesUpdateRequested={
-                          onPropertiesUpdateRequested
-                        }
-                        onChange={handlePipelinePropertiesChange}
-                      />
-                    ),
-                  },
-                  {
-                    id: "properties",
-                    label: "Node Properties",
-                    title: "Edit node properties",
-                    icon: theme.overrides?.propertiesIcon,
-                    content: (
-                      <NodeProperties
-                        selectedNodes={selectedNodes}
-                        nodes={nodes}
-                        onFileRequested={onFileRequested}
-                        onPropertiesUpdateRequested={
-                          onPropertiesUpdateRequested
-                        }
-                        onChange={handlePropertiesChange}
-                      />
-                    ),
-                  },
-                  {
-                    id: "palette",
-                    label: "Palette",
-                    title: "Add nodes to pipeline",
-                    icon: theme.overrides?.paletteIcon,
-                    content: <PalettePanel nodes={nodes} />,
-                  },
-                ]}
+                tabs={panelTabs}
                 collapsed={panelOpen === false}
                 showCloseButton={toolbar === undefined}
                 onClose={() => {
