@@ -428,16 +428,6 @@ const PipelineEditor = forwardRef(
       []
     );
 
-    const setPropertiesTab = (nodesSelected: boolean) => {
-      if (nodesSelected) {
-        setCurrentTab("properties");
-      } else if (controller.current.getNodes().length > 0) {
-        setCurrentTab("pipeline-properties");
-      } else {
-        setCurrentTab("palette");
-      }
-    };
-
     const handleClickAction = useCallback(
       (e: CanvasClickEvent) => {
         if (e.clickType === "DOUBLE_CLICK" && e.objectType === "node") {
@@ -453,7 +443,13 @@ const PipelineEditor = forwardRef(
     const [selectedNodeIDs, setSelectedNodeIDs] = useState<string[]>();
     const handleSelectionChange = useCallback((e: CanvasSelectionEvent) => {
       setSelectedNodeIDs(e.selectedNodes.map((n: NodeTypeDef) => n.id));
-      setPropertiesTab(e.selectedNodes.length > 0);
+      if (e.selectedNodes.length > 0) {
+        setCurrentTab("properties");
+      } else if (controller.current.getNodes().length > 0) {
+        setCurrentTab("pipeline-properties");
+      } else {
+        setCurrentTab("palette");
+      }
     }, []);
 
     const handleEditAction = useCallback(
