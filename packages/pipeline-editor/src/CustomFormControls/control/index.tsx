@@ -34,6 +34,11 @@ export function useHandlers() {
   return useMemo(() => controllerRef.current.getHandlers(), []);
 }
 
+export function usePropertyID() {
+  const { name } = useContext(ControlContext);
+  return name;
+}
+
 export function useControlState<T>() {
   const { name, controller } = useContext(ControlContext);
   const controllerRef = useRef(controller);

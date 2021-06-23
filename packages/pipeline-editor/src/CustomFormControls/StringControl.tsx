@@ -18,7 +18,12 @@ import { useCallback, useState } from "react";
 
 import styled from "styled-components";
 
-import { createControl, useControlState, useHandlers } from "./control";
+import {
+  createControl,
+  useControlState,
+  useHandlers,
+  usePropertyID,
+} from "./control";
 import {
   getErrorMessages,
   getStringValidators,
@@ -73,6 +78,8 @@ function StringControl({
   placeholder,
   extensions,
 }: Props) {
+  const propertyID = usePropertyID();
+
   const [value, setValue] = useControlState<string>();
 
   const [localValue, setLocalValue] = useState<string>();
@@ -102,12 +109,13 @@ function StringControl({
       canSelectMany: false,
       defaultUri: value,
       filters: { File: extensions },
+      property: propertyID,
     });
     //  Don't set if nothing was chosen.
     if (values !== undefined && values.length > 0) {
       update(values[0]);
     }
-  }, [actionHandler, value, extensions, update]);
+  }, [actionHandler, value, extensions, propertyID, update]);
 
   const validators = getStringValidators({
     pattern,
