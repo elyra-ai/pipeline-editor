@@ -207,6 +207,7 @@ it("does not call updatePropertyValue when no files are chosen", async () => {
     canSelectMany: false,
     defaultUri: "",
     filters: { File: undefined },
+    propertyID: "string",
   });
 
   await waitFor(() => {
@@ -243,6 +244,7 @@ it("calls updatePropertyValue when one file is chosen", async () => {
     canSelectMany: false,
     defaultUri: "",
     filters: { File: undefined },
+    propertyID: "string",
   });
 
   await waitFor(() => {
@@ -282,6 +284,7 @@ it("calls updatePropertyValue with the first file if multiple are chosen", async
     canSelectMany: false,
     defaultUri: "",
     filters: { File: undefined },
+    propertyID: "string",
   });
 
   await waitFor(() => {
@@ -318,6 +321,7 @@ it("calls actionHandler with a default uri if a path is already selected", async
     canSelectMany: false,
     defaultUri: "some/path/example.ipynb",
     filters: { File: undefined },
+    propertyID: "string",
   });
 
   await waitFor(() => {
@@ -352,6 +356,7 @@ it("can filter by extension", async () => {
     canSelectMany: false,
     defaultUri: "",
     filters: { File: [".ipynb"] },
+    propertyID: "string",
   });
 });
 
