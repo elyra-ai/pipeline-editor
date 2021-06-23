@@ -289,9 +289,8 @@ export function ListItem({
 }
 
 function StringArrayControl({ placeholder, format, canRefresh }: Props) {
-  const [items = [], setItems] = useControlState<string[]>();
-
   const propertyID = usePropertyID();
+  const [items = [], setItems] = useControlState<string[]>();
 
   const [editingIndex, setEditingIndex] = useState<number | "new">();
 
@@ -309,7 +308,7 @@ function StringArrayControl({ placeholder, format, canRefresh }: Props) {
       const newItems = await actionHandler?.("browse_file", undefined, {
         canSelectMany: true,
         defaultUri: items[index],
-        property: propertyID,
+        propertyID,
       });
 
       if (Array.isArray(newItems)) {

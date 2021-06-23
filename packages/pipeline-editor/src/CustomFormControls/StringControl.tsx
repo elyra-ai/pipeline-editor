@@ -79,7 +79,6 @@ function StringControl({
   extensions,
 }: Props) {
   const propertyID = usePropertyID();
-
   const [value, setValue] = useControlState<string>();
 
   const [localValue, setLocalValue] = useState<string>();
@@ -109,7 +108,7 @@ function StringControl({
       canSelectMany: false,
       defaultUri: value,
       filters: { File: extensions },
-      property: propertyID,
+      propertyID,
     });
     //  Don't set if nothing was chosen.
     if (values !== undefined && values.length > 0) {
