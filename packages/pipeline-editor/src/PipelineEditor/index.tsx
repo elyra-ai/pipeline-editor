@@ -428,13 +428,22 @@ const PipelineEditor = forwardRef(
       []
     );
 
+    const setPropertiesTab = (nodesSelected: boolean) => {
+      if (nodesSelected) {
+        setCurrentTab("properties");
+      } else if (controller.current.getNodes().length > 0) {
+        setCurrentTab("pipeline-properties");
+      } else {
+        setCurrentTab("palette");
+      }
+    };
+
     const handleClickAction = useCallback(
       (e: CanvasClickEvent) => {
         if (e.clickType === "DOUBLE_CLICK" && e.objectType === "node") {
           if (onDoubleClickNode !== undefined) {
             return onDoubleClickNode(e);
           }
-          setCurrentTab("properties");
           controller.current.editActionHandler({ editType: "properties" });
         }
       },
@@ -444,6 +453,7 @@ const PipelineEditor = forwardRef(
     const [selectedNodeIDs, setSelectedNodeIDs] = useState<string[]>();
     const handleSelectionChange = useCallback((e: CanvasSelectionEvent) => {
       setSelectedNodeIDs(e.selectedNodes.map((n: NodeTypeDef) => n.id));
+      setPropertiesTab(e.selectedNodes.length > 0);
     }, []);
 
     const handleEditAction = useCallback(
@@ -481,15 +491,6 @@ const PipelineEditor = forwardRef(
         }
 
         if (e.editType === "toggleOpenPanel") {
-          if (!panelOpen) {
-            let defaultTab = "palette";
-            if (e.selectedObjectIds.length > 0) {
-              defaultTab = "properties";
-            } else if (controller.current.getNodes().length > 0) {
-              defaultTab = "pipeline-properties";
-            }
-            setCurrentTab(defaultTab);
-          }
           setPanelOpen((prev) => !prev);
         }
 
@@ -516,7 +517,7 @@ const PipelineEditor = forwardRef(
 
         onChange?.(controller.current.getPipelineFlow());
       },
-      [nodes, onAction, onChange, onFileRequested, panelOpen]
+      [nodes, onAction, onChange, onFileRequested]
     );
 
     const handlePropertiesChange = useCallback(
