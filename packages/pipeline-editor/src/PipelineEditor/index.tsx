@@ -484,7 +484,7 @@ const PipelineEditor = forwardRef(
 
         if (e.editType === "toggleOpenPanel") {
           if (!panelOpen) {
-            let defaultTab = "palette";
+            let defaultTab = leftPalette ? "pipeline-properties" : "palette";
             if (e.selectedObjectIds.length > 0) {
               defaultTab = "properties";
             } else if (controller.current.getNodes().length > 0) {
