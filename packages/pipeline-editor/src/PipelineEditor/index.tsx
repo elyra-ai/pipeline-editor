@@ -443,16 +443,19 @@ const PipelineEditor = forwardRef(
     );
 
     const [selectedNodeIDs, setSelectedNodeIDs] = useState<string[]>();
-    const handleSelectionChange = useCallback((e: CanvasSelectionEvent) => {
-      setSelectedNodeIDs(e.selectedNodes.map((n: NodeTypeDef) => n.id));
-      if (e.selectedNodes.length > 0) {
-        setCurrentTab("properties");
-      } else if (controller.current.getNodes().length > 0 || leftPalette) {
-        setCurrentTab("pipeline-properties");
-      } else {
-        setCurrentTab("palette");
-      }
-    }, []);
+    const handleSelectionChange = useCallback(
+      (e: CanvasSelectionEvent) => {
+        setSelectedNodeIDs(e.selectedNodes.map((n: NodeTypeDef) => n.id));
+        if (e.selectedNodes.length > 0) {
+          setCurrentTab("properties");
+        } else if (controller.current.getNodes().length > 0 || leftPalette) {
+          setCurrentTab("pipeline-properties");
+        } else {
+          setCurrentTab("palette");
+        }
+      },
+      [leftPalette]
+    );
 
     const handleEditAction = useCallback(
       async (e: CanvasEditEvent) => {
