@@ -460,7 +460,6 @@ const PipelineEditor = forwardRef(
           const [file] = await onFileRequested?.({
             canSelectMany: false,
             filters: { File: extensions },
-            property: "filename",
           });
 
           const node = nodes.find((n: any) =>
