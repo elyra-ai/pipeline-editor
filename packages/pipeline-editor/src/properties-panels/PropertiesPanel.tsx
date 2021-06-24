@@ -77,13 +77,17 @@ export function PropertiesPanel({
       }}
       callbacks={{
         actionHandler: async (id: string, _appData: any, data: any) => {
+          const { filename } = controller.current.getPropertyValues();
           switch (id) {
             case "browse_file":
-              return await onFileRequested?.(data);
+              return await onFileRequested?.({
+                ...data,
+                filename,
+              });
             case "refresh_properties":
               return await onPropertiesUpdateRequested?.({
                 ...data,
-                filename: currentProperties.filename,
+                filename,
               });
           }
         },

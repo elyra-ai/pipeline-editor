@@ -21,7 +21,12 @@ import produce from "immer";
 import styled, { useTheme } from "styled-components";
 
 import IconButton from "../IconButton";
-import { createControl, useControlState, useHandlers } from "./control";
+import {
+  createControl,
+  useControlState,
+  useHandlers,
+  usePropertyID,
+} from "./control";
 import { StringArrayValidatorOptions } from "./validators";
 
 interface Props extends StringArrayValidatorOptions {
@@ -284,6 +289,7 @@ export function ListItem({
 }
 
 function StringArrayControl({ placeholder, format, canRefresh }: Props) {
+  const propertyID = usePropertyID();
   const [items = [], setItems] = useControlState<string[]>();
 
   const [editingIndex, setEditingIndex] = useState<number | "new">();
@@ -302,6 +308,7 @@ function StringArrayControl({ placeholder, format, canRefresh }: Props) {
       const newItems = await actionHandler?.("browse_file", undefined, {
         canSelectMany: true,
         defaultUri: items[index],
+        propertyID,
       });
 
       if (Array.isArray(newItems)) {
@@ -314,7 +321,7 @@ function StringArrayControl({ placeholder, format, canRefresh }: Props) {
         });
       }
     },
-    [actionHandler, handleAction, items]
+    [actionHandler, handleAction, items, propertyID]
   );
 
   const handleRefreshProperties = useCallback(async () => {
