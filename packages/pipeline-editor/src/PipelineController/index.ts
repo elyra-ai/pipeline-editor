@@ -116,12 +116,6 @@ class PipelineController extends CanvasController {
     throw new PipelineOutOfDateError();
   }
 
-  setNodes(nodes: CustomNodeSpecification[]) {
-    this.nodes = nodes;
-    const palette = createPalette(this.nodes);
-    this.setPipelineFlowPalette(palette);
-  }
-
   async addNode(item: any) {
     const nodeTemplate = this.getPaletteNode(item.op);
     const data = {

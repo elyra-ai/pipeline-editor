@@ -35,6 +35,7 @@ import {
   NodeTypeDef,
   TipEvent,
   TipNode,
+  CategoryDef,
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
 import styled, { useTheme } from "styled-components";
@@ -51,7 +52,7 @@ import useBlockEvents from "./useBlockEvents";
 interface Props {
   pipeline: any;
   toolbar?: any;
-  nodes?: any;
+  palette?: any;
   pipelineProperties?: any;
   onAction?: (action: { type: string; payload?: any }) => any;
   onChange?: (pipeline: any) => any;
@@ -148,7 +149,7 @@ const PipelineEditor = forwardRef(
   (
     {
       pipeline,
-      nodes,
+      palette,
       pipelineProperties,
       toolbar,
       onAction,
@@ -202,7 +203,7 @@ const PipelineEditor = forwardRef(
       try {
         controller.current.open(pipeline);
         if (!readOnly) {
-          controller.current.setNodes(nodes);
+          controller.current.setPipelineFlowPalette(palette);
           controller.current.validate({ redColor: theme.palette.error.main });
         } else {
           controller.current.resetStyles();
@@ -211,7 +212,7 @@ const PipelineEditor = forwardRef(
       } catch (e) {
         onError?.(e);
       }
-    }, [nodes, onError, pipeline, readOnly, theme.palette.error.main]);
+    }, [palette, onError, pipeline, readOnly, theme.palette.error.main]);
 
     useImperativeHandle(
       ref,
@@ -466,6 +467,9 @@ const PipelineEditor = forwardRef(
         onAction?.({ type: e.editType, payload });
 
         if (e.editType === "newFileNode") {
+          const nodes = palette.categories
+            .map((cat: CategoryDef) => cat.node_types)
+            .flat();
           const extensions = nodes.map((n: any) => n.extensions).flat();
 
           const [file] = await onFileRequested?.({
@@ -518,7 +522,7 @@ const PipelineEditor = forwardRef(
 
         onChange?.(controller.current.getPipelineFlow());
       },
-      [nodes, onAction, onChange, onFileRequested]
+      [palette, onAction, onChange, onFileRequested]
     );
 
     const handlePropertiesChange = useCallback(
@@ -620,7 +624,9 @@ const PipelineEditor = forwardRef(
         content: (
           <NodeProperties
             selectedNodes={selectedNodes}
-            nodes={nodes}
+            nodes={palette.categories
+              .map((cat: CategoryDef) => cat.node_types)
+              .flat()}
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePropertiesChange}
@@ -635,7 +641,13 @@ const PipelineEditor = forwardRef(
         label: "Palette",
         title: "Add nodes to pipeline",
         icon: theme.overrides?.paletteIcon,
-        content: <PalettePanel nodes={nodes} />,
+        content: (
+          <PalettePanel
+            nodes={palette.categories
+              .map((cat: CategoryDef) => cat.node_types)
+              .flat()}
+          />
+        ),
       });
     }
 
