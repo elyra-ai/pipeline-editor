@@ -23,7 +23,6 @@ import {
   PipelineOutOfDateError,
   InvalidPipelineError,
 } from "./../errors";
-import { createPalette } from "./create-palette";
 import { getFileName } from "./utils";
 
 export const PIPELINE_CURRENT_VERSION = 3;
