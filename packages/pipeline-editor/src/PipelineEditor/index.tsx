@@ -203,7 +203,7 @@ const PipelineEditor = forwardRef(
       try {
         controller.current.open(pipeline);
         if (!readOnly) {
-          controller.current.setPipelineFlowPalette(palette);
+          controller.current.setPalette(palette);
           controller.current.validate({ redColor: theme.palette.error.main });
         } else {
           controller.current.resetStyles();
