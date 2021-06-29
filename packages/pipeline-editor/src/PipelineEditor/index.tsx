@@ -467,10 +467,10 @@ const PipelineEditor = forwardRef(
         onAction?.({ type: e.editType, payload });
 
         if (e.editType === "newFileNode") {
-          const nodes = palette.categories
-            .map((cat: CategoryDef) => cat.node_types)
-            .flat();
-          const extensions = nodes.map((n: any) => n.extensions).flat();
+          const nodes = palette?.categories
+            ?.map((cat: CategoryDef) => cat.node_types)
+            ?.flat();
+          const extensions = nodes?.map((n: any) => n.extensions)?.flat();
 
           const [file] = await onFileRequested?.({
             canSelectMany: false,
@@ -624,9 +624,9 @@ const PipelineEditor = forwardRef(
         content: (
           <NodeProperties
             selectedNodes={selectedNodes}
-            nodes={palette.categories
-              .map((cat: CategoryDef) => cat.node_types)
-              .flat()}
+            nodes={palette?.categories
+              ?.map((cat: CategoryDef) => cat.node_types)
+              ?.flat()}
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePropertiesChange}
@@ -643,9 +643,9 @@ const PipelineEditor = forwardRef(
         icon: theme.overrides?.paletteIcon,
         content: (
           <PalettePanel
-            nodes={palette.categories
-              .map((cat: CategoryDef) => cat.node_types)
-              .flat()}
+            nodes={palette?.categories
+              ?.map((cat: CategoryDef) => cat.node_types)
+              ?.flat()}
           />
         ),
       });

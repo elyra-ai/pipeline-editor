@@ -58,7 +58,7 @@ function NodeProperties({
 
   const nodePropertiesSchema = nodes.find((n: any) => n.op === selectedNode.op);
 
-  if (nodePropertiesSchema === undefined) {
+  if (nodePropertiesSchema?.properties === undefined) {
     return (
       <Message>This node type doesn't have any editable properties.</Message>
     );
