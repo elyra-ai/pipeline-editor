@@ -56,7 +56,7 @@ it("renders", () => {
   render(
     <PipelineEditor
       pipeline={samplePipeline}
-      nodes={[]}
+      palette={{ categories: [{ node_types: [] }] }}
       onError={handleError}
     />
   );
@@ -69,7 +69,7 @@ it("can add node through imperative handle", async () => {
     <PipelineEditor
       ref={(r) => (handle = r)}
       pipeline={samplePipeline}
-      nodes={[nodeSpec]}
+      palette={{ categories: [{ node_types: [nodeSpec] }] }}
     />
   );
 

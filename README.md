@@ -71,7 +71,7 @@ import { PipelineEditor } from "@elyra/pipeline-editor";
 function App() {
   const [pipeline, setPipeline] = useState();
   return (
-    <PipelineEditor pipeline={pipeline} nodes={[]} onChange={setPipeline} />
+    <PipelineEditor pipeline={pipeline} palette={{}} onChange={setPipeline} />
   );
 }
 ```
