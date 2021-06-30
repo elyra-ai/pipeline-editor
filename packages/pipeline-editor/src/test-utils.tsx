@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import { CategoryDef, PaletteV3 } from "@elyra/canvas";
 import { render as rtlRender } from "@testing-library/react";
 
+import { CustomNodeSpecification } from "../dist/types.d";
 import { InternalThemeProvider } from "./ThemeProvider";
 
 export const nodeSpec = {
@@ -322,6 +324,68 @@ export const samplePipeline = {
   schemas: [],
 };
 
+function createPalette(nodes: CustomNodeSpecification[]): PaletteV3 {
+  const palette = {
+    version: "3.0" as "3.0",
+    categories: [
+      {
+        label: "Nodes",
+        image: "",
+        id: "nodes",
+        description: "Nodes",
+        node_types: [] as CategoryDef["node_types"],
+      },
+    ],
+  };
+
+  for (const node of nodes) {
+    palette.categories[0].node_types!.push({
+      id: "",
+      type: "execution_node",
+      inputs: [
+        {
+          id: "inPort",
+          app_data: {
+            ui_data: {
+              cardinality: {
+                min: 0,
+                max: -1,
+              },
+              label: "Input Port",
+            },
+          },
+        },
+      ],
+      outputs: [
+        {
+          id: "outPort",
+          app_data: {
+            ui_data: {
+              cardinality: {
+                min: 0,
+                max: -1,
+              },
+              label: "Output Port",
+            },
+          },
+        },
+      ],
+      parameters: {},
+      app_data: {
+        ui_data: {
+          label: node.label,
+          description: node.description,
+          image: node.image ?? "",
+          x_pos: 0,
+          y_pos: 0,
+        },
+      },
+      ...node,
+    });
+  }
+  return palette;
+}
+
 function render(
   ui: Parameters<typeof rtlRender>[0],
   renderOptions?: Parameters<typeof rtlRender>[1]
@@ -339,4 +403,4 @@ function render(
 }
 
 export * from "@testing-library/react";
-export { render };
+export { render, createPalette };
