@@ -1312,7 +1312,9 @@ describe("validate", () => {
       ],
     };
     controller.open(pipeline);
-    controller.setPalette(createPalette([nodeSpec as any]));
+    controller.setPalette(
+      createPalette([{ op: "no-props", description: "", label: "" }])
+    );
 
     controller.validate();
 

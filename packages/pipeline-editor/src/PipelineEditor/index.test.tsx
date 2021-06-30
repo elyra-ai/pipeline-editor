@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { render, screen, nodeSpec, samplePipeline } from "../test-utils";
+import {
+  render,
+  screen,
+  nodeSpec,
+  samplePipeline,
+  createPalette,
+} from "../test-utils";
 import PipelineEditor from "./";
 
 it("shows custom empty component for undefined pipeline", () => {
@@ -56,7 +62,7 @@ it("renders", () => {
   render(
     <PipelineEditor
       pipeline={samplePipeline}
-      palette={{ categories: [{ node_types: [] }] }}
+      palette={createPalette([])}
       onError={handleError}
     />
   );
@@ -69,7 +75,7 @@ it("can add node through imperative handle", async () => {
     <PipelineEditor
       ref={(r) => (handle = r)}
       pipeline={samplePipeline}
-      palette={{ categories: [{ node_types: [nodeSpec] }] }}
+      palette={createPalette([nodeSpec as any])}
     />
   );
 
