@@ -17,8 +17,8 @@
 import { CategoryDef, PaletteV3 } from "@elyra/canvas";
 import { render as rtlRender } from "@testing-library/react";
 
-import { CustomNodeSpecification } from "./types";
 import { InternalThemeProvider } from "./ThemeProvider";
+import { CustomNodeSpecification } from "./types";
 
 export const nodeSpec = {
   op: "execute-notebook-node",
