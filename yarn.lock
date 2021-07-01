@@ -1219,14 +1219,14 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@elyra/canvas@10.9.0":
-  version "10.9.0"
-  resolved "https://registry.yarnpkg.com/@elyra/canvas/-/canvas-10.9.0.tgz#d07414d6d01c9613e5d44cc024cca93ddd26d9ca"
-  integrity sha512-gIQHSPWNZHLglsyoboYBkNib5T0b1qIt4fAc/67JYWC8akqykI0/zPNUSrjeJcdLbsHSyxW7Y6UP/4aAFkjA5g==
+"@elyra/canvas@11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@elyra/canvas/-/canvas-11.0.0.tgz#7c8955be9d55fc2988b6a3159b0f788eb9c0de09"
+  integrity sha512-zQTkw/IR9UzAEFe7zgfFrcZs1sljHVM9qn3D6evTFlxO/HfjxKtnfka/CISuzNXvOi1EmD2HyCUw75yQky37Yw==
   dependencies:
     "@carbon/icons-react" "10.33.0"
     "@carbon/themes" "10.36.0"
-    "@elyra/pipeline-schemas" "^3.0.41"
+    "@elyra/pipeline-schemas" "^3.0.42"
     carbon-components "10.37.0"
     carbon-components-react "7.37.0"
     carbon-icons "7.0.7"
@@ -1249,10 +1249,10 @@
     seedrandom "3.0.5"
     uuid "8.3.0"
 
-"@elyra/pipeline-schemas@^3.0.41":
-  version "3.0.41"
-  resolved "https://registry.yarnpkg.com/@elyra/pipeline-schemas/-/pipeline-schemas-3.0.41.tgz#8a5899d46b19352d27b88bc2d0f60f28999f70b1"
-  integrity sha512-m3ZieMqHFUeBT1qvcRU/DEBacz8p34gWZyWj+NkERVm2OpUaGUQr6NicO+TRccUZOGISksI8HZY35w0QSpjcxQ==
+"@elyra/pipeline-schemas@^3.0.42":
+  version "3.0.42"
+  resolved "https://registry.yarnpkg.com/@elyra/pipeline-schemas/-/pipeline-schemas-3.0.42.tgz#d1e681022cd033234a8e0fe4febb0e58d8a7683e"
+  integrity sha512-DF34KqUocckJWTJBUqS0diKgqgqAbCWljx3O5v1ZKHYoiz5UvSz5/67U/5oaJXIlPqwbmL47rWvIA/u6M7DCZw==
 
 "@emotion/cache@^10.0.27":
   version "10.0.29"
