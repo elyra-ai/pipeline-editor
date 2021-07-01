@@ -27,7 +27,7 @@ export interface CustomNodeSpecification {
   image?: string;
   properties?: PropertyDefinitions;
   id?: string;
-  type?: "super_node" | "execution_node" | "binding" | "model_node";
+  type?: "execution_node";
   inputs?: any[];
   outputs?: any[];
   parameters?: any;
