@@ -22,6 +22,7 @@ import {
 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
+import { CustomNodeSpecification } from "../types";
 import {
   ElyraOutOfDateError,
   PipelineOutOfDateError,
@@ -399,7 +400,7 @@ class PipelineController extends CanvasController {
 
           const message = nodeProblems
             .map((problem) => {
-              const label = nodeDef.properties!.uihints!.parameter_info.find(
+              const label = nodeDef!.properties!.uihints!.parameter_info.find(
                 (p: any) => p.parameter_ref === problem.property
               )!.label.default;
               return `property "${label}" is required`;
@@ -434,10 +435,10 @@ class PipelineController extends CanvasController {
     return nodes;
   }
 
-  getAllPaletteNodes(): any[] {
+  getAllPaletteNodes(): CustomNodeSpecification[] {
     return (
       this.palette?.categories?.flatMap((cat: CategoryDef) => cat.node_types) ??
-      []
+      ([] as any[])
     );
   }
 
@@ -470,7 +471,7 @@ class PipelineController extends CanvasController {
 
       const info = nodeDef?.properties?.uihints?.parameter_info ?? [];
 
-      const properties = info.map((i: any) => {
+      const properties = info.map((i) => {
         return {
           label: i.label.default,
           value: app_data?.[i.parameter_ref],

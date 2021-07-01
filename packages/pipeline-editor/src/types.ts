@@ -26,6 +26,12 @@ export interface CustomNodeSpecification {
   extension?: string;
   image?: string;
   properties?: PropertyDefinitions;
+  id?: string;
+  type?: string;
+  inputs?: any[];
+  outputs?: any[];
+  parameters?: any;
+  app_data?: any;
 }
 
 export interface Theme {
