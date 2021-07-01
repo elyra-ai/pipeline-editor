@@ -17,7 +17,7 @@
 import { CategoryDef, PaletteV3 } from "@elyra/canvas";
 import { render as rtlRender } from "@testing-library/react";
 
-import { CustomNodeSpecification } from "../dist/types.d";
+import { CustomNodeSpecification } from "../types";
 import { InternalThemeProvider } from "./ThemeProvider";
 
 export const nodeSpec = {
