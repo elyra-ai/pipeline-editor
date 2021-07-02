@@ -16,124 +16,137 @@
 
 export const nodeSpec = {
   op: "execute-notebook-node",
-  properties: {
-    current_parameters: {
-      filename: "",
-      runtime_image: "",
-      dependencies: [],
-      include_subdirectories: false,
-      env_vars: [],
-      outputs: [],
-    },
-    parameters: [
-      { id: "filename" },
-      { id: "runtime_image" },
-      { id: "dependencies" },
-      { id: "include_subdirectories" },
-      { id: "env_vars" },
-      { id: "outputs" },
-    ],
-    uihints: {
-      parameter_info: [
-        {
-          control: "custom",
-          custom_control_id: "StringControl",
-          parameter_ref: "filename",
-          label: { default: "File" },
-          description: {
-            default: "The path to the notebook file.",
-            placement: "on_panel",
-          },
-          data: {
-            format: "file",
-            required: true,
-          },
-        },
-        {
-          control: "custom",
-          custom_control_id: "EnumControl",
-          parameter_ref: "runtime_image",
-          label: { default: "Runtime Image" },
-          description: {
-            default: "Docker image used as execution environment.",
-            placement: "on_panel",
-          },
-          data: {
-            items: ["continuumio/anaconda3:2020.07", "amancevice/pandas:1.0.3"],
-          },
-        },
-        {
-          control: "custom",
-          custom_control_id: "StringArrayControl",
-          parameter_ref: "dependencies",
-          label: { default: "File Dependencies" },
-          description: {
-            default:
-              "Local file dependencies that need to be copied to remote execution environment.",
-            placement: "on_panel",
-          },
-          data: { placeholder: "*.py", format: "file" },
-        },
-        {
-          control: "custom",
-          custom_control_id: "BooleanControl",
-          parameter_ref: "include_subdirectories",
-          label: { default: "Include Subdirectories" },
-          data: {
-            description:
-              "Wether or not to include recursively include subdirectories when submitting a pipeline (This may increase submission time).",
-          },
-        },
-        {
-          control: "custom",
-          custom_control_id: "StringArrayControl",
-          parameter_ref: "env_vars",
-          label: { default: "Environment Variables" },
-          description: {
-            default:
-              "Environment variables to be set on the execution environment.",
-            placement: "on_panel",
-          },
-          data: { placeholder: "ENV_VAR=value" },
-        },
-        {
-          control: "custom",
-          custom_control_id: "StringArrayControl",
-          parameter_ref: "outputs",
-          label: { default: "Output Files" },
-          description: {
-            default:
-              "Files generated during execution that will become available to all subsequent pipeline steps.",
-            placement: "on_panel",
-          },
-          data: { placeholder: "*.csv" },
-        },
+  app_data: {
+    properties: {
+      current_parameters: {
+        filename: "",
+        runtime_image: "",
+        dependencies: [],
+        include_subdirectories: false,
+        env_vars: [],
+        outputs: [],
+      },
+      parameters: [
+        { id: "filename" },
+        { id: "runtime_image" },
+        { id: "dependencies" },
+        { id: "include_subdirectories" },
+        { id: "env_vars" },
+        { id: "outputs" },
       ],
-      group_info: [
-        {
-          type: "panels",
-          group_info: [
-            { id: "filename", type: "controls", parameter_refs: ["filename"] },
-            {
-              id: "runtime_image",
-              type: "controls",
-              parameter_refs: ["runtime_image"],
+      uihints: {
+        parameter_info: [
+          {
+            control: "custom",
+            custom_control_id: "StringControl",
+            parameter_ref: "filename",
+            label: { default: "File" },
+            description: {
+              default: "The path to the notebook file.",
+              placement: "on_panel",
             },
-            {
-              id: "dependencies",
-              type: "controls",
-              parameter_refs: ["dependencies"],
+            data: {
+              format: "file",
+              required: true,
             },
-            {
-              id: "include_subdirectories",
-              type: "controls",
-              parameter_refs: ["include_subdirectories"],
+          },
+          {
+            control: "custom",
+            custom_control_id: "EnumControl",
+            parameter_ref: "runtime_image",
+            label: { default: "Runtime Image" },
+            description: {
+              default: "Docker image used as execution environment.",
+              placement: "on_panel",
             },
-            { id: "env_vars", type: "controls", parameter_refs: ["env_vars"] },
-            { id: "outputs", type: "controls", parameter_refs: ["outputs"] },
-          ],
-        },
-      ],
+            data: {
+              items: [
+                "continuumio/anaconda3:2020.07",
+                "amancevice/pandas:1.0.3",
+              ],
+            },
+          },
+          {
+            control: "custom",
+            custom_control_id: "StringArrayControl",
+            parameter_ref: "dependencies",
+            label: { default: "File Dependencies" },
+            description: {
+              default:
+                "Local file dependencies that need to be copied to remote execution environment.",
+              placement: "on_panel",
+            },
+            data: { placeholder: "*.py", format: "file" },
+          },
+          {
+            control: "custom",
+            custom_control_id: "BooleanControl",
+            parameter_ref: "include_subdirectories",
+            label: { default: "Include Subdirectories" },
+            data: {
+              description:
+                "Wether or not to include recursively include subdirectories when submitting a pipeline (This may increase submission time).",
+            },
+          },
+          {
+            control: "custom",
+            custom_control_id: "StringArrayControl",
+            parameter_ref: "env_vars",
+            label: { default: "Environment Variables" },
+            description: {
+              default:
+                "Environment variables to be set on the execution environment.",
+              placement: "on_panel",
+            },
+            data: { placeholder: "ENV_VAR=value" },
+          },
+          {
+            control: "custom",
+            custom_control_id: "StringArrayControl",
+            parameter_ref: "outputs",
+            label: { default: "Output Files" },
+            description: {
+              default:
+                "Files generated during execution that will become available to all subsequent pipeline steps.",
+              placement: "on_panel",
+            },
+            data: { placeholder: "*.csv" },
+          },
+        ],
+        group_info: [
+          {
+            type: "panels",
+            group_info: [
+              {
+                id: "filename",
+                type: "controls",
+                parameter_refs: ["filename"],
+              },
+              {
+                id: "runtime_image",
+                type: "controls",
+                parameter_refs: ["runtime_image"],
+              },
+              {
+                id: "dependencies",
+                type: "controls",
+                parameter_refs: ["dependencies"],
+              },
+              {
+                id: "include_subdirectories",
+                type: "controls",
+                parameter_refs: ["include_subdirectories"],
+              },
+              {
+                id: "env_vars",
+                type: "controls",
+                parameter_refs: ["env_vars"],
+              },
+              { id: "outputs", type: "controls", parameter_refs: ["outputs"] },
+            ],
+          },
+        ],
+      },
     },
   },
 };

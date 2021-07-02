@@ -59,7 +59,8 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       continue;
     }
 
-    for (const prop of nodeDef.properties?.uihints.parameter_info ?? []) {
+    for (const prop of nodeDef.app_data.properties?.uihints.parameter_info ??
+      []) {
       // If the property isn't in the json, report the error one level higher.
       let path = ["nodes", n, "app_data"];
       if (node.app_data[prop.parameter_ref] !== undefined) {

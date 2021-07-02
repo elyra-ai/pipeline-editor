@@ -17,14 +17,14 @@
 import { useCallback } from "react";
 import ReactDOM from "react-dom";
 
-import { ExecutionNodeDef } from "@elyra/canvas";
 import styled from "styled-components";
 
-interface Props {
-  nodes: ExecutionNodeDef[];
+interface NodeProps {
+  image: string;
+  label: string;
 }
 
-export function Node({ image, label }: any) {
+export function Node({ image, label }: NodeProps) {
   return (
     <svg className="svg-area" width="172px" height="35px" x="0" y="0">
       <g className="d3-canvas-group">
@@ -92,6 +92,16 @@ const Label = styled.div`
   color: ${({ theme }) => theme.palette.text.primary};
 `;
 
+interface Props {
+  nodes: {
+    op: string;
+    app_data: {
+      label: string;
+      image?: string;
+    };
+  }[];
+}
+
 function PalettePanel({ nodes }: Props) {
   const handleDragStart = useCallback((e, node) => {
     const evData = {
@@ -116,8 +126,8 @@ function PalettePanel({ nodes }: Props) {
     <Container>
       {nodes.map((n) => (
         <Item key={n.op} onDragStart={(e) => handleDragStart(e, n)}>
-          <Icon src={n.image} />
-          <Label>{n.label}</Label>
+          <Icon src={n.app_data.image} />
+          <Label>{n.app_data.label}</Label>
         </Item>
       ))}
     </Container>

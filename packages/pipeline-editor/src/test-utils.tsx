@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-import { CategoryDef, PaletteV3, ExecutionNodeDef } from "@elyra/canvas";
+import { PaletteV3 } from "@elyra/canvas";
 import { render as rtlRender } from "@testing-library/react";
 
 import { InternalThemeProvider } from "./ThemeProvider";
 
-export const nodeSpec = {
+interface CustomNodeSpecification {
+  op: string;
+  label: string;
+  description: string;
+  extensions?: string[];
+  image?: string;
+  properties?: any;
+}
+
+export const nodeSpec: CustomNodeSpecification = {
   op: "execute-notebook-node",
   description: "Notebook file",
   label: "Notebook",
-  labelField: "filename",
-  fileField: "filename",
-  fileBased: true,
   extensions: [".ipynb"],
   image: undefined,
   properties: {
@@ -323,22 +329,26 @@ export const samplePipeline = {
   schemas: [],
 };
 
-function createPalette(nodes: ExecutionNodeDef[]): PaletteV3 {
-  const palette = {
-    version: "3.0" as "3.0",
+function createPalette(nodes: CustomNodeSpecification[]): PaletteV3 {
+  const palette: PaletteV3 = {
+    version: "3.0",
     categories: [
       {
         label: "Nodes",
         image: "",
         id: "nodes",
         description: "Nodes",
-        node_types: [] as CategoryDef["node_types"],
+        node_types: [],
       },
     ],
   };
 
-  for (const node of nodes) {
-    palette.categories[0].node_types!.push({
+  for (const { op, description, ...rest } of nodes) {
+    palette.categories![0].node_types!.push({
+      op,
+      description,
+      id: "",
+      type: "execution_node",
       inputs: [
         {
           id: "inPort",
@@ -369,15 +379,15 @@ function createPalette(nodes: ExecutionNodeDef[]): PaletteV3 {
       ],
       parameters: {},
       app_data: {
+        ...rest,
         ui_data: {
-          label: node.label,
-          description: node.description,
-          image: node.image ?? "",
+          description,
+          label: rest.label,
+          image: rest.image ?? "",
           x_pos: 0,
           y_pos: 0,
         },
       },
-      ...node,
     });
   }
   return palette;

@@ -149,39 +149,41 @@ describe("getNodeProblems", () => {
   it("should have issues when required property has a default value and is empty", () => {
     const nodeSpec = {
       op: "execute-notebook-node",
-      properties: {
-        current_parameters: {
-          has_default: "default",
-        },
-        parameters: [{ id: "has_default" }],
-        uihints: {
-          parameter_info: [
-            {
-              control: "custom",
-              custom_control_id: "StringControl",
-              parameter_ref: "has_default",
-              label: { default: "Example" },
-              description: {
-                default: "this is an example.",
-                placement: "on_panel",
-              },
-              data: {
-                required: true,
-              },
-            },
-          ],
-          group_info: [
-            {
-              type: "panels",
-              group_info: [
-                {
-                  id: "has_default",
-                  type: "controls",
-                  parameter_refs: ["has_default"],
+      app_data: {
+        properties: {
+          current_parameters: {
+            has_default: "default",
+          },
+          parameters: [{ id: "has_default" }],
+          uihints: {
+            parameter_info: [
+              {
+                control: "custom",
+                custom_control_id: "StringControl",
+                parameter_ref: "has_default",
+                label: { default: "Example" },
+                description: {
+                  default: "this is an example.",
+                  placement: "on_panel",
                 },
-              ],
-            },
-          ],
+                data: {
+                  required: true,
+                },
+              },
+            ],
+            group_info: [
+              {
+                type: "panels",
+                group_info: [
+                  {
+                    id: "has_default",
+                    type: "controls",
+                    parameter_refs: ["has_default"],
+                  },
+                ],
+              },
+            ],
+          },
         },
       },
     };
@@ -270,7 +272,10 @@ describe("getNodeProblems", () => {
     };
 
     const problems = getNodeProblems(pipeline, [
-      { op: "execute-notebook-node" },
+      {
+        op: "execute-notebook-node",
+        app_data: {},
+      },
     ]);
     expect(problems).toHaveLength(0);
   });
@@ -293,7 +298,10 @@ describe("getNodeProblems", () => {
     };
 
     const problems = getNodeProblems(pipeline, [
-      { op: "execute-notebook-node" },
+      {
+        op: "execute-notebook-node",
+        app_data: {},
+      },
     ]);
     expect(problems).toHaveLength(0);
   });

@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  CanvasController,
-  PipelineFlowV3,
-  PaletteV3,
-  CategoryDef,
-  ExecutionNodeDef,
-} from "@elyra/canvas";
+import { CanvasController, PipelineFlowV3, PaletteV3 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
 import {
@@ -130,9 +124,9 @@ class PipelineController extends CanvasController {
       pipelineId: item.pipelineId,
     };
     const nodeDef = this.getAllPaletteNodes().find((n) => n.op === item.op);
-    if (nodeDef?.properties?.current_parameters) {
+    if (nodeDef?.app_data.properties?.current_parameters) {
       data.nodeTemplate.app_data = JSON.parse(
-        JSON.stringify(nodeDef?.properties?.current_parameters)
+        JSON.stringify(nodeDef?.app_data.properties?.current_parameters)
       );
     }
 
@@ -269,7 +263,7 @@ class PipelineController extends CanvasController {
           continue;
         }
 
-        let newLabel = nodeDef.label;
+        let newLabel = nodeDef.app_data.label;
         if (
           typeof node.app_data!.filename === "string" &&
           node.app_data!.filename !== ""
@@ -295,14 +289,14 @@ class PipelineController extends CanvasController {
         if (
           // `app_data` and `ui_data` should be guaranteed.
           node.app_data!.ui_data!.description !== nodeDef.description ||
-          node.app_data!.ui_data!.image !== nodeDef.image ||
+          node.app_data!.ui_data!.image !== nodeDef.app_data.image ||
           node.app_data!.invalidNodeError !== undefined
         ) {
           this.setNodeProperties(
             node.id,
             {
               description: nodeDef.description,
-              image: nodeDef.image,
+              image: nodeDef.app_data.image,
               app_data: {
                 ...node.app_data,
                 invalidNodeError: undefined,
@@ -400,7 +394,7 @@ class PipelineController extends CanvasController {
 
           const message = nodeProblems
             .map((problem) => {
-              const label = nodeDef!.properties!.uihints!.parameter_info.find(
+              const label = nodeDef!.app_data.properties!.uihints!.parameter_info.find(
                 (p) => p.parameter_ref === problem.property
               )!.label.default;
               return `property "${label}" is required`;
@@ -435,10 +429,19 @@ class PipelineController extends CanvasController {
     return nodes;
   }
 
-  getAllPaletteNodes(): ExecutionNodeDef[] {
-    return (this.palette?.categories?.flatMap(
-      (cat: CategoryDef) => cat.node_types
-    ) ?? []) as ExecutionNodeDef[];
+  getAllPaletteNodes() {
+    if (this.palette.categories === undefined) {
+      return [];
+    }
+
+    let nodes = [];
+    for (const c of this.palette.categories) {
+      if (c.node_types) {
+        nodes.push(...c.node_types);
+      }
+    }
+
+    return nodes;
   }
 
   findExecutionNode(nodeID: string) {
@@ -468,7 +471,7 @@ class PipelineController extends CanvasController {
       const { op, app_data } = node;
       const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
 
-      const info = nodeDef?.properties?.uihints?.parameter_info ?? [];
+      const info = nodeDef?.app_data.properties?.uihints?.parameter_info ?? [];
 
       const properties = info.map((i) => {
         return {
