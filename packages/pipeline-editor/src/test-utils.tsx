@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { CategoryDef, PaletteV3 } from "@elyra/canvas";
+import { CategoryDef, PaletteV3, ExecutionNodeDef } from "@elyra/canvas";
 import { render as rtlRender } from "@testing-library/react";
 
 import { InternalThemeProvider } from "./ThemeProvider";
-import { CustomNodeSpecification } from "./types";
 
 export const nodeSpec = {
   op: "execute-notebook-node",
@@ -27,7 +26,7 @@ export const nodeSpec = {
   labelField: "filename",
   fileField: "filename",
   fileBased: true,
-  extension: ".ipynb",
+  extensions: [".ipynb"],
   image: undefined,
   properties: {
     current_parameters: {
@@ -324,7 +323,7 @@ export const samplePipeline = {
   schemas: [],
 };
 
-function createPalette(nodes: CustomNodeSpecification[]): PaletteV3 {
+function createPalette(nodes: ExecutionNodeDef[]): PaletteV3 {
   const palette = {
     version: "3.0" as "3.0",
     categories: [
@@ -340,8 +339,6 @@ function createPalette(nodes: CustomNodeSpecification[]): PaletteV3 {
 
   for (const node of nodes) {
     palette.categories[0].node_types!.push({
-      id: "",
-      type: "execution_node",
       inputs: [
         {
           id: "inPort",

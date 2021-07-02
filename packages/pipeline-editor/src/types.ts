@@ -14,26 +14,6 @@
  * limitations under the License.
  */
 
-import { PropertyDefinitions } from "@elyra/canvas";
-
-export interface CustomNodeSpecification {
-  op: string;
-  label: string;
-  description: string;
-  labelField?: string;
-  fileField?: string;
-  fileBased?: boolean;
-  extension?: string;
-  image?: string;
-  properties?: PropertyDefinitions;
-  id?: string;
-  type?: "execution_node";
-  inputs?: any[];
-  outputs?: any[];
-  parameters?: any;
-  app_data?: any;
-}
-
 export interface Theme {
   mode: "dark" | "light";
   platform: "mac" | "win" | "other";

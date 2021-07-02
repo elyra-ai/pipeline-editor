@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
+import { ExecutionNodeDef } from "@elyra/canvas";
+
 import { useCallback } from "react";
 import ReactDOM from "react-dom";
 
 import styled from "styled-components";
 
-import { CustomNodeSpecification } from "../types";
-
 interface Props {
-  nodes: CustomNodeSpecification[];
+  nodes: ExecutionNodeDef[];
 }
 
 export function Node({ image, label }: any) {

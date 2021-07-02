@@ -19,10 +19,10 @@ import {
   PipelineFlowV3,
   PaletteV3,
   CategoryDef,
+  ExecutionNodeDef,
 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
-import { CustomNodeSpecification } from "../types";
 import {
   ElyraOutOfDateError,
   PipelineOutOfDateError,
@@ -401,7 +401,7 @@ class PipelineController extends CanvasController {
           const message = nodeProblems
             .map((problem) => {
               const label = nodeDef!.properties!.uihints!.parameter_info.find(
-                (p: any) => p.parameter_ref === problem.property
+                (p) => p.parameter_ref === problem.property
               )!.label.default;
               return `property "${label}" is required`;
             })
@@ -435,11 +435,10 @@ class PipelineController extends CanvasController {
     return nodes;
   }
 
-  getAllPaletteNodes(): CustomNodeSpecification[] {
-    return (
-      this.palette?.categories?.flatMap((cat: CategoryDef) => cat.node_types) ??
-      ([] as any[])
-    );
+  getAllPaletteNodes(): ExecutionNodeDef[] {
+    return (this.palette?.categories?.flatMap(
+      (cat: CategoryDef) => cat.node_types
+    ) ?? []) as ExecutionNodeDef[];
   }
 
   findExecutionNode(nodeID: string) {
