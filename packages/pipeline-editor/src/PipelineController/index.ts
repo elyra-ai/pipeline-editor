@@ -115,9 +115,10 @@ class PipelineController extends CanvasController {
   }
 
   async addNode(item: any) {
-    console.log(item);
-
     const nodeTemplate = this.getPaletteNode(item.op);
+
+    console.log("template", nodeTemplate);
+
     const data = {
       editType: "createNode",
       offsetX: item.x ?? 40,
@@ -125,6 +126,9 @@ class PipelineController extends CanvasController {
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
       pipelineId: item.pipelineId,
     };
+
+    console.log("converted template", data.nodeTemplate);
+
     const nodeDef = this.getAllPaletteNodes().find((n) => n.op === item.op);
     if (nodeDef?.app_data.properties?.current_parameters) {
       data.nodeTemplate.app_data = {
