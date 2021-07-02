@@ -178,9 +178,51 @@ function toCommonProperties(items) {
   return commonProperties;
 }
 
-export function createNode(node) {
+export function createNode({ op, description, properties, ...rest }) {
   return {
-    ...node,
-    properties: toCommonProperties(node.properties),
+    op,
+    description,
+    id: "",
+    type: "execution_node",
+    inputs: [
+      {
+        id: "inPort",
+        app_data: {
+          ui_data: {
+            cardinality: {
+              min: 0,
+              max: -1,
+            },
+            label: "Input Port",
+          },
+        },
+      },
+    ],
+    outputs: [
+      {
+        id: "outPort",
+        app_data: {
+          ui_data: {
+            cardinality: {
+              min: 0,
+              max: -1,
+            },
+            label: "Output Port",
+          },
+        },
+      },
+    ],
+    parameters: {},
+    app_data: {
+      ...rest,
+      properties: toCommonProperties(properties),
+      ui_data: {
+        description,
+        label: rest.label,
+        image: rest.image ?? "",
+        x_pos: 0,
+        y_pos: 0,
+      },
+    },
   };
 }

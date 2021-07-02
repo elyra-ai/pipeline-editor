@@ -26,7 +26,6 @@ const node = createNode({
   op: "execute-node",
   description: "A simple node",
   label: "Node",
-  labelField: "label",
   image: imagePath,
   properties: [
     {
