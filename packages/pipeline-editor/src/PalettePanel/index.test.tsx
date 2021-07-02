@@ -30,6 +30,8 @@ it("can drag node", () => {
       nodes={[
         {
           image: "fake",
+          id: "example-op",
+          type: "execution_node",
           label: "example label",
           op: "",
           description: "",

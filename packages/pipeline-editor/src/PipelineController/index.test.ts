@@ -211,6 +211,8 @@ describe("addNode", () => {
       createPalette([
         {
           op: "example-op",
+          id: "example-op",
+          type: "execution_node",
           label: "example-label",
           description: "example-description",
         },
@@ -233,6 +235,8 @@ describe("addNode", () => {
       createPalette([
         {
           op: "example-op",
+          id: "example-op",
+          type: "execution_node",
           label: "example-label",
           description: "example-description",
         },
@@ -1313,7 +1317,15 @@ describe("validate", () => {
     };
     controller.open(pipeline);
     controller.setPalette(
-      createPalette([{ op: "no-props", description: "", label: "" }])
+      createPalette([
+        {
+          op: "no-props",
+          id: "no-props",
+          type: "execution_node",
+          description: "",
+          label: "",
+        },
+      ])
     );
 
     controller.validate();
