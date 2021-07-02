@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+import { PropertyDefinitions } from "@elyra/canvas";
+
 import { PropertiesPanel, Message } from "./PropertiesPanel";
 
 interface Props {
   pipelineFlow: any;
-  propertiesSchema?: any;
+  propertiesSchema?: PropertyDefinitions;
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
   onChange?: (data: any) => any;

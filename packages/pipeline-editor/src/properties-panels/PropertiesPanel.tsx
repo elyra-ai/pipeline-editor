@@ -16,7 +16,7 @@
 
 import { useEffect, useRef } from "react";
 
-import { CommonProperties } from "@elyra/canvas";
+import { CommonProperties, PropertyDefinitions } from "@elyra/canvas";
 import styled from "styled-components";
 
 import * as controls from "../CustomFormControls";
@@ -25,7 +25,7 @@ import useActiveFormItemShim from "./useActiveFormItemShim";
 
 interface Props {
   currentProperties: any;
-  propertiesSchema: any;
+  propertiesSchema: PropertyDefinitions;
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
   onChange?: (data: any) => any;
@@ -66,7 +66,7 @@ export function PropertiesPanel({
       key={id}
       propertiesInfo={{
         parameterDef: fillPropertiesWithSavedData(
-          propertiesSchema.properties,
+          propertiesSchema,
           currentProperties
         ),
         labelEditable: false,
