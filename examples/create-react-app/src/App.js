@@ -67,7 +67,10 @@ function App() {
     <ThemeProvider theme={theme}>
       <PipelineEditor
         pipeline={pipeline}
-        palette={{ categories: [{ node_types: [node] }] }}
+        palette={{
+          version: "3.0",
+          categories: [{ node_types: [node] }],
+        }}
         onChange={setPipeline}
       />
     </ThemeProvider>
