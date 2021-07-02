@@ -111,7 +111,7 @@ it("should migrate v1 to latest", () => {
   `);
 });
 
-it("should migrate v2 to latest", () => {
+it("should migrate v2 to v3", () => {
   const v2 = {
     pipelines: [
       {
@@ -141,13 +141,43 @@ it("should migrate v2 to latest", () => {
   `);
 });
 
+it("should migrate v3 to v4", () => {
+  const v3 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 3,
+        },
+        nodes: [],
+      },
+    ],
+  };
+
+  const actual = migrate(v3);
+
+  expect(actual).toMatchInlineSnapshot(`
+    Object {
+      "pipelines": Array [
+        Object {
+          "app_data": Object {
+            "name": "name",
+            "version": 4,
+          },
+          "nodes": Array [],
+        },
+      ],
+    }
+  `);
+});
+
 it("should do nothing for latest version", () => {
   const latest = {
     pipelines: [
       {
         app_data: {
           name: "name",
-          version: 3,
+          version: 4,
         },
         nodes: [],
       },

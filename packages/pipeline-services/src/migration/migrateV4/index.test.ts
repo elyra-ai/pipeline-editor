@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-import produce from "immer";
+import migrate from "./";
 
-import migrateV1 from "./migrateV1";
-import migrateV2 from "./migrateV2";
-import migrateV3 from "./migrateV3";
-import migrateV4 from "./migrateV4";
-
-export function migrate(pipelineJSON: any) {
-  return produce(pipelineJSON, (draft: any) => {
-    const version = draft.pipelines[0].app_data?.version ?? 0;
-    if (version < 1) {
-      migrateV1(draft);
-    }
-    if (version < 2) {
-      migrateV2(draft);
-    }
-    if (version < 3) {
-      migrateV3(draft);
-    }
-    if (version < 4) {
-      migrateV4(draft);
-    }
-  });
-}
+it("should only bump version", () => {
+  const v3 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 3,
+        },
+        nodes: [],
+      },
+    ],
+  };
+  const expected = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 4,
+        },
+        nodes: [],
+      },
+    ],
+  };
+  const actual = migrate(v3);
+  expect(actual).toEqual(expected);
+});

@@ -17,3 +17,4 @@
 export * from "./errors";
 export { default as ThemeProvider, createTheme } from "./ThemeProvider";
 export { default as PipelineEditor } from "./PipelineEditor";
+export { PIPELINE_CURRENT_VERSION } from "./PipelineController";

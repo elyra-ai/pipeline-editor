@@ -26,7 +26,7 @@ import {
 import { createPalette } from "./create-palette";
 import { getFileName } from "./utils";
 
-export const PIPELINE_CURRENT_VERSION = 3;
+export const PIPELINE_CURRENT_VERSION = 4;
 
 // TODO: Experiment with pipeline editor settings.
 const SHOW_EXTENSIONS = true;

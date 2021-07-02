@@ -14,27 +14,15 @@
  * limitations under the License.
  */
 
-import produce from "immer";
+// NOTE: technically a pipeline can have a missing app_data field however, if
+// this is really an Elyra v2 pipeline, it should be guaranteed to have app_data
+// otherwise we wouldn't know this is a v2 pipeline.
+function migrate(pipeline: any) {
+  // No-Op this is to disable old versions of Elyra
+  // to see a pipeline with Python Script nodes
+  pipeline.pipelines[0].app_data.version = 4;
 
-import migrateV1 from "./migrateV1";
-import migrateV2 from "./migrateV2";
-import migrateV3 from "./migrateV3";
-import migrateV4 from "./migrateV4";
-
-export function migrate(pipelineJSON: any) {
-  return produce(pipelineJSON, (draft: any) => {
-    const version = draft.pipelines[0].app_data?.version ?? 0;
-    if (version < 1) {
-      migrateV1(draft);
-    }
-    if (version < 2) {
-      migrateV2(draft);
-    }
-    if (version < 3) {
-      migrateV3(draft);
-    }
-    if (version < 4) {
-      migrateV4(draft);
-    }
-  });
+  return pipeline;
 }
+
+export default migrate;
