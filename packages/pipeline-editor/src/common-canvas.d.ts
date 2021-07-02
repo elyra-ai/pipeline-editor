@@ -2751,20 +2751,9 @@ declare module "@elyra/canvas" {
         // Elyra specific fields
         //====================================================================//
         /**
-         * Label of the node type for palette
-         */
-        label: string;
-
-        /**
          * Extension that the file field uses
          */
         extensions?: string[];
-
-        /**
-         * Icon to use for node
-         */
-        image?: string;
-
         /**
          * Node properties that can be edited by the user
          */

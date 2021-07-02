@@ -31,8 +31,10 @@ it("can drag node", () => {
         {
           op: "example-op",
           app_data: {
-            label: "example label",
-            image: "fake",
+            ui_data: {
+              label: "example label",
+              image: "fake",
+            },
           },
         },
       ]}

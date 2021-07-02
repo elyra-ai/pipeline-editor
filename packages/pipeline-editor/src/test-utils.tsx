@@ -343,7 +343,7 @@ function createPalette(nodes: CustomNodeSpecification[]): PaletteV3 {
     ],
   };
 
-  for (const { op, description, ...rest } of nodes) {
+  for (const { op, description, label, image, ...rest } of nodes) {
     palette.categories![0].node_types!.push({
       op,
       description,
@@ -382,8 +382,8 @@ function createPalette(nodes: CustomNodeSpecification[]): PaletteV3 {
         ...rest,
         ui_data: {
           description,
-          label: rest.label,
-          image: rest.image ?? "",
+          label,
+          image,
           x_pos: 0,
           y_pos: 0,
         },

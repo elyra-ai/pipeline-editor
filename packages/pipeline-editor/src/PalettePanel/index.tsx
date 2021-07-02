@@ -96,8 +96,10 @@ interface Props {
   nodes: {
     op: string;
     app_data: {
-      label: string;
-      image?: string;
+      ui_data?: {
+        label?: string;
+        image?: string;
+      };
     };
   }[];
 }
@@ -126,8 +128,8 @@ function PalettePanel({ nodes }: Props) {
     <Container>
       {nodes.map((n) => (
         <Item key={n.op} onDragStart={(e) => handleDragStart(e, n)}>
-          <Icon src={n.app_data.image} />
-          <Label>{n.app_data.label}</Label>
+          <Icon src={n.app_data.ui_data?.image} />
+          <Label>{n.app_data.ui_data?.label}</Label>
         </Item>
       ))}
     </Container>

@@ -268,7 +268,7 @@ class PipelineController extends CanvasController {
           continue;
         }
 
-        let newLabel = nodeDef.app_data.label;
+        let newLabel = nodeDef.app_data.ui_data?.label;
         if (
           typeof node.app_data!.filename === "string" &&
           node.app_data!.filename !== ""
@@ -294,14 +294,14 @@ class PipelineController extends CanvasController {
         if (
           // `app_data` and `ui_data` should be guaranteed.
           node.app_data!.ui_data!.description !== nodeDef.description ||
-          node.app_data!.ui_data!.image !== nodeDef.app_data.image ||
+          node.app_data!.ui_data!.image !== nodeDef.app_data.ui_data?.image ||
           node.app_data!.invalidNodeError !== undefined
         ) {
           this.setNodeProperties(
             node.id,
             {
               description: nodeDef.description,
-              image: nodeDef.app_data.image,
+              image: nodeDef.app_data.ui_data?.image,
               app_data: {
                 ...node.app_data,
                 invalidNodeError: undefined,

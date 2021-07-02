@@ -178,7 +178,14 @@ function toCommonProperties(items: any) {
   return commonProperties;
 }
 
-export function createNode({ op, description, properties, ...rest }: any) {
+export function createNode({
+  op,
+  description,
+  properties,
+  label,
+  image,
+  ...rest
+}: any) {
   return {
     op,
     description,
@@ -217,9 +224,8 @@ export function createNode({ op, description, properties, ...rest }: any) {
       ...rest,
       properties: toCommonProperties(properties),
       ui_data: {
-        description,
-        label: rest.label,
-        image: rest.image ?? "",
+        label,
+        image,
         x_pos: 0,
         y_pos: 0,
       },
