@@ -18,7 +18,6 @@ import { useCallback } from "react";
 import ReactDOM from "react-dom";
 
 import { ExecutionNodeDef } from "@elyra/canvas";
-
 import styled from "styled-components";
 
 interface Props {
