@@ -217,8 +217,10 @@ const PipelineEditor = forwardRef(
       ref,
       () => ({
         addFile: async (item: any) => {
-          item.onPropertiesUpdateRequested = onPropertiesUpdateRequested;
-          await controller.current.addNode(item);
+          await controller.current.addNode({
+            ...item,
+            onPropertiesUpdateRequested,
+          });
         },
       }),
       [onPropertiesUpdateRequested]
@@ -478,13 +480,16 @@ const PipelineEditor = forwardRef(
             n.app_data.extensions?.includes(path.extname(file))
           );
 
-          controller.current.addNode({
-            op: node?.op,
-            path: file,
-            pipelineId: e.pipelineId,
-            offsetX: e.mousePos.x,
-            offsetY: e.mousePos.y,
-          });
+          if (node !== undefined) {
+            controller.current.addNode({
+              op: node.op,
+              path: file,
+              pipelineId: e.pipelineId,
+              offsetX: e.mousePos.x,
+              offsetY: e.mousePos.y,
+              onPropertiesUpdateRequested,
+            });
+          }
         }
 
         if (e.editType === "properties") {
@@ -497,13 +502,13 @@ const PipelineEditor = forwardRef(
         }
 
         if (e.editType === "createExternalNode") {
-          const item = {
+          controller.current.addNode({
             op: e.op,
             x: e.offsetX,
             y: e.offsetY,
             pipelineId: e.pipelineId,
-          };
-          controller.current.addNode(item);
+            onPropertiesUpdateRequested,
+          });
         }
 
         // Catch any events where a save isn't necessary.
@@ -519,7 +524,7 @@ const PipelineEditor = forwardRef(
 
         onChange?.(controller.current.getPipelineFlow());
       },
-      [onAction, onChange, onFileRequested]
+      [onAction, onChange, onFileRequested, onPropertiesUpdateRequested]
     );
 
     const handlePropertiesChange = useCallback(

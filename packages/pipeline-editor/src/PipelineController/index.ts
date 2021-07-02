@@ -115,6 +115,8 @@ class PipelineController extends CanvasController {
   }
 
   async addNode(item: any) {
+    console.log(item);
+
     const nodeTemplate = this.getPaletteNode(item.op);
     const data = {
       editType: "createNode",
@@ -125,9 +127,9 @@ class PipelineController extends CanvasController {
     };
     const nodeDef = this.getAllPaletteNodes().find((n) => n.op === item.op);
     if (nodeDef?.app_data.properties?.current_parameters) {
-      data.nodeTemplate.app_data = JSON.parse(
-        JSON.stringify(nodeDef?.app_data.properties?.current_parameters)
-      );
+      data.nodeTemplate.app_data = {
+        ...nodeDef?.app_data.properties?.current_parameters,
+      };
     }
 
     if (item.path) {
@@ -135,7 +137,10 @@ class PipelineController extends CanvasController {
       const properties = await item.onPropertiesUpdateRequested?.({
         filename: item.path,
       });
-      data.nodeTemplate.app_data.env_vars = properties?.env_vars;
+      data.nodeTemplate.app_data = {
+        ...data.nodeTemplate.app_data,
+        ...properties,
+      };
     }
 
     this.editActionHandler(data);
