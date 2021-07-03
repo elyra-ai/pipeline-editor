@@ -16,6 +16,7 @@
 
 import { CanvasController, PipelineFlowV3 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
+import { Problem } from "@elyra/pipeline-services/dist/validation/types";
 
 import { CustomNodeSpecification } from "../types";
 import {
@@ -338,13 +339,24 @@ class PipelineController extends CanvasController {
   // TODO: Can we find a better way to handle setting error styles? This tightly
   // couples style to the controller which isn't great. Setting a classname
   // would be better, but the CommonCanvas implementation is very buggy.
-  validate(styleOptions?: { redColor: string }) {
-    this.resetStyles();
+  async validate(
+    styleOptions?: { redColor: string },
+    experimentalValidateDelegationHandler?: (
+      pipeline: any,
+      node: any
+    ) => Promise<Problem[]>
+  ) {
+    let problems;
+    if (experimentalValidateDelegationHandler !== undefined) {
+      problems = await experimentalValidateDelegationHandler(
+        JSON.stringify(this.getPipelineFlow()),
+        this.nodes
+      );
+    } else {
+      problems = validate(JSON.stringify(this.getPipelineFlow()), this.nodes);
+    }
 
-    const problems = validate(
-      JSON.stringify(this.getPipelineFlow()),
-      this.nodes
-    );
+    this.resetStyles();
 
     const linksWithErrors: { [key: string]: string[] } = {};
     const nodesWithErrors: { [key: string]: string[] } = {};
