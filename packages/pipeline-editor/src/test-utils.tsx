@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
+import { PaletteV3 } from "@elyra/canvas";
 import { render as rtlRender } from "@testing-library/react";
 
 import { InternalThemeProvider } from "./ThemeProvider";
 
-export const nodeSpec = {
+interface CustomNodeSpecification {
+  op: string;
+  label: string;
+  description: string;
+  extensions?: string[];
+  image?: string;
+  properties?: any;
+}
+
+export const nodeSpec: CustomNodeSpecification = {
   op: "execute-notebook-node",
   description: "Notebook file",
   label: "Notebook",
-  labelField: "filename",
-  fileField: "filename",
-  fileBased: true,
-  extension: ".ipynb",
+  extensions: [".ipynb"],
   image: undefined,
   properties: {
     current_parameters: {
@@ -322,6 +329,70 @@ export const samplePipeline = {
   schemas: [],
 };
 
+function createPalette(nodes: CustomNodeSpecification[]): PaletteV3 {
+  const palette: PaletteV3 = {
+    version: "3.0",
+    categories: [
+      {
+        label: "Nodes",
+        image: "",
+        id: "nodes",
+        description: "Nodes",
+        node_types: [],
+      },
+    ],
+  };
+
+  for (const { op, description, label, image, ...rest } of nodes) {
+    palette.categories![0].node_types!.push({
+      op,
+      description,
+      id: "",
+      type: "execution_node",
+      inputs: [
+        {
+          id: "inPort",
+          app_data: {
+            ui_data: {
+              cardinality: {
+                min: 0,
+                max: -1,
+              },
+              label: "Input Port",
+            },
+          },
+        },
+      ],
+      outputs: [
+        {
+          id: "outPort",
+          app_data: {
+            ui_data: {
+              cardinality: {
+                min: 0,
+                max: -1,
+              },
+              label: "Output Port",
+            },
+          },
+        },
+      ],
+      parameters: {},
+      app_data: {
+        ...rest,
+        ui_data: {
+          description,
+          label,
+          image,
+          x_pos: 0,
+          y_pos: 0,
+        },
+      },
+    });
+  }
+  return palette;
+}
+
 function render(
   ui: Parameters<typeof rtlRender>[0],
   renderOptions?: Parameters<typeof rtlRender>[1]
@@ -339,4 +410,4 @@ function render(
 }
 
 export * from "@testing-library/react";
-export { render };
+export { render, createPalette };

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { PropertyDefinitions } from "@elyra/canvas";
 import produce from "immer";
 
 export interface CommonPropertiesSchema {
@@ -61,13 +62,13 @@ declare namespace CommonPropertiesSchema {
 }
 
 export function fillPropertiesWithSavedData(
-  properties: { current_parameters: { [key: string]: any } },
+  properties: PropertyDefinitions,
   appData: { [key: string]: any }
 ) {
   return produce(properties, (draftState) => {
     for (const [key, val] of Object.entries(appData)) {
       if (val !== undefined && val !== null) {
-        draftState.current_parameters[key] = val;
+        draftState.current_parameters![key] = val;
       }
     }
   });

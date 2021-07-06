@@ -26,7 +26,6 @@ const node = createNode({
   op: "execute-node",
   description: "A simple node",
   label: "Node",
-  labelField: "label",
   image: imagePath,
   properties: [
     {
@@ -68,7 +67,10 @@ function App() {
     <ThemeProvider theme={theme}>
       <PipelineEditor
         pipeline={pipeline}
-        nodes={[node]}
+        palette={{
+          version: "3.0",
+          categories: [{ node_types: [node] }],
+        }}
         onChange={setPipeline}
       />
     </ThemeProvider>
