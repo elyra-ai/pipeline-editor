@@ -50,7 +50,8 @@ const ErrorMessage = styled.div`
   border-style: solid;
   border-width: 1px;
   border-color: #be1100;
-  background-color: #5a1d1d;
+  background-color: #f44336;
+  color: #ffffff;
 `;
 
 function serialize(value: string) {
