@@ -49,9 +49,9 @@ const ErrorMessage = styled.div`
   z-index: 1;
   border-style: solid;
   border-width: 1px;
-  border-color: #be1100;
-  background-color: #f44336;
-  color: #ffffff;
+  border-color: ${({ theme }) => theme.palette.errorBorder};
+  background-color: ${({ theme }) => theme.palette.background.error};
+  color: ${({ theme }) => theme.palette.primary.contrastText};
 `;
 
 function serialize(value: string) {
