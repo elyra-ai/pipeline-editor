@@ -68,7 +68,6 @@ const theme = createTheme({
       default: "white",
       secondary: "lightgrey",
       input: "lightgrey",
-      error: "#f44336",
     },
     highlight: {
       border: "rgba(0, 0, 0, 0.12)",
