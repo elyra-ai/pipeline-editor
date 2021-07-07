@@ -50,8 +50,8 @@ const ErrorMessage = styled.div`
   border-style: solid;
   border-width: 1px;
   border-color: ${({ theme }) => theme.palette.errorBorder};
-  background-color: ${({ theme }) => theme.palette.background.error};
-  color: ${({ theme }) => theme.palette.primary.contrastText};
+  background-color: ${({ theme }) => theme.palette.error.main};
+  color: ${({ theme }) => theme.palette.error.contrastText};
 `;
 
 function serialize(value: string) {

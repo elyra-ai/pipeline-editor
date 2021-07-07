@@ -54,7 +54,6 @@ export interface Theme {
       default: string;
       secondary: string;
       input: string;
-      error: string;
     };
     highlight: {
       border: string;
