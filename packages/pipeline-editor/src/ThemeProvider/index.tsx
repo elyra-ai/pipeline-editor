@@ -33,6 +33,7 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
     active: "rgba(255, 255, 255, 0.18)",
     tabBorder: "#e7e7e7",
     inputBorder: "transparent",
+    errorBorder: "#be1100",
     sash: "transparent",
     primary: {
       main: "#4d78cc",
@@ -61,6 +62,7 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
       default: "#282c34",
       secondary: "#21252b",
       input: "#1b1d23",
+      error: "#f44336",
     },
     highlight: {
       border: "rgba(255, 255, 255, 0.12)",

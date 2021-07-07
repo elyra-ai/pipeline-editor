@@ -25,6 +25,7 @@ export interface Theme {
     active: string;
     tabBorder: string;
     inputBorder: string;
+    errorBorder: string;
     sash: string;
     primary: {
       main: string;
@@ -53,6 +54,7 @@ export interface Theme {
       default: string;
       secondary: string;
       input: string;
+      error: string;
     };
     highlight: {
       border: string;
