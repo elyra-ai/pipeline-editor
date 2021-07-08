@@ -51,7 +51,7 @@ import useBlockEvents from "./useBlockEvents";
 interface Props {
   pipeline: any;
   toolbar?: any;
-  nodes?: any;
+  palette?: any;
   pipelineProperties?: any;
   onAction?: (action: { type: string; payload?: any }) => any;
   onChange?: (pipeline: any) => any;
@@ -62,6 +62,7 @@ interface Props {
   readOnly?: boolean;
   children?: React.ReactNode;
   nativeKeyboardActions?: boolean;
+  leftPalette?: boolean;
 }
 
 const READ_ONLY_NODE_SVG_PATH =
@@ -147,7 +148,7 @@ const PipelineEditor = forwardRef(
   (
     {
       pipeline,
-      nodes,
+      palette,
       pipelineProperties,
       toolbar,
       onAction,
@@ -159,6 +160,7 @@ const PipelineEditor = forwardRef(
       readOnly,
       children,
       nativeKeyboardActions,
+      leftPalette,
     }: Props,
     ref
   ) => {
@@ -200,7 +202,7 @@ const PipelineEditor = forwardRef(
       try {
         controller.current.open(pipeline);
         if (!readOnly) {
-          controller.current.setNodes(nodes);
+          controller.current.setPalette(palette);
           controller.current.validate({ redColor: theme.palette.error.main });
         } else {
           controller.current.resetStyles();
@@ -209,14 +211,16 @@ const PipelineEditor = forwardRef(
       } catch (e) {
         onError?.(e);
       }
-    }, [nodes, onError, pipeline, readOnly, theme.palette.error.main]);
+    }, [palette, onError, pipeline, readOnly, theme.palette.error.main]);
 
     useImperativeHandle(
       ref,
       () => ({
         addFile: async (item: any) => {
-          item.onPropertiesUpdateRequested = onPropertiesUpdateRequested;
-          await controller.current.addNode(item);
+          await controller.current.addNode({
+            ...item,
+            onPropertiesUpdateRequested,
+          });
         },
       }),
       [onPropertiesUpdateRequested]
@@ -441,16 +445,19 @@ const PipelineEditor = forwardRef(
     );
 
     const [selectedNodeIDs, setSelectedNodeIDs] = useState<string[]>();
-    const handleSelectionChange = useCallback((e: CanvasSelectionEvent) => {
-      setSelectedNodeIDs(e.selectedNodes.map((n: NodeTypeDef) => n.id));
-      if (e.selectedNodes.length > 0) {
-        setCurrentTab("properties");
-      } else if (controller.current.getNodes().length > 0) {
-        setCurrentTab("pipeline-properties");
-      } else {
-        setCurrentTab("palette");
-      }
-    }, []);
+    const handleSelectionChange = useCallback(
+      (e: CanvasSelectionEvent) => {
+        setSelectedNodeIDs(e.selectedNodes.map((n: NodeTypeDef) => n.id));
+        if (e.selectedNodes.length > 0) {
+          setCurrentTab("properties");
+        } else if (controller.current.getNodes().length > 0 || leftPalette) {
+          setCurrentTab("pipeline-properties");
+        } else {
+          setCurrentTab("palette");
+        }
+      },
+      [leftPalette]
+    );
 
     const handleEditAction = useCallback(
       async (e: CanvasEditEvent) => {
@@ -461,24 +468,28 @@ const PipelineEditor = forwardRef(
         onAction?.({ type: e.editType, payload });
 
         if (e.editType === "newFileNode") {
-          const extensions = nodes.map((n: any) => n.extensions).flat();
+          const nodes = controller.current.getAllPaletteNodes();
+          const extensions = nodes.map((n) => n.app_data.extensions).flat();
 
           const [file] = await onFileRequested?.({
             canSelectMany: false,
             filters: { File: extensions },
           });
 
-          const node = nodes.find((n: any) =>
-            n.extensions.includes(path.extname(file))
+          const node = nodes.find((n) =>
+            n.app_data.extensions?.includes(path.extname(file))
           );
 
-          controller.current.addNode({
-            op: node.op,
-            path: file,
-            pipelineId: e.pipelineId,
-            offsetX: e.mousePos.x,
-            offsetY: e.mousePos.y,
-          });
+          if (node !== undefined) {
+            controller.current.addNode({
+              op: node.op,
+              path: file,
+              pipelineId: e.pipelineId,
+              offsetX: e.mousePos.x,
+              offsetY: e.mousePos.y,
+              onPropertiesUpdateRequested,
+            });
+          }
         }
 
         if (e.editType === "properties") {
@@ -491,13 +502,13 @@ const PipelineEditor = forwardRef(
         }
 
         if (e.editType === "createExternalNode") {
-          const item = {
+          controller.current.addNode({
             op: e.op,
             x: e.offsetX,
             y: e.offsetY,
             pipelineId: e.pipelineId,
-          };
-          controller.current.addNode(item);
+            onPropertiesUpdateRequested,
+          });
         }
 
         // Catch any events where a save isn't necessary.
@@ -513,7 +524,7 @@ const PipelineEditor = forwardRef(
 
         onChange?.(controller.current.getPipelineFlow());
       },
-      [nodes, onAction, onChange, onFileRequested]
+      [onAction, onChange, onFileRequested, onPropertiesUpdateRequested]
     );
 
     const handlePropertiesChange = useCallback(
@@ -591,6 +602,51 @@ const PipelineEditor = forwardRef(
 
     const selectedNodes = controller.current.idsToNodes(selectedNodeIDs ?? []);
 
+    const panelTabs = [
+      {
+        id: "pipeline-properties",
+        label: "Pipeline Properties",
+        title: "Edit pipeline properties",
+        icon: theme.overrides?.pipelineIcon,
+        content: (
+          <PipelineProperties
+            pipelineFlow={pipeline}
+            propertiesSchema={pipelineProperties}
+            onFileRequested={onFileRequested}
+            onPropertiesUpdateRequested={onPropertiesUpdateRequested}
+            onChange={handlePipelinePropertiesChange}
+          />
+        ),
+      },
+      {
+        id: "properties",
+        label: "Node Properties",
+        title: "Edit node properties",
+        icon: theme.overrides?.propertiesIcon,
+        content: (
+          <NodeProperties
+            selectedNodes={selectedNodes}
+            nodes={controller.current.getAllPaletteNodes()}
+            onFileRequested={onFileRequested}
+            onPropertiesUpdateRequested={onPropertiesUpdateRequested}
+            onChange={handlePropertiesChange}
+          />
+        ),
+      },
+    ];
+
+    if (!leftPalette) {
+      panelTabs.push({
+        id: "palette",
+        label: "Palette",
+        title: "Add nodes to pipeline",
+        icon: theme.overrides?.paletteIcon,
+        content: (
+          <PalettePanel nodes={controller.current.getAllPaletteNodes()} />
+        ),
+      });
+    }
+
     return (
       <Container ref={blockingRef}>
         <IntlProvider locale="en">
@@ -619,7 +675,7 @@ const PipelineEditor = forwardRef(
                 config={{
                   enableInternalObjectModel: true,
                   emptyCanvasContent: children,
-                  enablePaletteLayout: "None", // 'Flyout', 'None', 'Modal'
+                  enablePaletteLayout: leftPalette ? "Flyout" : "None", // 'Flyout', 'None', 'Modal'
                   enableNodeFormatType: "Horizontal",
                   enableToolbarLayout: toolbar === undefined ? "None" : "Top",
                   enableNodeLayout: {
@@ -667,49 +723,7 @@ const PipelineEditor = forwardRef(
                   onAction?.({ type: "openPanel" });
                   setPanelOpen(true);
                 }}
-                tabs={[
-                  {
-                    id: "pipeline-properties",
-                    label: "Pipeline Properties",
-                    title: "Edit pipeline properties",
-                    icon: theme.overrides?.pipelineIcon,
-                    content: (
-                      <PipelineProperties
-                        pipelineFlow={pipeline}
-                        propertiesSchema={pipelineProperties}
-                        onFileRequested={onFileRequested}
-                        onPropertiesUpdateRequested={
-                          onPropertiesUpdateRequested
-                        }
-                        onChange={handlePipelinePropertiesChange}
-                      />
-                    ),
-                  },
-                  {
-                    id: "properties",
-                    label: "Node Properties",
-                    title: "Edit node properties",
-                    icon: theme.overrides?.propertiesIcon,
-                    content: (
-                      <NodeProperties
-                        selectedNodes={selectedNodes}
-                        nodes={nodes}
-                        onFileRequested={onFileRequested}
-                        onPropertiesUpdateRequested={
-                          onPropertiesUpdateRequested
-                        }
-                        onChange={handlePropertiesChange}
-                      />
-                    ),
-                  },
-                  {
-                    id: "palette",
-                    label: "Palette",
-                    title: "Add nodes to pipeline",
-                    icon: theme.overrides?.paletteIcon,
-                    content: <PalettePanel nodes={nodes} />,
-                  },
-                ]}
+                tabs={panelTabs}
                 collapsed={panelOpen === false}
                 showCloseButton={toolbar === undefined}
                 onClose={() => {

@@ -29,10 +29,13 @@ it("can drag node", () => {
     <PalettePanel
       nodes={[
         {
-          image: "fake",
-          label: "example label",
-          op: "",
-          description: "",
+          op: "example-op",
+          app_data: {
+            ui_data: {
+              label: "example label",
+              image: "fake",
+            },
+          },
         },
       ]}
     />

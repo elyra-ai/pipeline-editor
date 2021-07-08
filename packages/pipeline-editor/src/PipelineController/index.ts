@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-import { CanvasController, PipelineFlowV3 } from "@elyra/canvas";
+import { CanvasController, PipelineFlowV3, PaletteV3 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
-import { CustomNodeSpecification } from "../types";
 import {
   ElyraOutOfDateError,
   PipelineOutOfDateError,
   InvalidPipelineError,
 } from "./../errors";
-import { createPalette } from "./create-palette";
 import { getFileName } from "./utils";
 
 export const PIPELINE_CURRENT_VERSION = 4;
@@ -58,7 +56,7 @@ export function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
 // a second type `PipelineFlowV3Opened` because `app_data` is guaranteed once
 // the pipeline file has been opened by canvas.
 class PipelineController extends CanvasController {
-  private nodes: CustomNodeSpecification[] = [];
+  private palette: PaletteV3 = {};
   private lastOpened: PipelineFlowV3 | undefined;
 
   open(pipelineJson: any) {
@@ -116,14 +114,9 @@ class PipelineController extends CanvasController {
     throw new PipelineOutOfDateError();
   }
 
-  setNodes(nodes: CustomNodeSpecification[]) {
-    this.nodes = nodes;
-    const palette = createPalette(this.nodes);
-    this.setPipelineFlowPalette(palette);
-  }
-
   async addNode(item: any) {
     const nodeTemplate = this.getPaletteNode(item.op);
+
     const data = {
       editType: "createNode",
       offsetX: item.x ?? 40,
@@ -131,11 +124,12 @@ class PipelineController extends CanvasController {
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
       pipelineId: item.pipelineId,
     };
-    const nodeDef = this.nodes.find((n) => n.op === item.op);
-    if (nodeDef?.properties?.current_parameters) {
-      data.nodeTemplate.app_data = JSON.parse(
-        JSON.stringify(nodeDef?.properties?.current_parameters)
-      );
+
+    const nodeDef = this.getAllPaletteNodes().find((n) => n.op === item.op);
+    if (nodeDef?.app_data.properties?.current_parameters) {
+      data.nodeTemplate.app_data = {
+        ...nodeDef?.app_data.properties?.current_parameters,
+      };
     }
 
     if (item.path) {
@@ -143,7 +137,10 @@ class PipelineController extends CanvasController {
       const properties = await item.onPropertiesUpdateRequested?.({
         filename: item.path,
       });
-      data.nodeTemplate.app_data.env_vars = properties?.env_vars;
+      data.nodeTemplate.app_data = {
+        ...data.nodeTemplate.app_data,
+        ...properties,
+      };
     }
 
     this.editActionHandler(data);
@@ -264,14 +261,14 @@ class PipelineController extends CanvasController {
           continue;
         }
 
-        const nodeDef = this.nodes.find((n) => n.op === node.op);
+        const nodeDef = this.getAllPaletteNodes().find((n) => n.op === node.op);
 
         if (nodeDef === undefined) {
           // We don't have a nodedef, skipping...
           continue;
         }
 
-        let newLabel = nodeDef.label;
+        let newLabel = nodeDef.app_data.ui_data?.label;
         if (
           typeof node.app_data!.filename === "string" &&
           node.app_data!.filename !== ""
@@ -297,14 +294,14 @@ class PipelineController extends CanvasController {
         if (
           // `app_data` and `ui_data` should be guaranteed.
           node.app_data!.ui_data!.description !== nodeDef.description ||
-          node.app_data!.ui_data!.image !== nodeDef.image ||
+          node.app_data!.ui_data!.image !== nodeDef.app_data.ui_data?.image ||
           node.app_data!.invalidNodeError !== undefined
         ) {
           this.setNodeProperties(
             node.id,
             {
               description: nodeDef.description,
-              image: nodeDef.image,
+              image: nodeDef.app_data.ui_data?.image,
               app_data: {
                 ...node.app_data,
                 invalidNodeError: undefined,
@@ -343,7 +340,7 @@ class PipelineController extends CanvasController {
 
     const problems = validate(
       JSON.stringify(this.getPipelineFlow()),
-      this.nodes
+      this.getAllPaletteNodes()
     );
 
     const linksWithErrors: { [key: string]: string[] } = {};
@@ -396,11 +393,13 @@ class PipelineController extends CanvasController {
         if (nodeProblems.length > 0) {
           // All of this information should be defined, otherwise we wouldn't
           // have had any problems reported.
-          const nodeDef = this.nodes.find((n) => n.op === node.op)!;
+          const nodeDef = this.getAllPaletteNodes().find(
+            (n) => n.op === node.op
+          );
 
           const message = nodeProblems
             .map((problem) => {
-              const label = nodeDef.properties!.uihints!.parameter_info.find(
+              const label = nodeDef!.app_data.properties!.uihints!.parameter_info.find(
                 (p) => p.parameter_ref === problem.property
               )!.label.default;
               return `property "${label}" is required`;
@@ -422,11 +421,31 @@ class PipelineController extends CanvasController {
     }
   }
 
+  setPalette(palette: any) {
+    this.palette = palette;
+    this.setPipelineFlowPalette(palette);
+  }
+
   idsToNodes(nodeIDs: string[]) {
     let nodes = [];
     for (const pipeline of this.getPipelineFlow().pipelines) {
       nodes.push(...pipeline.nodes.filter((n) => nodeIDs.includes(n.id)));
     }
+    return nodes;
+  }
+
+  getAllPaletteNodes() {
+    if (this.palette.categories === undefined) {
+      return [];
+    }
+
+    let nodes = [];
+    for (const c of this.palette.categories) {
+      if (c.node_types) {
+        nodes.push(...c.node_types);
+      }
+    }
+
     return nodes;
   }
 
@@ -455,9 +474,9 @@ class PipelineController extends CanvasController {
 
     if (node !== undefined) {
       const { op, app_data } = node;
-      const nodeDef = this.nodes.find((n) => n.op === op);
+      const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
 
-      const info = nodeDef?.properties?.uihints?.parameter_info ?? [];
+      const info = nodeDef?.app_data.properties?.uihints?.parameter_info ?? [];
 
       const properties = info.map((i) => {
         return {

@@ -19,7 +19,7 @@ import {
   InvalidPipelineError,
   ElyraOutOfDateError,
 } from "../errors";
-import { nodeSpec } from "../test-utils";
+import { createPalette, nodeSpec } from "../test-utils";
 import PipelineController, {
   PIPELINE_CURRENT_VERSION,
   isPipelineFlowV3,
@@ -204,47 +204,18 @@ describe("open", () => {
   });
 });
 
-describe("setNodes", () => {
-  it("sets the nodes", () => {
-    const controller = new PipelineController();
-    controller.setNodes([
-      {
-        op: "example-op",
-        label: "example-label",
-        description: "example-description",
-      },
-    ]);
-
-    const paletteNode = controller.getPaletteNode("example-op") as any;
-    expect(paletteNode.app_data.ui_data.label).toBe("example-label");
-  });
-
-  it("sets the nodes with an image", () => {
-    const controller = new PipelineController();
-    controller.setNodes([
-      {
-        op: "example-op",
-        label: "example-label",
-        description: "example-description",
-        image: "example-image",
-      },
-    ]);
-
-    const paletteNode = controller.getPaletteNode("example-op") as any;
-    expect(paletteNode.app_data.ui_data.image).toBe("example-image");
-  });
-});
-
 describe("addNode", () => {
   it("adds a node at specified location", async () => {
     const controller = new PipelineController();
-    controller.setNodes([
-      {
-        op: "example-op",
-        label: "example-label",
-        description: "example-description",
-      },
-    ]);
+    controller.setPalette(
+      createPalette([
+        {
+          op: "example-op",
+          label: "example-label",
+          description: "example-description",
+        },
+      ])
+    );
 
     const editActionHandler = jest.fn();
     controller.editActionHandler = editActionHandler;
@@ -258,13 +229,15 @@ describe("addNode", () => {
 
   it("adds a node at a default location", async () => {
     const controller = new PipelineController();
-    controller.setNodes([
-      {
-        op: "example-op",
-        label: "example-label",
-        description: "example-description",
-      },
-    ]);
+    controller.setPalette(
+      createPalette([
+        {
+          op: "example-op",
+          label: "example-label",
+          description: "example-description",
+        },
+      ])
+    );
 
     const editActionHandler = jest.fn();
     controller.editActionHandler = editActionHandler;
@@ -735,7 +708,7 @@ describe("properties", () => {
       ],
     };
     controller.open(pipeline);
-    controller.setNodes([nodeSpec as any]);
+    controller.setPalette(createPalette([nodeSpec]));
 
     const properties = controller.properties("node-to-find");
     expect(properties).toHaveLength(6);
@@ -764,7 +737,7 @@ describe("properties", () => {
       ],
     };
     controller.open(pipeline);
-    controller.setNodes([nodeSpec as any]);
+    controller.setPalette(createPalette([nodeSpec]));
 
     const properties = controller.properties("node-to-find");
     expect(properties).toHaveLength(6);
@@ -1057,7 +1030,7 @@ describe("resetStyles", () => {
       ],
     };
     controller.open(pipeline);
-    controller.setNodes([nodeSpec as any]);
+    controller.setPalette(createPalette([nodeSpec]));
 
     const setNodeLabel = jest.fn();
 
@@ -1094,7 +1067,7 @@ describe("resetStyles", () => {
       ],
     };
     controller.open(pipeline);
-    controller.setNodes([nodeSpec as any]);
+    controller.setPalette(createPalette([nodeSpec]));
 
     controller.resetStyles();
 
@@ -1131,7 +1104,7 @@ describe("resetStyles", () => {
       ],
     };
     controller.open(pipeline);
-    controller.setNodes([nodeSpec as any]);
+    controller.setPalette(createPalette([nodeSpec]));
 
     controller.resetStyles();
 
@@ -1169,7 +1142,7 @@ describe("resetStyles", () => {
       ],
     };
     controller.open(pipeline);
-    controller.setNodes([nodeSpec as any]);
+    controller.setPalette(createPalette([nodeSpec]));
 
     controller.resetStyles();
 
@@ -1208,7 +1181,7 @@ describe("resetStyles", () => {
       ],
     };
     controller.open(pipeline);
-    controller.setNodes([nodeSpec as any]);
+    controller.setPalette(createPalette([nodeSpec]));
 
     const setNodeProperties = jest.fn();
     controller.setNodeProperties = setNodeProperties;
@@ -1243,7 +1216,7 @@ describe("resetStyles", () => {
       ],
     };
     controller.open(pipeline);
-    controller.setNodes([nodeSpec as any]);
+    controller.setPalette(createPalette([nodeSpec]));
 
     controller.resetStyles();
 
@@ -1305,7 +1278,7 @@ describe("validate", () => {
       ],
     };
     controller.open(pipeline);
-    controller.setNodes([nodeSpec as any]);
+    controller.setPalette(createPalette([nodeSpec]));
 
     controller.validate();
 
@@ -1339,7 +1312,15 @@ describe("validate", () => {
       ],
     };
     controller.open(pipeline);
-    controller.setNodes([{ op: "no-props", description: "", label: "" }]);
+    controller.setPalette(
+      createPalette([
+        {
+          op: "no-props",
+          description: "",
+          label: "",
+        },
+      ])
+    );
 
     controller.validate();
 

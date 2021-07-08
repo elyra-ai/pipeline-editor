@@ -18,7 +18,12 @@ import { PropertiesPanel, Message } from "./PropertiesPanel";
 
 interface Props {
   selectedNodes?: any[];
-  nodes: any[];
+  nodes: {
+    op: string;
+    app_data: {
+      properties?: any;
+    };
+  }[];
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
   onChange?: (nodeID: string, data: any) => any;
@@ -56,9 +61,9 @@ function NodeProperties({
     );
   }
 
-  const nodePropertiesSchema = nodes.find((n: any) => n.op === selectedNode.op);
+  const nodePropertiesSchema = nodes.find((n) => n.op === selectedNode.op);
 
-  if (nodePropertiesSchema === undefined) {
+  if (nodePropertiesSchema?.app_data.properties === undefined) {
     return (
       <Message>This node type doesn't have any editable properties.</Message>
     );
@@ -68,7 +73,7 @@ function NodeProperties({
     <PropertiesPanel
       currentProperties={selectedNode.app_data}
       onPropertiesUpdateRequested={onPropertiesUpdateRequested}
-      propertiesSchema={nodePropertiesSchema}
+      propertiesSchema={nodePropertiesSchema.app_data.properties}
       onFileRequested={onFileRequested}
       onChange={(data: any) => {
         onChange?.(selectedNode.id, data);

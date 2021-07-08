@@ -17,8 +17,16 @@
 import userEvent from "@testing-library/user-event";
 import { IntlProvider } from "react-intl";
 
-import { render, screen, nodeSpec, selectedNode } from "../test-utils";
+import {
+  render,
+  screen,
+  nodeSpec,
+  selectedNode,
+  createPalette,
+} from "../test-utils";
 import NodeProperties from "./NodeProperties";
+
+const nodes = createPalette([nodeSpec]).categories![0].node_types![0];
 
 it("renders with undefined nodes selected", () => {
   const { container } = render(<NodeProperties nodes={[]} />);
@@ -66,7 +74,7 @@ it("renders if selected node op isn't defined in schema", () => {
 it("renders common properties with one node selected", () => {
   render(
     <IntlProvider locale="en">
-      <NodeProperties nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
+      <NodeProperties nodes={[nodes]} selectedNodes={[selectedNode]} />
     </IntlProvider>
   );
   expect(screen.getByLabelText(/properties/i)).toBeInTheDocument();
@@ -77,7 +85,7 @@ it("calls onFileRequested when a browse button is pressed", async () => {
   render(
     <IntlProvider locale="en">
       <NodeProperties
-        nodes={[nodeSpec]}
+        nodes={[nodes]}
         selectedNodes={[selectedNode]}
         onFileRequested={handleFileRequested}
       />
@@ -97,7 +105,7 @@ it("calls onFileRequested when a browse button is pressed", async () => {
 it("doesn't crash when a browse button is pressed and onFileRequested is undefined", async () => {
   render(
     <IntlProvider locale="en">
-      <NodeProperties nodes={[nodeSpec]} selectedNodes={[selectedNode]} />
+      <NodeProperties nodes={[nodes]} selectedNodes={[selectedNode]} />
     </IntlProvider>
   );
   userEvent.click(screen.getByText(/browse/i));
@@ -108,7 +116,7 @@ it("calls onChange when a field changes", async () => {
   render(
     <IntlProvider locale="en">
       <NodeProperties
-        nodes={[nodeSpec]}
+        nodes={[nodes]}
         selectedNodes={[selectedNode]}
         onChange={handleChange}
       />
