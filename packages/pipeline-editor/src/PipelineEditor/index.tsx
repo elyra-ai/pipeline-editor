@@ -511,6 +511,17 @@ const PipelineEditor = forwardRef(
           });
         }
 
+        if (e.editType === "createNode") {
+          const nodeDef = controller.current
+            .getAllPaletteNodes()
+            .find((n) => n.op === e.newNode?.op);
+          if (nodeDef?.app_data.properties?.current_parameters) {
+            e.newNode.app_data = {
+              ...nodeDef?.app_data.properties?.current_parameters,
+            };
+          }
+        }
+
         // Catch any events where a save isn't necessary.
         switch (e.editType) {
           case "properties":
