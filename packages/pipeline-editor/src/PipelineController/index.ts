@@ -125,13 +125,6 @@ class PipelineController extends CanvasController {
       pipelineId: item.pipelineId,
     };
 
-    const nodeDef = this.getAllPaletteNodes().find((n) => n.op === item.op);
-    if (nodeDef?.app_data.properties?.current_parameters) {
-      data.nodeTemplate.app_data = {
-        ...nodeDef?.app_data.properties?.current_parameters,
-      };
-    }
-
     if (item.path) {
       data.nodeTemplate.app_data.filename = item.path;
       const properties = await item.onPropertiesUpdateRequested?.({
