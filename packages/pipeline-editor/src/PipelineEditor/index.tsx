@@ -216,14 +216,14 @@ const PipelineEditor = forwardRef(
     useImperativeHandle(
       ref,
       () => ({
-        addFile: async (item: any) => {
-          await controller.current.addNode({
-            ...item,
-            onPropertiesUpdateRequested,
+        addFile: async (payload: any) => {
+          controller.current.editActionHandler({
+            editType: "createNode",
+            payload,
           });
         },
       }),
-      [onPropertiesUpdateRequested]
+      []
     );
 
     const handleContextMenu = useCallback(
@@ -459,6 +459,40 @@ const PipelineEditor = forwardRef(
       [leftPalette]
     );
 
+    const handleBeforeEditAction = useCallback(
+      (e: CanvasEditEvent) => {
+        if (e.editType === "createNode" && e.finalized === true) {
+          delete e.finalized;
+          return e;
+        }
+
+        if (e.editType === "createNode") {
+          if (e.payload !== undefined) {
+            // the edit was created by elyra, pass directly to addNode
+            controller.current.addNode({
+              ...e.payload,
+              onPropertiesUpdateRequested,
+            });
+          } else {
+            // the edit was created by canvas, reconstruct and pass to addNode
+            controller.current.addNode({
+              op: e.nodeTemplate.op,
+              x: e.offsetX,
+              y: e.offsetY,
+              pipelineId: e.pipelineId,
+              onPropertiesUpdateRequested,
+            });
+          }
+
+          // cancel the edit until we finalize properties.
+          return null;
+        }
+
+        return e;
+      },
+      [onPropertiesUpdateRequested]
+    );
+
     const handleEditAction = useCallback(
       async (e: CanvasEditEvent) => {
         let payload;
@@ -481,13 +515,15 @@ const PipelineEditor = forwardRef(
           );
 
           if (node !== undefined) {
-            controller.current.addNode({
-              op: node.op,
-              path: file,
-              pipelineId: e.pipelineId,
-              offsetX: e.mousePos.x,
-              offsetY: e.mousePos.y,
-              onPropertiesUpdateRequested,
+            controller.current.editActionHandler({
+              editType: "createNode",
+              payload: {
+                op: node.op,
+                path: file,
+                pipelineId: e.pipelineId,
+                offsetX: e.mousePos.x,
+                offsetY: e.mousePos.y,
+              },
             });
           }
         }
@@ -502,24 +538,15 @@ const PipelineEditor = forwardRef(
         }
 
         if (e.editType === "createExternalNode") {
-          controller.current.addNode({
-            op: e.op,
-            x: e.offsetX,
-            y: e.offsetY,
-            pipelineId: e.pipelineId,
-            onPropertiesUpdateRequested,
+          controller.current.editActionHandler({
+            editType: "createNode",
+            payload: {
+              op: e.op,
+              x: e.offsetX,
+              y: e.offsetY,
+              pipelineId: e.pipelineId,
+            },
           });
-        }
-
-        if (e.editType === "createNode") {
-          const nodeDef = controller.current
-            .getAllPaletteNodes()
-            .find((n) => n.op === e.newNode?.op);
-          if (nodeDef?.app_data.properties?.current_parameters) {
-            e.newNode.app_data = {
-              ...nodeDef?.app_data.properties?.current_parameters,
-            };
-          }
         }
 
         // Catch any events where a save isn't necessary.
@@ -535,7 +562,7 @@ const PipelineEditor = forwardRef(
 
         onChange?.(controller.current.getPipelineFlow());
       },
-      [onAction, onChange, onFileRequested, onPropertiesUpdateRequested]
+      [onAction, onChange, onFileRequested]
     );
 
     const handlePropertiesChange = useCallback(
@@ -679,6 +706,7 @@ const PipelineEditor = forwardRef(
                 canvasController={controller.current}
                 contextMenuHandler={handleContextMenu}
                 clickActionHandler={handleClickAction}
+                beforeEditActionHandler={handleBeforeEditAction}
                 editActionHandler={handleEditAction}
                 selectionChangeHandler={handleSelectionChange}
                 tipHandler={handleTooltip}
