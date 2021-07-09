@@ -22,7 +22,7 @@ interface Props {
   selectedNodes?: any[];
   nodes: {
     op: string;
-    label: string;
+    label?: string;
     app_data: {
       properties?: any;
     };

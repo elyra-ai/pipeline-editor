@@ -2409,6 +2409,10 @@ declare module "@elyra/canvas" {
        */
       type: "execution_node";
       /**
+       * Label used for displaying node
+       */
+      label?: string;
+      /**
        * Operator type identifier
        */
       op: string;
