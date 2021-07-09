@@ -77,6 +77,7 @@ it("renders common properties with one node selected", () => {
       <NodeProperties nodes={[nodes]} selectedNodes={[selectedNode]} />
     </IntlProvider>
   );
+  expect(screen.getByText(/notebook label/i)).toBeInTheDocument();
   expect(screen.getByLabelText(/properties/i)).toBeInTheDocument();
 });
 

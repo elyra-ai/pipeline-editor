@@ -1073,7 +1073,7 @@ describe("resetStyles", () => {
 
     const flow = controller.getPipelineFlow();
     expect(flow.pipelines[0].nodes[0].app_data?.ui_data?.label).toBe(
-      "Notebook"
+      "Notebook Label"
     );
   });
 
