@@ -116,8 +116,8 @@ class PipelineController extends CanvasController {
 
   async addNode(item: {
     op: string;
-    x: number;
-    y: number;
+    x?: number;
+    y?: number;
     pipelineId?: string;
     path?: string;
     onPropertiesUpdateRequested?(options: { filename: string }): Promise<any>;
