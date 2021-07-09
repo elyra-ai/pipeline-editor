@@ -1,21 +1,24 @@
 /*
  * Copyright 2018-2021 Elyra Authors
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
 const hasAppdataField = (node: any, fieldName: string): boolean => {
-  return !!node.app_data && !!node.app_data[fieldName];
+  return (
+    Object.prototype.hasOwnProperty.call(node, "app_data") &&
+    Object.prototype.hasOwnProperty.call(node["app_data"], fieldName)
+  );
 };
 
 const deleteAppdataField = (node: any, fieldName: string): void => {
@@ -42,7 +45,13 @@ function migrate(pipeline: any) {
   deleteAppdataField(pipeline.pipelines[0], "export_path");
 
   for (const node of pipeline.pipelines[0].nodes) {
+    if (node.type === "pipeline_node") {
+      node.type = "execution_node";
+    }
+    node.op = "execute-notebook-node";
+    renameAppdataField(node, "notebook", "filename");
     renameAppdataField(node, "artifact", "filename");
+    renameAppdataField(node, "docker_image", "runtime_image");
     renameAppdataField(node, "image", "runtime_image");
     renameAppdataField(node, "vars", "env_vars");
     renameAppdataField(node, "file_dependencies", "dependencies");
@@ -53,7 +62,7 @@ function migrate(pipeline: any) {
     );
   }
 
-  pipeline.pipelines[0]["app_data"]["version"] = 1;
+  pipeline.pipelines[0].app_data.version = 1;
   return pipeline;
 }
 

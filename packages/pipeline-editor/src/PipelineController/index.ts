@@ -24,7 +24,7 @@ import {
 } from "./../errors";
 import { getFileName } from "./utils";
 
-export const PIPELINE_CURRENT_VERSION = 4;
+export const PIPELINE_CURRENT_VERSION = 3;
 
 // TODO: Experiment with pipeline editor settings.
 const SHOW_EXTENSIONS = true;
