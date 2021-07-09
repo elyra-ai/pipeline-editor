@@ -15,8 +15,8 @@
  */
 
 // NOTE: technically a pipeline can have a missing app_data field however, if
-// this is really an Elyra v2 pipeline, it should be guaranteed to have app_data
-// otherwise we wouldn't know this is a v2 pipeline.
+// this is really an Elyra v3 pipeline, it should be guaranteed to have app_data
+// otherwise we wouldn't know this is a v3 pipeline.
 function migrate(pipeline: any) {
   // No-Op this is to disable old versions of Elyra
   // to see a pipeline with Python Script nodes

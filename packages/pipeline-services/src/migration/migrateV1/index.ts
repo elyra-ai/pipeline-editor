@@ -14,46 +14,46 @@
  * limitations under the License.
  */
 
-function migrate(pipeline: any) {
-  if (pipeline.pipelines[0].app_data) {
-    // title -> name
-    pipeline.pipelines[0].app_data.name = pipeline.pipelines[0].app_data.title;
-    delete pipeline.pipelines[0].app_data.title;
+const hasAppdataField = (node: any, fieldName: string): boolean => {
+  return !!node.app_data && !!node.app_data[fieldName];
+};
 
-    delete pipeline.pipelines[0].app_data.export;
-    delete pipeline.pipelines[0].app_data.export_format;
-    delete pipeline.pipelines[0].app_data.export_path;
-
-    pipeline.pipelines[0].app_data.version = 1;
-  } else {
-    pipeline.pipelines[0].app_data = { version: 1 };
+const deleteAppdataField = (node: any, fieldName: string): void => {
+  if (hasAppdataField(node, fieldName)) {
+    delete node.app_data[fieldName];
   }
+};
+
+const renameAppdataField = (
+  node: any,
+  currentFieldName: string,
+  newFieldName: string
+): void => {
+  if (hasAppdataField(node, currentFieldName)) {
+    node.app_data[newFieldName] = node.app_data[currentFieldName];
+    deleteAppdataField(node, currentFieldName);
+  }
+};
+
+function migrate(pipeline: any) {
+  renameAppdataField(pipeline.pipelines[0], "title", "name");
+  deleteAppdataField(pipeline.pipelines[0], "export");
+  deleteAppdataField(pipeline.pipelines[0], "export_format");
+  deleteAppdataField(pipeline.pipelines[0], "export_path");
 
   for (const node of pipeline.pipelines[0].nodes) {
-    if (node.app_data === undefined) {
-      continue;
-    }
-    // artifact -> filename
-    node.app_data.filename = node.app_data.artifact;
-    delete node.app_data.artifact;
-
-    // image -> runtime_image
-    node.app_data.runtime_image = node.app_data.image;
-    delete node.app_data.image;
-
-    // vars -> env_vars
-    node.app_data.env_vars = node.app_data.vars;
-    delete node.app_data.vars;
-
-    // file_dependencies -> dependencies
-    node.app_data.dependencies = node.app_data.file_dependencies;
-    delete node.app_data.file_dependencies;
-
-    // recursive_dependencies -> include_subdirectories
-    node.app_data.include_subdirectories = node.app_data.recursive_dependencies;
-    delete node.app_data.recursive_dependencies;
+    renameAppdataField(node, "artifact", "filename");
+    renameAppdataField(node, "image", "runtime_image");
+    renameAppdataField(node, "vars", "env_vars");
+    renameAppdataField(node, "file_dependencies", "dependencies");
+    renameAppdataField(
+      node,
+      "recursive_dependencies",
+      "include_subdirectories"
+    );
   }
 
+  pipeline.pipelines[0]["app_data"]["version"] = 1;
   return pipeline;
 }
 
