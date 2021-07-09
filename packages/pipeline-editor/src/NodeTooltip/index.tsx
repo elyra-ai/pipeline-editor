@@ -20,6 +20,7 @@ import { hasValue, toPrettyString } from "./utils";
 
 interface Props {
   error?: string;
+  nodeLabel?: string;
   properties: {
     label: string;
     value: any;
@@ -46,7 +47,7 @@ const ErrorValue = styled(Value)`
   color: ${({ theme }) => theme.palette.text.error};
 `;
 
-function NodeTooltip({ error, properties }: Props) {
+function NodeTooltip({ error, nodeLabel, properties }: Props) {
   return (
     <Container>
       {error && (
@@ -55,6 +56,7 @@ function NodeTooltip({ error, properties }: Props) {
           <ErrorValue>{toPrettyString(error)}</ErrorValue>
         </div>
       )}
+      <Key>{nodeLabel}</Key>
       {properties
         .filter(({ value }) => hasValue(value))
         .map(({ label, value }) => (

@@ -84,7 +84,7 @@ function NodeProperties({
 
   return (
     <div>
-      <Heading> {nodePropertiesSchema.label} </Heading>
+      <Heading>{nodePropertiesSchema.label}</Heading>
       <PropertiesPanel
         currentProperties={selectedNode.app_data}
         onPropertiesUpdateRequested={onPropertiesUpdateRequested}
