@@ -108,6 +108,7 @@ it("should rename all node keys", () => {
               dependencies: "file_dependencies",
               include_subdirectories: "recursive_dependencies",
             },
+            op: "execute-notebook-node",
           },
         ],
       },
@@ -157,7 +158,11 @@ it("should handle missing app_data for nodes", () => {
           name: "title",
           version: 1,
         },
-        nodes: [{}],
+        nodes: [
+          {
+            op: "execute-notebook-node",
+          },
+        ],
       },
     ],
   };
