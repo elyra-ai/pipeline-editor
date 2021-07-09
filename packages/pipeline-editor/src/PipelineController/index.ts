@@ -114,11 +114,19 @@ class PipelineController extends CanvasController {
     throw new PipelineOutOfDateError();
   }
 
-  async addNode(item: any) {
+  async addNode(item: {
+    op: string;
+    x?: number;
+    y?: number;
+    pipelineId?: string;
+    path?: string;
+    onPropertiesUpdateRequested?(options: { filename: string }): Promise<any>;
+  }) {
     const nodeTemplate = this.getPaletteNode(item.op);
 
     const data = {
       editType: "createNode",
+      finalized: true,
       offsetX: item.x ?? 40,
       offsetY: item.y ?? 40,
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
