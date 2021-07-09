@@ -95,6 +95,10 @@ declare module "@elyra/canvas" {
       defaultMenu: ContextMenu
     ) => void;
     clickActionHandler?: (e: CanvasClickEvent) => void;
+    beforeEditActionHandler?: (
+      e: CanvasEditEvent,
+      command: string | null
+    ) => void;
     editActionHandler?: (e: CanvasEditEvent) => void;
     selectionChangeHandler?: (e: CanvasSelectionEvent) => void;
     tipHandler?: (tipType: string, e: TipEvent) => void;
