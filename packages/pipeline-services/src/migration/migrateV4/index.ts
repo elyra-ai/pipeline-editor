@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-export * from "./errors";
-export { default as ThemeProvider, createTheme } from "./ThemeProvider";
-export { default as PipelineEditor } from "./PipelineEditor";
-export { PIPELINE_CURRENT_VERSION } from "./PipelineController";
+// NOTE: technically a pipeline can have a missing app_data field however, if
+// this is really an Elyra v3 pipeline, it should be guaranteed to have app_data
+// otherwise we wouldn't know this is a v3 pipeline.
+function migrate(pipeline: any) {
+  // No-Op this is to disable old versions of Elyra
+  // to see a pipeline with Python Script nodes
+  pipeline.pipelines[0].app_data.version = 4;
+
+  return pipeline;
+}
+
+export default migrate;

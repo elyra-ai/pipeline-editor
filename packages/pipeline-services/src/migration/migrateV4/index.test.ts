@@ -14,7 +14,31 @@
  * limitations under the License.
  */
 
-export * from "./errors";
-export { default as ThemeProvider, createTheme } from "./ThemeProvider";
-export { default as PipelineEditor } from "./PipelineEditor";
-export { PIPELINE_CURRENT_VERSION } from "./PipelineController";
+import migrate from "./";
+
+it("should only bump version", () => {
+  const v3 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 3,
+        },
+        nodes: [],
+      },
+    ],
+  };
+  const expected = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 4,
+        },
+        nodes: [],
+      },
+    ],
+  };
+  const actual = migrate(v3);
+  expect(actual).toEqual(expected);
+});
