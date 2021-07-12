@@ -31,7 +31,7 @@ interface CustomNodeSpecification {
 export const nodeSpec: CustomNodeSpecification = {
   op: "execute-notebook-node",
   description: "Notebook file",
-  label: "Notebook",
+  label: "Notebook Label",
   extensions: [".ipynb"],
   image: undefined,
   properties: {
@@ -348,6 +348,7 @@ function createPalette(nodes: CustomNodeSpecification[]): PaletteV3 {
       op,
       description,
       id: "",
+      label: label,
       type: "execution_node",
       inputs: [
         {

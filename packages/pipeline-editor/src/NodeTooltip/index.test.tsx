@@ -19,10 +19,14 @@ import NodeTooltip from "./";
 
 it("renders one item", () => {
   const { container } = render(
-    <NodeTooltip properties={[{ label: "Label", value: "some value" }]} />
+    <NodeTooltip
+      properties={[{ label: "Label", value: "some value" }]}
+      nodeLabel="Component Type"
+    />
   );
   expect(container.firstChild).toHaveTextContent(/label/i);
   expect(container.firstChild).toHaveTextContent(/some value/i);
+  expect(container.firstChild).toHaveTextContent(/component type/i);
 });
 
 it("renders multiple items", () => {
@@ -32,11 +36,13 @@ it("renders multiple items", () => {
         { label: "Label", value: "some value" },
         { label: "Array", value: ["one", "two"] },
       ]}
+      nodeLabel="Component Type"
     />
   );
 
   expect(container.firstChild).toHaveTextContent(/label/i);
   expect(container.firstChild).toHaveTextContent(/some value/i);
+  expect(container.firstChild).toHaveTextContent(/component type/i);
 
   expect(container.firstChild).toHaveTextContent(/array/i);
   expect(container.firstChild).toHaveTextContent(/one/i);
@@ -45,11 +51,16 @@ it("renders multiple items", () => {
 
 it("renders with errors", () => {
   const { container } = render(
-    <NodeTooltip error="this is an error" properties={[]} />
+    <NodeTooltip
+      error="this is an error"
+      properties={[]}
+      nodeLabel="Component type"
+    />
   );
 
   expect(container.firstChild).toHaveTextContent(/error/i);
   expect(container.firstChild).toHaveTextContent(/this is an error/i);
+  expect(container.firstChild).toHaveTextContent(/component type/i);
 });
 
 it("renders with errors and properties", () => {

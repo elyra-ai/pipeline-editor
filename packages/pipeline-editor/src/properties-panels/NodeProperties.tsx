@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+import styled from "styled-components";
+
 import { PropertiesPanel, Message } from "./PropertiesPanel";
 
 interface Props {
   selectedNodes?: any[];
   nodes: {
     op: string;
+    label?: string;
     app_data: {
       properties?: any;
     };
@@ -28,6 +31,16 @@ interface Props {
   onPropertiesUpdateRequested?: (options: any) => any;
   onChange?: (nodeID: string, data: any) => any;
 }
+
+const Heading = styled.div`
+  margin-top: 14px;
+  padding: 0 47px;
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-size: 16px;
+  color: ${({ theme }) => theme.palette.text.primary};
+  opacity: 0.5;
+`;
 
 function NodeProperties({
   selectedNodes,
@@ -70,16 +83,19 @@ function NodeProperties({
   }
 
   return (
-    <PropertiesPanel
-      currentProperties={selectedNode.app_data}
-      onPropertiesUpdateRequested={onPropertiesUpdateRequested}
-      propertiesSchema={nodePropertiesSchema.app_data.properties}
-      onFileRequested={onFileRequested}
-      onChange={(data: any) => {
-        onChange?.(selectedNode.id, data);
-      }}
-      id={selectedNode.id}
-    />
+    <div>
+      <Heading>{nodePropertiesSchema.label}</Heading>
+      <PropertiesPanel
+        currentProperties={selectedNode.app_data}
+        onPropertiesUpdateRequested={onPropertiesUpdateRequested}
+        propertiesSchema={nodePropertiesSchema.app_data.properties}
+        onFileRequested={onFileRequested}
+        onChange={(data: any) => {
+          onChange?.(selectedNode.id, data);
+        }}
+        id={selectedNode.id}
+      />
+    </div>
   );
 }
 

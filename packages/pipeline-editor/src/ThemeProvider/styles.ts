@@ -198,10 +198,6 @@ export const CanvasOverrides = css`
     padding: 0;
   }
 
-  .properties-wrapper {
-    margin-top: 14px;
-  }
-
   .properties-editor-form
     .properties-control-panel
     > .properties-control-panel {

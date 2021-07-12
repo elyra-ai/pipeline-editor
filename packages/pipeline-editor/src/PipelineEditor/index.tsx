@@ -599,7 +599,16 @@ const PipelineEditor = forwardRef(
       if (isNodeTipEvent(tipType, e) && e.node.type === "execution_node") {
         const error = e.node.app_data.invalidNodeError;
         const properties = controller.current.properties(e.node.id);
-        return <NodeTooltip error={error} properties={properties} />;
+        const node = controller.current
+          .getAllPaletteNodes()
+          .find((n) => n.op === e.node.op);
+        return (
+          <NodeTooltip
+            error={error}
+            properties={properties}
+            nodeLabel={node?.label}
+          />
+        );
       }
       if (isNodeTipEvent(tipType, e) && e.node.type === "super_node") {
         // TODO: Can we can sub node errors propagated up?
