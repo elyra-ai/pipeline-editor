@@ -15,10 +15,7 @@
  */
 
 const hasAppdataField = (node: any, fieldName: string): boolean => {
-  return (
-    Object.prototype.hasOwnProperty.call(node, "app_data") &&
-    Object.prototype.hasOwnProperty.call(node["app_data"], fieldName)
-  );
+  return !!node.app_data && !!node.app_data.hasOwnProperty(fieldName);
 };
 
 const deleteAppdataField = (node: any, fieldName: string): void => {
