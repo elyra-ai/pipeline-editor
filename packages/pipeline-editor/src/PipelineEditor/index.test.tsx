@@ -81,7 +81,10 @@ it("can add node through imperative handle", async () => {
 
   expect(container.getElementsByClassName("d3-node-group")).toHaveLength(2);
 
-  await handle.addFile({ op: "execute-notebook-node", path: "example.ipynb" });
+  await handle.addFile({
+    nodeTemplate: { op: "execute-notebook-node" },
+    path: "example.ipynb",
+  });
 
   expect(container.getElementsByClassName("d3-node-group")).toHaveLength(3);
 });

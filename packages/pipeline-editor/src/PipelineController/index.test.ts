@@ -220,7 +220,12 @@ describe("addNode", () => {
     const editActionHandler = jest.fn();
     controller.editActionHandler = editActionHandler;
 
-    await controller.addNode({ op: "example-op", x: 15, y: 20 });
+    await controller.addNode({
+      editType: "createNode",
+      nodeTemplate: { op: "example-op" },
+      offsetX: 15,
+      offsetY: 20,
+    });
 
     expect(editActionHandler).toHaveBeenCalledTimes(1);
     expect(editActionHandler.mock.calls[0][0].offsetX).toBe(15);
@@ -242,7 +247,10 @@ describe("addNode", () => {
     const editActionHandler = jest.fn();
     controller.editActionHandler = editActionHandler;
 
-    await controller.addNode({ op: "example-op" });
+    await controller.addNode({
+      editType: "createNode",
+      nodeTemplate: { op: "example-op" },
+    });
 
     expect(editActionHandler).toHaveBeenCalledTimes(1);
     expect(editActionHandler.mock.calls[0][0].offsetX).toBe(40);
