@@ -68,6 +68,16 @@ interface Props {
 const READ_ONLY_NODE_SVG_PATH =
   "M 0 0 h 160 a 6 6 0 0 1 6 6 v 28 a 6 6 0 0 1 -6 6 h -160 a 6 6 0 0 1 -6 -6 v -28 a 6 6 0 0 1 6 -6 z";
 
+function isCreateNodeEvent(
+  e: CanvasEditEvent
+): e is {
+  editType: "createNode" | "createAutoNode";
+  nodeTemplate: { op: string };
+  finalized?: boolean;
+} {
+  return e.editType === "createNode" || e.editType === "createAutoNode";
+}
+
 function isMenuItemEnabled(menu: ContextMenu, action: string) {
   const item = menu.find((m) => {
     if (m.menu === undefined) {
@@ -219,7 +229,7 @@ const PipelineEditor = forwardRef(
         addFile: async (payload: any) => {
           controller.current.editActionHandler({
             editType: "createNode",
-            payload,
+            ...payload,
           });
         },
       }),
@@ -461,28 +471,17 @@ const PipelineEditor = forwardRef(
 
     const handleBeforeEditAction = useCallback(
       (e: CanvasEditEvent) => {
-        if (e.editType === "createNode" && e.finalized === true) {
+        if (isCreateNodeEvent(e) && e.finalized === true) {
           delete e.finalized;
           return e;
         }
 
-        if (e.editType === "createNode") {
-          if (e.payload !== undefined) {
-            // the edit was created by elyra, pass directly to addNode
-            controller.current.addNode({
-              ...e.payload,
-              onPropertiesUpdateRequested,
-            });
-          } else {
-            // the edit was created by canvas, reconstruct and pass to addNode
-            controller.current.addNode({
-              op: e.nodeTemplate.op,
-              x: e.offsetX,
-              y: e.offsetY,
-              pipelineId: e.pipelineId,
-              onPropertiesUpdateRequested,
-            });
-          }
+        if (isCreateNodeEvent(e)) {
+          // the edit was created by canvas, reconstruct and pass to addNode
+          controller.current.addNode({
+            ...e,
+            onPropertiesUpdateRequested,
+          });
 
           // cancel the edit until we finalize properties.
           return null;
@@ -517,13 +516,13 @@ const PipelineEditor = forwardRef(
           if (node !== undefined) {
             controller.current.editActionHandler({
               editType: "createNode",
-              payload: {
+              nodeTemplate: {
                 op: node.op,
-                path: file,
-                pipelineId: e.pipelineId,
-                offsetX: e.mousePos.x,
-                offsetY: e.mousePos.y,
               },
+              pipelineId: e.pipelineId,
+              offsetX: e.mousePos.x,
+              offsetY: e.mousePos.y,
+              path: file,
             });
           }
         }
@@ -540,12 +539,10 @@ const PipelineEditor = forwardRef(
         if (e.editType === "createExternalNode") {
           controller.current.editActionHandler({
             editType: "createNode",
-            payload: {
-              op: e.op,
-              x: e.offsetX,
-              y: e.offsetY,
-              pipelineId: e.pipelineId,
-            },
+            nodeTemplate: e.nodeTemplate,
+            offsetX: e.offsetX,
+            offsetY: e.offsetY,
+            pipelineId: e.pipelineId,
           });
         }
 

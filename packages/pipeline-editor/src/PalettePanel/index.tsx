@@ -110,7 +110,9 @@ function PalettePanel({ nodes }: Props) {
       operation: "addToCanvas",
       data: {
         editType: "createExternalNode",
-        op: node.op,
+        nodeTemplate: {
+          op: node.op,
+        },
       },
     };
 

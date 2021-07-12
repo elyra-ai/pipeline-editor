@@ -115,35 +115,47 @@ class PipelineController extends CanvasController {
   }
 
   async addNode(item: {
-    op: string;
-    x?: number;
-    y?: number;
+    editType: "createNode" | "createAutoNode";
+    nodeTemplate: {
+      op: string;
+    };
+    offsetX?: number;
+    offsetY?: number;
     pipelineId?: string;
     path?: string;
     onPropertiesUpdateRequested?(options: { filename: string }): Promise<any>;
+    [key: string]: any;
   }) {
-    const nodeTemplate = this.getPaletteNode(item.op);
+    const {
+      path,
+      onPropertiesUpdateRequested,
+      offsetX,
+      offsetY,
+      nodeTemplate: { op },
+      ...rest
+    } = item;
+
+    const nodeTemplate = this.getPaletteNode(op);
 
     const data = {
-      editType: "createNode",
+      ...rest,
       finalized: true,
-      offsetX: item.x ?? 40,
-      offsetY: item.y ?? 40,
+      offsetX: offsetX ?? 40,
+      offsetY: offsetY ?? 40,
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
-      pipelineId: item.pipelineId,
     };
 
-    const nodeDef = this.getAllPaletteNodes().find((n) => n.op === item.op);
+    const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
     if (nodeDef?.app_data.properties?.current_parameters) {
       data.nodeTemplate.app_data = {
         ...nodeDef?.app_data.properties?.current_parameters,
       };
     }
 
-    if (item.path) {
-      data.nodeTemplate.app_data.filename = item.path;
+    if (path) {
+      data.nodeTemplate.app_data.filename = path;
       const properties = await item.onPropertiesUpdateRequested?.({
-        filename: item.path,
+        filename: path,
       });
       data.nodeTemplate.app_data = {
         ...data.nodeTemplate.app_data,
