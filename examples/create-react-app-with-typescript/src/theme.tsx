@@ -39,6 +39,7 @@ const theme = createTheme({
     active: "rgba(255, 255, 255, 0.18)",
     tabBorder: "black",
     inputBorder: "transparent",
+    errorBorder: "#be1100",
     sash: "transparent",
     primary: {
       main: "blue",

@@ -25,6 +25,7 @@ export interface Theme {
     active: string;
     tabBorder: string;
     inputBorder: string;
+    errorBorder: string;
     sash: string;
     primary: {
       main: string;
