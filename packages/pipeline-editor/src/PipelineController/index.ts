@@ -160,8 +160,8 @@ class PipelineController extends CanvasController {
           filename: path,
         });
         data.nodeTemplate.app_data = {
-          ...properties,
           ...data.nodeTemplate.app_data,
+          ...properties,
         };
       }
     }

@@ -19,7 +19,7 @@ import {
   InvalidPipelineError,
   ElyraOutOfDateError,
 } from "../errors";
-import { createPalette, nodeSpec } from "../test-utils";
+import { createPalette, nodeSpec, samplePalette } from "../test-utils";
 import PipelineController, {
   PIPELINE_CURRENT_VERSION,
   isPipelineFlowV3,
@@ -259,74 +259,7 @@ describe("addNode", () => {
 
   it("adds a node with app_data prefilled", async () => {
     const controller = new PipelineController();
-    controller.setPalette({
-      version: "3.0",
-      categories: [
-        {
-          label: "Nodes",
-          image: "",
-          id: "nodes",
-          description: "Nodes",
-          node_types: [
-            {
-              op: "example-op",
-              description: "",
-              id: "",
-              type: "execution_node",
-              inputs: [
-                {
-                  id: "inPort",
-                  app_data: {
-                    ui_data: {
-                      cardinality: {
-                        min: 0,
-                        max: -1,
-                      },
-                      label: "Input Port",
-                    },
-                  },
-                },
-              ],
-              outputs: [
-                {
-                  id: "outPort",
-                  app_data: {
-                    ui_data: {
-                      cardinality: {
-                        min: 0,
-                        max: -1,
-                      },
-                      label: "Output Port",
-                    },
-                  },
-                },
-              ],
-              parameters: {},
-              app_data: {
-                properties: {
-                  current_parameters: {
-                    stringExample: "is-set",
-                    emptyArrayExample: [],
-                    emptyObjectExample: {},
-                    trueExample: true,
-                    falseExample: false,
-                    undefinedExample: undefined,
-                    nullExample: null,
-                  },
-                },
-                ui_data: {
-                  description: "",
-                  label: "",
-                  image: "",
-                  x_pos: 0,
-                  y_pos: 0,
-                },
-              },
-            },
-          ],
-        },
-      ],
-    });
+    controller.setPalette(samplePalette);
 
     const editActionHandler = jest.fn();
     // Note: our beforeEditActionHandler won't do it's processing
@@ -341,6 +274,38 @@ describe("addNode", () => {
     expect(editActionHandler.mock.calls[0][0].nodeTemplate.app_data).toEqual({
       stringExample: "is-set",
       emptyArrayExample: [],
+      emptyObjectExample: {},
+      trueExample: true,
+      falseExample: false,
+      undefinedExample: undefined,
+      nullExample: null,
+    });
+  });
+
+  it("adds a node with properties update request", async () => {
+    const controller = new PipelineController();
+    controller.setPalette(samplePalette);
+
+    const editActionHandler = jest.fn();
+    // Note: our beforeEditActionHandler won't do it's processing
+    controller.editActionHandler = editActionHandler;
+
+    await controller.addNode({
+      editType: "createNode",
+      nodeTemplate: { op: "example-op" },
+      path: "fake.py",
+      onPropertiesUpdateRequested: () => {
+        return new Promise((resolve) => {
+          resolve({ emptyArrayExample: ["one", "two", "three"] });
+        });
+      },
+    });
+
+    expect(editActionHandler).toHaveBeenCalledTimes(1);
+    expect(editActionHandler.mock.calls[0][0].nodeTemplate.app_data).toEqual({
+      filename: "fake.py",
+      stringExample: "is-set",
+      emptyArrayExample: ["one", "two", "three"],
       emptyObjectExample: {},
       trueExample: true,
       falseExample: false,

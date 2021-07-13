@@ -19,6 +19,75 @@ import { render as rtlRender } from "@testing-library/react";
 
 import { InternalThemeProvider } from "./ThemeProvider";
 
+export const samplePalette = {
+  version: "3.0",
+  categories: [
+    {
+      label: "Nodes",
+      image: "",
+      id: "nodes",
+      description: "Nodes",
+      node_types: [
+        {
+          op: "example-op",
+          description: "",
+          id: "",
+          type: "execution_node",
+          inputs: [
+            {
+              id: "inPort",
+              app_data: {
+                ui_data: {
+                  cardinality: {
+                    min: 0,
+                    max: -1,
+                  },
+                  label: "Input Port",
+                },
+              },
+            },
+          ],
+          outputs: [
+            {
+              id: "outPort",
+              app_data: {
+                ui_data: {
+                  cardinality: {
+                    min: 0,
+                    max: -1,
+                  },
+                  label: "Output Port",
+                },
+              },
+            },
+          ],
+          parameters: {},
+          app_data: {
+            properties: {
+              current_parameters: {
+                stringExample: "is-set",
+                emptyArrayExample: [],
+                emptyObjectExample: {},
+                trueExample: true,
+                falseExample: false,
+                undefinedExample: undefined,
+                nullExample: null,
+              },
+            },
+            ui_data: {
+              description: "",
+              label: "",
+              image: "",
+              x_pos: 0,
+              y_pos: 0,
+            },
+          },
+        },
+      ],
+    },
+  ],
+};
+
 interface CustomNodeSpecification {
   op: string;
   label: string;
