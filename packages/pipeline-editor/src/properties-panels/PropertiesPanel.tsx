@@ -77,7 +77,12 @@ export function PropertiesPanel({
       }}
       callbacks={{
         actionHandler: async (id: string, _appData: any, data: any) => {
-          const { filename } = controller.current.getPropertyValues();
+          const {
+            component_parameters,
+          } = controller.current.getPropertyValues();
+
+          // TODO: nick - use component_parameters[filehandler_parameter_ref]
+          const filename = component_parameters.filename;
           switch (id) {
             case "browse_file":
               return await onFileRequested?.({

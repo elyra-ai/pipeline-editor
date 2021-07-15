@@ -314,8 +314,12 @@ const PipelineEditor = forwardRef(
                   // NOTE: This only checks if the string is empty, but we
                   // should verify the file exists.
                   enable:
-                    e.targetObject?.app_data?.filename !== undefined &&
-                    e.targetObject?.app_data?.filename.trim() !== "",
+                    // TODO: nick - use component_parameters[filehandler_parameter_ref]
+                    e.targetObject?.app_data?.component_parameters?.filename !==
+                      undefined &&
+                    // TODO: nick - use component_parameters[filehandler_parameter_ref]
+                    e.targetObject?.app_data?.component_parameters?.filename.trim() !==
+                      "",
                 },
                 {
                   action: "properties",
@@ -496,7 +500,8 @@ const PipelineEditor = forwardRef(
       async (e: CanvasEditEvent) => {
         let payload;
         if (e.editType === "openFile") {
-          payload = e.targetObject?.app_data?.filename;
+          // TODO: nick - use component_parameters[filehandler_parameter_ref]
+          payload = e.targetObject?.app_data?.component_parameters?.filename;
         }
         onAction?.({ type: e.editType, payload });
 

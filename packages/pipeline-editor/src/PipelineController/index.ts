@@ -154,7 +154,7 @@ class PipelineController extends CanvasController {
 
     if (path) {
       // TODO: nick - use component_parameters[filehander_parameter_ref]
-      data.nodeTemplate.app_data.filename = path;
+      data.nodeTemplate.app_data.component_parameters.filename = path;
 
       if (typeof onPropertiesUpdateRequested === "function") {
         const properties = await onPropertiesUpdateRequested({
@@ -309,13 +309,18 @@ class PipelineController extends CanvasController {
 
         let newLabel = nodeDef.app_data.ui_data?.label;
         if (
-          typeof node.app_data!.filename === "string" &&
-          node.app_data!.filename !== ""
+          // TODO: nick - use component_parameters[filehandler_parameter_ref]
+          typeof node.app_data!.component_parameters!.filename === "string" &&
+          // TODO: nick - use component_parameters[filehandler_parameter_ref]
+          node.app_data!.component_parameters!.filename !== ""
         ) {
           // TODO: nick - use component_parameters[filehandler_parameter_ref]
-          newLabel = getFileName(node.app_data!.filename, {
-            withExtension: SHOW_EXTENSIONS,
-          });
+          newLabel = getFileName(
+            node.app_data!.component_parameters!.filename,
+            {
+              withExtension: SHOW_EXTENSIONS,
+            }
+          );
         }
 
         if (
