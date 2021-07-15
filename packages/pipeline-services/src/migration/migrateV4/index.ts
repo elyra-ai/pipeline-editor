@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-// NOTE: technically a pipeline can have a missing app_data field however, if
-// this is really an Elyra v3 pipeline, it should be guaranteed to have app_data
-// otherwise we wouldn't know this is a v3 pipeline.
 function migrate(pipeline: any) {
-  // No-Op this is to disable old versions of Elyra
-  // to see a pipeline with Python Script nodes
+  for (const node of pipeline.pipelines[0].nodes) {
+    node.app_data = {
+      label: node.app_data.ui_data?.label ?? "",
+      component_parameters: node.app_data,
+      ui_data: node.app_data.ui_data,
+    };
+    delete node.app_data.component_parameters.ui_data;
+  }
+
   pipeline.pipelines[0].app_data.version = 4;
 
   return pipeline;
