@@ -18,7 +18,13 @@ import { parseTree, findNodeAtLocation } from "jsonc-parser";
 
 import checkCircularReferences from "./check-circular-references";
 import { PartialProblem, Problem } from "./types";
-import { findNode, getLinks, getNodes, rangeForLocation } from "./utils";
+import {
+  findNode,
+  getLinks,
+  getNodes,
+  getValue,
+  rangeForLocation,
+} from "./utils";
 
 export function getLinkProblems(pipeline: any) {
   const links = getLinks(pipeline);
@@ -71,7 +77,8 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       // otherwise we would need to check strings for undefined or empty string
       // NOTE: 0 is also falsy, but we don't have any number inputs right now?
       // TODO: We should update this to do type checking.
-      if (prop.data?.required && !node.app_data[prop.parameter_ref]) {
+      const value = getValue(node.app_data, prop.parameter_ref);
+      if (prop.data?.required && !value) {
         problems.push({
           message: `The property '${prop.label.default}' on node '${node.app_data.ui_data.label}' is required.`,
           path,
@@ -79,7 +86,7 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
             type: "missingProperty",
             pipelineID: pipeline.id,
             nodeID: node.id,
-            property: prop.parameter_ref,
+            property: prop.parameter_ref.replace(/^elyra_/, ""),
           },
         });
       }

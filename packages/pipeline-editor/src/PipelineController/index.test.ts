@@ -272,6 +272,7 @@ describe("addNode", () => {
 
     expect(editActionHandler).toHaveBeenCalledTimes(1);
     expect(editActionHandler.mock.calls[0][0].nodeTemplate.app_data).toEqual({
+      component_parameters: {},
       stringExample: "is-set",
       emptyArrayExample: [],
       emptyObjectExample: {},
@@ -303,6 +304,7 @@ describe("addNode", () => {
 
     expect(editActionHandler).toHaveBeenCalledTimes(1);
     expect(editActionHandler.mock.calls[0][0].nodeTemplate.app_data).toEqual({
+      component_parameters: {},
       filename: "fake.py",
       stringExample: "is-set",
       emptyArrayExample: ["one", "two", "three"],

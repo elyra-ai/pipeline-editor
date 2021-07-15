@@ -22,7 +22,7 @@ import {
   PipelineOutOfDateError,
   InvalidPipelineError,
 } from "./../errors";
-import { getFileName } from "./utils";
+import { getFileName, prefixedToNested } from "./utils";
 
 export const PIPELINE_CURRENT_VERSION = 3;
 
@@ -148,8 +148,7 @@ class PipelineController extends CanvasController {
     const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
     if (nodeDef?.app_data.properties?.current_parameters) {
       data.nodeTemplate.app_data = {
-        // TODO: nick - map elyra_ to component_parameters
-        ...nodeDef.app_data.properties.current_parameters,
+        ...prefixedToNested(nodeDef.app_data.properties.current_parameters),
       };
     }
 
@@ -161,10 +160,24 @@ class PipelineController extends CanvasController {
         const properties = await onPropertiesUpdateRequested({
           filename: path,
         });
+
+        const {
+          component_parameters: oldComponentParameters,
+          ...oldAppData
+        } = data.nodeTemplate.app_data;
+
+        const {
+          component_parameters: newComponentParameters,
+          ...newAppData
+        } = properties;
+
         data.nodeTemplate.app_data = {
-          // TODO: nick - these will need to be merged seperately
-          ...data.nodeTemplate.app_data,
-          ...properties,
+          ...oldAppData,
+          ...newAppData,
+          component_parameters: {
+            ...oldComponentParameters,
+            ...newComponentParameters,
+          },
         };
       }
     }
@@ -526,3 +539,4 @@ class PipelineController extends CanvasController {
 }
 
 export default PipelineController;
+export { nestedToPrefixed, prefixedToNested } from "./utils";
