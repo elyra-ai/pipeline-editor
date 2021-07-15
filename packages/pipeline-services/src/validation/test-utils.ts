@@ -19,27 +19,39 @@ export const nodeSpec = {
   app_data: {
     properties: {
       current_parameters: {
-        filename: "",
-        runtime_image: "",
-        dependencies: [],
-        include_subdirectories: false,
-        env_vars: [],
-        outputs: [],
+        label: "",
+        elyra_filename: "",
+        elyra_runtime_image: "",
+        elyra_dependencies: [],
+        elyra_include_subdirectories: false,
+        elyra_env_vars: [],
+        elyra_outputs: [],
       },
       parameters: [
-        { id: "filename" },
-        { id: "runtime_image" },
-        { id: "dependencies" },
-        { id: "include_subdirectories" },
-        { id: "env_vars" },
-        { id: "outputs" },
+        { id: "label" },
+        { id: "elyra_filename" },
+        { id: "elyra_runtime_image" },
+        { id: "elyra_dependencies" },
+        { id: "elyra_include_subdirectories" },
+        { id: "elyra_env_vars" },
+        { id: "elyra_outputs" },
       ],
       uihints: {
         parameter_info: [
           {
             control: "custom",
             custom_control_id: "StringControl",
-            parameter_ref: "filename",
+            parameter_ref: "label",
+            label: { default: "Label" },
+            description: {
+              default: "The node label.",
+              placement: "on_panel",
+            },
+          },
+          {
+            control: "custom",
+            custom_control_id: "StringControl",
+            parameter_ref: "elyra_filename",
             label: { default: "File" },
             description: {
               default: "The path to the notebook file.",
@@ -53,7 +65,7 @@ export const nodeSpec = {
           {
             control: "custom",
             custom_control_id: "EnumControl",
-            parameter_ref: "runtime_image",
+            parameter_ref: "elyra_runtime_image",
             label: { default: "Runtime Image" },
             description: {
               default: "Docker image used as execution environment.",
@@ -69,7 +81,7 @@ export const nodeSpec = {
           {
             control: "custom",
             custom_control_id: "StringArrayControl",
-            parameter_ref: "dependencies",
+            parameter_ref: "elyra_dependencies",
             label: { default: "File Dependencies" },
             description: {
               default:
@@ -81,7 +93,7 @@ export const nodeSpec = {
           {
             control: "custom",
             custom_control_id: "BooleanControl",
-            parameter_ref: "include_subdirectories",
+            parameter_ref: "elyra_include_subdirectories",
             label: { default: "Include Subdirectories" },
             data: {
               description:
@@ -91,7 +103,7 @@ export const nodeSpec = {
           {
             control: "custom",
             custom_control_id: "StringArrayControl",
-            parameter_ref: "env_vars",
+            parameter_ref: "elyra_env_vars",
             label: { default: "Environment Variables" },
             description: {
               default:
@@ -103,7 +115,7 @@ export const nodeSpec = {
           {
             control: "custom",
             custom_control_id: "StringArrayControl",
-            parameter_ref: "outputs",
+            parameter_ref: "elyra_outputs",
             label: { default: "Output Files" },
             description: {
               default:
@@ -118,31 +130,40 @@ export const nodeSpec = {
             type: "panels",
             group_info: [
               {
-                id: "filename",
+                id: "label",
                 type: "controls",
-                parameter_refs: ["filename"],
+                parameter_refs: ["label"],
               },
               {
-                id: "runtime_image",
+                id: "elyra_filename",
                 type: "controls",
-                parameter_refs: ["runtime_image"],
+                parameter_refs: ["elyra_filename"],
               },
               {
-                id: "dependencies",
+                id: "elyra_runtime_image",
                 type: "controls",
-                parameter_refs: ["dependencies"],
+                parameter_refs: ["elyra_runtime_image"],
               },
               {
-                id: "include_subdirectories",
+                id: "elyra_dependencies",
                 type: "controls",
-                parameter_refs: ["include_subdirectories"],
+                parameter_refs: ["elyra_dependencies"],
               },
               {
-                id: "env_vars",
+                id: "elyra_include_subdirectories",
                 type: "controls",
-                parameter_refs: ["env_vars"],
+                parameter_refs: ["elyra_include_subdirectories"],
               },
-              { id: "outputs", type: "controls", parameter_refs: ["outputs"] },
+              {
+                id: "elyra_env_vars",
+                type: "controls",
+                parameter_refs: ["elyra_env_vars"],
+              },
+              {
+                id: "elyra_outputs",
+                type: "controls",
+                parameter_refs: ["elyra_outputs"],
+              },
             ],
           },
         ],

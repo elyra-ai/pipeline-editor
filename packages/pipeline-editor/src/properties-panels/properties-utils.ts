@@ -65,6 +65,7 @@ export function fillPropertiesWithSavedData(
   properties: PropertyDefinitions,
   appData: { [key: string]: any }
 ) {
+  // TODO: nick - component_parameters needs to be checked
   return produce(properties, (draftState) => {
     for (const [key, val] of Object.entries(appData)) {
       if (val !== undefined && val !== null) {

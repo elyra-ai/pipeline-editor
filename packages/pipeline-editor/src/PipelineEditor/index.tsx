@@ -566,6 +566,7 @@ const PipelineEditor = forwardRef(
       (nodeID, data) => {
         const pipeline = controller.current.findNodeParentPipeline(nodeID);
         if (pipeline !== undefined) {
+          // TODO: nick - convert properties syntax to pipeline syntax
           controller.current.setNodeProperties(
             nodeID,
             { app_data: data },

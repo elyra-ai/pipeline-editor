@@ -138,4 +138,38 @@ describe("fillPropertiesWithSavedData", () => {
       outputs: ["one", "two"],
     });
   });
+
+  it("handles elyra_ prefixed fields", () => {
+    const defaults = {
+      current_parameters: {
+        label: "",
+        elyra_filename: "",
+        elyra_runtime_image: "",
+        elyra_dependencies: [],
+        elyra_include_subdirectories: false,
+        elyra_env_vars: [],
+        elyra_outputs: [],
+      },
+    };
+    const result = fillPropertiesWithSavedData(defaults, {
+      label: "My Label",
+      component_parameters: {
+        filename: "example.ipynb",
+        runtime_image: "example/runtime",
+        dependencies: ["one"],
+        include_subdirectories: true,
+        env_vars: [],
+        outputs: ["one", "two"],
+      },
+    });
+    expect(result.current_parameters).toEqual({
+      label: "My Label",
+      elyra_filename: "example.ipynb",
+      elyra_runtime_image: "example/runtime",
+      elyra_dependencies: ["one"],
+      elyra_include_subdirectories: true,
+      elyra_env_vars: [],
+      elyra_outputs: ["one", "two"],
+    });
+  });
 });

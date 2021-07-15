@@ -148,11 +148,13 @@ class PipelineController extends CanvasController {
     const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
     if (nodeDef?.app_data.properties?.current_parameters) {
       data.nodeTemplate.app_data = {
+        // TODO: nick - map elyra_ to component_parameters
         ...nodeDef.app_data.properties.current_parameters,
       };
     }
 
     if (path) {
+      // TODO: nick - use component_parameters[filehander_parameter_ref]
       data.nodeTemplate.app_data.filename = path;
 
       if (typeof onPropertiesUpdateRequested === "function") {
@@ -160,6 +162,7 @@ class PipelineController extends CanvasController {
           filename: path,
         });
         data.nodeTemplate.app_data = {
+          // TODO: nick - these will need to be merged seperately
           ...data.nodeTemplate.app_data,
           ...properties,
         };
@@ -296,6 +299,7 @@ class PipelineController extends CanvasController {
           typeof node.app_data!.filename === "string" &&
           node.app_data!.filename !== ""
         ) {
+          // TODO: nick - use component_parameters[filehandler_parameter_ref]
           newLabel = getFileName(node.app_data!.filename, {
             withExtension: SHOW_EXTENSIONS,
           });
@@ -502,6 +506,13 @@ class PipelineController extends CanvasController {
       const info = nodeDef?.app_data.properties?.uihints?.parameter_info ?? [];
 
       const properties = info.map((i) => {
+        if (i.parameter_ref.startsWith("elyra_")) {
+          const strippedRef = i.parameter_ref.replace(/^elyra_/, "");
+          return {
+            label: i.label.default,
+            value: app_data?.component_parameters?.[strippedRef],
+          };
+        }
         return {
           label: i.label.default,
           value: app_data?.[i.parameter_ref],

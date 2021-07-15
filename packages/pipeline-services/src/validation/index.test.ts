@@ -217,8 +217,10 @@ describe("getNodeProblems", () => {
           type: "execution_node",
           op: "execute-notebook-node",
           app_data: {
-            filename: "",
-            runtime_image: "",
+            component_parameters: {
+              filename: "",
+              runtime_image: "",
+            },
             ui_data: {
               label: "Node 1",
             },
@@ -241,8 +243,10 @@ describe("getNodeProblems", () => {
           type: "execution_node",
           op: "execute-notebook-node",
           app_data: {
-            filename: "example.py",
-            runtime_image: "example/runtime:1.2.3",
+            component_parameters: {
+              filename: "example.py",
+              runtime_image: "example/runtime:1.2.3",
+            },
             ui_data: {
               label: "Node 1",
             },

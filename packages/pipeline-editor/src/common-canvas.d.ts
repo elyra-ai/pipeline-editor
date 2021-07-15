@@ -935,7 +935,11 @@ declare module "@elyra/canvas" {
           label?: string;
           [k: string]: unknown;
         }[];
+
         [k: string]: unknown;
+      };
+      component_parameters?: {
+        [k: string]: any;
       };
       [k: string]: unknown;
     };
