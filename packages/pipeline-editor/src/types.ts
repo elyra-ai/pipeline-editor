@@ -25,7 +25,6 @@ export interface Theme {
     active: string;
     tabBorder: string;
     inputBorder: string;
-    errorBorder: string;
     sash: string;
     primary: {
       main: string;
@@ -39,6 +38,11 @@ export interface Theme {
     error: {
       main: string;
       contrastText: string;
+    };
+    errorMessage: {
+      main: string;
+      contrastText: string;
+      errorBorder: string;
     };
     text: {
       icon: string;

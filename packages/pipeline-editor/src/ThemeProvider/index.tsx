@@ -33,7 +33,6 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
     active: "rgba(255, 255, 255, 0.18)",
     tabBorder: "#e7e7e7",
     inputBorder: "transparent",
-    errorBorder: "#be1100",
     sash: "transparent",
     primary: {
       main: "#4d78cc",
@@ -47,6 +46,11 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
     error: {
       main: "#be1100",
       contrastText: "#fff",
+    },
+    errorMessage: {
+      main: "#be1100",
+      contrastText: "#fff",
+      errorBorder: "#be1100",
     },
     text: {
       icon: "#c5c5c5",

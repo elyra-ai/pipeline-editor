@@ -39,7 +39,6 @@ const theme = createTheme({
     active: "rgba(255, 255, 255, 0.18)",
     tabBorder: "black",
     inputBorder: "transparent",
-    errorBorder: "#be1100",
     sash: "transparent",
     primary: {
       main: "blue",
@@ -53,6 +52,11 @@ const theme = createTheme({
     error: {
       main: "red",
       contrastText: "white",
+    },
+    errorMessage: {
+      main: "red",
+      contrastText: "white",
+      errorBorder: "darkred",
     },
     text: {
       icon: "black",
