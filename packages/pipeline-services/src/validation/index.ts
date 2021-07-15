@@ -86,7 +86,8 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
             type: "missingProperty",
             pipelineID: pipeline.id,
             nodeID: node.id,
-            property: prop.parameter_ref.replace(/^elyra_/, ""),
+            // do not strip elyra here, we need to differentiate between component_parameters still.
+            property: prop.parameter_ref,
           },
         });
       }

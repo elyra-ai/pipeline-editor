@@ -143,7 +143,7 @@ describe("getNodeProblems", () => {
     const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
     expect(problems).toHaveLength(1);
     expect(problems[0].info.type).toBe("missingProperty");
-    expect(problems[0].info.property).toBe("filename");
+    expect(problems[0].info.property).toBe("elyra_filename");
   });
 
   it("should have issues when required property has a default value and is empty", () => {
@@ -232,7 +232,7 @@ describe("getNodeProblems", () => {
     const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
     expect(problems).toHaveLength(1);
     expect(problems[0].info.type).toBe("missingProperty");
-    expect(problems[0].info.property).toBe("filename");
+    expect(problems[0].info.property).toBe("elyra_filename");
   });
 
   it("should return no problems if required properties are provided", () => {
