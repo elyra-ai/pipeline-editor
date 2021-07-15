@@ -65,11 +65,18 @@ export function fillPropertiesWithSavedData(
   properties: PropertyDefinitions,
   appData: { [key: string]: any }
 ) {
-  // TODO: nick - component_parameters needs to be checked
   return produce(properties, (draftState) => {
-    for (const [key, val] of Object.entries(appData)) {
+    const { component_parameters, ...system } = appData;
+    for (const [key, val] of Object.entries(system)) {
       if (val !== undefined && val !== null) {
         draftState.current_parameters![key] = val;
+      }
+    }
+    if (component_parameters) {
+      for (const [key, val] of Object.entries(component_parameters)) {
+        if (val !== undefined && val !== null) {
+          draftState.current_parameters![`elyra_${key}`] = val;
+        }
       }
     }
   });
