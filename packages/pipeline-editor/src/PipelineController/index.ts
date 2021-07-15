@@ -310,17 +310,14 @@ class PipelineController extends CanvasController {
         let newLabel = nodeDef.app_data.ui_data?.label;
         if (
           // TODO: nick - use component_parameters[filehandler_parameter_ref]
-          typeof node.app_data!.component_parameters!.filename === "string" &&
+          typeof node.app_data?.component_parameters?.filename === "string" &&
           // TODO: nick - use component_parameters[filehandler_parameter_ref]
-          node.app_data!.component_parameters!.filename !== ""
+          node.app_data?.component_parameters?.filename !== ""
         ) {
           // TODO: nick - use component_parameters[filehandler_parameter_ref]
-          newLabel = getFileName(
-            node.app_data!.component_parameters!.filename,
-            {
-              withExtension: SHOW_EXTENSIONS,
-            }
-          );
+          newLabel = getFileName(node.app_data.component_parameters.filename, {
+            withExtension: SHOW_EXTENSIONS,
+          });
         }
 
         if (

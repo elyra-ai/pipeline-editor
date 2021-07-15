@@ -99,7 +99,8 @@ it("calls onFileRequested when a browse button is pressed", async () => {
     defaultUri: "example.ipynb",
     filters: { File: undefined },
     filename: "example.ipynb",
-    propertyID: "filename",
+    // TODO: nick - not sure if this should be prefixed or not
+    propertyID: "elyra_filename",
   });
 });
 
