@@ -162,7 +162,7 @@ class PipelineController extends CanvasController {
       };
     }
 
-    const filenameRef = this.resolveParameterRef(op, "filehander");
+    const filenameRef = this.resolveParameterRef(op, "filehandler");
 
     if (path && filenameRef) {
       data.nodeTemplate.app_data.component_parameters[filenameRef] = path;
