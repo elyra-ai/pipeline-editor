@@ -24,7 +24,16 @@ it("should only bump version", () => {
           name: "name",
           version: 3,
         },
-        nodes: [],
+        nodes: [
+          {
+            app_data: {
+              filename: "notebook.ipynb",
+              ui_data: {
+                label: "node label",
+              },
+            },
+          },
+        ],
       },
     ],
   };
@@ -35,7 +44,19 @@ it("should only bump version", () => {
           name: "name",
           version: 4,
         },
-        nodes: [],
+        nodes: [
+          {
+            app_data: {
+              label: "node label",
+              component_parameters: {
+                filename: "notebook.ipynb",
+              },
+              ui_data: {
+                label: "node label",
+              },
+            },
+          },
+        ],
       },
     ],
   };

@@ -19,7 +19,7 @@ function migrate(pipeline: any) {
     node.app_data = {
       label: node.app_data.ui_data?.label ?? "",
       component_parameters: node.app_data,
-      ui_data: node.app_data.ui_data,
+      ui_data: node.app_data.ui_data ?? {},
     };
     delete node.app_data.component_parameters.ui_data;
   }

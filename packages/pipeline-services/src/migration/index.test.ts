@@ -39,7 +39,7 @@ it("should migrate v0 to latest", () => {
         Object {
           "app_data": Object {
             "name": "title",
-            "version": 3,
+            "version": 4,
           },
           "nodes": Array [],
         },
@@ -64,7 +64,7 @@ it("should migrate v0 to latest with missing app_data", () => {
       "pipelines": Array [
         Object {
           "app_data": Object {
-            "version": 3,
+            "version": 4,
           },
           "nodes": Array [],
         },
@@ -96,12 +96,16 @@ it("should migrate v1 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
-            "version": 3,
+            "version": 4,
           },
           "nodes": Array [
             Object {
               "app_data": Object {
-                "filename": "notebook.ipynb",
+                "component_parameters": Object {
+                  "filename": "notebook.ipynb",
+                },
+                "label": "",
+                "ui_data": Object {},
               },
             },
           ],
@@ -132,9 +136,60 @@ it("should migrate v2 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
-            "version": 3,
+            "version": 4,
           },
           "nodes": Array [],
+        },
+      ],
+    }
+  `);
+});
+
+it("should migrate v3 to latest", () => {
+  const v3 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 3,
+        },
+        nodes: [
+          {
+            app_data: {
+              filename: "notebook.ipynb",
+              ui_data: {
+                label: "node label",
+              },
+            },
+          },
+        ],
+      },
+    ],
+  };
+
+  const actual = migrate(v3);
+
+  expect(actual).toMatchInlineSnapshot(`
+    Object {
+      "pipelines": Array [
+        Object {
+          "app_data": Object {
+            "name": "name",
+            "version": 4,
+          },
+          "nodes": Array [
+            Object {
+              "app_data": Object {
+                "component_parameters": Object {
+                  "filename": "notebook.ipynb",
+                },
+                "label": "node label",
+                "ui_data": Object {
+                  "label": "node label",
+                },
+              },
+            },
+          ],
         },
       ],
     }
@@ -147,7 +202,7 @@ it("should do nothing for latest version", () => {
       {
         app_data: {
           name: "name",
-          version: 3,
+          version: 4,
         },
         nodes: [],
       },

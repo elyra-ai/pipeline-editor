@@ -64,7 +64,9 @@ export const samplePalette = {
           ],
           parameters: {},
           app_data: {
-            filehandler_parameter_ref: "filename",
+            parameter_refs: {
+              filehandler: "filename",
+            },
             properties: {
               current_parameters: {
                 stringExample: "is-set",
@@ -95,7 +97,7 @@ interface CustomNodeSpecification {
   label: string;
   description: string;
   extensions?: string[];
-  filehandler_parameter_ref?: string;
+  parameter_refs?: any;
   image?: string;
   properties?: any;
 }
@@ -105,7 +107,9 @@ export const nodeSpec: CustomNodeSpecification = {
   description: "Notebook file",
   label: "Notebook Label",
   extensions: [".ipynb"],
-  filehandler_parameter_ref: "filename",
+  parameter_refs: {
+    filehandler: "filename",
+  },
   image: undefined,
   properties: {
     current_parameters: {

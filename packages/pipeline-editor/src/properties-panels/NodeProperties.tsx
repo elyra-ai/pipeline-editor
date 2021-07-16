@@ -25,7 +25,9 @@ interface Props {
     label?: string;
     app_data: {
       properties?: any;
-      filehandler_parameter_ref?: string;
+      parameter_refs: {
+        filehandler?: string;
+      };
     };
   }[];
   onFileRequested?: (options: any) => any;
@@ -83,7 +85,7 @@ function NodeProperties({
     );
   }
 
-  const filenameRef = nodePropertiesSchema.app_data.filehandler_parameter_ref;
+  const filenameRef = nodePropertiesSchema.app_data.parameter_refs.filehandler;
 
   return (
     <div>

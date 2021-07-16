@@ -66,7 +66,7 @@ class PipelineController extends CanvasController {
       return undefined;
     }
 
-    return nodeDef.app_data[`${ref}_parameter_ref`] as string | undefined;
+    return nodeDef.app_data.parameter_refs?.[ref] as string | undefined;
   }
 
   open(pipelineJson: any) {

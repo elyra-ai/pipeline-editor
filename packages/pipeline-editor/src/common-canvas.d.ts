@@ -2981,6 +2981,9 @@ declare module "@elyra/canvas" {
           }[];
           [k: string]: unknown;
         };
+        parameter_refs: {
+          [k: string]: unknown;
+        };
         [k: string]: unknown;
       };
       // NOTE: Our palette only has execution_nodes, but this could change
