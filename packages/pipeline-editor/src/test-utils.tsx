@@ -17,6 +17,7 @@
 import { PaletteV3 } from "@elyra/canvas";
 import { render as rtlRender } from "@testing-library/react";
 
+import { PIPELINE_CURRENT_VERSION } from "./PipelineController";
 import { InternalThemeProvider } from "./ThemeProvider";
 
 export const samplePalette = {
@@ -413,7 +414,7 @@ export const samplePipeline = {
         ui_data: {
           comments: [],
         },
-        version: 3,
+        version: PIPELINE_CURRENT_VERSION,
       },
       runtime_ref: "",
     },
