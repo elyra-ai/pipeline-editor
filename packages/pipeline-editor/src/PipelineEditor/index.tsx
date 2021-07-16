@@ -307,6 +307,11 @@ const PipelineEditor = forwardRef(
             ];
           case "node":
             if (e.targetObject.type === "execution_node") {
+              const filenameRef = controller.current.resolveParameterRef(
+                e.targetObject.op,
+                "filehandler"
+              );
+              const parameters = e.targetObject.app_data?.component_parameters;
               return [
                 {
                   action: "openFile",
@@ -314,12 +319,9 @@ const PipelineEditor = forwardRef(
                   // NOTE: This only checks if the string is empty, but we
                   // should verify the file exists.
                   enable:
-                    // TODO: nick - use component_parameters[filehandler_parameter_ref]
-                    e.targetObject?.app_data?.component_parameters?.filename !==
-                      undefined &&
-                    // TODO: nick - use component_parameters[filehandler_parameter_ref]
-                    e.targetObject?.app_data?.component_parameters?.filename.trim() !==
-                      "",
+                    filenameRef &&
+                    parameters?.[filenameRef] !== undefined &&
+                    parameters?.[filenameRef].trim() !== "",
                 },
                 {
                   action: "properties",
@@ -500,8 +502,14 @@ const PipelineEditor = forwardRef(
       async (e: CanvasEditEvent) => {
         let payload;
         if (e.editType === "openFile") {
-          // TODO: nick - use component_parameters[filehandler_parameter_ref]
-          payload = e.targetObject?.app_data?.component_parameters?.filename;
+          const filenameRef = controller.current.resolveParameterRef(
+            e.targetObject.op,
+            "filehandler"
+          );
+          if (filenameRef) {
+            payload =
+              e.targetObject?.app_data?.component_parameters?.[filenameRef];
+          }
         }
         onAction?.({ type: e.editType, payload });
 

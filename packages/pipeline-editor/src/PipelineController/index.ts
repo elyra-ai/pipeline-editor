@@ -59,6 +59,16 @@ class PipelineController extends CanvasController {
   private palette: PaletteV3 = {};
   private lastOpened: PipelineFlowV3 | undefined;
 
+  resolveParameterRef(op: string, ref: string) {
+    const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
+
+    if (nodeDef === undefined) {
+      return undefined;
+    }
+
+    return nodeDef.app_data[`${ref}_parameter_ref`] as string | undefined;
+  }
+
   open(pipelineJson: any) {
     // if pipeline is undefined/null create a new one from scratch.
     if (pipelineJson === undefined || pipelineJson === null) {
@@ -152,9 +162,10 @@ class PipelineController extends CanvasController {
       };
     }
 
-    if (path) {
-      // TODO: nick - use component_parameters[filehander_parameter_ref]
-      data.nodeTemplate.app_data.component_parameters.filename = path;
+    const filenameRef = this.resolveParameterRef(op, "filehander");
+
+    if (path && filenameRef) {
+      data.nodeTemplate.app_data.component_parameters[filenameRef] = path;
 
       if (typeof onPropertiesUpdateRequested === "function") {
         const properties = await onPropertiesUpdateRequested({
@@ -308,14 +319,15 @@ class PipelineController extends CanvasController {
         }
 
         let newLabel = nodeDef.app_data.ui_data?.label;
+
+        const filenameRef = this.resolveParameterRef(node.op, "filehandler");
+        const parameters = node.app_data?.component_parameters;
         if (
-          // TODO: nick - use component_parameters[filehandler_parameter_ref]
-          typeof node.app_data?.component_parameters?.filename === "string" &&
-          // TODO: nick - use component_parameters[filehandler_parameter_ref]
-          node.app_data?.component_parameters?.filename !== ""
+          filenameRef &&
+          typeof parameters?.[filenameRef] === "string" &&
+          parameters?.[filenameRef] !== ""
         ) {
-          // TODO: nick - use component_parameters[filehandler_parameter_ref]
-          newLabel = getFileName(node.app_data.component_parameters.filename, {
+          newLabel = getFileName(parameters[filenameRef], {
             withExtension: SHOW_EXTENSIONS,
           });
         }
