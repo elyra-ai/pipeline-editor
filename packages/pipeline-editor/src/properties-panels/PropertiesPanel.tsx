@@ -24,7 +24,9 @@ import { fillPropertiesWithSavedData } from "./properties-utils";
 import useActiveFormItemShim from "./useActiveFormItemShim";
 
 interface Props {
-  filenameRef?: string;
+  refs?: {
+    filehandler?: string;
+  };
   currentProperties: any;
   propertiesSchema: PropertyDefinitions;
   onFileRequested?: (options: any) => any;
@@ -44,7 +46,7 @@ export const Message = styled.div`
 `;
 
 export function PropertiesPanel({
-  filenameRef,
+  refs,
   currentProperties,
   propertiesSchema,
   onFileRequested,
@@ -81,7 +83,11 @@ export function PropertiesPanel({
         actionHandler: async (id: string, _appData: any, data: any) => {
           const propertyValues = controller.current.getPropertyValues();
 
-          const filename = propertyValues[`elyra_${filenameRef}`];
+          let filename;
+          if (refs?.filehandler) {
+            filename = propertyValues[`elyra_${refs?.filehandler}`];
+          }
+
           switch (id) {
             case "browse_file":
               return await onFileRequested?.({

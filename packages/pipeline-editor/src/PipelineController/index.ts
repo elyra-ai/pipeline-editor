@@ -59,14 +59,10 @@ class PipelineController extends CanvasController {
   private palette: PaletteV3 = {};
   private lastOpened: PipelineFlowV3 | undefined;
 
-  resolveParameterRef(op: string, ref: string) {
+  resolveParameterRef(op: string, ref: "filehandler") {
     const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
 
-    if (nodeDef === undefined) {
-      return undefined;
-    }
-
-    return nodeDef.app_data.parameter_refs?.[ref] as string | undefined;
+    return nodeDef?.app_data.parameter_refs?.[ref];
   }
 
   open(pipelineJson: any) {
