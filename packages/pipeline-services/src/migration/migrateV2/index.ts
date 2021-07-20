@@ -21,10 +21,10 @@ import path from "path";
 // otherwise we wouldn't know this is a v1 pipeline.
 function migrate(
   pipeline: any,
-  setNodePathsRelativeToPipeline?: (pipeline: any) => any
+  setNodePathsRelativeToPipelineV2?: (pipeline: any) => any
 ) {
-  if (setNodePathsRelativeToPipeline) {
-    pipeline.pipelines[0] = setNodePathsRelativeToPipeline(
+  if (setNodePathsRelativeToPipelineV2) {
+    pipeline.pipelines[0] = setNodePathsRelativeToPipelineV2(
       pipeline.pipelines[0]
     );
   } else {

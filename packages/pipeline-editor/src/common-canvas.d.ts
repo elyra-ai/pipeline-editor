@@ -935,7 +935,11 @@ declare module "@elyra/canvas" {
           label?: string;
           [k: string]: unknown;
         }[];
+
         [k: string]: unknown;
+      };
+      component_parameters?: {
+        [k: string]: any;
       };
       [k: string]: unknown;
     };
@@ -2766,6 +2770,13 @@ declare module "@elyra/canvas" {
          * Node properties that can be edited by the user
          */
         properties?: PropertyDefinitions;
+        /**
+         * References to field names inside of `component_parameters`. Used to
+         * enable special features in Elyra.
+         */
+        parameter_refs?: {
+          filehandler?: string;
+        };
         //====================================================================//
         // End
         //====================================================================//

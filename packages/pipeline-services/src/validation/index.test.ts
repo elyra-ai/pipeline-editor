@@ -143,7 +143,7 @@ describe("getNodeProblems", () => {
     const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
     expect(problems).toHaveLength(1);
     expect(problems[0].info.type).toBe("missingProperty");
-    expect(problems[0].info.property).toBe("filename");
+    expect(problems[0].info.property).toBe("elyra_filename");
   });
 
   it("should have issues when required property has a default value and is empty", () => {
@@ -217,8 +217,10 @@ describe("getNodeProblems", () => {
           type: "execution_node",
           op: "execute-notebook-node",
           app_data: {
-            filename: "",
-            runtime_image: "",
+            component_parameters: {
+              filename: "",
+              runtime_image: "",
+            },
             ui_data: {
               label: "Node 1",
             },
@@ -230,7 +232,7 @@ describe("getNodeProblems", () => {
     const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
     expect(problems).toHaveLength(1);
     expect(problems[0].info.type).toBe("missingProperty");
-    expect(problems[0].info.property).toBe("filename");
+    expect(problems[0].info.property).toBe("elyra_filename");
   });
 
   it("should return no problems if required properties are provided", () => {
@@ -241,8 +243,10 @@ describe("getNodeProblems", () => {
           type: "execution_node",
           op: "execute-notebook-node",
           app_data: {
-            filename: "example.py",
-            runtime_image: "example/runtime:1.2.3",
+            component_parameters: {
+              filename: "example.py",
+              runtime_image: "example/runtime:1.2.3",
+            },
             ui_data: {
               label: "Node 1",
             },

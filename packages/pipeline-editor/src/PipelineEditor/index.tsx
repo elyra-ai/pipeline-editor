@@ -41,7 +41,7 @@ import styled, { useTheme } from "styled-components";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
-import PipelineController from "../PipelineController";
+import PipelineController, { prefixedToNested } from "../PipelineController";
 import { NodeProperties, PipelineProperties } from "../properties-panels";
 import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
@@ -307,6 +307,11 @@ const PipelineEditor = forwardRef(
             ];
           case "node":
             if (e.targetObject.type === "execution_node") {
+              const filenameRef = controller.current.resolveParameterRef(
+                e.targetObject.op,
+                "filehandler"
+              );
+              const parameters = e.targetObject.app_data?.component_parameters;
               return [
                 {
                   action: "openFile",
@@ -314,8 +319,9 @@ const PipelineEditor = forwardRef(
                   // NOTE: This only checks if the string is empty, but we
                   // should verify the file exists.
                   enable:
-                    e.targetObject?.app_data?.filename !== undefined &&
-                    e.targetObject?.app_data?.filename.trim() !== "",
+                    filenameRef &&
+                    parameters?.[filenameRef] !== undefined &&
+                    parameters?.[filenameRef].trim() !== "",
                 },
                 {
                   action: "properties",
@@ -496,7 +502,14 @@ const PipelineEditor = forwardRef(
       async (e: CanvasEditEvent) => {
         let payload;
         if (e.editType === "openFile") {
-          payload = e.targetObject?.app_data?.filename;
+          const filenameRef = controller.current.resolveParameterRef(
+            e.targetObject.op,
+            "filehandler"
+          );
+          if (filenameRef) {
+            payload =
+              e.targetObject?.app_data?.component_parameters?.[filenameRef];
+          }
         }
         onAction?.({ type: e.editType, payload });
 
@@ -566,9 +579,10 @@ const PipelineEditor = forwardRef(
       (nodeID, data) => {
         const pipeline = controller.current.findNodeParentPipeline(nodeID);
         if (pipeline !== undefined) {
+          const app_data = prefixedToNested(data);
           controller.current.setNodeProperties(
             nodeID,
-            { app_data: data },
+            { app_data },
             pipeline.id
           );
           onChange?.(controller.current.getPipelineFlow());

@@ -22,9 +22,9 @@ import {
   PipelineOutOfDateError,
   InvalidPipelineError,
 } from "./../errors";
-import { getFileName } from "./utils";
+import { getFileName, prefixedToNested } from "./utils";
 
-export const PIPELINE_CURRENT_VERSION = 3;
+export const PIPELINE_CURRENT_VERSION = 4;
 
 // TODO: Experiment with pipeline editor settings.
 const SHOW_EXTENSIONS = true;
@@ -58,6 +58,12 @@ export function isPipelineFlowV3(pipeline: any): pipeline is PipelineFlowV3 {
 class PipelineController extends CanvasController {
   private palette: PaletteV3 = {};
   private lastOpened: PipelineFlowV3 | undefined;
+
+  resolveParameterRef(op: string, ref: "filehandler") {
+    const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
+
+    return nodeDef?.app_data.parameter_refs?.[ref];
+  }
 
   open(pipelineJson: any) {
     // if pipeline is undefined/null create a new one from scratch.
@@ -148,20 +154,37 @@ class PipelineController extends CanvasController {
     const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
     if (nodeDef?.app_data.properties?.current_parameters) {
       data.nodeTemplate.app_data = {
-        ...nodeDef.app_data.properties.current_parameters,
+        ...prefixedToNested(nodeDef.app_data.properties.current_parameters),
       };
     }
 
-    if (path) {
-      data.nodeTemplate.app_data.filename = path;
+    const filenameRef = this.resolveParameterRef(op, "filehandler");
+
+    if (path && filenameRef) {
+      data.nodeTemplate.app_data.component_parameters[filenameRef] = path;
 
       if (typeof onPropertiesUpdateRequested === "function") {
         const properties = await onPropertiesUpdateRequested({
           filename: path,
         });
+
+        const {
+          component_parameters: oldComponentParameters,
+          ...oldAppData
+        } = data.nodeTemplate.app_data;
+
+        const {
+          component_parameters: newComponentParameters,
+          ...newAppData
+        } = properties;
+
         data.nodeTemplate.app_data = {
-          ...data.nodeTemplate.app_data,
-          ...properties,
+          ...oldAppData,
+          ...newAppData,
+          component_parameters: {
+            ...oldComponentParameters,
+            ...newComponentParameters,
+          },
         };
       }
     }
@@ -292,11 +315,15 @@ class PipelineController extends CanvasController {
         }
 
         let newLabel = nodeDef.app_data.ui_data?.label;
+
+        const filenameRef = this.resolveParameterRef(node.op, "filehandler");
+        const parameters = node.app_data?.component_parameters;
         if (
-          typeof node.app_data!.filename === "string" &&
-          node.app_data!.filename !== ""
+          filenameRef &&
+          typeof parameters?.[filenameRef] === "string" &&
+          parameters?.[filenameRef] !== ""
         ) {
-          newLabel = getFileName(node.app_data!.filename, {
+          newLabel = getFileName(parameters[filenameRef], {
             withExtension: SHOW_EXTENSIONS,
           });
         }
@@ -502,6 +529,13 @@ class PipelineController extends CanvasController {
       const info = nodeDef?.app_data.properties?.uihints?.parameter_info ?? [];
 
       const properties = info.map((i) => {
+        if (i.parameter_ref.startsWith("elyra_")) {
+          const strippedRef = i.parameter_ref.replace(/^elyra_/, "");
+          return {
+            label: i.label.default,
+            value: app_data?.component_parameters?.[strippedRef],
+          };
+        }
         return {
           label: i.label.default,
           value: app_data?.[i.parameter_ref],
@@ -515,3 +549,4 @@ class PipelineController extends CanvasController {
 }
 
 export default PipelineController;
+export { nestedToPrefixed, prefixedToNested } from "./utils";

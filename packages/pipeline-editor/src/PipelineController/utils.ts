@@ -24,3 +24,36 @@ export function getFileName(file: string, { withExtension }: Options) {
   const extension = path.extname(file);
   return path.basename(file, withExtension ? undefined : extension);
 }
+
+export function nestedToPrefixed(app_data: { [key: string]: any }) {
+  let current_parameters: any = {};
+
+  const { component_parameters, ...system } = app_data;
+  for (const [key, val] of Object.entries(system)) {
+    current_parameters[key] = val;
+  }
+  if (component_parameters) {
+    for (const [key, val] of Object.entries(component_parameters)) {
+      current_parameters[`elyra_${key}`] = val;
+    }
+  }
+
+  return current_parameters;
+}
+
+export function prefixedToNested(current_parameters: { [key: string]: any }) {
+  let app_data: any = {
+    component_parameters: {},
+  };
+
+  for (const [key, val] of Object.entries(current_parameters)) {
+    if (key.startsWith("elyra_")) {
+      const strippedKey = key.replace(/^elyra_/, "");
+      app_data.component_parameters[strippedKey] = val;
+    } else {
+      app_data[key] = val;
+    }
+  }
+
+  return app_data;
+}

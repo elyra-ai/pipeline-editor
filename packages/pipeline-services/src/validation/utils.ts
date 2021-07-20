@@ -54,3 +54,11 @@ export function rangeForLocation(location: Node | undefined) {
   const length = (location?.parent?.colonOffset ?? 0) - offset;
   return { offset, length };
 }
+
+export function getValue(app_data: any, key: string) {
+  if (key.startsWith("elyra_")) {
+    const stripped = key.replace(/^elyra_/, "");
+    return app_data.component_parameters?.[stripped];
+  }
+  return app_data[key];
+}

@@ -17,6 +17,7 @@
 import { PaletteV3 } from "@elyra/canvas";
 import { render as rtlRender } from "@testing-library/react";
 
+import { PIPELINE_CURRENT_VERSION } from "./PipelineController";
 import { InternalThemeProvider } from "./ThemeProvider";
 
 export const samplePalette = {
@@ -63,6 +64,9 @@ export const samplePalette = {
           ],
           parameters: {},
           app_data: {
+            parameter_refs: {
+              filehandler: "filename",
+            },
             properties: {
               current_parameters: {
                 stringExample: "is-set",
@@ -93,6 +97,7 @@ interface CustomNodeSpecification {
   label: string;
   description: string;
   extensions?: string[];
+  parameter_refs?: any;
   image?: string;
   properties?: any;
 }
@@ -102,30 +107,45 @@ export const nodeSpec: CustomNodeSpecification = {
   description: "Notebook file",
   label: "Notebook Label",
   extensions: [".ipynb"],
+  parameter_refs: {
+    filehandler: "filename",
+  },
   image: undefined,
   properties: {
     current_parameters: {
-      filename: "",
-      runtime_image: "",
-      dependencies: [],
-      include_subdirectories: false,
-      env_vars: [],
-      outputs: [],
+      label: "",
+      elyra_filename: "",
+      elyra_runtime_image: "",
+      elyra_dependencies: [],
+      elyra_include_subdirectories: false,
+      elyra_env_vars: [],
+      elyra_outputs: [],
     },
     parameters: [
-      { id: "filename" },
-      { id: "runtime_image" },
-      { id: "dependencies" },
-      { id: "include_subdirectories" },
-      { id: "env_vars" },
-      { id: "outputs" },
+      { id: "label" },
+      { id: "elyra_filename" },
+      { id: "elyra_runtime_image" },
+      { id: "elyra_dependencies" },
+      { id: "elyra_include_subdirectories" },
+      { id: "elyra_env_vars" },
+      { id: "elyra_outputs" },
     ],
     uihints: {
       parameter_info: [
         {
           control: "custom",
           custom_control_id: "StringControl",
-          parameter_ref: "filename",
+          parameter_ref: "label",
+          label: { default: "Label" },
+          description: {
+            default: "The label.",
+            placement: "on_panel",
+          },
+        },
+        {
+          control: "custom",
+          custom_control_id: "StringControl",
+          parameter_ref: "elyra_filename",
           label: { default: "File" },
           description: {
             default: "The path to the notebook file.",
@@ -139,7 +159,7 @@ export const nodeSpec: CustomNodeSpecification = {
         {
           control: "custom",
           custom_control_id: "EnumControl",
-          parameter_ref: "runtime_image",
+          parameter_ref: "elyra_runtime_image",
           label: { default: "Runtime Image" },
           description: {
             default: "Docker image used as execution environment.",
@@ -152,7 +172,7 @@ export const nodeSpec: CustomNodeSpecification = {
         {
           control: "custom",
           custom_control_id: "StringArrayControl",
-          parameter_ref: "dependencies",
+          parameter_ref: "elyra_dependencies",
           label: { default: "File Dependencies" },
           description: {
             default:
@@ -164,7 +184,7 @@ export const nodeSpec: CustomNodeSpecification = {
         {
           control: "custom",
           custom_control_id: "BooleanControl",
-          parameter_ref: "include_subdirectories",
+          parameter_ref: "elyra_include_subdirectories",
           label: { default: "Include Subdirectories" },
           data: {
             description:
@@ -174,7 +194,7 @@ export const nodeSpec: CustomNodeSpecification = {
         {
           control: "custom",
           custom_control_id: "StringArrayControl",
-          parameter_ref: "env_vars",
+          parameter_ref: "elyra_env_vars",
           label: { default: "Environment Variables" },
           description: {
             default:
@@ -186,7 +206,7 @@ export const nodeSpec: CustomNodeSpecification = {
         {
           control: "custom",
           custom_control_id: "StringArrayControl",
-          parameter_ref: "outputs",
+          parameter_ref: "elyra_outputs",
           label: { default: "Output Files" },
           description: {
             default:
@@ -201,34 +221,39 @@ export const nodeSpec: CustomNodeSpecification = {
           type: "panels",
           group_info: [
             {
-              id: "filename",
+              id: "label",
               type: "controls",
-              parameter_refs: ["filename"],
+              parameter_refs: ["label"],
             },
             {
-              id: "runtime_image",
+              id: "elyra_filename",
               type: "controls",
-              parameter_refs: ["runtime_image"],
+              parameter_refs: ["elyra_filename"],
             },
             {
-              id: "dependencies",
+              id: "elyra_runtime_image",
               type: "controls",
-              parameter_refs: ["dependencies"],
+              parameter_refs: ["elyra_runtime_image"],
             },
             {
-              id: "include_subdirectories",
+              id: "elyra_dependencies",
               type: "controls",
-              parameter_refs: ["include_subdirectories"],
+              parameter_refs: ["elyra_dependencies"],
             },
             {
-              id: "env_vars",
+              id: "elyra_include_subdirectories",
               type: "controls",
-              parameter_refs: ["env_vars"],
+              parameter_refs: ["elyra_include_subdirectories"],
             },
             {
-              id: "outputs",
+              id: "elyra_env_vars",
               type: "controls",
-              parameter_refs: ["outputs"],
+              parameter_refs: ["elyra_env_vars"],
+            },
+            {
+              id: "elyra_outputs",
+              type: "controls",
+              parameter_refs: ["elyra_outputs"],
             },
           ],
         },
@@ -242,12 +267,15 @@ export const selectedNode = {
   type: "execution_node",
   op: "execute-notebook-node",
   app_data: {
-    filename: "example.ipynb",
-    runtime_image: "example/runtime:2020.07",
-    env_vars: [],
-    include_subdirectories: false,
-    outputs: ["file1.csv", "file2.zip"],
-    dependencies: ["file.ipynb"],
+    label: "",
+    component_parameters: {
+      filename: "example.ipynb",
+      runtime_image: "example/runtime:2020.07",
+      env_vars: [],
+      include_subdirectories: false,
+      outputs: ["file1.csv", "file2.zip"],
+      dependencies: ["file.ipynb"],
+    },
   },
 };
 
@@ -341,12 +369,15 @@ export const samplePipeline = {
           type: "execution_node",
           op: "execute-notebook-node",
           app_data: {
-            filename: "goodbye.ipynb",
-            runtime_image: "continuumio/anaconda3:2020.07",
-            dependencies: [],
-            include_subdirectories: false,
-            env_vars: ["bloop"],
-            outputs: [],
+            label: "",
+            component_parameters: {
+              filename: "goodbye.ipynb",
+              runtime_image: "continuumio/anaconda3:2020.07",
+              dependencies: [],
+              include_subdirectories: false,
+              env_vars: ["bloop"],
+              outputs: [],
+            },
             ui_data: {
               label: "goodbye.ipynb",
               image:
@@ -390,7 +421,7 @@ export const samplePipeline = {
         ui_data: {
           comments: [],
         },
-        version: 3,
+        version: PIPELINE_CURRENT_VERSION,
       },
       runtime_ref: "",
     },

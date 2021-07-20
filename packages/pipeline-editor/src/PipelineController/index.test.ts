@@ -272,6 +272,7 @@ describe("addNode", () => {
 
     expect(editActionHandler).toHaveBeenCalledTimes(1);
     expect(editActionHandler.mock.calls[0][0].nodeTemplate.app_data).toEqual({
+      component_parameters: {},
       stringExample: "is-set",
       emptyArrayExample: [],
       emptyObjectExample: {},
@@ -303,7 +304,9 @@ describe("addNode", () => {
 
     expect(editActionHandler).toHaveBeenCalledTimes(1);
     expect(editActionHandler.mock.calls[0][0].nodeTemplate.app_data).toEqual({
-      filename: "fake.py",
+      component_parameters: {
+        filename: "fake.py",
+      },
       stringExample: "is-set",
       emptyArrayExample: ["one", "two", "three"],
       emptyObjectExample: {},
@@ -765,7 +768,9 @@ describe("properties", () => {
               type: "execution_node",
               op: "execute-notebook-node",
               app_data: {
-                filename: "example.py",
+                component_parameters: {
+                  filename: "example.py",
+                },
               },
             },
           ],
@@ -776,9 +781,11 @@ describe("properties", () => {
     controller.setPalette(createPalette([nodeSpec]));
 
     const properties = controller.properties("node-to-find");
-    expect(properties).toHaveLength(6);
-    expect(properties[0].label).toBe("File");
-    expect(properties[0].value).toBe("example.py");
+    expect(properties).toHaveLength(7);
+    expect(properties[0].label).toBe("Label");
+    expect(properties[0].value).toBeUndefined();
+    expect(properties[1].label).toBe("File");
+    expect(properties[1].value).toBe("example.py");
   });
 
   it("returns node properties when app_data is undefined", () => {
@@ -805,7 +812,7 @@ describe("properties", () => {
     controller.setPalette(createPalette([nodeSpec]));
 
     const properties = controller.properties("node-to-find");
-    expect(properties).toHaveLength(6);
+    expect(properties).toHaveLength(7);
   });
 
   it("returns an empty list for non 'execution_node' nodes", () => {
@@ -1084,7 +1091,9 @@ describe("resetStyles", () => {
               type: "execution_node",
               op: "execute-notebook-node",
               app_data: {
-                filename: "example.py",
+                component_parameters: {
+                  filename: "example.py",
+                },
                 ui_data: {
                   label: "example.py",
                 },
@@ -1158,7 +1167,9 @@ describe("resetStyles", () => {
               type: "execution_node",
               op: "execute-notebook-node",
               app_data: {
-                filename: "example.py",
+                component_parameters: {
+                  filename: "example.py",
+                },
                 ui_data: {
                   label: "old label",
                 },

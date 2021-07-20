@@ -25,6 +25,9 @@ interface Props {
     label?: string;
     app_data: {
       properties?: any;
+      parameter_refs?: {
+        filehandler?: string;
+      };
     };
   }[];
   onFileRequested?: (options: any) => any;
@@ -82,10 +85,13 @@ function NodeProperties({
     );
   }
 
+  const refs = nodePropertiesSchema.app_data.parameter_refs;
+
   return (
     <div>
       <Heading>{nodePropertiesSchema.label}</Heading>
       <PropertiesPanel
+        refs={refs}
         currentProperties={selectedNode.app_data}
         onPropertiesUpdateRequested={onPropertiesUpdateRequested}
         propertiesSchema={nodePropertiesSchema.app_data.properties}

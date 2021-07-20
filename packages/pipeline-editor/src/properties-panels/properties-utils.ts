@@ -17,6 +17,8 @@
 import { PropertyDefinitions } from "@elyra/canvas";
 import produce from "immer";
 
+import { nestedToPrefixed } from "../PipelineController";
+
 export interface CommonPropertiesSchema {
   current_parameters: {
     [key: string]: any;
@@ -66,7 +68,8 @@ export function fillPropertiesWithSavedData(
   appData: { [key: string]: any }
 ) {
   return produce(properties, (draftState) => {
-    for (const [key, val] of Object.entries(appData)) {
+    const prefixed = nestedToPrefixed(appData);
+    for (const [key, val] of Object.entries(prefixed)) {
       if (val !== undefined && val !== null) {
         draftState.current_parameters![key] = val;
       }
