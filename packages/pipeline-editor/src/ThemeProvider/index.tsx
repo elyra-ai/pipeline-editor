@@ -47,6 +47,11 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
       main: "#be1100",
       contrastText: "#fff",
     },
+    errorMessage: {
+      main: "#be1100",
+      contrastText: "#fff",
+      errorBorder: "#be1100",
+    },
     text: {
       icon: "#c5c5c5",
       primary: "#cccccc",

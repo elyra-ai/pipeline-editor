@@ -51,6 +51,11 @@ const theme = {
       main: "red",
       contrastText: "white",
     },
+    errorMessage: {
+      main: "red",
+      contrastText: "white",
+      errorBorder: "darkred",
+    },
     text: {
       icon: "black",
       primary: "black",

@@ -39,6 +39,11 @@ export interface Theme {
       main: string;
       contrastText: string;
     };
+    errorMessage: {
+      main: string;
+      contrastText: string;
+      errorBorder: string;
+    };
     text: {
       icon: string;
       primary: string;

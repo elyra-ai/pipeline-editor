@@ -23,6 +23,7 @@ import {
   getErrorMessages,
   getNumberValidators,
   NumberValidatorOptions,
+  ErrorMessage,
 } from "./validators";
 
 interface Props extends NumberValidatorOptions {}
@@ -36,21 +37,6 @@ const InputContainer = styled.div`
   position: relative;
   width: 100%;
   max-width: 200px;
-`;
-
-// TODO: Make this a shared component maybe?
-const ErrorMessage = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  padding: 5px;
-  box-sizing: border-box;
-  margin-top: -1px;
-  z-index: 1;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #be1100;
-  background-color: #5a1d1d;
 `;
 
 function serialize(value: string) {
