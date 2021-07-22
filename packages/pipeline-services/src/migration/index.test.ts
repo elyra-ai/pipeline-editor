@@ -164,6 +164,18 @@ it("should migrate v3 to latest", () => {
           },
         ],
       },
+      {
+        nodes: [
+          {
+            app_data: {
+              filename: "notebook2.ipynb",
+              ui_data: {
+                label: "node label 2",
+              },
+            },
+          },
+        ],
+      },
     ],
   };
 
@@ -186,6 +198,21 @@ it("should migrate v3 to latest", () => {
                 "label": "node label",
                 "ui_data": Object {
                   "label": "node label",
+                },
+              },
+            },
+          ],
+        },
+        Object {
+          "nodes": Array [
+            Object {
+              "app_data": Object {
+                "component_parameters": Object {
+                  "filename": "notebook2.ipynb",
+                },
+                "label": "node label 2",
+                "ui_data": Object {
+                  "label": "node label 2",
                 },
               },
             },

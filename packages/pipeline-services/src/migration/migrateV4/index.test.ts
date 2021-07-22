@@ -35,6 +35,18 @@ it("should only bump version", () => {
           },
         ],
       },
+      {
+        nodes: [
+          {
+            app_data: {
+              filename: "notebook2.ipynb",
+              ui_data: {
+                label: "node label 2",
+              },
+            },
+          },
+        ],
+      },
     ],
   };
   const expected = {
@@ -53,6 +65,21 @@ it("should only bump version", () => {
               },
               ui_data: {
                 label: "node label",
+              },
+            },
+          },
+        ],
+      },
+      {
+        nodes: [
+          {
+            app_data: {
+              label: "node label 2",
+              component_parameters: {
+                filename: "notebook2.ipynb",
+              },
+              ui_data: {
+                label: "node label 2",
               },
             },
           },
