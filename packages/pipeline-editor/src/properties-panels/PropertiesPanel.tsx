@@ -97,9 +97,7 @@ export function PropertiesPanel({
                 filename,
               });
             case "refresh_properties":
-              return await onPropertiesUpdateRequested?.({
-                ...propertyValues,
-              });
+              return await onPropertiesUpdateRequested?.(propertyValues);
           }
         },
         controllerHandler: (e: any) => {
