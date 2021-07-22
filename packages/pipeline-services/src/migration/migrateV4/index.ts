@@ -17,12 +17,14 @@
 function migrate(pipelineFlow: any) {
   for (const pipeline of pipelineFlow.pipelines) {
     for (const node of pipeline.nodes) {
-      node.app_data = {
-        label: node.app_data.ui_data?.label ?? "",
-        component_parameters: node.app_data,
-        ui_data: node.app_data.ui_data ?? {},
-      };
-      delete node.app_data.component_parameters.ui_data;
+      if (node.type === "execution_node") {
+        node.app_data = {
+          label: node.app_data.ui_data?.label ?? "",
+          component_parameters: node.app_data,
+          ui_data: node.app_data.ui_data ?? {},
+        };
+        delete node.app_data.component_parameters.ui_data;
+      }
     }
   }
 

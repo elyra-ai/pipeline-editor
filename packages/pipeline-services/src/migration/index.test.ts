@@ -82,7 +82,10 @@ it("should migrate v1 to latest", () => {
           version: 1,
         },
         nodes: [
-          { app_data: { filename: "/user/niko/project/notebook.ipynb" } },
+          {
+            type: "execution_node",
+            app_data: { filename: "/user/niko/project/notebook.ipynb" },
+          },
         ],
       },
     ],
@@ -107,6 +110,7 @@ it("should migrate v1 to latest", () => {
                 "label": "",
                 "ui_data": Object {},
               },
+              "type": "execution_node",
             },
           ],
         },
@@ -155,6 +159,7 @@ it("should migrate v3 to latest", () => {
         },
         nodes: [
           {
+            type: "execution_node",
             app_data: {
               filename: "notebook.ipynb",
               ui_data: {
@@ -167,6 +172,7 @@ it("should migrate v3 to latest", () => {
       {
         nodes: [
           {
+            type: "execution_node",
             app_data: {
               filename: "notebook2.ipynb",
               ui_data: {
@@ -200,6 +206,7 @@ it("should migrate v3 to latest", () => {
                   "label": "node label",
                 },
               },
+              "type": "execution_node",
             },
           ],
         },
@@ -215,6 +222,7 @@ it("should migrate v3 to latest", () => {
                   "label": "node label 2",
                 },
               },
+              "type": "execution_node",
             },
           ],
         },
