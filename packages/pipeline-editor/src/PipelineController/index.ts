@@ -168,23 +168,9 @@ class PipelineController extends CanvasController {
           filename: path,
         });
 
-        const {
-          component_parameters: oldComponentParameters,
-          ...oldAppData
-        } = data.nodeTemplate.app_data;
-
-        const {
-          component_parameters: newComponentParameters,
-          ...newAppData
-        } = properties;
-
-        data.nodeTemplate.app_data = {
-          ...oldAppData,
-          ...newAppData,
-          component_parameters: {
-            ...oldComponentParameters,
-            ...newComponentParameters,
-          },
+        data.nodeTemplate.app_data.component_parameters = {
+          ...data.nodeTemplate.app_data.component_parameters,
+          ...properties,
         };
       }
     }

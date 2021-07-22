@@ -332,7 +332,7 @@ function StringArrayControl({ placeholder, format, canRefresh }: Props) {
         env_vars: items,
       }
     );
-    setItems(updatedProperties.component_parameters.env_vars);
+    setItems(updatedProperties.env_vars);
   }, [actionHandler, items, setItems]);
 
   // TODO: validate string arrays.
