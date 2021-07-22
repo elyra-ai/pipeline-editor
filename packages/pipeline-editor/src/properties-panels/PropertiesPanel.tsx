@@ -91,13 +91,14 @@ export function PropertiesPanel({
           switch (id) {
             case "browse_file":
               return await onFileRequested?.({
+                // data are the parameters passed by the call to handler
+                // NOT properties data
                 ...data,
                 filename,
               });
             case "refresh_properties":
               return await onPropertiesUpdateRequested?.({
-                ...data,
-                filename,
+                ...propertyValues,
               });
           }
         },
