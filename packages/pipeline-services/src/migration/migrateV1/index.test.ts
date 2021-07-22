@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import migrate from "./";
+import produce from "immer";
+
+import rawMigrate from "./";
+
+// wrap migrate functions in immer
+const migrate = produce<any>((d: any) => rawMigrate(d));
 
 it("should rename `title` key to `name`", () => {
   const v0 = {

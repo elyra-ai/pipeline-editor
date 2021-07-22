@@ -14,9 +14,20 @@
  * limitations under the License.
  */
 
-import migrate from "./";
+import produce from "immer";
 
-it("should only bump version", () => {
+import rawMigrate from "./";
+
+// wrap migrate functions in immer
+const migrate = produce<any>((d: any) => rawMigrate(d));
+
+it("should move all properties to component_parameters", () => {
+  const properties = {
+    filename: "notebook.ipynb",
+    random: 42,
+    boolean: false,
+  };
+
   const v3 = {
     pipelines: [
       {
@@ -26,33 +37,38 @@ it("should only bump version", () => {
         },
         nodes: [
           {
+            type: "execution_node",
             app_data: {
-              filename: "notebook.ipynb",
-              ui_data: {
-                label: "node label",
-              },
+              ...properties,
             },
           },
         ],
       },
     ],
   };
-  const expected = {
+
+  const actual = migrate(v3);
+  expect(actual.pipelines[0].nodes[0].app_data.component_parameters).toEqual(
+    properties
+  );
+});
+
+it("should create a new label property based off of ui_data label", () => {
+  const expectedLabel = "ui_data label example";
+  const v3 = {
     pipelines: [
       {
         app_data: {
           name: "name",
-          version: 4,
+          version: 3,
         },
         nodes: [
           {
+            type: "execution_node",
             app_data: {
-              label: "node label",
-              component_parameters: {
-                filename: "notebook.ipynb",
-              },
+              filename: "should-not-be-used.ipynb",
               ui_data: {
-                label: "node label",
+                label: expectedLabel,
               },
             },
           },
@@ -60,6 +76,109 @@ it("should only bump version", () => {
       },
     ],
   };
+
   const actual = migrate(v3);
-  expect(actual).toEqual(expected);
+
+  expect(actual.pipelines[0].nodes[0].app_data.label).toEqual(expectedLabel);
+});
+
+it("should migrate nodes that are not part of the default pipeline", () => {
+  const v3 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 3,
+        },
+        nodes: [
+          {
+            type: "execution_node",
+            app_data: {
+              subflow1: "value1",
+            },
+          },
+        ],
+      },
+      {
+        nodes: [
+          {
+            type: "execution_node",
+            app_data: {
+              subflow2: "value2",
+            },
+          },
+        ],
+      },
+    ],
+  };
+
+  const actual = migrate(v3);
+
+  expect(actual.pipelines[0].nodes[0].app_data.component_parameters).toEqual({
+    subflow1: "value1",
+  });
+  expect(actual.pipelines[1].nodes[0].app_data.component_parameters).toEqual({
+    subflow2: "value2",
+  });
+});
+
+it("should not effect old ui_data", () => {
+  const ui_data = {
+    label: "hello",
+    x_pos: 100,
+    y_pos: 56,
+    fake: false,
+  };
+
+  const v3 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 3,
+        },
+        nodes: [
+          {
+            type: "execution_node",
+            app_data: {
+              prop1: "value1",
+              prop2: "value2",
+              ui_data,
+            },
+          },
+        ],
+      },
+    ],
+  };
+
+  const actual = migrate(v3);
+
+  expect(actual.pipelines[0].nodes[0].app_data.ui_data).toEqual(ui_data);
+});
+
+it("should not effect not update non-execution nodes", () => {
+  const supernode = {
+    type: "super_node",
+    app_data: {
+      ui_data: {
+        label: "Supernode Label",
+      },
+    },
+  };
+
+  const v3 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 3,
+        },
+        nodes: [supernode],
+      },
+    ],
+  };
+
+  const actual = migrate(v3);
+
+  expect(actual.pipelines[0].nodes[0]).toEqual(supernode);
 });

@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-function migrate(pipeline: any) {
-  for (const node of pipeline.pipelines[0].nodes) {
-    node.app_data = {
-      label: node.app_data.ui_data?.label ?? "",
-      component_parameters: node.app_data,
-      ui_data: node.app_data.ui_data ?? {},
-    };
-    delete node.app_data.component_parameters.ui_data;
+function migrate(pipelineFlow: any) {
+  for (const pipeline of pipelineFlow.pipelines) {
+    for (const node of pipeline.nodes) {
+      if (node.type === "execution_node") {
+        node.app_data = {
+          label: node.app_data.ui_data?.label ?? "",
+          component_parameters: node.app_data,
+          ui_data: node.app_data.ui_data ?? {},
+        };
+        delete node.app_data.component_parameters.ui_data;
+      }
+    }
   }
 
-  pipeline.pipelines[0].app_data.version = 4;
+  pipelineFlow.pipelines[0].app_data.version = 4;
 
-  return pipeline;
+  return pipelineFlow;
 }
 
 export default migrate;
