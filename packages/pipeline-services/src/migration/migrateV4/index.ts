@@ -14,30 +14,23 @@
  * limitations under the License.
  */
 
-const migrateNodes = (pipeline: any, index: number) => {
-  for (const node of pipeline.pipelines[index].nodes) {
-    if (node.type === "super_node") {
-      const index = pipeline.pipelines.findIndex(
-        (p: any) => p.id === node.subflow_ref.pipeline_id_ref
-      );
-      migrateNodes(pipeline, index);
-    } else {
-      node.app_data = {
-        label: node.app_data.ui_data?.label ?? "",
-        component_parameters: node.app_data,
-        ui_data: node.app_data.ui_data ?? {},
-      };
-      delete node.app_data.component_parameters.ui_data;
+function migrate(pipelineFlow: any) {
+  for (const pipeline of pipelineFlow.pipelines) {
+    for (const node of pipeline.nodes) {
+      if (node.type === "execution_node") {
+        node.app_data = {
+          label: node.app_data.ui_data?.label ?? "",
+          component_parameters: node.app_data,
+          ui_data: node.app_data.ui_data ?? {},
+        };
+        delete node.app_data.component_parameters.ui_data;
+      }
     }
   }
-};
 
-function migrate(pipeline: any) {
-  migrateNodes(pipeline, 0);
+  pipelineFlow.pipelines[0].app_data.version = 4;
 
-  pipeline.pipelines[0].app_data.version = 4;
-
-  return pipeline;
+  return pipelineFlow;
 }
 
 export default migrate;
