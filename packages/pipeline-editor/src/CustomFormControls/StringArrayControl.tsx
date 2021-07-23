@@ -325,15 +325,9 @@ function StringArrayControl({ placeholder, format, canRefresh }: Props) {
   );
 
   const handleRefreshProperties = useCallback(async () => {
-    const updatedProperties = await actionHandler?.(
-      "refresh_properties",
-      undefined,
-      {
-        env_vars: items,
-      }
-    );
-    setItems(updatedProperties.env_vars);
-  }, [actionHandler, items, setItems]);
+    const updatedProperties = await actionHandler?.("refresh_properties");
+    setItems(updatedProperties[propertyID]);
+  }, [actionHandler, propertyID, setItems]);
 
   // TODO: validate string arrays.
 
