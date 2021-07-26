@@ -312,6 +312,7 @@ const PipelineEditor = forwardRef(
                 "filehandler"
               );
               const parameters = e.targetObject.app_data?.component_parameters;
+
               return [
                 {
                   action: "openFile",
@@ -319,7 +320,7 @@ const PipelineEditor = forwardRef(
                   // NOTE: This only checks if the string is empty, but we
                   // should verify the file exists.
                   enable:
-                    filenameRef &&
+                    filenameRef !== undefined &&
                     parameters?.[filenameRef] !== undefined &&
                     parameters?.[filenameRef].trim() !== "",
                 },
