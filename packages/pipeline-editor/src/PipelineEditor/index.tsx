@@ -32,6 +32,7 @@ import {
   CommonCanvas,
   ContextMenu,
   ContextMenuEvent,
+  DividerItem,
   NodeTypeDef,
   TipEvent,
   TipNode,
@@ -78,16 +79,28 @@ function isCreateNodeEvent(
   return e.editType === "createNode" || e.editType === "createAutoNode";
 }
 
+function isDivider(m: any): m is DividerItem {
+  return (m as DividerItem).divider === true;
+}
+
 function isMenuItemEnabled(menu: ContextMenu, action: string) {
-  const item: any = menu.find((m: any) => {
+  const item = menu.find((m) => {
+    if (isDivider(m)) {
+      return false;
+    }
+
     if (m.menu === undefined) {
       return m.action === action;
     }
     // If there is a sub menu, search it as well.
-    return m.menu.find((mm: any) => mm.action === action);
+    return m.menu.find((mm) => mm.action === action);
   });
 
   if (item === undefined) {
+    return false;
+  }
+
+  if (isDivider(item)) {
     return false;
   }
 
