@@ -79,12 +79,12 @@ function isCreateNodeEvent(
 }
 
 function isMenuItemEnabled(menu: ContextMenu, action: string) {
-  const item = menu.find((m) => {
+  const item: any = menu.find((m: any) => {
     if (m.menu === undefined) {
       return m.action === action;
     }
     // If there is a sub menu, search it as well.
-    return m.menu.find((mm) => mm.action === action);
+    return m.menu.find((mm: any) => mm.action === action);
   });
 
   if (item === undefined) {
@@ -237,7 +237,7 @@ const PipelineEditor = forwardRef(
     );
 
     const handleContextMenu = useCallback(
-      (e: ContextMenuEvent, defaultMenu: ContextMenu) => {
+      (e: ContextMenuEvent, defaultMenu: ContextMenu): ContextMenu => {
         const canPaste = isMenuItemEnabled(defaultMenu, "paste");
 
         const canDisconnect = isMenuItemEnabled(defaultMenu, "disconnectNode");
@@ -319,10 +319,11 @@ const PipelineEditor = forwardRef(
                   label: "Open File",
                   // NOTE: This only checks if the string is empty, but we
                   // should verify the file exists.
-                  enable:
+                  enable: !!(
                     filenameRef !== undefined &&
                     parameters?.[filenameRef] !== undefined &&
-                    parameters?.[filenameRef].trim() !== "",
+                    parameters?.[filenameRef].trim() !== ""
+                  ),
                 },
                 {
                   action: "properties",

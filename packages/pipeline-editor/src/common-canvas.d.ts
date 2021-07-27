@@ -69,7 +69,9 @@ declare module "@elyra/canvas" {
         pipelineId: string;
       };
 
-  type ContextMenu = ContextMenuItem[];
+  interface DividerItem {
+    divider: true;
+  }
 
   interface ContextMenuItem {
     action: string;
@@ -77,6 +79,8 @@ declare module "@elyra/canvas" {
     menu?: ContextMenuItem[];
     enable?: boolean;
   }
+
+  type ContextMenu = (ContextMenuItem | DividerItem)[];
 
   interface ContextMenuEvent {
     type: string;
