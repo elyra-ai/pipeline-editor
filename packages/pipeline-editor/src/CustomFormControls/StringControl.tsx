@@ -72,7 +72,9 @@ function StringControl({
 
   const update = useCallback(
     (value) => {
+      console.log("updating", "local ->", value);
       setLocalValue(value);
+      console.log("updating", "persisted ->", serialize(value));
       setValue(serialize(value));
     },
     [setValue]
@@ -86,6 +88,7 @@ function StringControl({
   );
 
   const handleBlur = useCallback(() => {
+    console.log("blurring", "local -> undefined");
     setLocalValue(undefined);
   }, []);
 
@@ -112,6 +115,9 @@ function StringControl({
     required,
   });
 
+  console.log("local", localValue);
+  console.log("persisted", value);
+
   const renderedValue = localValue ?? value ?? "";
 
   const trimmedValue = renderedValue.trim();
@@ -120,6 +126,8 @@ function StringControl({
   if (!required && trimmedValue === "") {
     errorMessages = [];
   }
+
+  console.log("rendered", renderedValue);
 
   return (
     <Container className={errorMessages.length > 0 ? "error" : undefined}>
