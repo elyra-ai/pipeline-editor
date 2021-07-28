@@ -41,7 +41,7 @@ import styled, { useTheme } from "styled-components";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
-import PipelineController, { prefixedToNested } from "../PipelineController";
+import PipelineController from "../PipelineController";
 import { NodeProperties, PipelineProperties } from "../properties-panels";
 import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
@@ -577,16 +577,8 @@ const PipelineEditor = forwardRef(
 
     const handlePropertiesChange = useCallback(
       (nodeID, data) => {
-        const pipeline = controller.current.findNodeParentPipeline(nodeID);
-        if (pipeline !== undefined) {
-          const app_data = prefixedToNested(data);
-          controller.current.setNodeProperties(
-            nodeID,
-            { app_data },
-            pipeline.id
-          );
-          onChange?.(controller.current.getPipelineFlow());
-        }
+        controller.current.updateProperties(nodeID, data);
+        onChange?.(controller.current.getPipelineFlow());
       },
       [onChange]
     );

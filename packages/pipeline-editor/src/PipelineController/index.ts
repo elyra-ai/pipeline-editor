@@ -552,6 +552,14 @@ class PipelineController extends CanvasController {
 
     return [];
   }
+
+  updateProperties(nodeID: string, data: { [key: string]: any }) {
+    const pipeline = this.findNodeParentPipeline(nodeID);
+    if (pipeline !== undefined) {
+      const app_data = prefixedToNested(data);
+      this.setNodeProperties(nodeID, { app_data }, pipeline.id);
+    }
+  }
 }
 
 export default PipelineController;
