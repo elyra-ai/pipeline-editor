@@ -1,6 +1,6 @@
 {
   "name": "@elyra/pipeline-editor",
-  "version": "0.11.2",
+  "version": "0.11.3",
   "main": "dist/index.js",
   "homepage": "https://github.com/elyra-ai/pipeline-editor",
   "bugs": {
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@elyra/canvas": "11.0.0",
-    "@elyra/pipeline-services": "^0.11.2",
+    "@elyra/pipeline-services": "^0.11.3",
     "downshift": "^6.1.2",
     "immer": "^8.0.1",
     "nanoid": "^3.1.20",
