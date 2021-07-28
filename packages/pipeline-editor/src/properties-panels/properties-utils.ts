@@ -67,11 +67,15 @@ export function fillPropertiesWithSavedData(
   properties: PropertyDefinitions,
   appData: { [key: string]: any }
 ) {
+  console.log("refilling", appData);
   return produce(properties, (draftState) => {
     const prefixed = nestedToPrefixed(appData);
     for (const [key, val] of Object.entries(prefixed)) {
       if (val !== undefined && val !== null) {
+        console.log("filled");
         draftState.current_parameters![key] = val;
+      } else {
+        console.log("MISSED", key, val);
       }
     }
   });
