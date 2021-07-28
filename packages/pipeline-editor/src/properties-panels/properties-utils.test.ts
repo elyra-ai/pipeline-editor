@@ -36,7 +36,7 @@ describe("fillPropertiesWithSavedData", () => {
       env_vars: [],
       outputs: ["one", "two"],
     });
-    expect(result.current_parameters).toEqual({
+    expect(result.current_parameters).toStrictEqual({
       filename: "example.ipynb",
       runtime_image: "example/runtime",
       dependencies: ["one"],
@@ -69,7 +69,7 @@ describe("fillPropertiesWithSavedData", () => {
         outputs: ["one", "two"],
       },
     });
-    expect(result.current_parameters).toEqual({
+    expect(result.current_parameters).toStrictEqual({
       label: "My Label",
       elyra_filename: "example.ipynb",
       elyra_runtime_image: "example/runtime",
@@ -91,7 +91,7 @@ it("1964", () => {
   const filled = fillPropertiesWithSavedData(defaults, {
     example: "<manual-value>",
   });
-  expect(filled).toEqual({
+  expect(filled).toStrictEqual({
     current_parameters: {
       example: "<manual-value>",
     },
@@ -100,7 +100,7 @@ it("1964", () => {
   const cleared = fillPropertiesWithSavedData(defaults, {
     example: undefined,
   });
-  expect(cleared).toEqual({
+  expect(cleared).toStrictEqual({
     current_parameters: {
       example: undefined,
     },
