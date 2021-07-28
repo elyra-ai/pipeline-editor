@@ -79,30 +79,30 @@ describe("fillPropertiesWithSavedData", () => {
       elyra_outputs: ["one", "two"],
     });
   });
-});
 
-it("1964", () => {
-  const defaults = {
-    current_parameters: {
-      example: "<default-value>",
-    },
-  };
+  it("should replace defaults with undefined", () => {
+    const defaults = {
+      current_parameters: {
+        example: "<default-value>",
+      },
+    };
 
-  const filled = fillPropertiesWithSavedData(defaults, {
-    example: "<manual-value>",
-  });
-  expect(filled).toStrictEqual({
-    current_parameters: {
+    const filled = fillPropertiesWithSavedData(defaults, {
       example: "<manual-value>",
-    },
-  });
+    });
+    expect(filled).toStrictEqual({
+      current_parameters: {
+        example: "<manual-value>",
+      },
+    });
 
-  const cleared = fillPropertiesWithSavedData(defaults, {
-    example: undefined,
-  });
-  expect(cleared).toStrictEqual({
-    current_parameters: {
+    const cleared = fillPropertiesWithSavedData(defaults, {
       example: undefined,
-    },
+    });
+    expect(cleared).toStrictEqual({
+      current_parameters: {
+        example: undefined,
+      },
+    });
   });
 });
