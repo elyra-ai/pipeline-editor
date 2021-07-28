@@ -20,7 +20,7 @@ import { CommonProperties, PropertyDefinitions } from "@elyra/canvas";
 import styled from "styled-components";
 
 import * as controls from "../CustomFormControls";
-import { fillPropertiesWithSavedData } from "./properties-utils";
+import { nestedToPrefixed } from "../PipelineController";
 import useActiveFormItemShim from "./useActiveFormItemShim";
 
 interface Props {
@@ -69,10 +69,11 @@ export function PropertiesPanel({
     <CommonProperties
       key={id}
       propertiesInfo={{
-        parameterDef: fillPropertiesWithSavedData(
-          propertiesSchema,
-          currentProperties
-        ),
+        parameterDef: nestedToPrefixed(currentProperties),
+        // parameterDef: fillPropertiesWithSavedData(
+        //   propertiesSchema,
+        //   currentProperties
+        // ),
         labelEditable: false,
       }}
       propertiesConfig={{
