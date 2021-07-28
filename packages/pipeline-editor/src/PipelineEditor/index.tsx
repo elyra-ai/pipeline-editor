@@ -32,6 +32,7 @@ import {
   CommonCanvas,
   ContextMenu,
   ContextMenuEvent,
+  DividerItem,
   NodeTypeDef,
   TipEvent,
   TipNode,
@@ -78,8 +79,16 @@ function isCreateNodeEvent(
   return e.editType === "createNode" || e.editType === "createAutoNode";
 }
 
+function isDivider(m: any): m is DividerItem {
+  return (m as DividerItem).divider === true;
+}
+
 function isMenuItemEnabled(menu: ContextMenu, action: string) {
   const item = menu.find((m) => {
+    if (isDivider(m)) {
+      return false;
+    }
+
     if (m.menu === undefined) {
       return m.action === action;
     }
@@ -88,6 +97,10 @@ function isMenuItemEnabled(menu: ContextMenu, action: string) {
   });
 
   if (item === undefined) {
+    return false;
+  }
+
+  if (isDivider(item)) {
     return false;
   }
 
@@ -237,7 +250,7 @@ const PipelineEditor = forwardRef(
     );
 
     const handleContextMenu = useCallback(
-      (e: ContextMenuEvent, defaultMenu: ContextMenu) => {
+      (e: ContextMenuEvent, defaultMenu: ContextMenu): ContextMenu => {
         const canPaste = isMenuItemEnabled(defaultMenu, "paste");
 
         const canDisconnect = isMenuItemEnabled(defaultMenu, "disconnectNode");
@@ -312,16 +325,18 @@ const PipelineEditor = forwardRef(
                 "filehandler"
               );
               const parameters = e.targetObject.app_data?.component_parameters;
+
               return [
                 {
                   action: "openFile",
                   label: "Open File",
                   // NOTE: This only checks if the string is empty, but we
                   // should verify the file exists.
-                  enable:
-                    filenameRef &&
+                  enable: !!(
+                    filenameRef !== undefined &&
                     parameters?.[filenameRef] !== undefined &&
-                    parameters?.[filenameRef].trim() !== "",
+                    parameters?.[filenameRef].trim() !== ""
+                  ),
                 },
                 {
                   action: "properties",
