@@ -1406,3 +1406,85 @@ describe("validate", () => {
     ).toBeUndefined();
   });
 });
+
+describe("updateProperties", () => {
+  it("should delete undefined property", () => {
+    const pipeline = {
+      version: "3.0",
+      primary_pipeline: "pipeline1",
+      pipelines: [
+        {
+          id: "pipeline1",
+          app_data: { version: PIPELINE_CURRENT_VERSION },
+          nodes: [
+            {
+              id: "node1",
+              type: "execution_node",
+              op: "execute-example-node",
+              app_data: {
+                component_parameters: {
+                  param_with_default: "<default-value>",
+                },
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    const palette = createPalette([
+      {
+        op: "execute-example-node",
+        description: "Example node description.",
+        label: "Example Node Label",
+        image: undefined,
+        properties: {
+          current_parameters: {
+            elyra_param_with_default: "<default-value>",
+          },
+          parameters: [{ id: "elyra_param_with_default" }],
+          uihints: {
+            parameter_info: [
+              {
+                control: "custom",
+                custom_control_id: "StringControl",
+                parameter_ref: "elyra_param_with_default",
+                label: { default: "Example Label" },
+                description: {
+                  default: "Example description.",
+                  placement: "on_panel",
+                },
+              },
+            ],
+            group_info: [
+              {
+                type: "panels",
+                group_info: [
+                  {
+                    id: "elyra_param_with_default",
+                    type: "controls",
+                    parameter_refs: ["elyra_param_with_default"],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    ]);
+
+    const controller = new PipelineController();
+
+    controller.open(pipeline);
+    controller.setPalette(palette);
+
+    controller.updateProperties("node1", {
+      elyra_param_with_default: undefined,
+    });
+
+    expect(
+      controller.getPipelineFlow().pipelines[0].nodes[0].app_data
+        ?.component_parameters
+    ).toStrictEqual({});
+  });
+});
