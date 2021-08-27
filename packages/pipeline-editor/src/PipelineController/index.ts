@@ -19,7 +19,6 @@ import {
   PipelineFlowV3,
   PaletteV3,
   ExecutionNodeDef,
-  CategoryDef,
   NodeType,
 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
