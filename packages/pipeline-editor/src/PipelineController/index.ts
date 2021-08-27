@@ -569,7 +569,7 @@ class PipelineController extends CanvasController {
     if (pipeline !== undefined) {
       const app_data = prefixedToNested(data);
       this.setNodeProperties(nodeID, { app_data }, pipeline.id);
-      if (data.label !== data.ui_data.label) {
+      if (data.label !== data.ui_data?.label) {
         const node = this.getNode(nodeID, pipeline.id);
         if (node.type === "execution_node") {
           const nodeDef = this.getAllPaletteNodes().find(
