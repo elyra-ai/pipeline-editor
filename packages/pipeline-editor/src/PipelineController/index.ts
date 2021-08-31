@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { CanvasController, PipelineFlowV3, PaletteV3 } from "@elyra/canvas";
+import {
+  CanvasController,
+  PipelineFlowV3,
+  PaletteV3,
+  ExecutionNodeDef,
+  NodeType,
+} from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
 import {
@@ -291,6 +297,31 @@ class PipelineController extends CanvasController {
     );
   }
 
+  getLabelForNode(node: ExecutionNodeDef, nodeDef: NodeType): string {
+    let newLabel = nodeDef.app_data.ui_data?.label;
+
+    const filenameRef = this.resolveParameterRef(node.op, "filehandler");
+    const parameters = node.app_data?.component_parameters;
+    if (
+      filenameRef &&
+      typeof parameters?.[filenameRef] === "string" &&
+      parameters?.[filenameRef] !== ""
+    ) {
+      newLabel = getFileName(parameters[filenameRef], {
+        withExtension: SHOW_EXTENSIONS,
+      });
+    }
+
+    if (
+      typeof node.app_data!.label === "string" &&
+      node.app_data!.label !== ""
+    ) {
+      newLabel = node.app_data!.label;
+    }
+
+    return newLabel ?? "";
+  }
+
   resetStyles() {
     this.removeAllStyles();
 
@@ -320,27 +351,7 @@ class PipelineController extends CanvasController {
           continue;
         }
 
-        let newLabel = nodeDef.app_data.ui_data?.label;
-
-        const filenameRef = this.resolveParameterRef(node.op, "filehandler");
-        const parameters = node.app_data?.component_parameters;
-        if (
-          filenameRef &&
-          typeof parameters?.[filenameRef] === "string" &&
-          parameters?.[filenameRef] !== ""
-        ) {
-          newLabel = getFileName(parameters[filenameRef], {
-            withExtension: SHOW_EXTENSIONS,
-          });
-        }
-
-        if (
-          typeof node.app_data!.label === "string" &&
-          node.app_data!.label !== ""
-        ) {
-          newLabel = node.app_data!.label;
-        }
-
+        const newLabel = this.getLabelForNode(node, nodeDef);
         // `setNodeLabel` is VERY slow, so make sure we HAVE to set it before
         // setting it.
         if (node.app_data!.ui_data!.label !== newLabel) {
@@ -558,6 +569,18 @@ class PipelineController extends CanvasController {
     if (pipeline !== undefined) {
       const app_data = prefixedToNested(data);
       this.setNodeProperties(nodeID, { app_data }, pipeline.id);
+      if (data.label !== data.ui_data?.label) {
+        const node = this.getNode(nodeID, pipeline.id);
+        if (node.type === "execution_node") {
+          const nodeDef = this.getAllPaletteNodes().find(
+            (n) => n.op === node.op
+          );
+          if (nodeDef) {
+            const newLabel = this.getLabelForNode(node, nodeDef);
+            this.setNodeLabel(nodeID, newLabel, pipeline.id);
+          }
+        }
+      }
     }
   }
 }

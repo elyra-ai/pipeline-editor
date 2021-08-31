@@ -2407,172 +2407,81 @@ declare module "@elyra/canvas" {
     /**
      * Array of pipeline node types
      */
-    node_types?: {
+    node_types?: NodeType[];
+  }
+
+  interface NodeType {
+    /**
+     * Unique identifier for node within the current pipeline
+     */
+    id: string;
+    /**
+     * Execution node description
+     */
+    description?: string;
+    /**
+     * Node type - always 'execution_node' for non-model pipeline elements
+     */
+    type: "execution_node";
+    /**
+     * Label used for displaying node
+     */
+    label?: string;
+    /**
+     * Operator type identifier
+     */
+    op: string;
+    inputs?: {
       /**
-       * Unique identifier for node within the current pipeline
+       * Unique identifier
        */
       id: string;
       /**
-       * Execution node description
+       * Optional data record schema reference associated with the port
        */
-      description?: string;
+      schema_ref?: string;
       /**
-       * Node type - always 'execution_node' for non-model pipeline elements
+       * Array of links going into the node. Applies to input ports and exit bindings only.
        */
-      type: "execution_node";
-      /**
-       * Label used for displaying node
-       */
-      label?: string;
-      /**
-       * Operator type identifier
-       */
-      op: string;
-      inputs?: {
+      links?: {
         /**
-         * Unique identifier
+         * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
          */
-        id: string;
+        id?: string;
         /**
-         * Optional data record schema reference associated with the port
+         * id of a node this link connects to
          */
-        schema_ref?: string;
+        node_id_ref: string;
         /**
-         * Array of links going into the node. Applies to input ports and exit bindings only.
+         * optional port id of a node this link connects to
          */
-        links?: {
-          /**
-           * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
-           */
-          id?: string;
-          /**
-           * id of a node this link connects to
-           */
-          node_id_ref: string;
-          /**
-           * optional port id of a node this link connects to
-           */
-          port_id_ref?: string;
-          /**
-           * optional link name (used in parameter sets when there are multiple input sources)
-           */
-          link_name?: string;
-          /**
-           * Link type attribute
-           */
-          type_attr?: string;
-          /**
-           * Link description
-           */
-          description?: string;
-          /**
-           * Object containing app-specific data
-           */
-          app_data?: {
-            /**
-             * object with app-specific UI-information
-             */
-            ui_data?: {
-              /**
-               * CSS class name
-               */
-              class_name?: string;
-              /**
-               * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
-               */
-              style?:
-                | string
-                | {
-                    [k: string]: unknown;
-                  };
-              /**
-               * Array of decorations used to decorate node links
-               */
-              decorations?: {
-                /**
-                 * An identifier used to identify the decoration
-                 */
-                id?: string;
-                /**
-                 * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-                 */
-                hotspot?: boolean;
-                /**
-                 * CSS class name for decoration styling
-                 */
-                class_name?: string;
-                /**
-                 * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-                 */
-                position?:
-                  | "topLeft"
-                  | "topCenter"
-                  | "topRight"
-                  | "middleLeft"
-                  | "middleCenter"
-                  | "middleRight"
-                  | "bottomLeft"
-                  | "bottomCenter"
-                  | "bottomRight"
-                  | "source"
-                  | "middle"
-                  | "target";
-                /**
-                 * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-                 */
-                x_pos?: number;
-                /**
-                 * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-                 */
-                y_pos?: number;
-                /**
-                 * Image displayed at the decoration position. Provide either this or a label.
-                 */
-                image?: string;
-                /**
-                 * Label displayed at the decoration position. Provide either this or an image.
-                 */
-                label?: string;
-                [k: string]: unknown;
-              }[];
-              [k: string]: unknown;
-            };
-            [k: string]: unknown;
-          };
-        }[];
+        port_id_ref?: string;
         /**
-         * Parameters for the port
+         * optional link name (used in parameter sets when there are multiple input sources)
          */
-        parameters?: {
-          [k: string]: unknown;
-        };
+        link_name?: string;
+        /**
+         * Link type attribute
+         */
+        type_attr?: string;
+        /**
+         * Link description
+         */
+        description?: string;
         /**
          * Object containing app-specific data
          */
         app_data?: {
           /**
-           * Additional UI info for ports
+           * object with app-specific UI-information
            */
           ui_data?: {
-            /**
-             * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
-             */
-            cardinality?: {
-              /**
-               * Minimum data sets that are required for this port
-               */
-              min?: number;
-              /**
-               * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
-               */
-              max?: number;
-            };
             /**
              * CSS class name
              */
             class_name?: string;
             /**
-             * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
+             * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
              */
             style?:
               | string
@@ -2580,289 +2489,7 @@ declare module "@elyra/canvas" {
                   [k: string]: unknown;
                 };
             /**
-             * Port name
-             */
-            label?: string;
-            [k: string]: unknown;
-          };
-          [k: string]: unknown;
-        };
-      }[];
-      outputs?: {
-        /**
-         * Unique identifier
-         */
-        id: string;
-        /**
-         * Optional data record schema reference associated with the port
-         */
-        schema_ref?: string;
-        /**
-         * Array of links going into the node. Applies to input ports and exit bindings only.
-         */
-        links?: {
-          /**
-           * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
-           */
-          id?: string;
-          /**
-           * id of a node this link connects to
-           */
-          node_id_ref: string;
-          /**
-           * optional port id of a node this link connects to
-           */
-          port_id_ref?: string;
-          /**
-           * optional link name (used in parameter sets when there are multiple input sources)
-           */
-          link_name?: string;
-          /**
-           * Link type attribute
-           */
-          type_attr?: string;
-          /**
-           * Link description
-           */
-          description?: string;
-          /**
-           * Object containing app-specific data
-           */
-          app_data?: {
-            /**
-             * object with app-specific UI-information
-             */
-            ui_data?: {
-              /**
-               * CSS class name
-               */
-              class_name?: string;
-              /**
-               * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
-               */
-              style?:
-                | string
-                | {
-                    [k: string]: unknown;
-                  };
-              /**
-               * Array of decorations used to decorate node links
-               */
-              decorations?: {
-                /**
-                 * An identifier used to identify the decoration
-                 */
-                id?: string;
-                /**
-                 * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-                 */
-                hotspot?: boolean;
-                /**
-                 * CSS class name for decoration styling
-                 */
-                class_name?: string;
-                /**
-                 * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-                 */
-                position?:
-                  | "topLeft"
-                  | "topCenter"
-                  | "topRight"
-                  | "middleLeft"
-                  | "middleCenter"
-                  | "middleRight"
-                  | "bottomLeft"
-                  | "bottomCenter"
-                  | "bottomRight"
-                  | "source"
-                  | "middle"
-                  | "target";
-                /**
-                 * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-                 */
-                x_pos?: number;
-                /**
-                 * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-                 */
-                y_pos?: number;
-                /**
-                 * Image displayed at the decoration position. Provide either this or a label.
-                 */
-                image?: string;
-                /**
-                 * Label displayed at the decoration position. Provide either this or an image.
-                 */
-                label?: string;
-                [k: string]: unknown;
-              }[];
-              [k: string]: unknown;
-            };
-            [k: string]: unknown;
-          };
-        }[];
-        /**
-         * Parameters for the port
-         */
-        parameters?: {
-          [k: string]: unknown;
-        };
-        /**
-         * Object containing app-specific data
-         */
-        app_data?: {
-          /**
-           * Additional UI info for ports
-           */
-          ui_data?: {
-            /**
-             * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
-             */
-            cardinality?: {
-              /**
-               * Minimum data sets that are required for this port
-               */
-              min?: number;
-              /**
-               * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
-               */
-              max?: number;
-            };
-            /**
-             * CSS class name
-             */
-            class_name?: string;
-            /**
-             * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
-             */
-            style?:
-              | string
-              | {
-                  [k: string]: unknown;
-                };
-            /**
-             * Port name
-             */
-            label?: string;
-            [k: string]: unknown;
-          };
-          [k: string]: unknown;
-        };
-      }[];
-      /**
-       * Input parameters for the operator
-       */
-      parameters?: {
-        [k: string]: unknown;
-      };
-      /**
-       * Optional reference to the id of the runtime associated with the current node
-       */
-      runtime_ref?: string;
-      /**
-       * Object containing app-specific data
-       */
-      app_data: {
-        // NOTE: app_data shouldn't but undefined in elyra.
-        //====================================================================//
-        // Elyra specific fields
-        //====================================================================//
-        /**
-         * Extension that the file field uses
-         */
-        extensions?: string[];
-        /**
-         * Node properties that can be edited by the user
-         */
-        properties?: PropertyDefinitions;
-        /**
-         * References to field names inside of `component_parameters`. Used to
-         * enable special features in Elyra.
-         */
-        parameter_refs?: {
-          filehandler?: string;
-        };
-        //====================================================================//
-        // End
-        //====================================================================//
-
-        /**
-         * object with app-specific UI-information
-         */
-        ui_data?: {
-          /**
-           * User-defined label
-           */
-          label?: string;
-          /**
-           * User-defined description
-           */
-          description?: string;
-          /**
-           * CSS class name
-           */
-          class_name?: string;
-          /**
-           * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node.
-           */
-          style?:
-            | string
-            | {
-                [k: string]: unknown;
-              };
-          /**
-           * Image name (do not embed images inline!)
-           */
-          image?: string;
-          /**
-           * x-position
-           */
-          x_pos?: number;
-          /**
-           * y-position
-           */
-          y_pos?: number;
-          /**
-           * Indicates whether a supernode is shown in expanded state or as a regular node.
-           */
-          is_expanded?: boolean;
-          /**
-           * Height of expanded supernode. If not provided an appropriate height is calculated.
-           */
-          expanded_height?: number;
-          /**
-           * Width of expanded supernode. If not provided an appropriate width is calculated.
-           */
-          expanded_width?: number;
-          /**
-           * additional attributes
-           */
-          attributes?: string;
-          /**
-           * Array of non-data node linkage
-           */
-          associations?: {
-            /**
-             * Association identifier
-             */
-            id: string;
-            /**
-             * Target node id
-             */
-            node_ref: string;
-            /**
-             * CSS class name for link styling
-             */
-            class_name?: string;
-            /**
-             * A 'style spec' object containing CSS strings to be applied to the SVG objects of the association link.
-             */
-            style?:
-              | string
-              | {
-                  [k: string]: unknown;
-                };
-            /**
-             * Array of decorations used to decorate association links
+             * Array of decorations used to decorate node links
              */
             decorations?: {
               /**
@@ -2911,37 +2538,334 @@ declare module "@elyra/canvas" {
               label?: string;
               [k: string]: unknown;
             }[];
-          }[];
-          /**
-           * An array of messages for the node
-           */
-          messages?: {
-            /**
-             * Name of the parameter that has the message
-             */
-            id_ref: string;
-            /**
-             * Validation identifier from the fail_message validation section.
-             */
-            validation_id?: string;
-            /**
-             * Type of message
-             */
-            type: "info" | "error" | "warning";
-            /**
-             * Message string
-             */
-            text: string;
-            [k: string]: unknown;
-          }[];
-          /**
-           * UI only parameter values for the node
-           */
-          ui_parameters?: {
             [k: string]: unknown;
           };
+          [k: string]: unknown;
+        };
+      }[];
+      /**
+       * Parameters for the port
+       */
+      parameters?: {
+        [k: string]: unknown;
+      };
+      /**
+       * Object containing app-specific data
+       */
+      app_data?: {
+        /**
+         * Additional UI info for ports
+         */
+        ui_data?: {
           /**
-           * Array of decorations used to decorate nodes
+           * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
+           */
+          cardinality?: {
+            /**
+             * Minimum data sets that are required for this port
+             */
+            min?: number;
+            /**
+             * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
+             */
+            max?: number;
+          };
+          /**
+           * CSS class name
+           */
+          class_name?: string;
+          /**
+           * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
+           */
+          style?:
+            | string
+            | {
+                [k: string]: unknown;
+              };
+          /**
+           * Port name
+           */
+          label?: string;
+          [k: string]: unknown;
+        };
+        [k: string]: unknown;
+      };
+    }[];
+    outputs?: {
+      /**
+       * Unique identifier
+       */
+      id: string;
+      /**
+       * Optional data record schema reference associated with the port
+       */
+      schema_ref?: string;
+      /**
+       * Array of links going into the node. Applies to input ports and exit bindings only.
+       */
+      links?: {
+        /**
+         * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
+         */
+        id?: string;
+        /**
+         * id of a node this link connects to
+         */
+        node_id_ref: string;
+        /**
+         * optional port id of a node this link connects to
+         */
+        port_id_ref?: string;
+        /**
+         * optional link name (used in parameter sets when there are multiple input sources)
+         */
+        link_name?: string;
+        /**
+         * Link type attribute
+         */
+        type_attr?: string;
+        /**
+         * Link description
+         */
+        description?: string;
+        /**
+         * Object containing app-specific data
+         */
+        app_data?: {
+          /**
+           * object with app-specific UI-information
+           */
+          ui_data?: {
+            /**
+             * CSS class name
+             */
+            class_name?: string;
+            /**
+             * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
+             */
+            style?:
+              | string
+              | {
+                  [k: string]: unknown;
+                };
+            /**
+             * Array of decorations used to decorate node links
+             */
+            decorations?: {
+              /**
+               * An identifier used to identify the decoration
+               */
+              id?: string;
+              /**
+               * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+               */
+              hotspot?: boolean;
+              /**
+               * CSS class name for decoration styling
+               */
+              class_name?: string;
+              /**
+               * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+               */
+              position?:
+                | "topLeft"
+                | "topCenter"
+                | "topRight"
+                | "middleLeft"
+                | "middleCenter"
+                | "middleRight"
+                | "bottomLeft"
+                | "bottomCenter"
+                | "bottomRight"
+                | "source"
+                | "middle"
+                | "target";
+              /**
+               * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+               */
+              x_pos?: number;
+              /**
+               * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+               */
+              y_pos?: number;
+              /**
+               * Image displayed at the decoration position. Provide either this or a label.
+               */
+              image?: string;
+              /**
+               * Label displayed at the decoration position. Provide either this or an image.
+               */
+              label?: string;
+              [k: string]: unknown;
+            }[];
+            [k: string]: unknown;
+          };
+          [k: string]: unknown;
+        };
+      }[];
+      /**
+       * Parameters for the port
+       */
+      parameters?: {
+        [k: string]: unknown;
+      };
+      /**
+       * Object containing app-specific data
+       */
+      app_data?: {
+        /**
+         * Additional UI info for ports
+         */
+        ui_data?: {
+          /**
+           * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
+           */
+          cardinality?: {
+            /**
+             * Minimum data sets that are required for this port
+             */
+            min?: number;
+            /**
+             * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
+             */
+            max?: number;
+          };
+          /**
+           * CSS class name
+           */
+          class_name?: string;
+          /**
+           * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
+           */
+          style?:
+            | string
+            | {
+                [k: string]: unknown;
+              };
+          /**
+           * Port name
+           */
+          label?: string;
+          [k: string]: unknown;
+        };
+        [k: string]: unknown;
+      };
+    }[];
+    /**
+     * Input parameters for the operator
+     */
+    parameters?: {
+      [k: string]: unknown;
+    };
+    /**
+     * Optional reference to the id of the runtime associated with the current node
+     */
+    runtime_ref?: string;
+    /**
+     * Object containing app-specific data
+     */
+    app_data: {
+      // NOTE: app_data shouldn't but undefined in elyra.
+      //====================================================================//
+      // Elyra specific fields
+      //====================================================================//
+      /**
+       * Extension that the file field uses
+       */
+      extensions?: string[];
+      /**
+       * Node properties that can be edited by the user
+       */
+      properties?: PropertyDefinitions;
+      /**
+       * References to field names inside of `component_parameters`. Used to
+       * enable special features in Elyra.
+       */
+      parameter_refs?: {
+        filehandler?: string;
+      };
+      //====================================================================//
+      // End
+      //====================================================================//
+
+      /**
+       * object with app-specific UI-information
+       */
+      ui_data?: {
+        /**
+         * User-defined label
+         */
+        label?: string;
+        /**
+         * User-defined description
+         */
+        description?: string;
+        /**
+         * CSS class name
+         */
+        class_name?: string;
+        /**
+         * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node.
+         */
+        style?:
+          | string
+          | {
+              [k: string]: unknown;
+            };
+        /**
+         * Image name (do not embed images inline!)
+         */
+        image?: string;
+        /**
+         * x-position
+         */
+        x_pos?: number;
+        /**
+         * y-position
+         */
+        y_pos?: number;
+        /**
+         * Indicates whether a supernode is shown in expanded state or as a regular node.
+         */
+        is_expanded?: boolean;
+        /**
+         * Height of expanded supernode. If not provided an appropriate height is calculated.
+         */
+        expanded_height?: number;
+        /**
+         * Width of expanded supernode. If not provided an appropriate width is calculated.
+         */
+        expanded_width?: number;
+        /**
+         * additional attributes
+         */
+        attributes?: string;
+        /**
+         * Array of non-data node linkage
+         */
+        associations?: {
+          /**
+           * Association identifier
+           */
+          id: string;
+          /**
+           * Target node id
+           */
+          node_ref: string;
+          /**
+           * CSS class name for link styling
+           */
+          class_name?: string;
+          /**
+           * A 'style spec' object containing CSS strings to be applied to the SVG objects of the association link.
+           */
+          style?:
+            | string
+            | {
+                [k: string]: unknown;
+              };
+          /**
+           * Array of decorations used to decorate association links
            */
           decorations?: {
             /**
@@ -2990,2318 +2914,2396 @@ declare module "@elyra/canvas" {
             label?: string;
             [k: string]: unknown;
           }[];
+        }[];
+        /**
+         * An array of messages for the node
+         */
+        messages?: {
+          /**
+           * Name of the parameter that has the message
+           */
+          id_ref: string;
+          /**
+           * Validation identifier from the fail_message validation section.
+           */
+          validation_id?: string;
+          /**
+           * Type of message
+           */
+          type: "info" | "error" | "warning";
+          /**
+           * Message string
+           */
+          text: string;
+          [k: string]: unknown;
+        }[];
+        /**
+         * UI only parameter values for the node
+         */
+        ui_parameters?: {
           [k: string]: unknown;
         };
+        /**
+         * Array of decorations used to decorate nodes
+         */
+        decorations?: {
+          /**
+           * An identifier used to identify the decoration
+           */
+          id?: string;
+          /**
+           * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+           */
+          hotspot?: boolean;
+          /**
+           * CSS class name for decoration styling
+           */
+          class_name?: string;
+          /**
+           * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+           */
+          position?:
+            | "topLeft"
+            | "topCenter"
+            | "topRight"
+            | "middleLeft"
+            | "middleCenter"
+            | "middleRight"
+            | "bottomLeft"
+            | "bottomCenter"
+            | "bottomRight"
+            | "source"
+            | "middle"
+            | "target";
+          /**
+           * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+           */
+          x_pos?: number;
+          /**
+           * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+           */
+          y_pos?: number;
+          /**
+           * Image displayed at the decoration position. Provide either this or a label.
+           */
+          image?: string;
+          /**
+           * Label displayed at the decoration position. Provide either this or an image.
+           */
+          label?: string;
+          [k: string]: unknown;
+        }[];
         [k: string]: unknown;
       };
-      // NOTE: Our palette only has execution_nodes, but this could change
-      //   | {
-      //       /**
-      //        * Unique identifier for the supernode within the current pipeline
-      //        */
-      //       id: string;
-      //       /**
-      //        * Supernode description
-      //        */
-      //       description?: string;
-      //       /**
-      //        * Node type - always 'super_node' for supernode elements
-      //        */
-      //       type: "super_node";
-      //       /**
-      //        * Name of the tool which can be used to view or edit the sub-flow for this supernode. The default is 'canvas'
-      //        */
-      //       open_with_tool?: string;
-      //       /**
-      //        * Refers to the sub-flow associated with this supernode
-      //        */
-      //       subflow_ref: {
-      //         /**
-      //          * Reference to an external sub-flow. When not present the sub-flow is assumed to be in the current document. A value of 'app_defined' indicates a sub-flow identifier is present, but the controlling application will serve up the sub-pipeline in the form of a new pipeline-flow document (no sub-flow is present in the document).
-      //          */
-      //         url?: string;
-      //         /**
-      //          * Sub-flow identifier reference
-      //          */
-      //         pipeline_id_ref: string;
-      //         [k: string]: unknown;
-      //       };
-      //       inputs?: {
-      //         /**
-      //          * Unique identifier
-      //          */
-      //         id: string;
-      //         /**
-      //          * Optional data record schema associated with the port
-      //          */
-      //         schema_ref?: string;
-      //         /**
-      //          * Array of links going into the node. Applies to input ports and exit bindings only.
-      //          */
-      //         links?: [
-      //           {
-      //             /**
-      //              * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
-      //              */
-      //             id?: string;
-      //             /**
-      //              * id of a node this link connects to
-      //              */
-      //             node_id_ref: string;
-      //             /**
-      //              * optional port id of a node this link connects to
-      //              */
-      //             port_id_ref?: string;
-      //             /**
-      //              * optional link name (used in parameter sets when there are multiple input sources)
-      //              */
-      //             link_name?: string;
-      //             /**
-      //              * Link type attribute
-      //              */
-      //             type_attr?: string;
-      //             /**
-      //              * Link description
-      //              */
-      //             description?: string;
-      //             /**
-      //              * Object containing app-specific data
-      //              */
-      //             app_data?: {
-      //               /**
-      //                * object with app-specific UI-information
-      //                */
-      //               ui_data?: {
-      //                 /**
-      //                  * CSS class name
-      //                  */
-      //                 class_name?: string;
-      //                 /**
-      //                  * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
-      //                  */
-      //                 style?:
-      //                   | string
-      //                   | {
-      //                       [k: string]: unknown;
-      //                     };
-      //                 /**
-      //                  * Array of decorations used to decorate node links
-      //                  */
-      //                 decorations?: {
-      //                   /**
-      //                    * An identifier used to identify the decoration
-      //                    */
-      //                   id?: string;
-      //                   /**
-      //                    * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                    */
-      //                   hotspot?: boolean;
-      //                   /**
-      //                    * CSS class name for decoration styling
-      //                    */
-      //                   class_name?: string;
-      //                   /**
-      //                    * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                    */
-      //                   position?:
-      //                     | "topLeft"
-      //                     | "topCenter"
-      //                     | "topRight"
-      //                     | "middleLeft"
-      //                     | "middleCenter"
-      //                     | "middleRight"
-      //                     | "bottomLeft"
-      //                     | "bottomCenter"
-      //                     | "bottomRight"
-      //                     | "source"
-      //                     | "middle"
-      //                     | "target";
-      //                   /**
-      //                    * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                    */
-      //                   x_pos?: number;
-      //                   /**
-      //                    * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                    */
-      //                   y_pos?: number;
-      //                   /**
-      //                    * Image displayed at the decoration position. Provide either this or a label.
-      //                    */
-      //                   image?: string;
-      //                   /**
-      //                    * Label displayed at the decoration position. Provide either this or an image.
-      //                    */
-      //                   label?: string;
-      //                   [k: string]: unknown;
-      //                 }[];
-      //                 [k: string]: unknown;
-      //               };
-      //               [k: string]: unknown;
-      //             };
-      //           },
-      //           ...{
-      //             /**
-      //              * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
-      //              */
-      //             id?: string;
-      //             /**
-      //              * id of a node this link connects to
-      //              */
-      //             node_id_ref: string;
-      //             /**
-      //              * optional port id of a node this link connects to
-      //              */
-      //             port_id_ref?: string;
-      //             /**
-      //              * optional link name (used in parameter sets when there are multiple input sources)
-      //              */
-      //             link_name?: string;
-      //             /**
-      //              * Link type attribute
-      //              */
-      //             type_attr?: string;
-      //             /**
-      //              * Link description
-      //              */
-      //             description?: string;
-      //             /**
-      //              * Object containing app-specific data
-      //              */
-      //             app_data?: {
-      //               /**
-      //                * object with app-specific UI-information
-      //                */
-      //               ui_data?: {
-      //                 /**
-      //                  * CSS class name
-      //                  */
-      //                 class_name?: string;
-      //                 /**
-      //                  * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
-      //                  */
-      //                 style?:
-      //                   | string
-      //                   | {
-      //                       [k: string]: unknown;
-      //                     };
-      //                 /**
-      //                  * Array of decorations used to decorate node links
-      //                  */
-      //                 decorations?: {
-      //                   /**
-      //                    * An identifier used to identify the decoration
-      //                    */
-      //                   id?: string;
-      //                   /**
-      //                    * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                    */
-      //                   hotspot?: boolean;
-      //                   /**
-      //                    * CSS class name for decoration styling
-      //                    */
-      //                   class_name?: string;
-      //                   /**
-      //                    * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                    */
-      //                   position?:
-      //                     | "topLeft"
-      //                     | "topCenter"
-      //                     | "topRight"
-      //                     | "middleLeft"
-      //                     | "middleCenter"
-      //                     | "middleRight"
-      //                     | "bottomLeft"
-      //                     | "bottomCenter"
-      //                     | "bottomRight"
-      //                     | "source"
-      //                     | "middle"
-      //                     | "target";
-      //                   /**
-      //                    * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                    */
-      //                   x_pos?: number;
-      //                   /**
-      //                    * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                    */
-      //                   y_pos?: number;
-      //                   /**
-      //                    * Image displayed at the decoration position. Provide either this or a label.
-      //                    */
-      //                   image?: string;
-      //                   /**
-      //                    * Label displayed at the decoration position. Provide either this or an image.
-      //                    */
-      //                   label?: string;
-      //                   [k: string]: unknown;
-      //                 }[];
-      //                 [k: string]: unknown;
-      //               };
-      //               [k: string]: unknown;
-      //             };
-      //           }[]
-      //         ];
-      //         /**
-      //          * Optional node id binding within the current document.
-      //          */
-      //         subflow_node_ref?: string;
-      //         /**
-      //          * Parameters for the binding port
-      //          */
-      //         parameters?: {
-      //           [k: string]: unknown;
-      //         };
-      //         /**
-      //          * Object containing app-specific data
-      //          */
-      //         app_data?: {
-      //           /**
-      //            * Additional UI info for ports
-      //            */
-      //           ui_data?: {
-      //             /**
-      //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
-      //              */
-      //             cardinality?: {
-      //               /**
-      //                * Minimum data sets that are required for this port
-      //                */
-      //               min?: number;
-      //               /**
-      //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
-      //                */
-      //               max?: number;
-      //             };
-      //             /**
-      //              * CSS class name
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
-      //              */
-      //             style?:
-      //               | string
-      //               | {
-      //                   [k: string]: unknown;
-      //                 };
-      //             /**
-      //              * Port name
-      //              */
-      //             label?: string;
-      //             [k: string]: unknown;
-      //           };
-      //           [k: string]: unknown;
-      //         };
-      //       }[];
-      //       outputs?: {
-      //         /**
-      //          * Unique identifier
-      //          */
-      //         id: string;
-      //         /**
-      //          * Optional data record schema associated with the port
-      //          */
-      //         schema_ref?: string;
-      //         /**
-      //          * Array of links going into the node. Applies to input ports and exit bindings only.
-      //          */
-      //         links?: [
-      //           {
-      //             /**
-      //              * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
-      //              */
-      //             id?: string;
-      //             /**
-      //              * id of a node this link connects to
-      //              */
-      //             node_id_ref: string;
-      //             /**
-      //              * optional port id of a node this link connects to
-      //              */
-      //             port_id_ref?: string;
-      //             /**
-      //              * optional link name (used in parameter sets when there are multiple input sources)
-      //              */
-      //             link_name?: string;
-      //             /**
-      //              * Link type attribute
-      //              */
-      //             type_attr?: string;
-      //             /**
-      //              * Link description
-      //              */
-      //             description?: string;
-      //             /**
-      //              * Object containing app-specific data
-      //              */
-      //             app_data?: {
-      //               /**
-      //                * object with app-specific UI-information
-      //                */
-      //               ui_data?: {
-      //                 /**
-      //                  * CSS class name
-      //                  */
-      //                 class_name?: string;
-      //                 /**
-      //                  * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
-      //                  */
-      //                 style?:
-      //                   | string
-      //                   | {
-      //                       [k: string]: unknown;
-      //                     };
-      //                 /**
-      //                  * Array of decorations used to decorate node links
-      //                  */
-      //                 decorations?: {
-      //                   /**
-      //                    * An identifier used to identify the decoration
-      //                    */
-      //                   id?: string;
-      //                   /**
-      //                    * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                    */
-      //                   hotspot?: boolean;
-      //                   /**
-      //                    * CSS class name for decoration styling
-      //                    */
-      //                   class_name?: string;
-      //                   /**
-      //                    * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                    */
-      //                   position?:
-      //                     | "topLeft"
-      //                     | "topCenter"
-      //                     | "topRight"
-      //                     | "middleLeft"
-      //                     | "middleCenter"
-      //                     | "middleRight"
-      //                     | "bottomLeft"
-      //                     | "bottomCenter"
-      //                     | "bottomRight"
-      //                     | "source"
-      //                     | "middle"
-      //                     | "target";
-      //                   /**
-      //                    * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                    */
-      //                   x_pos?: number;
-      //                   /**
-      //                    * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                    */
-      //                   y_pos?: number;
-      //                   /**
-      //                    * Image displayed at the decoration position. Provide either this or a label.
-      //                    */
-      //                   image?: string;
-      //                   /**
-      //                    * Label displayed at the decoration position. Provide either this or an image.
-      //                    */
-      //                   label?: string;
-      //                   [k: string]: unknown;
-      //                 }[];
-      //                 [k: string]: unknown;
-      //               };
-      //               [k: string]: unknown;
-      //             };
-      //           },
-      //           ...{
-      //             /**
-      //              * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
-      //              */
-      //             id?: string;
-      //             /**
-      //              * id of a node this link connects to
-      //              */
-      //             node_id_ref: string;
-      //             /**
-      //              * optional port id of a node this link connects to
-      //              */
-      //             port_id_ref?: string;
-      //             /**
-      //              * optional link name (used in parameter sets when there are multiple input sources)
-      //              */
-      //             link_name?: string;
-      //             /**
-      //              * Link type attribute
-      //              */
-      //             type_attr?: string;
-      //             /**
-      //              * Link description
-      //              */
-      //             description?: string;
-      //             /**
-      //              * Object containing app-specific data
-      //              */
-      //             app_data?: {
-      //               /**
-      //                * object with app-specific UI-information
-      //                */
-      //               ui_data?: {
-      //                 /**
-      //                  * CSS class name
-      //                  */
-      //                 class_name?: string;
-      //                 /**
-      //                  * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
-      //                  */
-      //                 style?:
-      //                   | string
-      //                   | {
-      //                       [k: string]: unknown;
-      //                     };
-      //                 /**
-      //                  * Array of decorations used to decorate node links
-      //                  */
-      //                 decorations?: {
-      //                   /**
-      //                    * An identifier used to identify the decoration
-      //                    */
-      //                   id?: string;
-      //                   /**
-      //                    * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                    */
-      //                   hotspot?: boolean;
-      //                   /**
-      //                    * CSS class name for decoration styling
-      //                    */
-      //                   class_name?: string;
-      //                   /**
-      //                    * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                    */
-      //                   position?:
-      //                     | "topLeft"
-      //                     | "topCenter"
-      //                     | "topRight"
-      //                     | "middleLeft"
-      //                     | "middleCenter"
-      //                     | "middleRight"
-      //                     | "bottomLeft"
-      //                     | "bottomCenter"
-      //                     | "bottomRight"
-      //                     | "source"
-      //                     | "middle"
-      //                     | "target";
-      //                   /**
-      //                    * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                    */
-      //                   x_pos?: number;
-      //                   /**
-      //                    * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                    */
-      //                   y_pos?: number;
-      //                   /**
-      //                    * Image displayed at the decoration position. Provide either this or a label.
-      //                    */
-      //                   image?: string;
-      //                   /**
-      //                    * Label displayed at the decoration position. Provide either this or an image.
-      //                    */
-      //                   label?: string;
-      //                   [k: string]: unknown;
-      //                 }[];
-      //                 [k: string]: unknown;
-      //               };
-      //               [k: string]: unknown;
-      //             };
-      //           }[]
-      //         ];
-      //         /**
-      //          * Optional node id binding within the current document.
-      //          */
-      //         subflow_node_ref?: string;
-      //         /**
-      //          * Parameters for the binding port
-      //          */
-      //         parameters?: {
-      //           [k: string]: unknown;
-      //         };
-      //         /**
-      //          * Object containing app-specific data
-      //          */
-      //         app_data?: {
-      //           /**
-      //            * Additional UI info for ports
-      //            */
-      //           ui_data?: {
-      //             /**
-      //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
-      //              */
-      //             cardinality?: {
-      //               /**
-      //                * Minimum data sets that are required for this port
-      //                */
-      //               min?: number;
-      //               /**
-      //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
-      //                */
-      //               max?: number;
-      //             };
-      //             /**
-      //              * CSS class name
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
-      //              */
-      //             style?:
-      //               | string
-      //               | {
-      //                   [k: string]: unknown;
-      //                 };
-      //             /**
-      //              * Port name
-      //              */
-      //             label?: string;
-      //             [k: string]: unknown;
-      //           };
-      //           [k: string]: unknown;
-      //         };
-      //       }[];
-      //       /**
-      //        * Input parameters for the supernode
-      //        */
-      //       parameters?: {
-      //         [k: string]: unknown;
-      //       };
-      //       /**
-      //        * Object containing app-specific data
-      //        */
-      //       app_data?: {
-      //         /**
-      //          * object with app-specific UI-information
-      //          */
-      //         ui_data?: {
-      //           /**
-      //            * User-defined label
-      //            */
-      //           label?: string;
-      //           /**
-      //            * User-defined description
-      //            */
-      //           description?: string;
-      //           /**
-      //            * CSS class name
-      //            */
-      //           class_name?: string;
-      //           /**
-      //            * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node.
-      //            */
-      //           style?:
-      //             | string
-      //             | {
-      //                 [k: string]: unknown;
-      //               };
-      //           /**
-      //            * Image name (do not embed images inline!)
-      //            */
-      //           image?: string;
-      //           /**
-      //            * x-position
-      //            */
-      //           x_pos?: number;
-      //           /**
-      //            * y-position
-      //            */
-      //           y_pos?: number;
-      //           /**
-      //            * Indicates whether a supernode is shown in expanded state or as a regular node.
-      //            */
-      //           is_expanded?: boolean;
-      //           /**
-      //            * Height of expanded supernode. If not provided an appropriate height is calculated.
-      //            */
-      //           expanded_height?: number;
-      //           /**
-      //            * Width of expanded supernode. If not provided an appropriate width is calculated.
-      //            */
-      //           expanded_width?: number;
-      //           /**
-      //            * additional attributes
-      //            */
-      //           attributes?: string;
-      //           /**
-      //            * Array of non-data node linkage
-      //            */
-      //           associations?: {
-      //             /**
-      //              * Association identifier
-      //              */
-      //             id: string;
-      //             /**
-      //              * Target node id
-      //              */
-      //             node_ref: string;
-      //             /**
-      //              * CSS class name for link styling
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the association link.
-      //              */
-      //             style?:
-      //               | string
-      //               | {
-      //                   [k: string]: unknown;
-      //                 };
-      //             /**
-      //              * Array of decorations used to decorate association links
-      //              */
-      //             decorations?: {
-      //               /**
-      //                * An identifier used to identify the decoration
-      //                */
-      //               id?: string;
-      //               /**
-      //                * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                */
-      //               hotspot?: boolean;
-      //               /**
-      //                * CSS class name for decoration styling
-      //                */
-      //               class_name?: string;
-      //               /**
-      //                * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                */
-      //               position?:
-      //                 | "topLeft"
-      //                 | "topCenter"
-      //                 | "topRight"
-      //                 | "middleLeft"
-      //                 | "middleCenter"
-      //                 | "middleRight"
-      //                 | "bottomLeft"
-      //                 | "bottomCenter"
-      //                 | "bottomRight"
-      //                 | "source"
-      //                 | "middle"
-      //                 | "target";
-      //               /**
-      //                * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                */
-      //               x_pos?: number;
-      //               /**
-      //                * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                */
-      //               y_pos?: number;
-      //               /**
-      //                * Image displayed at the decoration position. Provide either this or a label.
-      //                */
-      //               image?: string;
-      //               /**
-      //                * Label displayed at the decoration position. Provide either this or an image.
-      //                */
-      //               label?: string;
-      //               [k: string]: unknown;
-      //             }[];
-      //           }[];
-      //           /**
-      //            * An array of messages for the node
-      //            */
-      //           messages?: {
-      //             /**
-      //              * Name of the parameter that has the message
-      //              */
-      //             id_ref: string;
-      //             /**
-      //              * Validation identifier from the fail_message validation section.
-      //              */
-      //             validation_id?: string;
-      //             /**
-      //              * Type of message
-      //              */
-      //             type: "info" | "error" | "warning";
-      //             /**
-      //              * Message string
-      //              */
-      //             text: string;
-      //             [k: string]: unknown;
-      //           }[];
-      //           /**
-      //            * UI only parameter values for the node
-      //            */
-      //           ui_parameters?: {
-      //             [k: string]: unknown;
-      //           };
-      //           /**
-      //            * Array of decorations used to decorate nodes
-      //            */
-      //           decorations?: {
-      //             /**
-      //              * An identifier used to identify the decoration
-      //              */
-      //             id?: string;
-      //             /**
-      //              * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //              */
-      //             hotspot?: boolean;
-      //             /**
-      //              * CSS class name for decoration styling
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //              */
-      //             position?:
-      //               | "topLeft"
-      //               | "topCenter"
-      //               | "topRight"
-      //               | "middleLeft"
-      //               | "middleCenter"
-      //               | "middleRight"
-      //               | "bottomLeft"
-      //               | "bottomCenter"
-      //               | "bottomRight"
-      //               | "source"
-      //               | "middle"
-      //               | "target";
-      //             /**
-      //              * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //              */
-      //             x_pos?: number;
-      //             /**
-      //              * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //              */
-      //             y_pos?: number;
-      //             /**
-      //              * Image displayed at the decoration position. Provide either this or a label.
-      //              */
-      //             image?: string;
-      //             /**
-      //              * Label displayed at the decoration position. Provide either this or an image.
-      //              */
-      //             label?: string;
-      //             [k: string]: unknown;
-      //           }[];
-      //           [k: string]: unknown;
-      //         };
-      //         [k: string]: unknown;
-      //       };
-      //     }
-      //   | {
-      //       /**
-      //        * Unique identifier for the binding within the current pipeline
-      //        */
-      //       id: string;
-      //       /**
-      //        * Binding entry node description
-      //        */
-      //       description?: string;
-      //       /**
-      //        * Node type - always 'binding' for binding elements
-      //        */
-      //       type: "binding";
-      //       outputs?: {
-      //         /**
-      //          * Unique identifier
-      //          */
-      //         id: string;
-      //         /**
-      //          * Optional data record schema reference associated with the port
-      //          */
-      //         schema_ref?: string;
-      //         /**
-      //          * Array of links going into the node. Applies to input ports and exit bindings only.
-      //          */
-      //         links?: {
-      //           /**
-      //            * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
-      //            */
-      //           id?: string;
-      //           /**
-      //            * id of a node this link connects to
-      //            */
-      //           node_id_ref: string;
-      //           /**
-      //            * optional port id of a node this link connects to
-      //            */
-      //           port_id_ref?: string;
-      //           /**
-      //            * optional link name (used in parameter sets when there are multiple input sources)
-      //            */
-      //           link_name?: string;
-      //           /**
-      //            * Link type attribute
-      //            */
-      //           type_attr?: string;
-      //           /**
-      //            * Link description
-      //            */
-      //           description?: string;
-      //           /**
-      //            * Object containing app-specific data
-      //            */
-      //           app_data?: {
-      //             /**
-      //              * object with app-specific UI-information
-      //              */
-      //             ui_data?: {
-      //               /**
-      //                * CSS class name
-      //                */
-      //               class_name?: string;
-      //               /**
-      //                * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
-      //                */
-      //               style?:
-      //                 | string
-      //                 | {
-      //                     [k: string]: unknown;
-      //                   };
-      //               /**
-      //                * Array of decorations used to decorate node links
-      //                */
-      //               decorations?: {
-      //                 /**
-      //                  * An identifier used to identify the decoration
-      //                  */
-      //                 id?: string;
-      //                 /**
-      //                  * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                  */
-      //                 hotspot?: boolean;
-      //                 /**
-      //                  * CSS class name for decoration styling
-      //                  */
-      //                 class_name?: string;
-      //                 /**
-      //                  * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                  */
-      //                 position?:
-      //                   | "topLeft"
-      //                   | "topCenter"
-      //                   | "topRight"
-      //                   | "middleLeft"
-      //                   | "middleCenter"
-      //                   | "middleRight"
-      //                   | "bottomLeft"
-      //                   | "bottomCenter"
-      //                   | "bottomRight"
-      //                   | "source"
-      //                   | "middle"
-      //                   | "target";
-      //                 /**
-      //                  * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                  */
-      //                 x_pos?: number;
-      //                 /**
-      //                  * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                  */
-      //                 y_pos?: number;
-      //                 /**
-      //                  * Image displayed at the decoration position. Provide either this or a label.
-      //                  */
-      //                 image?: string;
-      //                 /**
-      //                  * Label displayed at the decoration position. Provide either this or an image.
-      //                  */
-      //                 label?: string;
-      //                 [k: string]: unknown;
-      //               }[];
-      //               [k: string]: unknown;
-      //             };
-      //             [k: string]: unknown;
-      //           };
-      //         }[];
-      //         /**
-      //          * Parameters for the port
-      //          */
-      //         parameters?: {
-      //           [k: string]: unknown;
-      //         };
-      //         /**
-      //          * Object containing app-specific data
-      //          */
-      //         app_data?: {
-      //           /**
-      //            * Additional UI info for ports
-      //            */
-      //           ui_data?: {
-      //             /**
-      //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
-      //              */
-      //             cardinality?: {
-      //               /**
-      //                * Minimum data sets that are required for this port
-      //                */
-      //               min?: number;
-      //               /**
-      //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
-      //                */
-      //               max?: number;
-      //             };
-      //             /**
-      //              * CSS class name
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
-      //              */
-      //             style?:
-      //               | string
-      //               | {
-      //                   [k: string]: unknown;
-      //                 };
-      //             /**
-      //              * Port name
-      //              */
-      //             label?: string;
-      //             [k: string]: unknown;
-      //           };
-      //           [k: string]: unknown;
-      //         };
-      //       }[];
-      //       /**
-      //        * Object containing app-specific data
-      //        */
-      //       app_data?: {
-      //         /**
-      //          * object with app-specific UI-information
-      //          */
-      //         ui_data?: {
-      //           /**
-      //            * User-defined label
-      //            */
-      //           label?: string;
-      //           /**
-      //            * User-defined description
-      //            */
-      //           description?: string;
-      //           /**
-      //            * CSS class name
-      //            */
-      //           class_name?: string;
-      //           /**
-      //            * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node.
-      //            */
-      //           style?:
-      //             | string
-      //             | {
-      //                 [k: string]: unknown;
-      //               };
-      //           /**
-      //            * Image name (do not embed images inline!)
-      //            */
-      //           image?: string;
-      //           /**
-      //            * x-position
-      //            */
-      //           x_pos?: number;
-      //           /**
-      //            * y-position
-      //            */
-      //           y_pos?: number;
-      //           /**
-      //            * Indicates whether a supernode is shown in expanded state or as a regular node.
-      //            */
-      //           is_expanded?: boolean;
-      //           /**
-      //            * Height of expanded supernode. If not provided an appropriate height is calculated.
-      //            */
-      //           expanded_height?: number;
-      //           /**
-      //            * Width of expanded supernode. If not provided an appropriate width is calculated.
-      //            */
-      //           expanded_width?: number;
-      //           /**
-      //            * additional attributes
-      //            */
-      //           attributes?: string;
-      //           /**
-      //            * Array of non-data node linkage
-      //            */
-      //           associations?: {
-      //             /**
-      //              * Association identifier
-      //              */
-      //             id: string;
-      //             /**
-      //              * Target node id
-      //              */
-      //             node_ref: string;
-      //             /**
-      //              * CSS class name for link styling
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the association link.
-      //              */
-      //             style?:
-      //               | string
-      //               | {
-      //                   [k: string]: unknown;
-      //                 };
-      //             /**
-      //              * Array of decorations used to decorate association links
-      //              */
-      //             decorations?: {
-      //               /**
-      //                * An identifier used to identify the decoration
-      //                */
-      //               id?: string;
-      //               /**
-      //                * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                */
-      //               hotspot?: boolean;
-      //               /**
-      //                * CSS class name for decoration styling
-      //                */
-      //               class_name?: string;
-      //               /**
-      //                * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                */
-      //               position?:
-      //                 | "topLeft"
-      //                 | "topCenter"
-      //                 | "topRight"
-      //                 | "middleLeft"
-      //                 | "middleCenter"
-      //                 | "middleRight"
-      //                 | "bottomLeft"
-      //                 | "bottomCenter"
-      //                 | "bottomRight"
-      //                 | "source"
-      //                 | "middle"
-      //                 | "target";
-      //               /**
-      //                * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                */
-      //               x_pos?: number;
-      //               /**
-      //                * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                */
-      //               y_pos?: number;
-      //               /**
-      //                * Image displayed at the decoration position. Provide either this or a label.
-      //                */
-      //               image?: string;
-      //               /**
-      //                * Label displayed at the decoration position. Provide either this or an image.
-      //                */
-      //               label?: string;
-      //               [k: string]: unknown;
-      //             }[];
-      //           }[];
-      //           /**
-      //            * An array of messages for the node
-      //            */
-      //           messages?: {
-      //             /**
-      //              * Name of the parameter that has the message
-      //              */
-      //             id_ref: string;
-      //             /**
-      //              * Validation identifier from the fail_message validation section.
-      //              */
-      //             validation_id?: string;
-      //             /**
-      //              * Type of message
-      //              */
-      //             type: "info" | "error" | "warning";
-      //             /**
-      //              * Message string
-      //              */
-      //             text: string;
-      //             [k: string]: unknown;
-      //           }[];
-      //           /**
-      //            * UI only parameter values for the node
-      //            */
-      //           ui_parameters?: {
-      //             [k: string]: unknown;
-      //           };
-      //           /**
-      //            * Array of decorations used to decorate nodes
-      //            */
-      //           decorations?: {
-      //             /**
-      //              * An identifier used to identify the decoration
-      //              */
-      //             id?: string;
-      //             /**
-      //              * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //              */
-      //             hotspot?: boolean;
-      //             /**
-      //              * CSS class name for decoration styling
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //              */
-      //             position?:
-      //               | "topLeft"
-      //               | "topCenter"
-      //               | "topRight"
-      //               | "middleLeft"
-      //               | "middleCenter"
-      //               | "middleRight"
-      //               | "bottomLeft"
-      //               | "bottomCenter"
-      //               | "bottomRight"
-      //               | "source"
-      //               | "middle"
-      //               | "target";
-      //             /**
-      //              * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //              */
-      //             x_pos?: number;
-      //             /**
-      //              * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //              */
-      //             y_pos?: number;
-      //             /**
-      //              * Image displayed at the decoration position. Provide either this or a label.
-      //              */
-      //             image?: string;
-      //             /**
-      //              * Label displayed at the decoration position. Provide either this or an image.
-      //              */
-      //             label?: string;
-      //             [k: string]: unknown;
-      //           }[];
-      //           [k: string]: unknown;
-      //         };
-      //         [k: string]: unknown;
-      //       };
-      //       /**
-      //        * Details of the connection to use for a pipeline binding node.
-      //        */
-      //       connection?: {
-      //         /**
-      //          * A name tag for disambiguating connections
-      //          */
-      //         name?: string;
-      //         /**
-      //          * Object containing app-specific data
-      //          */
-      //         app_data?: {
-      //           [k: string]: unknown;
-      //         };
-      //         /**
-      //          * A reference to a connection by ID.
-      //          */
-      //         ref: string;
-      //         /**
-      //          * If ref is set, this refers to the ID of the catalog which contains the connection. If neither this attribute nor project_ref are specified, the connection will be assumed to exist in the project or catalog which contains the pipeline.
-      //          */
-      //         catalog_ref?: string;
-      //         /**
-      //          * If ref is set, this refers to the ID of the project which contains the connection. If neither this attribute nor catalog_ref are specified, the connection will be assumed to exist in the project or catalog which contains the pipeline.
-      //          */
-      //         project_ref?: string;
-      //         /**
-      //          * The properties for the connection. The specific properties allowed depend on the type of connection referenced.
-      //          */
-      //         properties?: {
-      //           [k: string]: unknown;
-      //         };
-      //         [k: string]: unknown;
-      //       };
-      //       /**
-      //        * Details of the data asset contained in a catalog or project to use for a pipeline binding node.
-      //        */
-      //       data_asset?: {
-      //         /**
-      //          * Object containing app-specific data
-      //          */
-      //         app_data?: {
-      //           [k: string]: unknown;
-      //         };
-      //         /**
-      //          * A reference to a data asset by ID.
-      //          */
-      //         ref?: string;
-      //         /**
-      //          * If ref is set, this refers to the ID of the catalog which contains the data asset. If neither this attribute nor project_ref are specified, the data asset will be assumed to exist in the project or catalog which contains the pipeline.
-      //          */
-      //         catalog_ref?: string;
-      //         /**
-      //          * If ref is set, this refers to the ID of the project which contains the data asset. If neither this attribute nor catalog_ref are specified, the data asset will be assumed to exist in the project or catalog which contains the pipeline.
-      //          */
-      //         project_ref?: string;
-      //         /**
-      //          * Properties controlling how the data asset is used.
-      //          */
-      //         properties?: {
-      //           /**
-      //            * The ID of the data asset attachment to use. If not specified and used as a source, the first suitable attachment found will be used. If not specified and used as a target, a new attachment will be created.
-      //            */
-      //           attachment_ref?: string;
-      //           /**
-      //            * Specifies the name of the data asset to read, create or update if ref is unset.
-      //            */
-      //           name?: boolean & string;
-      //           /**
-      //            * When used as a target, whether to update the data asset with the schema when a run completes or not (will be automatically updated if not supplied by caller).
-      //            */
-      //           no_write_schema?: boolean;
-      //           /**
-      //            * When used as a target, whether to update the data asset with the status when a run completes or not (will be automatically updated if not supplied by caller).
-      //            */
-      //           no_write_status?: boolean;
-      //           [k: string]: {
-      //             [k: string]: unknown;
-      //           };
-      //         };
-      //         [k: string]: unknown;
-      //       };
-      //       /**
-      //        * Binding node type identifier
-      //        */
-      //       op?: string;
-      //       /**
-      //        * Parameters for the binding entry node
-      //        */
-      //       parameters?: {
-      //         [k: string]: unknown;
-      //       };
-      //     }
-      //   | {
-      //       /**
-      //        * Unique identifier for the binding within the current pipeline
-      //        */
-      //       id: string;
-      //       /**
-      //        * Binding exit node description
-      //        */
-      //       description?: string;
-      //       /**
-      //        * Node type - always 'binding' for binding elements
-      //        */
-      //       type: "binding";
-      //       inputs?: {
-      //         /**
-      //          * Unique identifier
-      //          */
-      //         id: string;
-      //         /**
-      //          * Optional data record schema reference associated with the port
-      //          */
-      //         schema_ref?: string;
-      //         /**
-      //          * Array of links going into the node. Applies to input ports and exit bindings only.
-      //          */
-      //         links?: {
-      //           /**
-      //            * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
-      //            */
-      //           id?: string;
-      //           /**
-      //            * id of a node this link connects to
-      //            */
-      //           node_id_ref: string;
-      //           /**
-      //            * optional port id of a node this link connects to
-      //            */
-      //           port_id_ref?: string;
-      //           /**
-      //            * optional link name (used in parameter sets when there are multiple input sources)
-      //            */
-      //           link_name?: string;
-      //           /**
-      //            * Link type attribute
-      //            */
-      //           type_attr?: string;
-      //           /**
-      //            * Link description
-      //            */
-      //           description?: string;
-      //           /**
-      //            * Object containing app-specific data
-      //            */
-      //           app_data?: {
-      //             /**
-      //              * object with app-specific UI-information
-      //              */
-      //             ui_data?: {
-      //               /**
-      //                * CSS class name
-      //                */
-      //               class_name?: string;
-      //               /**
-      //                * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
-      //                */
-      //               style?:
-      //                 | string
-      //                 | {
-      //                     [k: string]: unknown;
-      //                   };
-      //               /**
-      //                * Array of decorations used to decorate node links
-      //                */
-      //               decorations?: {
-      //                 /**
-      //                  * An identifier used to identify the decoration
-      //                  */
-      //                 id?: string;
-      //                 /**
-      //                  * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                  */
-      //                 hotspot?: boolean;
-      //                 /**
-      //                  * CSS class name for decoration styling
-      //                  */
-      //                 class_name?: string;
-      //                 /**
-      //                  * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                  */
-      //                 position?:
-      //                   | "topLeft"
-      //                   | "topCenter"
-      //                   | "topRight"
-      //                   | "middleLeft"
-      //                   | "middleCenter"
-      //                   | "middleRight"
-      //                   | "bottomLeft"
-      //                   | "bottomCenter"
-      //                   | "bottomRight"
-      //                   | "source"
-      //                   | "middle"
-      //                   | "target";
-      //                 /**
-      //                  * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                  */
-      //                 x_pos?: number;
-      //                 /**
-      //                  * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                  */
-      //                 y_pos?: number;
-      //                 /**
-      //                  * Image displayed at the decoration position. Provide either this or a label.
-      //                  */
-      //                 image?: string;
-      //                 /**
-      //                  * Label displayed at the decoration position. Provide either this or an image.
-      //                  */
-      //                 label?: string;
-      //                 [k: string]: unknown;
-      //               }[];
-      //               [k: string]: unknown;
-      //             };
-      //             [k: string]: unknown;
-      //           };
-      //         }[];
-      //         /**
-      //          * Parameters for the port
-      //          */
-      //         parameters?: {
-      //           [k: string]: unknown;
-      //         };
-      //         /**
-      //          * Object containing app-specific data
-      //          */
-      //         app_data?: {
-      //           /**
-      //            * Additional UI info for ports
-      //            */
-      //           ui_data?: {
-      //             /**
-      //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
-      //              */
-      //             cardinality?: {
-      //               /**
-      //                * Minimum data sets that are required for this port
-      //                */
-      //               min?: number;
-      //               /**
-      //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
-      //                */
-      //               max?: number;
-      //             };
-      //             /**
-      //              * CSS class name
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
-      //              */
-      //             style?:
-      //               | string
-      //               | {
-      //                   [k: string]: unknown;
-      //                 };
-      //             /**
-      //              * Port name
-      //              */
-      //             label?: string;
-      //             [k: string]: unknown;
-      //           };
-      //           [k: string]: unknown;
-      //         };
-      //       }[];
-      //       /**
-      //        * Object containing app-specific data
-      //        */
-      //       app_data?: {
-      //         /**
-      //          * object with app-specific UI-information
-      //          */
-      //         ui_data?: {
-      //           /**
-      //            * User-defined label
-      //            */
-      //           label?: string;
-      //           /**
-      //            * User-defined description
-      //            */
-      //           description?: string;
-      //           /**
-      //            * CSS class name
-      //            */
-      //           class_name?: string;
-      //           /**
-      //            * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node.
-      //            */
-      //           style?:
-      //             | string
-      //             | {
-      //                 [k: string]: unknown;
-      //               };
-      //           /**
-      //            * Image name (do not embed images inline!)
-      //            */
-      //           image?: string;
-      //           /**
-      //            * x-position
-      //            */
-      //           x_pos?: number;
-      //           /**
-      //            * y-position
-      //            */
-      //           y_pos?: number;
-      //           /**
-      //            * Indicates whether a supernode is shown in expanded state or as a regular node.
-      //            */
-      //           is_expanded?: boolean;
-      //           /**
-      //            * Height of expanded supernode. If not provided an appropriate height is calculated.
-      //            */
-      //           expanded_height?: number;
-      //           /**
-      //            * Width of expanded supernode. If not provided an appropriate width is calculated.
-      //            */
-      //           expanded_width?: number;
-      //           /**
-      //            * additional attributes
-      //            */
-      //           attributes?: string;
-      //           /**
-      //            * Array of non-data node linkage
-      //            */
-      //           associations?: {
-      //             /**
-      //              * Association identifier
-      //              */
-      //             id: string;
-      //             /**
-      //              * Target node id
-      //              */
-      //             node_ref: string;
-      //             /**
-      //              * CSS class name for link styling
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the association link.
-      //              */
-      //             style?:
-      //               | string
-      //               | {
-      //                   [k: string]: unknown;
-      //                 };
-      //             /**
-      //              * Array of decorations used to decorate association links
-      //              */
-      //             decorations?: {
-      //               /**
-      //                * An identifier used to identify the decoration
-      //                */
-      //               id?: string;
-      //               /**
-      //                * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                */
-      //               hotspot?: boolean;
-      //               /**
-      //                * CSS class name for decoration styling
-      //                */
-      //               class_name?: string;
-      //               /**
-      //                * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                */
-      //               position?:
-      //                 | "topLeft"
-      //                 | "topCenter"
-      //                 | "topRight"
-      //                 | "middleLeft"
-      //                 | "middleCenter"
-      //                 | "middleRight"
-      //                 | "bottomLeft"
-      //                 | "bottomCenter"
-      //                 | "bottomRight"
-      //                 | "source"
-      //                 | "middle"
-      //                 | "target";
-      //               /**
-      //                * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                */
-      //               x_pos?: number;
-      //               /**
-      //                * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                */
-      //               y_pos?: number;
-      //               /**
-      //                * Image displayed at the decoration position. Provide either this or a label.
-      //                */
-      //               image?: string;
-      //               /**
-      //                * Label displayed at the decoration position. Provide either this or an image.
-      //                */
-      //               label?: string;
-      //               [k: string]: unknown;
-      //             }[];
-      //           }[];
-      //           /**
-      //            * An array of messages for the node
-      //            */
-      //           messages?: {
-      //             /**
-      //              * Name of the parameter that has the message
-      //              */
-      //             id_ref: string;
-      //             /**
-      //              * Validation identifier from the fail_message validation section.
-      //              */
-      //             validation_id?: string;
-      //             /**
-      //              * Type of message
-      //              */
-      //             type: "info" | "error" | "warning";
-      //             /**
-      //              * Message string
-      //              */
-      //             text: string;
-      //             [k: string]: unknown;
-      //           }[];
-      //           /**
-      //            * UI only parameter values for the node
-      //            */
-      //           ui_parameters?: {
-      //             [k: string]: unknown;
-      //           };
-      //           /**
-      //            * Array of decorations used to decorate nodes
-      //            */
-      //           decorations?: {
-      //             /**
-      //              * An identifier used to identify the decoration
-      //              */
-      //             id?: string;
-      //             /**
-      //              * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //              */
-      //             hotspot?: boolean;
-      //             /**
-      //              * CSS class name for decoration styling
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //              */
-      //             position?:
-      //               | "topLeft"
-      //               | "topCenter"
-      //               | "topRight"
-      //               | "middleLeft"
-      //               | "middleCenter"
-      //               | "middleRight"
-      //               | "bottomLeft"
-      //               | "bottomCenter"
-      //               | "bottomRight"
-      //               | "source"
-      //               | "middle"
-      //               | "target";
-      //             /**
-      //              * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //              */
-      //             x_pos?: number;
-      //             /**
-      //              * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //              */
-      //             y_pos?: number;
-      //             /**
-      //              * Image displayed at the decoration position. Provide either this or a label.
-      //              */
-      //             image?: string;
-      //             /**
-      //              * Label displayed at the decoration position. Provide either this or an image.
-      //              */
-      //             label?: string;
-      //             [k: string]: unknown;
-      //           }[];
-      //           [k: string]: unknown;
-      //         };
-      //         [k: string]: unknown;
-      //       };
-      //       /**
-      //        * Details of the connection to use for a pipeline binding node.
-      //        */
-      //       connection?: {
-      //         /**
-      //          * A name tag for disambiguating connections
-      //          */
-      //         name?: string;
-      //         /**
-      //          * Object containing app-specific data
-      //          */
-      //         app_data?: {
-      //           [k: string]: unknown;
-      //         };
-      //         /**
-      //          * A reference to a connection by ID.
-      //          */
-      //         ref: string;
-      //         /**
-      //          * If ref is set, this refers to the ID of the catalog which contains the connection. If neither this attribute nor project_ref are specified, the connection will be assumed to exist in the project or catalog which contains the pipeline.
-      //          */
-      //         catalog_ref?: string;
-      //         /**
-      //          * If ref is set, this refers to the ID of the project which contains the connection. If neither this attribute nor catalog_ref are specified, the connection will be assumed to exist in the project or catalog which contains the pipeline.
-      //          */
-      //         project_ref?: string;
-      //         /**
-      //          * The properties for the connection. The specific properties allowed depend on the type of connection referenced.
-      //          */
-      //         properties?: {
-      //           [k: string]: unknown;
-      //         };
-      //         [k: string]: unknown;
-      //       };
-      //       /**
-      //        * Details of the data asset contained in a catalog or project to use for a pipeline binding node.
-      //        */
-      //       data_asset?: {
-      //         /**
-      //          * Object containing app-specific data
-      //          */
-      //         app_data?: {
-      //           [k: string]: unknown;
-      //         };
-      //         /**
-      //          * A reference to a data asset by ID.
-      //          */
-      //         ref?: string;
-      //         /**
-      //          * If ref is set, this refers to the ID of the catalog which contains the data asset. If neither this attribute nor project_ref are specified, the data asset will be assumed to exist in the project or catalog which contains the pipeline.
-      //          */
-      //         catalog_ref?: string;
-      //         /**
-      //          * If ref is set, this refers to the ID of the project which contains the data asset. If neither this attribute nor catalog_ref are specified, the data asset will be assumed to exist in the project or catalog which contains the pipeline.
-      //          */
-      //         project_ref?: string;
-      //         /**
-      //          * Properties controlling how the data asset is used.
-      //          */
-      //         properties?: {
-      //           /**
-      //            * The ID of the data asset attachment to use. If not specified and used as a source, the first suitable attachment found will be used. If not specified and used as a target, a new attachment will be created.
-      //            */
-      //           attachment_ref?: string;
-      //           /**
-      //            * Specifies the name of the data asset to read, create or update if ref is unset.
-      //            */
-      //           name?: boolean & string;
-      //           /**
-      //            * When used as a target, whether to update the data asset with the schema when a run completes or not (will be automatically updated if not supplied by caller).
-      //            */
-      //           no_write_schema?: boolean;
-      //           /**
-      //            * When used as a target, whether to update the data asset with the status when a run completes or not (will be automatically updated if not supplied by caller).
-      //            */
-      //           no_write_status?: boolean;
-      //           [k: string]: {
-      //             [k: string]: unknown;
-      //           };
-      //         };
-      //         [k: string]: unknown;
-      //       };
-      //       /**
-      //        * Binding node type identifier
-      //        */
-      //       op?: string;
-      //       /**
-      //        * Parameters for the binding exit node
-      //        */
-      //       parameters?: {
-      //         [k: string]: unknown;
-      //       };
-      //     }
-      //   | {
-      //       /**
-      //        * Unique identifier for the model within the current pipeline
-      //        */
-      //       id: string;
-      //       /**
-      //        * Model node description
-      //        */
-      //       description?: string;
-      //       /**
-      //        * Node type - always 'model_node' for model pipeline elements
-      //        */
-      //       type: "model_node";
-      //       /**
-      //        * Reference to the binary model
-      //        */
-      //       model_ref?: string;
-      //       inputs: {
-      //         /**
-      //          * Unique identifier
-      //          */
-      //         id: string;
-      //         /**
-      //          * Optional data record schema reference associated with the port
-      //          */
-      //         schema_ref?: string;
-      //         /**
-      //          * Array of links going into the node. Applies to input ports and exit bindings only.
-      //          */
-      //         links?: {
-      //           /**
-      //            * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
-      //            */
-      //           id?: string;
-      //           /**
-      //            * id of a node this link connects to
-      //            */
-      //           node_id_ref: string;
-      //           /**
-      //            * optional port id of a node this link connects to
-      //            */
-      //           port_id_ref?: string;
-      //           /**
-      //            * optional link name (used in parameter sets when there are multiple input sources)
-      //            */
-      //           link_name?: string;
-      //           /**
-      //            * Link type attribute
-      //            */
-      //           type_attr?: string;
-      //           /**
-      //            * Link description
-      //            */
-      //           description?: string;
-      //           /**
-      //            * Object containing app-specific data
-      //            */
-      //           app_data?: {
-      //             /**
-      //              * object with app-specific UI-information
-      //              */
-      //             ui_data?: {
-      //               /**
-      //                * CSS class name
-      //                */
-      //               class_name?: string;
-      //               /**
-      //                * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
-      //                */
-      //               style?:
-      //                 | string
-      //                 | {
-      //                     [k: string]: unknown;
-      //                   };
-      //               /**
-      //                * Array of decorations used to decorate node links
-      //                */
-      //               decorations?: {
-      //                 /**
-      //                  * An identifier used to identify the decoration
-      //                  */
-      //                 id?: string;
-      //                 /**
-      //                  * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                  */
-      //                 hotspot?: boolean;
-      //                 /**
-      //                  * CSS class name for decoration styling
-      //                  */
-      //                 class_name?: string;
-      //                 /**
-      //                  * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                  */
-      //                 position?:
-      //                   | "topLeft"
-      //                   | "topCenter"
-      //                   | "topRight"
-      //                   | "middleLeft"
-      //                   | "middleCenter"
-      //                   | "middleRight"
-      //                   | "bottomLeft"
-      //                   | "bottomCenter"
-      //                   | "bottomRight"
-      //                   | "source"
-      //                   | "middle"
-      //                   | "target";
-      //                 /**
-      //                  * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                  */
-      //                 x_pos?: number;
-      //                 /**
-      //                  * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                  */
-      //                 y_pos?: number;
-      //                 /**
-      //                  * Image displayed at the decoration position. Provide either this or a label.
-      //                  */
-      //                 image?: string;
-      //                 /**
-      //                  * Label displayed at the decoration position. Provide either this or an image.
-      //                  */
-      //                 label?: string;
-      //                 [k: string]: unknown;
-      //               }[];
-      //               [k: string]: unknown;
-      //             };
-      //             [k: string]: unknown;
-      //           };
-      //         }[];
-      //         /**
-      //          * Parameters for the port
-      //          */
-      //         parameters?: {
-      //           [k: string]: unknown;
-      //         };
-      //         /**
-      //          * Object containing app-specific data
-      //          */
-      //         app_data?: {
-      //           /**
-      //            * Additional UI info for ports
-      //            */
-      //           ui_data?: {
-      //             /**
-      //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
-      //              */
-      //             cardinality?: {
-      //               /**
-      //                * Minimum data sets that are required for this port
-      //                */
-      //               min?: number;
-      //               /**
-      //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
-      //                */
-      //               max?: number;
-      //             };
-      //             /**
-      //              * CSS class name
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
-      //              */
-      //             style?:
-      //               | string
-      //               | {
-      //                   [k: string]: unknown;
-      //                 };
-      //             /**
-      //              * Port name
-      //              */
-      //             label?: string;
-      //             [k: string]: unknown;
-      //           };
-      //           [k: string]: unknown;
-      //         };
-      //       }[];
-      //       outputs?: {
-      //         /**
-      //          * Unique identifier
-      //          */
-      //         id: string;
-      //         /**
-      //          * Optional data record schema reference associated with the port
-      //          */
-      //         schema_ref?: string;
-      //         /**
-      //          * Array of links going into the node. Applies to input ports and exit bindings only.
-      //          */
-      //         links?: {
-      //           /**
-      //            * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
-      //            */
-      //           id?: string;
-      //           /**
-      //            * id of a node this link connects to
-      //            */
-      //           node_id_ref: string;
-      //           /**
-      //            * optional port id of a node this link connects to
-      //            */
-      //           port_id_ref?: string;
-      //           /**
-      //            * optional link name (used in parameter sets when there are multiple input sources)
-      //            */
-      //           link_name?: string;
-      //           /**
-      //            * Link type attribute
-      //            */
-      //           type_attr?: string;
-      //           /**
-      //            * Link description
-      //            */
-      //           description?: string;
-      //           /**
-      //            * Object containing app-specific data
-      //            */
-      //           app_data?: {
-      //             /**
-      //              * object with app-specific UI-information
-      //              */
-      //             ui_data?: {
-      //               /**
-      //                * CSS class name
-      //                */
-      //               class_name?: string;
-      //               /**
-      //                * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
-      //                */
-      //               style?:
-      //                 | string
-      //                 | {
-      //                     [k: string]: unknown;
-      //                   };
-      //               /**
-      //                * Array of decorations used to decorate node links
-      //                */
-      //               decorations?: {
-      //                 /**
-      //                  * An identifier used to identify the decoration
-      //                  */
-      //                 id?: string;
-      //                 /**
-      //                  * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                  */
-      //                 hotspot?: boolean;
-      //                 /**
-      //                  * CSS class name for decoration styling
-      //                  */
-      //                 class_name?: string;
-      //                 /**
-      //                  * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                  */
-      //                 position?:
-      //                   | "topLeft"
-      //                   | "topCenter"
-      //                   | "topRight"
-      //                   | "middleLeft"
-      //                   | "middleCenter"
-      //                   | "middleRight"
-      //                   | "bottomLeft"
-      //                   | "bottomCenter"
-      //                   | "bottomRight"
-      //                   | "source"
-      //                   | "middle"
-      //                   | "target";
-      //                 /**
-      //                  * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                  */
-      //                 x_pos?: number;
-      //                 /**
-      //                  * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                  */
-      //                 y_pos?: number;
-      //                 /**
-      //                  * Image displayed at the decoration position. Provide either this or a label.
-      //                  */
-      //                 image?: string;
-      //                 /**
-      //                  * Label displayed at the decoration position. Provide either this or an image.
-      //                  */
-      //                 label?: string;
-      //                 [k: string]: unknown;
-      //               }[];
-      //               [k: string]: unknown;
-      //             };
-      //             [k: string]: unknown;
-      //           };
-      //         }[];
-      //         /**
-      //          * Parameters for the port
-      //          */
-      //         parameters?: {
-      //           [k: string]: unknown;
-      //         };
-      //         /**
-      //          * Object containing app-specific data
-      //          */
-      //         app_data?: {
-      //           /**
-      //            * Additional UI info for ports
-      //            */
-      //           ui_data?: {
-      //             /**
-      //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
-      //              */
-      //             cardinality?: {
-      //               /**
-      //                * Minimum data sets that are required for this port
-      //                */
-      //               min?: number;
-      //               /**
-      //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
-      //                */
-      //               max?: number;
-      //             };
-      //             /**
-      //              * CSS class name
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
-      //              */
-      //             style?:
-      //               | string
-      //               | {
-      //                   [k: string]: unknown;
-      //                 };
-      //             /**
-      //              * Port name
-      //              */
-      //             label?: string;
-      //             [k: string]: unknown;
-      //           };
-      //           [k: string]: unknown;
-      //         };
-      //       }[];
-      //       /**
-      //        * Node type identifier of modeling node that created this model.
-      //        */
-      //       op?: string;
-      //       /**
-      //        * Input parameters for the operator
-      //        */
-      //       parameters?: {
-      //         [k: string]: unknown;
-      //       };
-      //       /**
-      //        * Reference to the runtime associated with the current node
-      //        */
-      //       runtime_ref?: string;
-      //       /**
-      //        * Object containing app-specific data
-      //        */
-      //       app_data?: {
-      //         /**
-      //          * object with app-specific UI-information
-      //          */
-      //         ui_data?: {
-      //           /**
-      //            * User-defined label
-      //            */
-      //           label?: string;
-      //           /**
-      //            * User-defined description
-      //            */
-      //           description?: string;
-      //           /**
-      //            * CSS class name
-      //            */
-      //           class_name?: string;
-      //           /**
-      //            * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node.
-      //            */
-      //           style?:
-      //             | string
-      //             | {
-      //                 [k: string]: unknown;
-      //               };
-      //           /**
-      //            * Image name (do not embed images inline!)
-      //            */
-      //           image?: string;
-      //           /**
-      //            * x-position
-      //            */
-      //           x_pos?: number;
-      //           /**
-      //            * y-position
-      //            */
-      //           y_pos?: number;
-      //           /**
-      //            * Indicates whether a supernode is shown in expanded state or as a regular node.
-      //            */
-      //           is_expanded?: boolean;
-      //           /**
-      //            * Height of expanded supernode. If not provided an appropriate height is calculated.
-      //            */
-      //           expanded_height?: number;
-      //           /**
-      //            * Width of expanded supernode. If not provided an appropriate width is calculated.
-      //            */
-      //           expanded_width?: number;
-      //           /**
-      //            * additional attributes
-      //            */
-      //           attributes?: string;
-      //           /**
-      //            * Array of non-data node linkage
-      //            */
-      //           associations?: {
-      //             /**
-      //              * Association identifier
-      //              */
-      //             id: string;
-      //             /**
-      //              * Target node id
-      //              */
-      //             node_ref: string;
-      //             /**
-      //              * CSS class name for link styling
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the association link.
-      //              */
-      //             style?:
-      //               | string
-      //               | {
-      //                   [k: string]: unknown;
-      //                 };
-      //             /**
-      //              * Array of decorations used to decorate association links
-      //              */
-      //             decorations?: {
-      //               /**
-      //                * An identifier used to identify the decoration
-      //                */
-      //               id?: string;
-      //               /**
-      //                * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //                */
-      //               hotspot?: boolean;
-      //               /**
-      //                * CSS class name for decoration styling
-      //                */
-      //               class_name?: string;
-      //               /**
-      //                * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //                */
-      //               position?:
-      //                 | "topLeft"
-      //                 | "topCenter"
-      //                 | "topRight"
-      //                 | "middleLeft"
-      //                 | "middleCenter"
-      //                 | "middleRight"
-      //                 | "bottomLeft"
-      //                 | "bottomCenter"
-      //                 | "bottomRight"
-      //                 | "source"
-      //                 | "middle"
-      //                 | "target";
-      //               /**
-      //                * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                */
-      //               x_pos?: number;
-      //               /**
-      //                * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //                */
-      //               y_pos?: number;
-      //               /**
-      //                * Image displayed at the decoration position. Provide either this or a label.
-      //                */
-      //               image?: string;
-      //               /**
-      //                * Label displayed at the decoration position. Provide either this or an image.
-      //                */
-      //               label?: string;
-      //               [k: string]: unknown;
-      //             }[];
-      //           }[];
-      //           /**
-      //            * An array of messages for the node
-      //            */
-      //           messages?: {
-      //             /**
-      //              * Name of the parameter that has the message
-      //              */
-      //             id_ref: string;
-      //             /**
-      //              * Validation identifier from the fail_message validation section.
-      //              */
-      //             validation_id?: string;
-      //             /**
-      //              * Type of message
-      //              */
-      //             type: "info" | "error" | "warning";
-      //             /**
-      //              * Message string
-      //              */
-      //             text: string;
-      //             [k: string]: unknown;
-      //           }[];
-      //           /**
-      //            * UI only parameter values for the node
-      //            */
-      //           ui_parameters?: {
-      //             [k: string]: unknown;
-      //           };
-      //           /**
-      //            * Array of decorations used to decorate nodes
-      //            */
-      //           decorations?: {
-      //             /**
-      //              * An identifier used to identify the decoration
-      //              */
-      //             id?: string;
-      //             /**
-      //              * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
-      //              */
-      //             hotspot?: boolean;
-      //             /**
-      //              * CSS class name for decoration styling
-      //              */
-      //             class_name?: string;
-      //             /**
-      //              * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
-      //              */
-      //             position?:
-      //               | "topLeft"
-      //               | "topCenter"
-      //               | "topRight"
-      //               | "middleLeft"
-      //               | "middleCenter"
-      //               | "middleRight"
-      //               | "bottomLeft"
-      //               | "bottomCenter"
-      //               | "bottomRight"
-      //               | "source"
-      //               | "middle"
-      //               | "target";
-      //             /**
-      //              * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //              */
-      //             x_pos?: number;
-      //             /**
-      //              * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
-      //              */
-      //             y_pos?: number;
-      //             /**
-      //              * Image displayed at the decoration position. Provide either this or a label.
-      //              */
-      //             image?: string;
-      //             /**
-      //              * Label displayed at the decoration position. Provide either this or an image.
-      //              */
-      //             label?: string;
-      //             [k: string]: unknown;
-      //           }[];
-      //           [k: string]: unknown;
-      //         };
-      //         [k: string]: unknown;
-      //       };
-      //     }
-    }[];
+      [k: string]: unknown;
+    };
+    // NOTE: Our palette only has execution_nodes, but this could change
+    //   | {
+    //       /**
+    //        * Unique identifier for the supernode within the current pipeline
+    //        */
+    //       id: string;
+    //       /**
+    //        * Supernode description
+    //        */
+    //       description?: string;
+    //       /**
+    //        * Node type - always 'super_node' for supernode elements
+    //        */
+    //       type: "super_node";
+    //       /**
+    //        * Name of the tool which can be used to view or edit the sub-flow for this supernode. The default is 'canvas'
+    //        */
+    //       open_with_tool?: string;
+    //       /**
+    //        * Refers to the sub-flow associated with this supernode
+    //        */
+    //       subflow_ref: {
+    //         /**
+    //          * Reference to an external sub-flow. When not present the sub-flow is assumed to be in the current document. A value of 'app_defined' indicates a sub-flow identifier is present, but the controlling application will serve up the sub-pipeline in the form of a new pipeline-flow document (no sub-flow is present in the document).
+    //          */
+    //         url?: string;
+    //         /**
+    //          * Sub-flow identifier reference
+    //          */
+    //         pipeline_id_ref: string;
+    //         [k: string]: unknown;
+    //       };
+    //       inputs?: {
+    //         /**
+    //          * Unique identifier
+    //          */
+    //         id: string;
+    //         /**
+    //          * Optional data record schema associated with the port
+    //          */
+    //         schema_ref?: string;
+    //         /**
+    //          * Array of links going into the node. Applies to input ports and exit bindings only.
+    //          */
+    //         links?: [
+    //           {
+    //             /**
+    //              * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
+    //              */
+    //             id?: string;
+    //             /**
+    //              * id of a node this link connects to
+    //              */
+    //             node_id_ref: string;
+    //             /**
+    //              * optional port id of a node this link connects to
+    //              */
+    //             port_id_ref?: string;
+    //             /**
+    //              * optional link name (used in parameter sets when there are multiple input sources)
+    //              */
+    //             link_name?: string;
+    //             /**
+    //              * Link type attribute
+    //              */
+    //             type_attr?: string;
+    //             /**
+    //              * Link description
+    //              */
+    //             description?: string;
+    //             /**
+    //              * Object containing app-specific data
+    //              */
+    //             app_data?: {
+    //               /**
+    //                * object with app-specific UI-information
+    //                */
+    //               ui_data?: {
+    //                 /**
+    //                  * CSS class name
+    //                  */
+    //                 class_name?: string;
+    //                 /**
+    //                  * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
+    //                  */
+    //                 style?:
+    //                   | string
+    //                   | {
+    //                       [k: string]: unknown;
+    //                     };
+    //                 /**
+    //                  * Array of decorations used to decorate node links
+    //                  */
+    //                 decorations?: {
+    //                   /**
+    //                    * An identifier used to identify the decoration
+    //                    */
+    //                   id?: string;
+    //                   /**
+    //                    * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                    */
+    //                   hotspot?: boolean;
+    //                   /**
+    //                    * CSS class name for decoration styling
+    //                    */
+    //                   class_name?: string;
+    //                   /**
+    //                    * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                    */
+    //                   position?:
+    //                     | "topLeft"
+    //                     | "topCenter"
+    //                     | "topRight"
+    //                     | "middleLeft"
+    //                     | "middleCenter"
+    //                     | "middleRight"
+    //                     | "bottomLeft"
+    //                     | "bottomCenter"
+    //                     | "bottomRight"
+    //                     | "source"
+    //                     | "middle"
+    //                     | "target";
+    //                   /**
+    //                    * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                    */
+    //                   x_pos?: number;
+    //                   /**
+    //                    * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                    */
+    //                   y_pos?: number;
+    //                   /**
+    //                    * Image displayed at the decoration position. Provide either this or a label.
+    //                    */
+    //                   image?: string;
+    //                   /**
+    //                    * Label displayed at the decoration position. Provide either this or an image.
+    //                    */
+    //                   label?: string;
+    //                   [k: string]: unknown;
+    //                 }[];
+    //                 [k: string]: unknown;
+    //               };
+    //               [k: string]: unknown;
+    //             };
+    //           },
+    //           ...{
+    //             /**
+    //              * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
+    //              */
+    //             id?: string;
+    //             /**
+    //              * id of a node this link connects to
+    //              */
+    //             node_id_ref: string;
+    //             /**
+    //              * optional port id of a node this link connects to
+    //              */
+    //             port_id_ref?: string;
+    //             /**
+    //              * optional link name (used in parameter sets when there are multiple input sources)
+    //              */
+    //             link_name?: string;
+    //             /**
+    //              * Link type attribute
+    //              */
+    //             type_attr?: string;
+    //             /**
+    //              * Link description
+    //              */
+    //             description?: string;
+    //             /**
+    //              * Object containing app-specific data
+    //              */
+    //             app_data?: {
+    //               /**
+    //                * object with app-specific UI-information
+    //                */
+    //               ui_data?: {
+    //                 /**
+    //                  * CSS class name
+    //                  */
+    //                 class_name?: string;
+    //                 /**
+    //                  * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
+    //                  */
+    //                 style?:
+    //                   | string
+    //                   | {
+    //                       [k: string]: unknown;
+    //                     };
+    //                 /**
+    //                  * Array of decorations used to decorate node links
+    //                  */
+    //                 decorations?: {
+    //                   /**
+    //                    * An identifier used to identify the decoration
+    //                    */
+    //                   id?: string;
+    //                   /**
+    //                    * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                    */
+    //                   hotspot?: boolean;
+    //                   /**
+    //                    * CSS class name for decoration styling
+    //                    */
+    //                   class_name?: string;
+    //                   /**
+    //                    * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                    */
+    //                   position?:
+    //                     | "topLeft"
+    //                     | "topCenter"
+    //                     | "topRight"
+    //                     | "middleLeft"
+    //                     | "middleCenter"
+    //                     | "middleRight"
+    //                     | "bottomLeft"
+    //                     | "bottomCenter"
+    //                     | "bottomRight"
+    //                     | "source"
+    //                     | "middle"
+    //                     | "target";
+    //                   /**
+    //                    * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                    */
+    //                   x_pos?: number;
+    //                   /**
+    //                    * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                    */
+    //                   y_pos?: number;
+    //                   /**
+    //                    * Image displayed at the decoration position. Provide either this or a label.
+    //                    */
+    //                   image?: string;
+    //                   /**
+    //                    * Label displayed at the decoration position. Provide either this or an image.
+    //                    */
+    //                   label?: string;
+    //                   [k: string]: unknown;
+    //                 }[];
+    //                 [k: string]: unknown;
+    //               };
+    //               [k: string]: unknown;
+    //             };
+    //           }[]
+    //         ];
+    //         /**
+    //          * Optional node id binding within the current document.
+    //          */
+    //         subflow_node_ref?: string;
+    //         /**
+    //          * Parameters for the binding port
+    //          */
+    //         parameters?: {
+    //           [k: string]: unknown;
+    //         };
+    //         /**
+    //          * Object containing app-specific data
+    //          */
+    //         app_data?: {
+    //           /**
+    //            * Additional UI info for ports
+    //            */
+    //           ui_data?: {
+    //             /**
+    //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
+    //              */
+    //             cardinality?: {
+    //               /**
+    //                * Minimum data sets that are required for this port
+    //                */
+    //               min?: number;
+    //               /**
+    //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
+    //                */
+    //               max?: number;
+    //             };
+    //             /**
+    //              * CSS class name
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
+    //              */
+    //             style?:
+    //               | string
+    //               | {
+    //                   [k: string]: unknown;
+    //                 };
+    //             /**
+    //              * Port name
+    //              */
+    //             label?: string;
+    //             [k: string]: unknown;
+    //           };
+    //           [k: string]: unknown;
+    //         };
+    //       }[];
+    //       outputs?: {
+    //         /**
+    //          * Unique identifier
+    //          */
+    //         id: string;
+    //         /**
+    //          * Optional data record schema associated with the port
+    //          */
+    //         schema_ref?: string;
+    //         /**
+    //          * Array of links going into the node. Applies to input ports and exit bindings only.
+    //          */
+    //         links?: [
+    //           {
+    //             /**
+    //              * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
+    //              */
+    //             id?: string;
+    //             /**
+    //              * id of a node this link connects to
+    //              */
+    //             node_id_ref: string;
+    //             /**
+    //              * optional port id of a node this link connects to
+    //              */
+    //             port_id_ref?: string;
+    //             /**
+    //              * optional link name (used in parameter sets when there are multiple input sources)
+    //              */
+    //             link_name?: string;
+    //             /**
+    //              * Link type attribute
+    //              */
+    //             type_attr?: string;
+    //             /**
+    //              * Link description
+    //              */
+    //             description?: string;
+    //             /**
+    //              * Object containing app-specific data
+    //              */
+    //             app_data?: {
+    //               /**
+    //                * object with app-specific UI-information
+    //                */
+    //               ui_data?: {
+    //                 /**
+    //                  * CSS class name
+    //                  */
+    //                 class_name?: string;
+    //                 /**
+    //                  * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
+    //                  */
+    //                 style?:
+    //                   | string
+    //                   | {
+    //                       [k: string]: unknown;
+    //                     };
+    //                 /**
+    //                  * Array of decorations used to decorate node links
+    //                  */
+    //                 decorations?: {
+    //                   /**
+    //                    * An identifier used to identify the decoration
+    //                    */
+    //                   id?: string;
+    //                   /**
+    //                    * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                    */
+    //                   hotspot?: boolean;
+    //                   /**
+    //                    * CSS class name for decoration styling
+    //                    */
+    //                   class_name?: string;
+    //                   /**
+    //                    * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                    */
+    //                   position?:
+    //                     | "topLeft"
+    //                     | "topCenter"
+    //                     | "topRight"
+    //                     | "middleLeft"
+    //                     | "middleCenter"
+    //                     | "middleRight"
+    //                     | "bottomLeft"
+    //                     | "bottomCenter"
+    //                     | "bottomRight"
+    //                     | "source"
+    //                     | "middle"
+    //                     | "target";
+    //                   /**
+    //                    * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                    */
+    //                   x_pos?: number;
+    //                   /**
+    //                    * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                    */
+    //                   y_pos?: number;
+    //                   /**
+    //                    * Image displayed at the decoration position. Provide either this or a label.
+    //                    */
+    //                   image?: string;
+    //                   /**
+    //                    * Label displayed at the decoration position. Provide either this or an image.
+    //                    */
+    //                   label?: string;
+    //                   [k: string]: unknown;
+    //                 }[];
+    //                 [k: string]: unknown;
+    //               };
+    //               [k: string]: unknown;
+    //             };
+    //           },
+    //           ...{
+    //             /**
+    //              * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
+    //              */
+    //             id?: string;
+    //             /**
+    //              * id of a node this link connects to
+    //              */
+    //             node_id_ref: string;
+    //             /**
+    //              * optional port id of a node this link connects to
+    //              */
+    //             port_id_ref?: string;
+    //             /**
+    //              * optional link name (used in parameter sets when there are multiple input sources)
+    //              */
+    //             link_name?: string;
+    //             /**
+    //              * Link type attribute
+    //              */
+    //             type_attr?: string;
+    //             /**
+    //              * Link description
+    //              */
+    //             description?: string;
+    //             /**
+    //              * Object containing app-specific data
+    //              */
+    //             app_data?: {
+    //               /**
+    //                * object with app-specific UI-information
+    //                */
+    //               ui_data?: {
+    //                 /**
+    //                  * CSS class name
+    //                  */
+    //                 class_name?: string;
+    //                 /**
+    //                  * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
+    //                  */
+    //                 style?:
+    //                   | string
+    //                   | {
+    //                       [k: string]: unknown;
+    //                     };
+    //                 /**
+    //                  * Array of decorations used to decorate node links
+    //                  */
+    //                 decorations?: {
+    //                   /**
+    //                    * An identifier used to identify the decoration
+    //                    */
+    //                   id?: string;
+    //                   /**
+    //                    * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                    */
+    //                   hotspot?: boolean;
+    //                   /**
+    //                    * CSS class name for decoration styling
+    //                    */
+    //                   class_name?: string;
+    //                   /**
+    //                    * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                    */
+    //                   position?:
+    //                     | "topLeft"
+    //                     | "topCenter"
+    //                     | "topRight"
+    //                     | "middleLeft"
+    //                     | "middleCenter"
+    //                     | "middleRight"
+    //                     | "bottomLeft"
+    //                     | "bottomCenter"
+    //                     | "bottomRight"
+    //                     | "source"
+    //                     | "middle"
+    //                     | "target";
+    //                   /**
+    //                    * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                    */
+    //                   x_pos?: number;
+    //                   /**
+    //                    * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                    */
+    //                   y_pos?: number;
+    //                   /**
+    //                    * Image displayed at the decoration position. Provide either this or a label.
+    //                    */
+    //                   image?: string;
+    //                   /**
+    //                    * Label displayed at the decoration position. Provide either this or an image.
+    //                    */
+    //                   label?: string;
+    //                   [k: string]: unknown;
+    //                 }[];
+    //                 [k: string]: unknown;
+    //               };
+    //               [k: string]: unknown;
+    //             };
+    //           }[]
+    //         ];
+    //         /**
+    //          * Optional node id binding within the current document.
+    //          */
+    //         subflow_node_ref?: string;
+    //         /**
+    //          * Parameters for the binding port
+    //          */
+    //         parameters?: {
+    //           [k: string]: unknown;
+    //         };
+    //         /**
+    //          * Object containing app-specific data
+    //          */
+    //         app_data?: {
+    //           /**
+    //            * Additional UI info for ports
+    //            */
+    //           ui_data?: {
+    //             /**
+    //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
+    //              */
+    //             cardinality?: {
+    //               /**
+    //                * Minimum data sets that are required for this port
+    //                */
+    //               min?: number;
+    //               /**
+    //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
+    //                */
+    //               max?: number;
+    //             };
+    //             /**
+    //              * CSS class name
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
+    //              */
+    //             style?:
+    //               | string
+    //               | {
+    //                   [k: string]: unknown;
+    //                 };
+    //             /**
+    //              * Port name
+    //              */
+    //             label?: string;
+    //             [k: string]: unknown;
+    //           };
+    //           [k: string]: unknown;
+    //         };
+    //       }[];
+    //       /**
+    //        * Input parameters for the supernode
+    //        */
+    //       parameters?: {
+    //         [k: string]: unknown;
+    //       };
+    //       /**
+    //        * Object containing app-specific data
+    //        */
+    //       app_data?: {
+    //         /**
+    //          * object with app-specific UI-information
+    //          */
+    //         ui_data?: {
+    //           /**
+    //            * User-defined label
+    //            */
+    //           label?: string;
+    //           /**
+    //            * User-defined description
+    //            */
+    //           description?: string;
+    //           /**
+    //            * CSS class name
+    //            */
+    //           class_name?: string;
+    //           /**
+    //            * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node.
+    //            */
+    //           style?:
+    //             | string
+    //             | {
+    //                 [k: string]: unknown;
+    //               };
+    //           /**
+    //            * Image name (do not embed images inline!)
+    //            */
+    //           image?: string;
+    //           /**
+    //            * x-position
+    //            */
+    //           x_pos?: number;
+    //           /**
+    //            * y-position
+    //            */
+    //           y_pos?: number;
+    //           /**
+    //            * Indicates whether a supernode is shown in expanded state or as a regular node.
+    //            */
+    //           is_expanded?: boolean;
+    //           /**
+    //            * Height of expanded supernode. If not provided an appropriate height is calculated.
+    //            */
+    //           expanded_height?: number;
+    //           /**
+    //            * Width of expanded supernode. If not provided an appropriate width is calculated.
+    //            */
+    //           expanded_width?: number;
+    //           /**
+    //            * additional attributes
+    //            */
+    //           attributes?: string;
+    //           /**
+    //            * Array of non-data node linkage
+    //            */
+    //           associations?: {
+    //             /**
+    //              * Association identifier
+    //              */
+    //             id: string;
+    //             /**
+    //              * Target node id
+    //              */
+    //             node_ref: string;
+    //             /**
+    //              * CSS class name for link styling
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the association link.
+    //              */
+    //             style?:
+    //               | string
+    //               | {
+    //                   [k: string]: unknown;
+    //                 };
+    //             /**
+    //              * Array of decorations used to decorate association links
+    //              */
+    //             decorations?: {
+    //               /**
+    //                * An identifier used to identify the decoration
+    //                */
+    //               id?: string;
+    //               /**
+    //                * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                */
+    //               hotspot?: boolean;
+    //               /**
+    //                * CSS class name for decoration styling
+    //                */
+    //               class_name?: string;
+    //               /**
+    //                * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                */
+    //               position?:
+    //                 | "topLeft"
+    //                 | "topCenter"
+    //                 | "topRight"
+    //                 | "middleLeft"
+    //                 | "middleCenter"
+    //                 | "middleRight"
+    //                 | "bottomLeft"
+    //                 | "bottomCenter"
+    //                 | "bottomRight"
+    //                 | "source"
+    //                 | "middle"
+    //                 | "target";
+    //               /**
+    //                * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                */
+    //               x_pos?: number;
+    //               /**
+    //                * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                */
+    //               y_pos?: number;
+    //               /**
+    //                * Image displayed at the decoration position. Provide either this or a label.
+    //                */
+    //               image?: string;
+    //               /**
+    //                * Label displayed at the decoration position. Provide either this or an image.
+    //                */
+    //               label?: string;
+    //               [k: string]: unknown;
+    //             }[];
+    //           }[];
+    //           /**
+    //            * An array of messages for the node
+    //            */
+    //           messages?: {
+    //             /**
+    //              * Name of the parameter that has the message
+    //              */
+    //             id_ref: string;
+    //             /**
+    //              * Validation identifier from the fail_message validation section.
+    //              */
+    //             validation_id?: string;
+    //             /**
+    //              * Type of message
+    //              */
+    //             type: "info" | "error" | "warning";
+    //             /**
+    //              * Message string
+    //              */
+    //             text: string;
+    //             [k: string]: unknown;
+    //           }[];
+    //           /**
+    //            * UI only parameter values for the node
+    //            */
+    //           ui_parameters?: {
+    //             [k: string]: unknown;
+    //           };
+    //           /**
+    //            * Array of decorations used to decorate nodes
+    //            */
+    //           decorations?: {
+    //             /**
+    //              * An identifier used to identify the decoration
+    //              */
+    //             id?: string;
+    //             /**
+    //              * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //              */
+    //             hotspot?: boolean;
+    //             /**
+    //              * CSS class name for decoration styling
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //              */
+    //             position?:
+    //               | "topLeft"
+    //               | "topCenter"
+    //               | "topRight"
+    //               | "middleLeft"
+    //               | "middleCenter"
+    //               | "middleRight"
+    //               | "bottomLeft"
+    //               | "bottomCenter"
+    //               | "bottomRight"
+    //               | "source"
+    //               | "middle"
+    //               | "target";
+    //             /**
+    //              * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //              */
+    //             x_pos?: number;
+    //             /**
+    //              * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //              */
+    //             y_pos?: number;
+    //             /**
+    //              * Image displayed at the decoration position. Provide either this or a label.
+    //              */
+    //             image?: string;
+    //             /**
+    //              * Label displayed at the decoration position. Provide either this or an image.
+    //              */
+    //             label?: string;
+    //             [k: string]: unknown;
+    //           }[];
+    //           [k: string]: unknown;
+    //         };
+    //         [k: string]: unknown;
+    //       };
+    //     }
+    //   | {
+    //       /**
+    //        * Unique identifier for the binding within the current pipeline
+    //        */
+    //       id: string;
+    //       /**
+    //        * Binding entry node description
+    //        */
+    //       description?: string;
+    //       /**
+    //        * Node type - always 'binding' for binding elements
+    //        */
+    //       type: "binding";
+    //       outputs?: {
+    //         /**
+    //          * Unique identifier
+    //          */
+    //         id: string;
+    //         /**
+    //          * Optional data record schema reference associated with the port
+    //          */
+    //         schema_ref?: string;
+    //         /**
+    //          * Array of links going into the node. Applies to input ports and exit bindings only.
+    //          */
+    //         links?: {
+    //           /**
+    //            * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
+    //            */
+    //           id?: string;
+    //           /**
+    //            * id of a node this link connects to
+    //            */
+    //           node_id_ref: string;
+    //           /**
+    //            * optional port id of a node this link connects to
+    //            */
+    //           port_id_ref?: string;
+    //           /**
+    //            * optional link name (used in parameter sets when there are multiple input sources)
+    //            */
+    //           link_name?: string;
+    //           /**
+    //            * Link type attribute
+    //            */
+    //           type_attr?: string;
+    //           /**
+    //            * Link description
+    //            */
+    //           description?: string;
+    //           /**
+    //            * Object containing app-specific data
+    //            */
+    //           app_data?: {
+    //             /**
+    //              * object with app-specific UI-information
+    //              */
+    //             ui_data?: {
+    //               /**
+    //                * CSS class name
+    //                */
+    //               class_name?: string;
+    //               /**
+    //                * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
+    //                */
+    //               style?:
+    //                 | string
+    //                 | {
+    //                     [k: string]: unknown;
+    //                   };
+    //               /**
+    //                * Array of decorations used to decorate node links
+    //                */
+    //               decorations?: {
+    //                 /**
+    //                  * An identifier used to identify the decoration
+    //                  */
+    //                 id?: string;
+    //                 /**
+    //                  * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                  */
+    //                 hotspot?: boolean;
+    //                 /**
+    //                  * CSS class name for decoration styling
+    //                  */
+    //                 class_name?: string;
+    //                 /**
+    //                  * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                  */
+    //                 position?:
+    //                   | "topLeft"
+    //                   | "topCenter"
+    //                   | "topRight"
+    //                   | "middleLeft"
+    //                   | "middleCenter"
+    //                   | "middleRight"
+    //                   | "bottomLeft"
+    //                   | "bottomCenter"
+    //                   | "bottomRight"
+    //                   | "source"
+    //                   | "middle"
+    //                   | "target";
+    //                 /**
+    //                  * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                  */
+    //                 x_pos?: number;
+    //                 /**
+    //                  * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                  */
+    //                 y_pos?: number;
+    //                 /**
+    //                  * Image displayed at the decoration position. Provide either this or a label.
+    //                  */
+    //                 image?: string;
+    //                 /**
+    //                  * Label displayed at the decoration position. Provide either this or an image.
+    //                  */
+    //                 label?: string;
+    //                 [k: string]: unknown;
+    //               }[];
+    //               [k: string]: unknown;
+    //             };
+    //             [k: string]: unknown;
+    //           };
+    //         }[];
+    //         /**
+    //          * Parameters for the port
+    //          */
+    //         parameters?: {
+    //           [k: string]: unknown;
+    //         };
+    //         /**
+    //          * Object containing app-specific data
+    //          */
+    //         app_data?: {
+    //           /**
+    //            * Additional UI info for ports
+    //            */
+    //           ui_data?: {
+    //             /**
+    //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
+    //              */
+    //             cardinality?: {
+    //               /**
+    //                * Minimum data sets that are required for this port
+    //                */
+    //               min?: number;
+    //               /**
+    //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
+    //                */
+    //               max?: number;
+    //             };
+    //             /**
+    //              * CSS class name
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
+    //              */
+    //             style?:
+    //               | string
+    //               | {
+    //                   [k: string]: unknown;
+    //                 };
+    //             /**
+    //              * Port name
+    //              */
+    //             label?: string;
+    //             [k: string]: unknown;
+    //           };
+    //           [k: string]: unknown;
+    //         };
+    //       }[];
+    //       /**
+    //        * Object containing app-specific data
+    //        */
+    //       app_data?: {
+    //         /**
+    //          * object with app-specific UI-information
+    //          */
+    //         ui_data?: {
+    //           /**
+    //            * User-defined label
+    //            */
+    //           label?: string;
+    //           /**
+    //            * User-defined description
+    //            */
+    //           description?: string;
+    //           /**
+    //            * CSS class name
+    //            */
+    //           class_name?: string;
+    //           /**
+    //            * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node.
+    //            */
+    //           style?:
+    //             | string
+    //             | {
+    //                 [k: string]: unknown;
+    //               };
+    //           /**
+    //            * Image name (do not embed images inline!)
+    //            */
+    //           image?: string;
+    //           /**
+    //            * x-position
+    //            */
+    //           x_pos?: number;
+    //           /**
+    //            * y-position
+    //            */
+    //           y_pos?: number;
+    //           /**
+    //            * Indicates whether a supernode is shown in expanded state or as a regular node.
+    //            */
+    //           is_expanded?: boolean;
+    //           /**
+    //            * Height of expanded supernode. If not provided an appropriate height is calculated.
+    //            */
+    //           expanded_height?: number;
+    //           /**
+    //            * Width of expanded supernode. If not provided an appropriate width is calculated.
+    //            */
+    //           expanded_width?: number;
+    //           /**
+    //            * additional attributes
+    //            */
+    //           attributes?: string;
+    //           /**
+    //            * Array of non-data node linkage
+    //            */
+    //           associations?: {
+    //             /**
+    //              * Association identifier
+    //              */
+    //             id: string;
+    //             /**
+    //              * Target node id
+    //              */
+    //             node_ref: string;
+    //             /**
+    //              * CSS class name for link styling
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the association link.
+    //              */
+    //             style?:
+    //               | string
+    //               | {
+    //                   [k: string]: unknown;
+    //                 };
+    //             /**
+    //              * Array of decorations used to decorate association links
+    //              */
+    //             decorations?: {
+    //               /**
+    //                * An identifier used to identify the decoration
+    //                */
+    //               id?: string;
+    //               /**
+    //                * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                */
+    //               hotspot?: boolean;
+    //               /**
+    //                * CSS class name for decoration styling
+    //                */
+    //               class_name?: string;
+    //               /**
+    //                * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                */
+    //               position?:
+    //                 | "topLeft"
+    //                 | "topCenter"
+    //                 | "topRight"
+    //                 | "middleLeft"
+    //                 | "middleCenter"
+    //                 | "middleRight"
+    //                 | "bottomLeft"
+    //                 | "bottomCenter"
+    //                 | "bottomRight"
+    //                 | "source"
+    //                 | "middle"
+    //                 | "target";
+    //               /**
+    //                * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                */
+    //               x_pos?: number;
+    //               /**
+    //                * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                */
+    //               y_pos?: number;
+    //               /**
+    //                * Image displayed at the decoration position. Provide either this or a label.
+    //                */
+    //               image?: string;
+    //               /**
+    //                * Label displayed at the decoration position. Provide either this or an image.
+    //                */
+    //               label?: string;
+    //               [k: string]: unknown;
+    //             }[];
+    //           }[];
+    //           /**
+    //            * An array of messages for the node
+    //            */
+    //           messages?: {
+    //             /**
+    //              * Name of the parameter that has the message
+    //              */
+    //             id_ref: string;
+    //             /**
+    //              * Validation identifier from the fail_message validation section.
+    //              */
+    //             validation_id?: string;
+    //             /**
+    //              * Type of message
+    //              */
+    //             type: "info" | "error" | "warning";
+    //             /**
+    //              * Message string
+    //              */
+    //             text: string;
+    //             [k: string]: unknown;
+    //           }[];
+    //           /**
+    //            * UI only parameter values for the node
+    //            */
+    //           ui_parameters?: {
+    //             [k: string]: unknown;
+    //           };
+    //           /**
+    //            * Array of decorations used to decorate nodes
+    //            */
+    //           decorations?: {
+    //             /**
+    //              * An identifier used to identify the decoration
+    //              */
+    //             id?: string;
+    //             /**
+    //              * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //              */
+    //             hotspot?: boolean;
+    //             /**
+    //              * CSS class name for decoration styling
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //              */
+    //             position?:
+    //               | "topLeft"
+    //               | "topCenter"
+    //               | "topRight"
+    //               | "middleLeft"
+    //               | "middleCenter"
+    //               | "middleRight"
+    //               | "bottomLeft"
+    //               | "bottomCenter"
+    //               | "bottomRight"
+    //               | "source"
+    //               | "middle"
+    //               | "target";
+    //             /**
+    //              * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //              */
+    //             x_pos?: number;
+    //             /**
+    //              * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //              */
+    //             y_pos?: number;
+    //             /**
+    //              * Image displayed at the decoration position. Provide either this or a label.
+    //              */
+    //             image?: string;
+    //             /**
+    //              * Label displayed at the decoration position. Provide either this or an image.
+    //              */
+    //             label?: string;
+    //             [k: string]: unknown;
+    //           }[];
+    //           [k: string]: unknown;
+    //         };
+    //         [k: string]: unknown;
+    //       };
+    //       /**
+    //        * Details of the connection to use for a pipeline binding node.
+    //        */
+    //       connection?: {
+    //         /**
+    //          * A name tag for disambiguating connections
+    //          */
+    //         name?: string;
+    //         /**
+    //          * Object containing app-specific data
+    //          */
+    //         app_data?: {
+    //           [k: string]: unknown;
+    //         };
+    //         /**
+    //          * A reference to a connection by ID.
+    //          */
+    //         ref: string;
+    //         /**
+    //          * If ref is set, this refers to the ID of the catalog which contains the connection. If neither this attribute nor project_ref are specified, the connection will be assumed to exist in the project or catalog which contains the pipeline.
+    //          */
+    //         catalog_ref?: string;
+    //         /**
+    //          * If ref is set, this refers to the ID of the project which contains the connection. If neither this attribute nor catalog_ref are specified, the connection will be assumed to exist in the project or catalog which contains the pipeline.
+    //          */
+    //         project_ref?: string;
+    //         /**
+    //          * The properties for the connection. The specific properties allowed depend on the type of connection referenced.
+    //          */
+    //         properties?: {
+    //           [k: string]: unknown;
+    //         };
+    //         [k: string]: unknown;
+    //       };
+    //       /**
+    //        * Details of the data asset contained in a catalog or project to use for a pipeline binding node.
+    //        */
+    //       data_asset?: {
+    //         /**
+    //          * Object containing app-specific data
+    //          */
+    //         app_data?: {
+    //           [k: string]: unknown;
+    //         };
+    //         /**
+    //          * A reference to a data asset by ID.
+    //          */
+    //         ref?: string;
+    //         /**
+    //          * If ref is set, this refers to the ID of the catalog which contains the data asset. If neither this attribute nor project_ref are specified, the data asset will be assumed to exist in the project or catalog which contains the pipeline.
+    //          */
+    //         catalog_ref?: string;
+    //         /**
+    //          * If ref is set, this refers to the ID of the project which contains the data asset. If neither this attribute nor catalog_ref are specified, the data asset will be assumed to exist in the project or catalog which contains the pipeline.
+    //          */
+    //         project_ref?: string;
+    //         /**
+    //          * Properties controlling how the data asset is used.
+    //          */
+    //         properties?: {
+    //           /**
+    //            * The ID of the data asset attachment to use. If not specified and used as a source, the first suitable attachment found will be used. If not specified and used as a target, a new attachment will be created.
+    //            */
+    //           attachment_ref?: string;
+    //           /**
+    //            * Specifies the name of the data asset to read, create or update if ref is unset.
+    //            */
+    //           name?: boolean & string;
+    //           /**
+    //            * When used as a target, whether to update the data asset with the schema when a run completes or not (will be automatically updated if not supplied by caller).
+    //            */
+    //           no_write_schema?: boolean;
+    //           /**
+    //            * When used as a target, whether to update the data asset with the status when a run completes or not (will be automatically updated if not supplied by caller).
+    //            */
+    //           no_write_status?: boolean;
+    //           [k: string]: {
+    //             [k: string]: unknown;
+    //           };
+    //         };
+    //         [k: string]: unknown;
+    //       };
+    //       /**
+    //        * Binding node type identifier
+    //        */
+    //       op?: string;
+    //       /**
+    //        * Parameters for the binding entry node
+    //        */
+    //       parameters?: {
+    //         [k: string]: unknown;
+    //       };
+    //     }
+    //   | {
+    //       /**
+    //        * Unique identifier for the binding within the current pipeline
+    //        */
+    //       id: string;
+    //       /**
+    //        * Binding exit node description
+    //        */
+    //       description?: string;
+    //       /**
+    //        * Node type - always 'binding' for binding elements
+    //        */
+    //       type: "binding";
+    //       inputs?: {
+    //         /**
+    //          * Unique identifier
+    //          */
+    //         id: string;
+    //         /**
+    //          * Optional data record schema reference associated with the port
+    //          */
+    //         schema_ref?: string;
+    //         /**
+    //          * Array of links going into the node. Applies to input ports and exit bindings only.
+    //          */
+    //         links?: {
+    //           /**
+    //            * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
+    //            */
+    //           id?: string;
+    //           /**
+    //            * id of a node this link connects to
+    //            */
+    //           node_id_ref: string;
+    //           /**
+    //            * optional port id of a node this link connects to
+    //            */
+    //           port_id_ref?: string;
+    //           /**
+    //            * optional link name (used in parameter sets when there are multiple input sources)
+    //            */
+    //           link_name?: string;
+    //           /**
+    //            * Link type attribute
+    //            */
+    //           type_attr?: string;
+    //           /**
+    //            * Link description
+    //            */
+    //           description?: string;
+    //           /**
+    //            * Object containing app-specific data
+    //            */
+    //           app_data?: {
+    //             /**
+    //              * object with app-specific UI-information
+    //              */
+    //             ui_data?: {
+    //               /**
+    //                * CSS class name
+    //                */
+    //               class_name?: string;
+    //               /**
+    //                * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
+    //                */
+    //               style?:
+    //                 | string
+    //                 | {
+    //                     [k: string]: unknown;
+    //                   };
+    //               /**
+    //                * Array of decorations used to decorate node links
+    //                */
+    //               decorations?: {
+    //                 /**
+    //                  * An identifier used to identify the decoration
+    //                  */
+    //                 id?: string;
+    //                 /**
+    //                  * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                  */
+    //                 hotspot?: boolean;
+    //                 /**
+    //                  * CSS class name for decoration styling
+    //                  */
+    //                 class_name?: string;
+    //                 /**
+    //                  * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                  */
+    //                 position?:
+    //                   | "topLeft"
+    //                   | "topCenter"
+    //                   | "topRight"
+    //                   | "middleLeft"
+    //                   | "middleCenter"
+    //                   | "middleRight"
+    //                   | "bottomLeft"
+    //                   | "bottomCenter"
+    //                   | "bottomRight"
+    //                   | "source"
+    //                   | "middle"
+    //                   | "target";
+    //                 /**
+    //                  * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                  */
+    //                 x_pos?: number;
+    //                 /**
+    //                  * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                  */
+    //                 y_pos?: number;
+    //                 /**
+    //                  * Image displayed at the decoration position. Provide either this or a label.
+    //                  */
+    //                 image?: string;
+    //                 /**
+    //                  * Label displayed at the decoration position. Provide either this or an image.
+    //                  */
+    //                 label?: string;
+    //                 [k: string]: unknown;
+    //               }[];
+    //               [k: string]: unknown;
+    //             };
+    //             [k: string]: unknown;
+    //           };
+    //         }[];
+    //         /**
+    //          * Parameters for the port
+    //          */
+    //         parameters?: {
+    //           [k: string]: unknown;
+    //         };
+    //         /**
+    //          * Object containing app-specific data
+    //          */
+    //         app_data?: {
+    //           /**
+    //            * Additional UI info for ports
+    //            */
+    //           ui_data?: {
+    //             /**
+    //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
+    //              */
+    //             cardinality?: {
+    //               /**
+    //                * Minimum data sets that are required for this port
+    //                */
+    //               min?: number;
+    //               /**
+    //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
+    //                */
+    //               max?: number;
+    //             };
+    //             /**
+    //              * CSS class name
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
+    //              */
+    //             style?:
+    //               | string
+    //               | {
+    //                   [k: string]: unknown;
+    //                 };
+    //             /**
+    //              * Port name
+    //              */
+    //             label?: string;
+    //             [k: string]: unknown;
+    //           };
+    //           [k: string]: unknown;
+    //         };
+    //       }[];
+    //       /**
+    //        * Object containing app-specific data
+    //        */
+    //       app_data?: {
+    //         /**
+    //          * object with app-specific UI-information
+    //          */
+    //         ui_data?: {
+    //           /**
+    //            * User-defined label
+    //            */
+    //           label?: string;
+    //           /**
+    //            * User-defined description
+    //            */
+    //           description?: string;
+    //           /**
+    //            * CSS class name
+    //            */
+    //           class_name?: string;
+    //           /**
+    //            * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node.
+    //            */
+    //           style?:
+    //             | string
+    //             | {
+    //                 [k: string]: unknown;
+    //               };
+    //           /**
+    //            * Image name (do not embed images inline!)
+    //            */
+    //           image?: string;
+    //           /**
+    //            * x-position
+    //            */
+    //           x_pos?: number;
+    //           /**
+    //            * y-position
+    //            */
+    //           y_pos?: number;
+    //           /**
+    //            * Indicates whether a supernode is shown in expanded state or as a regular node.
+    //            */
+    //           is_expanded?: boolean;
+    //           /**
+    //            * Height of expanded supernode. If not provided an appropriate height is calculated.
+    //            */
+    //           expanded_height?: number;
+    //           /**
+    //            * Width of expanded supernode. If not provided an appropriate width is calculated.
+    //            */
+    //           expanded_width?: number;
+    //           /**
+    //            * additional attributes
+    //            */
+    //           attributes?: string;
+    //           /**
+    //            * Array of non-data node linkage
+    //            */
+    //           associations?: {
+    //             /**
+    //              * Association identifier
+    //              */
+    //             id: string;
+    //             /**
+    //              * Target node id
+    //              */
+    //             node_ref: string;
+    //             /**
+    //              * CSS class name for link styling
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the association link.
+    //              */
+    //             style?:
+    //               | string
+    //               | {
+    //                   [k: string]: unknown;
+    //                 };
+    //             /**
+    //              * Array of decorations used to decorate association links
+    //              */
+    //             decorations?: {
+    //               /**
+    //                * An identifier used to identify the decoration
+    //                */
+    //               id?: string;
+    //               /**
+    //                * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                */
+    //               hotspot?: boolean;
+    //               /**
+    //                * CSS class name for decoration styling
+    //                */
+    //               class_name?: string;
+    //               /**
+    //                * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                */
+    //               position?:
+    //                 | "topLeft"
+    //                 | "topCenter"
+    //                 | "topRight"
+    //                 | "middleLeft"
+    //                 | "middleCenter"
+    //                 | "middleRight"
+    //                 | "bottomLeft"
+    //                 | "bottomCenter"
+    //                 | "bottomRight"
+    //                 | "source"
+    //                 | "middle"
+    //                 | "target";
+    //               /**
+    //                * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                */
+    //               x_pos?: number;
+    //               /**
+    //                * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                */
+    //               y_pos?: number;
+    //               /**
+    //                * Image displayed at the decoration position. Provide either this or a label.
+    //                */
+    //               image?: string;
+    //               /**
+    //                * Label displayed at the decoration position. Provide either this or an image.
+    //                */
+    //               label?: string;
+    //               [k: string]: unknown;
+    //             }[];
+    //           }[];
+    //           /**
+    //            * An array of messages for the node
+    //            */
+    //           messages?: {
+    //             /**
+    //              * Name of the parameter that has the message
+    //              */
+    //             id_ref: string;
+    //             /**
+    //              * Validation identifier from the fail_message validation section.
+    //              */
+    //             validation_id?: string;
+    //             /**
+    //              * Type of message
+    //              */
+    //             type: "info" | "error" | "warning";
+    //             /**
+    //              * Message string
+    //              */
+    //             text: string;
+    //             [k: string]: unknown;
+    //           }[];
+    //           /**
+    //            * UI only parameter values for the node
+    //            */
+    //           ui_parameters?: {
+    //             [k: string]: unknown;
+    //           };
+    //           /**
+    //            * Array of decorations used to decorate nodes
+    //            */
+    //           decorations?: {
+    //             /**
+    //              * An identifier used to identify the decoration
+    //              */
+    //             id?: string;
+    //             /**
+    //              * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //              */
+    //             hotspot?: boolean;
+    //             /**
+    //              * CSS class name for decoration styling
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //              */
+    //             position?:
+    //               | "topLeft"
+    //               | "topCenter"
+    //               | "topRight"
+    //               | "middleLeft"
+    //               | "middleCenter"
+    //               | "middleRight"
+    //               | "bottomLeft"
+    //               | "bottomCenter"
+    //               | "bottomRight"
+    //               | "source"
+    //               | "middle"
+    //               | "target";
+    //             /**
+    //              * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //              */
+    //             x_pos?: number;
+    //             /**
+    //              * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //              */
+    //             y_pos?: number;
+    //             /**
+    //              * Image displayed at the decoration position. Provide either this or a label.
+    //              */
+    //             image?: string;
+    //             /**
+    //              * Label displayed at the decoration position. Provide either this or an image.
+    //              */
+    //             label?: string;
+    //             [k: string]: unknown;
+    //           }[];
+    //           [k: string]: unknown;
+    //         };
+    //         [k: string]: unknown;
+    //       };
+    //       /**
+    //        * Details of the connection to use for a pipeline binding node.
+    //        */
+    //       connection?: {
+    //         /**
+    //          * A name tag for disambiguating connections
+    //          */
+    //         name?: string;
+    //         /**
+    //          * Object containing app-specific data
+    //          */
+    //         app_data?: {
+    //           [k: string]: unknown;
+    //         };
+    //         /**
+    //          * A reference to a connection by ID.
+    //          */
+    //         ref: string;
+    //         /**
+    //          * If ref is set, this refers to the ID of the catalog which contains the connection. If neither this attribute nor project_ref are specified, the connection will be assumed to exist in the project or catalog which contains the pipeline.
+    //          */
+    //         catalog_ref?: string;
+    //         /**
+    //          * If ref is set, this refers to the ID of the project which contains the connection. If neither this attribute nor catalog_ref are specified, the connection will be assumed to exist in the project or catalog which contains the pipeline.
+    //          */
+    //         project_ref?: string;
+    //         /**
+    //          * The properties for the connection. The specific properties allowed depend on the type of connection referenced.
+    //          */
+    //         properties?: {
+    //           [k: string]: unknown;
+    //         };
+    //         [k: string]: unknown;
+    //       };
+    //       /**
+    //        * Details of the data asset contained in a catalog or project to use for a pipeline binding node.
+    //        */
+    //       data_asset?: {
+    //         /**
+    //          * Object containing app-specific data
+    //          */
+    //         app_data?: {
+    //           [k: string]: unknown;
+    //         };
+    //         /**
+    //          * A reference to a data asset by ID.
+    //          */
+    //         ref?: string;
+    //         /**
+    //          * If ref is set, this refers to the ID of the catalog which contains the data asset. If neither this attribute nor project_ref are specified, the data asset will be assumed to exist in the project or catalog which contains the pipeline.
+    //          */
+    //         catalog_ref?: string;
+    //         /**
+    //          * If ref is set, this refers to the ID of the project which contains the data asset. If neither this attribute nor catalog_ref are specified, the data asset will be assumed to exist in the project or catalog which contains the pipeline.
+    //          */
+    //         project_ref?: string;
+    //         /**
+    //          * Properties controlling how the data asset is used.
+    //          */
+    //         properties?: {
+    //           /**
+    //            * The ID of the data asset attachment to use. If not specified and used as a source, the first suitable attachment found will be used. If not specified and used as a target, a new attachment will be created.
+    //            */
+    //           attachment_ref?: string;
+    //           /**
+    //            * Specifies the name of the data asset to read, create or update if ref is unset.
+    //            */
+    //           name?: boolean & string;
+    //           /**
+    //            * When used as a target, whether to update the data asset with the schema when a run completes or not (will be automatically updated if not supplied by caller).
+    //            */
+    //           no_write_schema?: boolean;
+    //           /**
+    //            * When used as a target, whether to update the data asset with the status when a run completes or not (will be automatically updated if not supplied by caller).
+    //            */
+    //           no_write_status?: boolean;
+    //           [k: string]: {
+    //             [k: string]: unknown;
+    //           };
+    //         };
+    //         [k: string]: unknown;
+    //       };
+    //       /**
+    //        * Binding node type identifier
+    //        */
+    //       op?: string;
+    //       /**
+    //        * Parameters for the binding exit node
+    //        */
+    //       parameters?: {
+    //         [k: string]: unknown;
+    //       };
+    //     }
+    //   | {
+    //       /**
+    //        * Unique identifier for the model within the current pipeline
+    //        */
+    //       id: string;
+    //       /**
+    //        * Model node description
+    //        */
+    //       description?: string;
+    //       /**
+    //        * Node type - always 'model_node' for model pipeline elements
+    //        */
+    //       type: "model_node";
+    //       /**
+    //        * Reference to the binary model
+    //        */
+    //       model_ref?: string;
+    //       inputs: {
+    //         /**
+    //          * Unique identifier
+    //          */
+    //         id: string;
+    //         /**
+    //          * Optional data record schema reference associated with the port
+    //          */
+    //         schema_ref?: string;
+    //         /**
+    //          * Array of links going into the node. Applies to input ports and exit bindings only.
+    //          */
+    //         links?: {
+    //           /**
+    //            * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
+    //            */
+    //           id?: string;
+    //           /**
+    //            * id of a node this link connects to
+    //            */
+    //           node_id_ref: string;
+    //           /**
+    //            * optional port id of a node this link connects to
+    //            */
+    //           port_id_ref?: string;
+    //           /**
+    //            * optional link name (used in parameter sets when there are multiple input sources)
+    //            */
+    //           link_name?: string;
+    //           /**
+    //            * Link type attribute
+    //            */
+    //           type_attr?: string;
+    //           /**
+    //            * Link description
+    //            */
+    //           description?: string;
+    //           /**
+    //            * Object containing app-specific data
+    //            */
+    //           app_data?: {
+    //             /**
+    //              * object with app-specific UI-information
+    //              */
+    //             ui_data?: {
+    //               /**
+    //                * CSS class name
+    //                */
+    //               class_name?: string;
+    //               /**
+    //                * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
+    //                */
+    //               style?:
+    //                 | string
+    //                 | {
+    //                     [k: string]: unknown;
+    //                   };
+    //               /**
+    //                * Array of decorations used to decorate node links
+    //                */
+    //               decorations?: {
+    //                 /**
+    //                  * An identifier used to identify the decoration
+    //                  */
+    //                 id?: string;
+    //                 /**
+    //                  * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                  */
+    //                 hotspot?: boolean;
+    //                 /**
+    //                  * CSS class name for decoration styling
+    //                  */
+    //                 class_name?: string;
+    //                 /**
+    //                  * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                  */
+    //                 position?:
+    //                   | "topLeft"
+    //                   | "topCenter"
+    //                   | "topRight"
+    //                   | "middleLeft"
+    //                   | "middleCenter"
+    //                   | "middleRight"
+    //                   | "bottomLeft"
+    //                   | "bottomCenter"
+    //                   | "bottomRight"
+    //                   | "source"
+    //                   | "middle"
+    //                   | "target";
+    //                 /**
+    //                  * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                  */
+    //                 x_pos?: number;
+    //                 /**
+    //                  * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                  */
+    //                 y_pos?: number;
+    //                 /**
+    //                  * Image displayed at the decoration position. Provide either this or a label.
+    //                  */
+    //                 image?: string;
+    //                 /**
+    //                  * Label displayed at the decoration position. Provide either this or an image.
+    //                  */
+    //                 label?: string;
+    //                 [k: string]: unknown;
+    //               }[];
+    //               [k: string]: unknown;
+    //             };
+    //             [k: string]: unknown;
+    //           };
+    //         }[];
+    //         /**
+    //          * Parameters for the port
+    //          */
+    //         parameters?: {
+    //           [k: string]: unknown;
+    //         };
+    //         /**
+    //          * Object containing app-specific data
+    //          */
+    //         app_data?: {
+    //           /**
+    //            * Additional UI info for ports
+    //            */
+    //           ui_data?: {
+    //             /**
+    //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
+    //              */
+    //             cardinality?: {
+    //               /**
+    //                * Minimum data sets that are required for this port
+    //                */
+    //               min?: number;
+    //               /**
+    //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
+    //                */
+    //               max?: number;
+    //             };
+    //             /**
+    //              * CSS class name
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
+    //              */
+    //             style?:
+    //               | string
+    //               | {
+    //                   [k: string]: unknown;
+    //                 };
+    //             /**
+    //              * Port name
+    //              */
+    //             label?: string;
+    //             [k: string]: unknown;
+    //           };
+    //           [k: string]: unknown;
+    //         };
+    //       }[];
+    //       outputs?: {
+    //         /**
+    //          * Unique identifier
+    //          */
+    //         id: string;
+    //         /**
+    //          * Optional data record schema reference associated with the port
+    //          */
+    //         schema_ref?: string;
+    //         /**
+    //          * Array of links going into the node. Applies to input ports and exit bindings only.
+    //          */
+    //         links?: {
+    //           /**
+    //            * Unique id of this link within the pipelineFlow. If omitted a new link id will be generated.
+    //            */
+    //           id?: string;
+    //           /**
+    //            * id of a node this link connects to
+    //            */
+    //           node_id_ref: string;
+    //           /**
+    //            * optional port id of a node this link connects to
+    //            */
+    //           port_id_ref?: string;
+    //           /**
+    //            * optional link name (used in parameter sets when there are multiple input sources)
+    //            */
+    //           link_name?: string;
+    //           /**
+    //            * Link type attribute
+    //            */
+    //           type_attr?: string;
+    //           /**
+    //            * Link description
+    //            */
+    //           description?: string;
+    //           /**
+    //            * Object containing app-specific data
+    //            */
+    //           app_data?: {
+    //             /**
+    //              * object with app-specific UI-information
+    //              */
+    //             ui_data?: {
+    //               /**
+    //                * CSS class name
+    //                */
+    //               class_name?: string;
+    //               /**
+    //                * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node to node link.
+    //                */
+    //               style?:
+    //                 | string
+    //                 | {
+    //                     [k: string]: unknown;
+    //                   };
+    //               /**
+    //                * Array of decorations used to decorate node links
+    //                */
+    //               decorations?: {
+    //                 /**
+    //                  * An identifier used to identify the decoration
+    //                  */
+    //                 id?: string;
+    //                 /**
+    //                  * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                  */
+    //                 hotspot?: boolean;
+    //                 /**
+    //                  * CSS class name for decoration styling
+    //                  */
+    //                 class_name?: string;
+    //                 /**
+    //                  * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                  */
+    //                 position?:
+    //                   | "topLeft"
+    //                   | "topCenter"
+    //                   | "topRight"
+    //                   | "middleLeft"
+    //                   | "middleCenter"
+    //                   | "middleRight"
+    //                   | "bottomLeft"
+    //                   | "bottomCenter"
+    //                   | "bottomRight"
+    //                   | "source"
+    //                   | "middle"
+    //                   | "target";
+    //                 /**
+    //                  * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                  */
+    //                 x_pos?: number;
+    //                 /**
+    //                  * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                  */
+    //                 y_pos?: number;
+    //                 /**
+    //                  * Image displayed at the decoration position. Provide either this or a label.
+    //                  */
+    //                 image?: string;
+    //                 /**
+    //                  * Label displayed at the decoration position. Provide either this or an image.
+    //                  */
+    //                 label?: string;
+    //                 [k: string]: unknown;
+    //               }[];
+    //               [k: string]: unknown;
+    //             };
+    //             [k: string]: unknown;
+    //           };
+    //         }[];
+    //         /**
+    //          * Parameters for the port
+    //          */
+    //         parameters?: {
+    //           [k: string]: unknown;
+    //         };
+    //         /**
+    //          * Object containing app-specific data
+    //          */
+    //         app_data?: {
+    //           /**
+    //            * Additional UI info for ports
+    //            */
+    //           ui_data?: {
+    //             /**
+    //              * Property to capture how many data assets are allowed for this port, e.g., min: 1, max:1 implies you must supply 1 and only 1; min:0, max:1 implies it is optional and a max of one, min:0, max:-1 means it is optional and you can may have any number of data assets. The default value is 1:1 for inputs and 1:-1 for outputs.
+    //              */
+    //             cardinality?: {
+    //               /**
+    //                * Minimum data sets that are required for this port
+    //                */
+    //               min?: number;
+    //               /**
+    //                * Maximum data sets that are allowed on this port. A negative value indicates unlimited. The default value is 1 for inputs and -1 for outputs.
+    //                */
+    //               max?: number;
+    //             };
+    //             /**
+    //              * CSS class name
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the port.
+    //              */
+    //             style?:
+    //               | string
+    //               | {
+    //                   [k: string]: unknown;
+    //                 };
+    //             /**
+    //              * Port name
+    //              */
+    //             label?: string;
+    //             [k: string]: unknown;
+    //           };
+    //           [k: string]: unknown;
+    //         };
+    //       }[];
+    //       /**
+    //        * Node type identifier of modeling node that created this model.
+    //        */
+    //       op?: string;
+    //       /**
+    //        * Input parameters for the operator
+    //        */
+    //       parameters?: {
+    //         [k: string]: unknown;
+    //       };
+    //       /**
+    //        * Reference to the runtime associated with the current node
+    //        */
+    //       runtime_ref?: string;
+    //       /**
+    //        * Object containing app-specific data
+    //        */
+    //       app_data?: {
+    //         /**
+    //          * object with app-specific UI-information
+    //          */
+    //         ui_data?: {
+    //           /**
+    //            * User-defined label
+    //            */
+    //           label?: string;
+    //           /**
+    //            * User-defined description
+    //            */
+    //           description?: string;
+    //           /**
+    //            * CSS class name
+    //            */
+    //           class_name?: string;
+    //           /**
+    //            * A 'style spec' object containing CSS strings to be applied to the SVG objects of the node.
+    //            */
+    //           style?:
+    //             | string
+    //             | {
+    //                 [k: string]: unknown;
+    //               };
+    //           /**
+    //            * Image name (do not embed images inline!)
+    //            */
+    //           image?: string;
+    //           /**
+    //            * x-position
+    //            */
+    //           x_pos?: number;
+    //           /**
+    //            * y-position
+    //            */
+    //           y_pos?: number;
+    //           /**
+    //            * Indicates whether a supernode is shown in expanded state or as a regular node.
+    //            */
+    //           is_expanded?: boolean;
+    //           /**
+    //            * Height of expanded supernode. If not provided an appropriate height is calculated.
+    //            */
+    //           expanded_height?: number;
+    //           /**
+    //            * Width of expanded supernode. If not provided an appropriate width is calculated.
+    //            */
+    //           expanded_width?: number;
+    //           /**
+    //            * additional attributes
+    //            */
+    //           attributes?: string;
+    //           /**
+    //            * Array of non-data node linkage
+    //            */
+    //           associations?: {
+    //             /**
+    //              * Association identifier
+    //              */
+    //             id: string;
+    //             /**
+    //              * Target node id
+    //              */
+    //             node_ref: string;
+    //             /**
+    //              * CSS class name for link styling
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * A 'style spec' object containing CSS strings to be applied to the SVG objects of the association link.
+    //              */
+    //             style?:
+    //               | string
+    //               | {
+    //                   [k: string]: unknown;
+    //                 };
+    //             /**
+    //              * Array of decorations used to decorate association links
+    //              */
+    //             decorations?: {
+    //               /**
+    //                * An identifier used to identify the decoration
+    //                */
+    //               id?: string;
+    //               /**
+    //                * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //                */
+    //               hotspot?: boolean;
+    //               /**
+    //                * CSS class name for decoration styling
+    //                */
+    //               class_name?: string;
+    //               /**
+    //                * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //                */
+    //               position?:
+    //                 | "topLeft"
+    //                 | "topCenter"
+    //                 | "topRight"
+    //                 | "middleLeft"
+    //                 | "middleCenter"
+    //                 | "middleRight"
+    //                 | "bottomLeft"
+    //                 | "bottomCenter"
+    //                 | "bottomRight"
+    //                 | "source"
+    //                 | "middle"
+    //                 | "target";
+    //               /**
+    //                * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                */
+    //               x_pos?: number;
+    //               /**
+    //                * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //                */
+    //               y_pos?: number;
+    //               /**
+    //                * Image displayed at the decoration position. Provide either this or a label.
+    //                */
+    //               image?: string;
+    //               /**
+    //                * Label displayed at the decoration position. Provide either this or an image.
+    //                */
+    //               label?: string;
+    //               [k: string]: unknown;
+    //             }[];
+    //           }[];
+    //           /**
+    //            * An array of messages for the node
+    //            */
+    //           messages?: {
+    //             /**
+    //              * Name of the parameter that has the message
+    //              */
+    //             id_ref: string;
+    //             /**
+    //              * Validation identifier from the fail_message validation section.
+    //              */
+    //             validation_id?: string;
+    //             /**
+    //              * Type of message
+    //              */
+    //             type: "info" | "error" | "warning";
+    //             /**
+    //              * Message string
+    //              */
+    //             text: string;
+    //             [k: string]: unknown;
+    //           }[];
+    //           /**
+    //            * UI only parameter values for the node
+    //            */
+    //           ui_parameters?: {
+    //             [k: string]: unknown;
+    //           };
+    //           /**
+    //            * Array of decorations used to decorate nodes
+    //            */
+    //           decorations?: {
+    //             /**
+    //              * An identifier used to identify the decoration
+    //              */
+    //             id?: string;
+    //             /**
+    //              * Indicates whether the decorator is a hotspot or not. ie does it send an event to consuming app. when clicked
+    //              */
+    //             hotspot?: boolean;
+    //             /**
+    //              * CSS class name for decoration styling
+    //              */
+    //             class_name?: string;
+    //             /**
+    //              * Indicates an anchor point on the node or link from which the decoration will be displayed. If x_pos and y_pos are not provided the decoration is displayed with a default offset from this position.
+    //              */
+    //             position?:
+    //               | "topLeft"
+    //               | "topCenter"
+    //               | "topRight"
+    //               | "middleLeft"
+    //               | "middleCenter"
+    //               | "middleRight"
+    //               | "bottomLeft"
+    //               | "bottomCenter"
+    //               | "bottomRight"
+    //               | "source"
+    //               | "middle"
+    //               | "target";
+    //             /**
+    //              * X position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //              */
+    //             x_pos?: number;
+    //             /**
+    //              * Y position of the decorator relative to the node's position field. If position is not provided it is relative to the 'topLeft' position
+    //              */
+    //             y_pos?: number;
+    //             /**
+    //              * Image displayed at the decoration position. Provide either this or a label.
+    //              */
+    //             image?: string;
+    //             /**
+    //              * Label displayed at the decoration position. Provide either this or an image.
+    //              */
+    //             label?: string;
+    //             [k: string]: unknown;
+    //           }[];
+    //           [k: string]: unknown;
+    //         };
+    //         [k: string]: unknown;
+    //       };
+    //     }
   }
 
   interface PropertyDefinitions {
