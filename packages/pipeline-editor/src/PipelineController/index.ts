@@ -88,6 +88,7 @@ class PipelineController extends CanvasController {
             app_data: {
               ui_data: { comments: [] },
               version: PIPELINE_CURRENT_VERSION,
+              properties: {},
             },
             runtime_ref: "",
           },
