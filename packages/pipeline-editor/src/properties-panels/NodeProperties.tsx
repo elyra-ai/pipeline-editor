@@ -32,6 +32,7 @@ interface Props {
   }[];
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
+  getInputPathData: (node: any) => any;
   onChange?: (nodeID: string, data: any) => any;
 }
 
@@ -50,6 +51,7 @@ function NodeProperties({
   nodes,
   onFileRequested,
   onPropertiesUpdateRequested,
+  getInputPathData,
   onChange,
 }: Props) {
   if (selectedNodes === undefined || selectedNodes.length === 0) {
@@ -87,6 +89,26 @@ function NodeProperties({
 
   const refs = nodePropertiesSchema.app_data.parameter_refs;
 
+  const data = getInputPathData(selectedNode);
+
+  let parameter_info = nodePropertiesSchema.app_data.properties.uihints.parameter_info.map(
+    (prop: any) => {
+      let newProp = { ...prop };
+      if (prop.data.format === "inputPath") {
+        newProp.data = { ...prop.data, data };
+      }
+      return newProp;
+    }
+  );
+
+  let properties = {
+    ...nodePropertiesSchema.app_data.properties,
+    uihints: {
+      ...nodePropertiesSchema.app_data.properties.uihints,
+      parameter_info,
+    },
+  };
+
   return (
     <div>
       <Heading>{nodePropertiesSchema.label}</Heading>
@@ -94,7 +116,7 @@ function NodeProperties({
         refs={refs}
         currentProperties={selectedNode.app_data}
         onPropertiesUpdateRequested={onPropertiesUpdateRequested}
-        propertiesSchema={nodePropertiesSchema.app_data.properties}
+        propertiesSchema={properties}
         onFileRequested={onFileRequested}
         onChange={(data: any) => {
           onChange?.(selectedNode.id, data);

@@ -21,4 +21,5 @@ export { default as DisplayControl } from "./DisplayControl";
 export { default as StringArrayControl } from "./StringArrayControl";
 export { default as BooleanControl } from "./BooleanControl";
 export { default as EnumControl } from "./EnumControl";
+export { default as FoorbarControl } from "./FoobarControl";
 export { default as NumberControl } from "./NumberControl";

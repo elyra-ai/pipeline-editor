@@ -5345,6 +5345,9 @@ declare module "@elyra/canvas" {
         place_holder_text?: {
           default: string;
         };
+        data: {
+          [k: string]: unknown;
+        };
       }[];
       action_info: any[];
       group_info: any[];
