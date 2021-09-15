@@ -39,7 +39,7 @@ it("should migrate v0 to latest", () => {
         Object {
           "app_data": Object {
             "name": "title",
-            "version": 4,
+            "version": 5,
           },
           "nodes": Array [],
         },
@@ -64,7 +64,7 @@ it("should migrate v0 to latest with missing app_data", () => {
       "pipelines": Array [
         Object {
           "app_data": Object {
-            "version": 4,
+            "version": 5,
           },
           "nodes": Array [],
         },
@@ -99,7 +99,7 @@ it("should migrate v1 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
-            "version": 4,
+            "version": 5,
           },
           "nodes": Array [
             Object {
@@ -140,7 +140,7 @@ it("should migrate v2 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
-            "version": 4,
+            "version": 5,
           },
           "nodes": Array [],
         },
@@ -193,7 +193,7 @@ it("should migrate v3 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
-            "version": 4,
+            "version": 5,
           },
           "nodes": Array [
             Object {
@@ -231,13 +231,93 @@ it("should migrate v3 to latest", () => {
   `);
 });
 
+it("should migrate v4 to latest", () => {
+  const v4 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 4,
+        },
+        nodes: [
+          {
+            type: "execution_node",
+            op: "run-notebook-using-papermill",
+            app_data: {},
+          },
+          {
+            type: "execution_node",
+            op: "filter_text_using_shell_and_grep_Filtertext",
+            app_data: {},
+          },
+          {
+            type: "execution_node",
+            op: "some_op",
+            app_data: {},
+          },
+        ],
+      },
+      {
+        nodes: [
+          {
+            type: "execution_node",
+            op: "slack-operator_SlackAPIPostOperator",
+            app_data: {},
+          },
+        ],
+      },
+    ],
+  };
+
+  const actual = migrate(v4);
+
+  expect(actual).toMatchInlineSnapshot(`
+    Object {
+      "pipelines": Array [
+        Object {
+          "app_data": Object {
+            "name": "name",
+            "version": 5,
+          },
+          "nodes": Array [
+            Object {
+              "app_data": Object {},
+              "op": "run_notebook_using_papermill_Runnotebookusingpapermill",
+              "type": "execution_node",
+            },
+            Object {
+              "app_data": Object {},
+              "op": "filter_text_using_shell_and_grep_Filtertext",
+              "type": "execution_node",
+            },
+            Object {
+              "app_data": Object {},
+              "op": "some_op",
+              "type": "execution_node",
+            },
+          ],
+        },
+        Object {
+          "nodes": Array [
+            Object {
+              "app_data": Object {},
+              "op": "slack_operator_SlackAPIPostOperator",
+              "type": "execution_node",
+            },
+          ],
+        },
+      ],
+    }
+  `);
+});
+
 it("should do nothing for latest version", () => {
   const latest = {
     pipelines: [
       {
         app_data: {
           name: "name",
-          version: 4,
+          version: 5,
         },
         nodes: [],
       },
