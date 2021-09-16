@@ -94,7 +94,7 @@ function NodeProperties({
   let parameter_info = nodePropertiesSchema.app_data.properties.uihints.parameter_info.map(
     (prop: any) => {
       let newProp = { ...prop };
-      if (prop.data.format === "inputPath") {
+      if (prop.data.format === "inputpath") {
         newProp.data = { ...prop.data, data };
       }
       return newProp;

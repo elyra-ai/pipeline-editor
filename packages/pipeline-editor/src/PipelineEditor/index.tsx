@@ -669,7 +669,7 @@ const PipelineEditor = forwardRef(
           const options = [];
           for (const prop of nodeDef?.app_data.properties?.uihints
             ?.parameter_info ?? []) {
-            if (prop.data.format === "outputPath") {
+            if (prop.data.format === "outputpath") {
               options.push({
                 value: prop.parameter_ref,
                 label: prop.label.default,
