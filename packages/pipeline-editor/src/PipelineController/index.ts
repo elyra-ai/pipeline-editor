@@ -30,7 +30,7 @@ import {
 } from "./../errors";
 import { getFileName, nestedToPrefixed, prefixedToNested } from "./utils";
 
-export const PIPELINE_CURRENT_VERSION = 4;
+export const PIPELINE_CURRENT_VERSION = 5;
 
 // TODO: Experiment with pipeline editor settings.
 const SHOW_EXTENSIONS = true;

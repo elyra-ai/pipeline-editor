@@ -20,6 +20,7 @@ import migrateV1 from "./migrateV1";
 import migrateV2 from "./migrateV2";
 import migrateV3 from "./migrateV3";
 import migrateV4 from "./migrateV4";
+import migrateV5 from "./migrateV5";
 
 export function migrate(
   pipelineJSON: any,
@@ -42,6 +43,10 @@ export function migrate(
     if (version < 4) {
       console.debug("migrating pipeline from v3 to v4");
       migrateV4(draft);
+    }
+    if (version < 5) {
+      console.debug("migrating pipeline from v4 to v5");
+      migrateV5(draft);
     }
   });
 }
