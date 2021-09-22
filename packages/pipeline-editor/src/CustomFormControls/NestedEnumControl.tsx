@@ -115,8 +115,8 @@ const Container = styled.div<{ isOpen: boolean }>`
 
 function flatten(data: Data[]): any[] {
   let flattenedData: any[] = [];
-  data.map((item: Data) => {
-    item.options?.map((option: Data) => {
+  data.forEach((item: Data) => {
+    item.options?.forEach((option: Data) => {
       flattenedData.push({
         node_id: item.value,
         output_key: option.value,
