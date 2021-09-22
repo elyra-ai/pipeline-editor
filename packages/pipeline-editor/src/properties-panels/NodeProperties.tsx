@@ -32,7 +32,7 @@ interface Props {
   }[];
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
-  getInputPathData: (node: any) => any;
+  getNodeProperties: (node: any) => any | undefined;
   onChange?: (nodeID: string, data: any) => any;
 }
 
@@ -51,7 +51,7 @@ function NodeProperties({
   nodes,
   onFileRequested,
   onPropertiesUpdateRequested,
-  getInputPathData,
+  getNodeProperties,
   onChange,
 }: Props) {
   if (selectedNodes === undefined || selectedNodes.length === 0) {
@@ -89,25 +89,8 @@ function NodeProperties({
 
   const refs = nodePropertiesSchema.app_data.parameter_refs;
 
-  const data = getInputPathData(selectedNode);
-
-  let parameter_info = nodePropertiesSchema.app_data.properties.uihints.parameter_info.map(
-    (prop: any) => {
-      let newProp = { ...prop };
-      if (prop.data.format === "inputpath") {
-        newProp.data = { ...prop.data, data };
-      }
-      return newProp;
-    }
-  );
-
-  let properties = {
-    ...nodePropertiesSchema.app_data.properties,
-    uihints: {
-      ...nodePropertiesSchema.app_data.properties.uihints,
-      parameter_info,
-    },
-  };
+  const properties =
+    getNodeProperties(selectedNode) ?? nodePropertiesSchema.app_data.properties;
 
   return (
     <div>

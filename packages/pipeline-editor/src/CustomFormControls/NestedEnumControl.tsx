@@ -127,7 +127,7 @@ function flatten(data: Data[]): any[] {
   return flattenedData;
 }
 
-function FoobarControl({ data = [] }: Props) {
+function NestedEnumControl({ data = [] }: Props) {
   const [value, setValue] = useControlState<any>();
 
   const theme = useTheme();
@@ -176,4 +176,4 @@ function FoobarControl({ data = [] }: Props) {
   );
 }
 
-export default createControl("FoobarControl", FoobarControl);
+export default createControl("NestedEnumControl", NestedEnumControl);

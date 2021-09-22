@@ -60,6 +60,7 @@ interface Props {
   onError?: (error: Error) => any;
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
+  getNodeProperties?: (node: any, upstreamNodes: any[]) => any;
   readOnly?: boolean;
   children?: React.ReactNode;
   nativeKeyboardActions?: boolean;
@@ -180,6 +181,7 @@ const PipelineEditor = forwardRef(
       onError,
       onFileRequested,
       onPropertiesUpdateRequested,
+      getNodeProperties,
       readOnly,
       children,
       nativeKeyboardActions,
@@ -635,58 +637,32 @@ const PipelineEditor = forwardRef(
       return null;
     };
 
-    const get_upstream_node_ids = useCallback((node: any): string[] => {
-      let upstream_node_ids: string[] = [];
+    const getUpstreamNodeIds = (node: any): string[] => {
+      let upstreamNodeIds: string[] = [];
 
       for (const link of node.inputs?.[0].links || []) {
-        upstream_node_ids.push(link.node_id_ref);
-        const upstream_node = controller.current.findExecutionNode(
+        upstreamNodeIds.push(link.node_id_ref);
+        const upstreamNode = controller.current.findExecutionNode(
           link.node_id_ref
         );
-        if (upstream_node) {
-          upstream_node_ids = upstream_node_ids.concat(
-            get_upstream_node_ids(upstream_node)
+        if (upstreamNode) {
+          upstreamNodeIds = upstreamNodeIds.concat(
+            getUpstreamNodeIds(upstreamNode)
           );
         }
       }
 
-      return upstream_node_ids;
-    }, []);
+      return upstreamNodeIds;
+    };
 
-    const getInputPathData = useCallback(
-      (node: any) => {
-        const data = [];
-        const upstream_nodes = controller.current.idsToNodes(
-          get_upstream_node_ids(node)
-        );
+    const getUpstreamNodes = (node: any) =>
+      controller.current.idsToNodes(getUpstreamNodeIds(node));
 
-        const nodes = controller.current.getAllPaletteNodes();
-
-        for (const upstream_node of upstream_nodes) {
-          // @ts-ignore
-          const nodeDef = nodes.find((n) => n.op === upstream_node.op);
-
-          const options = [];
-          for (const prop of nodeDef?.app_data.properties?.uihints
-            ?.parameter_info ?? []) {
-            if (prop.data.format === "outputpath") {
-              options.push({
-                value: prop.parameter_ref,
-                label: prop.label.default,
-              });
-            }
-          }
-          data.push({
-            value: upstream_node.id,
-            label: upstream_node.app_data?.ui_data?.label,
-            options: options,
-          });
-        }
-
-        return data;
-      },
-      [get_upstream_node_ids]
-    );
+    const getNodeProps = (node: any): any => {
+      return getNodeProperties
+        ? getNodeProperties(node, getUpstreamNodes(node))
+        : undefined;
+    };
 
     if (readOnly) {
       return (
@@ -747,7 +723,7 @@ const PipelineEditor = forwardRef(
             nodes={controller.current.getAllPaletteNodes()}
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
-            getInputPathData={getInputPathData}
+            getNodeProperties={getNodeProps}
             onChange={handlePropertiesChange}
           />
         ),
