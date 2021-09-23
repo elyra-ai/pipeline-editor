@@ -118,8 +118,8 @@ function flatten(data: Data[]): any[] {
   data.forEach((item: Data) => {
     item.options?.forEach((option: Data) => {
       flattenedData.push({
-        node_id: item.value,
-        output_key: option.value,
+        value: item.value,
+        option: option.value,
         label: item.label + ": " + option.label,
       });
     });
