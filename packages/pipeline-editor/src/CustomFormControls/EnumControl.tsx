@@ -19,7 +19,6 @@ import { useCallback } from "react";
 import { useSelect } from "downshift";
 import { useTheme } from "styled-components";
 
-import { createControl, useControlState } from "./control";
 import {
   EnumButton,
   EnumContainer,
@@ -28,6 +27,7 @@ import {
   EnumMenu,
   EnumMenuItem,
 } from "./components";
+import { createControl, useControlState } from "./control";
 
 interface Props {
   items: string[];
