@@ -60,7 +60,6 @@ interface Props {
   onError?: (error: Error) => any;
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
-  getNodeProperties?: (node: any, upstreamNodes: any[]) => any;
   readOnly?: boolean;
   children?: React.ReactNode;
   nativeKeyboardActions?: boolean;
@@ -181,7 +180,6 @@ const PipelineEditor = forwardRef(
       onError,
       onFileRequested,
       onPropertiesUpdateRequested,
-      getNodeProperties,
       readOnly,
       children,
       nativeKeyboardActions,
@@ -655,13 +653,55 @@ const PipelineEditor = forwardRef(
       return upstreamNodeIds;
     };
 
-    const getUpstreamNodes = (node: any) =>
-      controller.current.idsToNodes(getUpstreamNodeIds(node));
+    const getNodeProperties = (selectedNode: any): any => {
+      const data: any[] = [];
 
-    const getNodeProps = (node: any): any => {
-      return getNodeProperties
-        ? getNodeProperties(node, getUpstreamNodes(node))
-        : undefined;
+      const nodes = controller.current.getAllPaletteNodes();
+
+      const upstreamNodes = controller.current.idsToNodes(
+        getUpstreamNodeIds(selectedNode)
+      );
+
+      for (const upstreamNode of upstreamNodes) {
+        // @ts-ignore
+        const nodeDef = nodes.find((n) => n.op === upstreamNode.op);
+
+        const options = [];
+        for (const prop of nodeDef?.app_data.properties?.uihints
+          ?.parameter_info ?? []) {
+          if (prop.data.format === "outputpath") {
+            options.push({
+              value: prop.parameter_ref,
+              label: prop.label.default,
+            });
+          }
+        }
+        data.push({
+          value: upstreamNode.id,
+          label: upstreamNode.app_data?.ui_data?.label,
+          options: options,
+        });
+      }
+
+      const nodePropertiesSchema = nodes.find((n) => n.op === selectedNode.op);
+
+      const parameter_info = nodePropertiesSchema?.app_data.properties?.uihints?.parameter_info.map(
+        (prop: any) => {
+          const newProp = { ...prop };
+          if (prop.data.format === "inputpath") {
+            newProp.data = { ...prop.data, data };
+          }
+          return newProp;
+        }
+      );
+
+      return {
+        ...nodePropertiesSchema?.app_data.properties,
+        uihints: {
+          ...nodePropertiesSchema?.app_data.properties?.uihints,
+          parameter_info,
+        },
+      };
     };
 
     if (readOnly) {
@@ -723,7 +763,7 @@ const PipelineEditor = forwardRef(
             nodes={controller.current.getAllPaletteNodes()}
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
-            getNodeProperties={getNodeProps}
+            getNodeProperties={getNodeProperties}
             onChange={handlePropertiesChange}
           />
         ),

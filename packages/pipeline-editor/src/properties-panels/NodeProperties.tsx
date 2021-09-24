@@ -32,7 +32,7 @@ interface Props {
   }[];
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
-  getNodeProperties?: (node: any) => any | undefined;
+  getNodeProperties?: (node: any) => any;
   onChange?: (nodeID: string, data: any) => any;
 }
 
@@ -89,10 +89,9 @@ function NodeProperties({
 
   const refs = nodePropertiesSchema.app_data.parameter_refs;
 
-  const properties = getNodeProperties
-    ? getNodeProperties(selectedNode) ??
-      nodePropertiesSchema.app_data.properties
-    : nodePropertiesSchema.app_data.properties;
+  const properties =
+    getNodeProperties?.(selectedNode) ??
+    nodePropertiesSchema.app_data.properties;
 
   return (
     <div>
