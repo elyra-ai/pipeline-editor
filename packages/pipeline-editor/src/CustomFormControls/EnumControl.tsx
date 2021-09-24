@@ -27,7 +27,7 @@ import {
   EnumLabel,
   EnumMenu,
   EnumMenuItem,
-} from "./utils";
+} from "./components";
 
 interface Props {
   items: string[];

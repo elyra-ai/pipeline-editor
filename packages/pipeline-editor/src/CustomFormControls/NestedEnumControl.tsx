@@ -27,7 +27,7 @@ import {
   EnumLabel,
   EnumMenu,
   EnumMenuItem,
-} from "./utils";
+} from "./components";
 
 interface Data {
   value: string;
