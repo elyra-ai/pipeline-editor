@@ -33,6 +33,7 @@ import {
   ContextMenu,
   ContextMenuEvent,
   DividerItem,
+  ExecutionNodeDef,
   NodeTypeDef,
   TipEvent,
   TipNode,
@@ -663,8 +664,9 @@ const PipelineEditor = forwardRef(
       );
 
       for (const upstreamNode of upstreamNodes) {
-        // @ts-ignore
-        const nodeDef = nodes.find((n) => n.op === upstreamNode.op);
+        const nodeDef = nodes.find(
+          (n) => n.op === (upstreamNode as ExecutionNodeDef)?.op
+        );
 
         const options = [];
         for (const prop of nodeDef?.app_data.properties?.uihints
