@@ -33,7 +33,6 @@ import {
   ContextMenu,
   ContextMenuEvent,
   DividerItem,
-  ExecutionNodeDef,
   NodeTypeDef,
   TipEvent,
   TipNode,
@@ -49,7 +48,6 @@ import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
 import { InternalThemeProvider } from "../ThemeProvider";
 import useBlockEvents from "./useBlockEvents";
-import produce from "immer";
 
 interface Props {
   pipeline: any;
@@ -668,9 +666,9 @@ const PipelineEditor = forwardRef(
     }
 
     const selectedNodes = controller.current.idsToNodes(selectedNodeIDs ?? []);
-    const upstreamNodes = controller.current.getUpstreamNodes(
-      selectedNodes?.[0]
-    );
+    const upstreamNodes = selectedNodeIDs?.[0]
+      ? controller.current.getUpstreamNodes(selectedNodeIDs[0])
+      : [];
 
     const panelTabs = [
       {

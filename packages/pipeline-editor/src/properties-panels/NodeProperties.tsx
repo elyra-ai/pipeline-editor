@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
+import produce from "immer";
 import styled from "styled-components";
 
 import { PropertiesPanel, Message } from "./PropertiesPanel";
-import { ExecutionNodeDef } from "@elyra/canvas";
-import produce from "immer";
 
 interface Props {
   selectedNodes?: any[];
@@ -122,7 +121,7 @@ function NodeProperties({
     return produce(nodePropertiesSchema?.app_data.properties, (draft: any) => {
       for (let prop of draft.uihints.parameter_info) {
         if (prop.data.format === "inputpath") {
-          prop.data = { ...prop.data, data };
+          prop.data = { ...prop.data, data, placeholder: "Select an input" };
         }
       }
     });

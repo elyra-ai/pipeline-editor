@@ -161,6 +161,11 @@ declare module "@elyra/canvas" {
       store: {
         store: any;
       };
+      getHighlightObjectIds(
+        pipelineId: string,
+        nodeIds: string[],
+        operator: string
+      ): { nodes: any; links: any };
     };
     getSupernodeObjReferencing(pipelineId: string): any;
     setLinksStyle(

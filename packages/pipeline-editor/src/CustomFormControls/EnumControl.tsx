@@ -72,7 +72,7 @@ function EnumControl({ items }: Props) {
               key={`${item}${index}`}
               {...getItemProps({ item, index })}
             >
-              <EnumLabel>{item}</EnumLabel>
+              <EnumLabel title={item}>{item}</EnumLabel>
             </EnumMenuItem>
           ))}
       </EnumMenu>

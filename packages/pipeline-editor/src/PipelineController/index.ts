@@ -517,25 +517,16 @@ class PipelineController extends CanvasController {
     return nodes;
   }
 
-  getUpstreamNodeIds(node: any, upstreamNodeIds: string[] = []): string[] {
-    for (const link of node?.inputs?.[0].links ?? []) {
-      if (!upstreamNodeIds.includes(link.node_id_ref)) {
-        upstreamNodeIds.push(link.node_id_ref);
-        const upstreamNode = this.findExecutionNode(link.node_id_ref);
-        if (upstreamNode) {
-          upstreamNodeIds = this.getUpstreamNodeIds(
-            upstreamNode,
-            upstreamNodeIds
-          );
-        }
-      }
-    }
-
-    return upstreamNodeIds;
-  }
-
-  getUpstreamNodes(node: any) {
-    return this.idsToNodes(this.getUpstreamNodeIds(node));
+  getUpstreamNodes(nodeId: string) {
+    const pipelineId = this.findNodeParentPipeline(nodeId)?.id ?? "";
+    const upstreamNodes = this.objectModel.getHighlightObjectIds(
+      pipelineId,
+      [nodeId],
+      "upstream"
+    );
+    return this.idsToNodes(
+      upstreamNodes.nodes[pipelineId].filter((id: string) => id !== nodeId)
+    );
   }
 
   findExecutionNode(nodeID: string) {

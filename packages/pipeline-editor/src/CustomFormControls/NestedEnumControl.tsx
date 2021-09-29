@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 import { useSelect } from "downshift";
 import { useTheme } from "styled-components";
@@ -38,12 +38,20 @@ interface Data {
   }[];
 }
 
+interface FlatData {
+  value?: string;
+  option?: string;
+  label: string;
+}
+
 interface Props {
   data: Data[];
+  placeholder: string;
+  required?: boolean;
 }
 
 function flatten(data: Data[]): any[] {
-  let flattenedData: any[] = [{ label: "Select a value" }];
+  let flattenedData: FlatData[] = [];
   data.forEach((item: Data) => {
     item.options?.forEach((option: Data) => {
       flattenedData.push({
@@ -56,8 +64,12 @@ function flatten(data: Data[]): any[] {
   return flattenedData;
 }
 
-function NestedEnumControl({ data = [] }: Props) {
-  const [value, setValue] = useControlState<any>();
+function NestedEnumControl({
+  data = [],
+  placeholder = "Select a value",
+  required,
+}: Props) {
+  const [value, setValue] = useControlState<FlatData>();
 
   const theme = useTheme();
 
@@ -65,10 +77,26 @@ function NestedEnumControl({ data = [] }: Props) {
 
   const handleSelectedItemChange = useCallback(
     ({ selectedItem }) => {
-      setValue(selectedItem);
+      if (selectedItem.value) {
+        setValue(selectedItem);
+      } else {
+        setValue(undefined);
+      }
     },
     [setValue]
   );
+
+  useEffect(() => {
+    let newValue = undefined;
+    for (const item of flatten(data)) {
+      if (value && item.value === value.value) {
+        newValue = item;
+        break;
+      }
+    }
+    setValue(newValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   const {
     selectedItem,
@@ -78,30 +106,32 @@ function NestedEnumControl({ data = [] }: Props) {
     getItemProps,
   } = useSelect({
     items: flattenedData,
-    selectedItem: value ?? flattenedData[0],
+    selectedItem: value ?? { label: placeholder },
     onSelectedItemChange: handleSelectedItemChange,
   });
 
   return (
-    <EnumContainer isOpen={isOpen}>
-      <EnumButton {...getToggleButtonProps()}>
-        <EnumLabel>{selectedItem.label}</EnumLabel>
-        <EnumIcon className="elyricon elyricon-chevron-down">
-          {theme.overrides?.chevronDownIcon}
-        </EnumIcon>
-      </EnumButton>
-      <EnumMenu {...getMenuProps()}>
-        {isOpen &&
-          flattenedData.map((item: any, index: number) => (
-            <EnumMenuItem
-              key={`${item.node_id}${index}`}
-              {...getItemProps({ item, index })}
-            >
-              <EnumLabel>{item.label}</EnumLabel>
-            </EnumMenuItem>
-          ))}
-      </EnumMenu>
-    </EnumContainer>
+    <div className={required && value === undefined ? "error" : undefined}>
+      <EnumContainer isOpen={isOpen}>
+        <EnumButton {...getToggleButtonProps()}>
+          <EnumLabel>{selectedItem.label}</EnumLabel>
+          <EnumIcon className="elyricon elyricon-chevron-down">
+            {theme.overrides?.chevronDownIcon}
+          </EnumIcon>
+        </EnumButton>
+        <EnumMenu {...getMenuProps()}>
+          {isOpen &&
+            flattenedData.map((item: any, index: number) => (
+              <EnumMenuItem
+                key={`${item.value}${index}`}
+                {...getItemProps({ item, index })}
+              >
+                <EnumLabel title={item.label}>{item.label}</EnumLabel>
+              </EnumMenuItem>
+            ))}
+        </EnumMenu>
+      </EnumContainer>
+    </div>
   );
 }
 
