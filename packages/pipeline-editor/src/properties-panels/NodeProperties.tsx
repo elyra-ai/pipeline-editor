@@ -17,6 +17,8 @@
 import styled from "styled-components";
 
 import { PropertiesPanel, Message } from "./PropertiesPanel";
+import { ExecutionNodeDef } from "@elyra/canvas";
+import produce from "immer";
 
 interface Props {
   selectedNodes?: any[];
@@ -30,9 +32,10 @@ interface Props {
       };
     };
   }[];
+  upstreamNodes: any[];
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
-  getNodeProperties?: (node: any) => any;
+  getUpstreamNodes?: (node: any) => any;
   onChange?: (nodeID: string, data: any) => any;
 }
 
@@ -49,9 +52,9 @@ const Heading = styled.div`
 function NodeProperties({
   selectedNodes,
   nodes,
+  upstreamNodes,
   onFileRequested,
   onPropertiesUpdateRequested,
-  getNodeProperties,
   onChange,
 }: Props) {
   if (selectedNodes === undefined || selectedNodes.length === 0) {
@@ -89,9 +92,41 @@ function NodeProperties({
 
   const refs = nodePropertiesSchema.app_data.parameter_refs;
 
-  const properties =
-    getNodeProperties?.(selectedNode) ??
-    nodePropertiesSchema.app_data.properties;
+  // returns the node properties for selectedNode with the most recent content
+  const getNodeProperties = (): any => {
+    const data: any[] = [];
+
+    // add each upstream node to the data list
+    for (const upstreamNode of upstreamNodes) {
+      const nodeDef = nodes.find((n) => n.op === upstreamNode.op);
+      const options = [];
+
+      // Add each property with a format of outputpath to the options field
+      for (const prop of nodeDef?.app_data.properties.uihints.parameter_info ??
+        []) {
+        if (prop.data.format === "outputpath") {
+          options.push({
+            value: prop.parameter_ref,
+            label: prop.label.default,
+          });
+        }
+      }
+      data.push({
+        value: upstreamNode.id,
+        label: upstreamNode.app_data?.ui_data?.label,
+        options: options,
+      });
+    }
+
+    // update property data to include data for properties with inputpath format
+    return produce(nodePropertiesSchema?.app_data.properties, (draft: any) => {
+      for (let prop of draft.uihints.parameter_info) {
+        if (prop.data.format === "inputpath") {
+          prop.data = { ...prop.data, data };
+        }
+      }
+    });
+  };
 
   return (
     <div>
@@ -100,7 +135,7 @@ function NodeProperties({
         refs={refs}
         currentProperties={selectedNode.app_data}
         onPropertiesUpdateRequested={onPropertiesUpdateRequested}
-        propertiesSchema={properties}
+        propertiesSchema={getNodeProperties()}
         onFileRequested={onFileRequested}
         onChange={(data: any) => {
           onChange?.(selectedNode.id, data);

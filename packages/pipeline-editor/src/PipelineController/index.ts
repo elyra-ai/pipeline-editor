@@ -517,6 +517,27 @@ class PipelineController extends CanvasController {
     return nodes;
   }
 
+  getUpstreamNodeIds(node: any, upstreamNodeIds: string[] = []): string[] {
+    for (const link of node?.inputs?.[0].links ?? []) {
+      if (!upstreamNodeIds.includes(link.node_id_ref)) {
+        upstreamNodeIds.push(link.node_id_ref);
+        const upstreamNode = this.findExecutionNode(link.node_id_ref);
+        if (upstreamNode) {
+          upstreamNodeIds = this.getUpstreamNodeIds(
+            upstreamNode,
+            upstreamNodeIds
+          );
+        }
+      }
+    }
+
+    return upstreamNodeIds;
+  }
+
+  getUpstreamNodes(node: any) {
+    return this.idsToNodes(this.getUpstreamNodeIds(node));
+  }
+
   findExecutionNode(nodeID: string) {
     for (const pipeline of this.getPipelineFlow().pipelines) {
       const search = pipeline.nodes.find((n) => n.id === nodeID);

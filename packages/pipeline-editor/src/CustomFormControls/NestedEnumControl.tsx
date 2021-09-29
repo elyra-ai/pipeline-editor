@@ -43,7 +43,7 @@ interface Props {
 }
 
 function flatten(data: Data[]): any[] {
-  let flattenedData: any[] = [];
+  let flattenedData: any[] = [{ label: "Select a value" }];
   data.forEach((item: Data) => {
     item.options?.forEach((option: Data) => {
       flattenedData.push({
@@ -78,7 +78,7 @@ function NestedEnumControl({ data = [] }: Props) {
     getItemProps,
   } = useSelect({
     items: flattenedData,
-    selectedItem: value,
+    selectedItem: value ?? flattenedData[0],
     onSelectedItemChange: handleSelectedItemChange,
   });
 

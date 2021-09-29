@@ -49,6 +49,7 @@ import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
 import { InternalThemeProvider } from "../ThemeProvider";
 import useBlockEvents from "./useBlockEvents";
+import produce from "immer";
 
 interface Props {
   pipeline: any;
@@ -636,76 +637,6 @@ const PipelineEditor = forwardRef(
       return null;
     };
 
-    const getUpstreamNodeIds = (node: any): string[] => {
-      let upstreamNodeIds: string[] = [];
-
-      for (const link of node.inputs?.[0].links || []) {
-        upstreamNodeIds.push(link.node_id_ref);
-        const upstreamNode = controller.current.findExecutionNode(
-          link.node_id_ref
-        );
-        if (upstreamNode) {
-          upstreamNodeIds = upstreamNodeIds.concat(
-            getUpstreamNodeIds(upstreamNode)
-          );
-        }
-      }
-
-      return upstreamNodeIds;
-    };
-
-    const getNodeProperties = (selectedNode: any): any => {
-      const data: any[] = [];
-
-      const nodes = controller.current.getAllPaletteNodes();
-
-      const upstreamNodes = controller.current.idsToNodes(
-        getUpstreamNodeIds(selectedNode)
-      );
-
-      for (const upstreamNode of upstreamNodes) {
-        const nodeDef = nodes.find(
-          (n) => n.op === (upstreamNode as ExecutionNodeDef)?.op
-        );
-
-        const options = [];
-        for (const prop of nodeDef?.app_data.properties?.uihints
-          ?.parameter_info ?? []) {
-          if (prop.data.format === "outputpath") {
-            options.push({
-              value: prop.parameter_ref,
-              label: prop.label.default,
-            });
-          }
-        }
-        data.push({
-          value: upstreamNode.id,
-          label: upstreamNode.app_data?.ui_data?.label,
-          options: options,
-        });
-      }
-
-      const nodePropertiesSchema = nodes.find((n) => n.op === selectedNode.op);
-
-      const parameter_info = nodePropertiesSchema?.app_data.properties?.uihints?.parameter_info.map(
-        (prop: any) => {
-          const newProp = { ...prop };
-          if (prop.data.format === "inputpath") {
-            newProp.data = { ...prop.data, data };
-          }
-          return newProp;
-        }
-      );
-
-      return {
-        ...nodePropertiesSchema?.app_data.properties,
-        uihints: {
-          ...nodePropertiesSchema?.app_data.properties?.uihints,
-          parameter_info,
-        },
-      };
-    };
-
     if (readOnly) {
       return (
         <Container className="pipeline-read-only" ref={blockingRef}>
@@ -737,6 +668,9 @@ const PipelineEditor = forwardRef(
     }
 
     const selectedNodes = controller.current.idsToNodes(selectedNodeIDs ?? []);
+    const upstreamNodes = controller.current.getUpstreamNodes(
+      selectedNodes?.[0]
+    );
 
     const panelTabs = [
       {
@@ -763,9 +697,9 @@ const PipelineEditor = forwardRef(
           <NodeProperties
             selectedNodes={selectedNodes}
             nodes={controller.current.getAllPaletteNodes()}
+            upstreamNodes={upstreamNodes}
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
-            getNodeProperties={getNodeProperties}
             onChange={handlePropertiesChange}
           />
         ),
