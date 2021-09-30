@@ -29,4 +29,5 @@ export function getErrorMessages<T>(value: T, validators: Validator<T>[]) {
 export * from "./string-validators";
 export * from "./number-validators";
 export * from "./string-array-validators";
+export * from "./nested-enum-validators";
 export * from "./ErrorMessage";

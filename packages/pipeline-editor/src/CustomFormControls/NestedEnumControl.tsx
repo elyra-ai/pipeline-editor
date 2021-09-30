@@ -28,8 +28,9 @@ import {
   EnumMenuItem,
 } from "./components";
 import { createControl, useControlState } from "./control";
+import { getErrorMessages, getNestedEnumValidators } from "./validators";
 
-interface Data {
+export interface Data {
   value: string;
   label: string;
   options?: {
@@ -38,7 +39,7 @@ interface Data {
   }[];
 }
 
-interface FlatData {
+export interface FlatData {
   value: string;
   option: string;
 }
@@ -111,8 +112,12 @@ function NestedEnumControl({
     onSelectedItemChange: handleSelectedItemChange,
   });
 
+  const validators = getNestedEnumValidators({ data, required });
+
+  let errorMessages = required ? getErrorMessages(value, validators) : [];
+
   return (
-    <div className={required && value === undefined ? "error" : undefined}>
+    <div className={errorMessages.length > 0 ? "error" : undefined}>
       <EnumContainer isOpen={isOpen}>
         <EnumButton {...getToggleButtonProps()}>
           <EnumLabel>{getLabel(selectedItem, data, placeholder)}</EnumLabel>
@@ -126,7 +131,7 @@ function NestedEnumControl({
               const label = getLabel(item, data, placeholder);
               return (
                 <EnumMenuItem
-                  key={`${item.value}${index}`}
+                  key={`${item.value}${item.option}${index}`}
                   {...getItemProps({ item, index })}
                 >
                   <EnumLabel title={label}>{label}</EnumLabel>
