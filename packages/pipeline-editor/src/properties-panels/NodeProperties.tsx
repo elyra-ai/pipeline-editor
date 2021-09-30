@@ -31,7 +31,7 @@ interface Props {
       };
     };
   }[];
-  upstreamNodes: any[];
+  upstreamNodes?: any[];
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
   getUpstreamNodes?: (node: any) => any;
@@ -96,7 +96,7 @@ function NodeProperties({
     const data: any[] = [];
 
     // add each upstream node to the data list
-    for (const upstreamNode of upstreamNodes) {
+    for (const upstreamNode of upstreamNodes ?? []) {
       const nodeDef = nodes.find((n) => n.op === upstreamNode.op);
       const options = [];
 
