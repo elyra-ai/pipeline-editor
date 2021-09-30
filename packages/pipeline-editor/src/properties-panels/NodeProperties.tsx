@@ -120,7 +120,7 @@ function NodeProperties({
     // update property data to include data for properties with inputpath format
     return produce(nodePropertiesSchema?.app_data.properties, (draft: any) => {
       for (let prop of draft.uihints.parameter_info) {
-        if (prop.data.format === "inputpath") {
+        if (prop.data?.format === "inputpath") {
           prop.data = { ...prop.data, data, placeholder: "Select an input" };
         }
       }
