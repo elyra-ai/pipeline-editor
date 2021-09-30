@@ -39,9 +39,8 @@ interface Data {
 }
 
 interface FlatData {
-  value?: string;
-  option?: string;
-  label: string;
+  value: string;
+  option: string;
 }
 
 interface Props {
@@ -57,11 +56,16 @@ function flatten(data: Data[]): any[] {
       flattenedData.push({
         value: item.value,
         option: option.value,
-        label: item.label + ": " + option.label,
       });
     });
   });
   return flattenedData;
+}
+
+function getLabel(value: FlatData, data: Data[], placeholder: string): string {
+  const entry = data.find((item) => item.value === value?.value);
+  const option = entry?.options?.find((opt) => opt.value === value.option);
+  return entry && option ? entry.label + ": " + option.label : placeholder;
 }
 
 function NestedEnumControl({
@@ -87,16 +91,13 @@ function NestedEnumControl({
   );
 
   useEffect(() => {
-    let newValue = undefined;
-    for (const item of flatten(data)) {
-      if (value && item.value === value.value) {
-        newValue = item;
-        break;
-      }
+    if (
+      value !== undefined &&
+      !flatten(data).find((item) => item.value === value.value)
+    ) {
+      setValue(undefined);
     }
-    setValue(newValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data, value, setValue]);
 
   const {
     selectedItem,
@@ -106,7 +107,7 @@ function NestedEnumControl({
     getItemProps,
   } = useSelect({
     items: flattenedData,
-    selectedItem: value ?? { label: placeholder },
+    selectedItem: value,
     onSelectedItemChange: handleSelectedItemChange,
   });
 
@@ -114,21 +115,24 @@ function NestedEnumControl({
     <div className={required && value === undefined ? "error" : undefined}>
       <EnumContainer isOpen={isOpen}>
         <EnumButton {...getToggleButtonProps()}>
-          <EnumLabel>{selectedItem.label}</EnumLabel>
+          <EnumLabel>{getLabel(selectedItem, data, placeholder)}</EnumLabel>
           <EnumIcon className="elyricon elyricon-chevron-down">
             {theme.overrides?.chevronDownIcon}
           </EnumIcon>
         </EnumButton>
         <EnumMenu {...getMenuProps()}>
           {isOpen &&
-            flattenedData.map((item: any, index: number) => (
-              <EnumMenuItem
-                key={`${item.value}${index}`}
-                {...getItemProps({ item, index })}
-              >
-                <EnumLabel title={item.label}>{item.label}</EnumLabel>
-              </EnumMenuItem>
-            ))}
+            flattenedData.map((item: FlatData, index: number) => {
+              const label = getLabel(item, data, placeholder);
+              return (
+                <EnumMenuItem
+                  key={`${item.value}${index}`}
+                  {...getItemProps({ item, index })}
+                >
+                  <EnumLabel title={label}>{label}</EnumLabel>
+                </EnumMenuItem>
+              );
+            })}
         </EnumMenu>
       </EnumContainer>
     </div>
