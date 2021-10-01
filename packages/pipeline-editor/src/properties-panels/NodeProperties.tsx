@@ -34,7 +34,6 @@ interface Props {
   upstreamNodes?: any[];
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
-  getUpstreamNodes?: (node: any) => any;
   onChange?: (nodeID: string, data: any) => any;
 }
 
