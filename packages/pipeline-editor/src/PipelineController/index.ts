@@ -517,6 +517,18 @@ class PipelineController extends CanvasController {
     return nodes;
   }
 
+  getUpstreamNodes(nodeId: string) {
+    const pipelineId = this.findNodeParentPipeline(nodeId)?.id ?? "";
+    const upstreamNodes = this.objectModel.getHighlightObjectIds(
+      pipelineId,
+      [nodeId],
+      "upstream"
+    );
+    return this.idsToNodes(
+      upstreamNodes.nodes[pipelineId].filter((id: string) => id !== nodeId)
+    );
+  }
+
   findExecutionNode(nodeID: string) {
     for (const pipeline of this.getPipelineFlow().pipelines) {
       const search = pipeline.nodes.find((n) => n.id === nodeID);

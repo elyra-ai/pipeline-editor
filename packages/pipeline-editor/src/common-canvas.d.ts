@@ -161,6 +161,11 @@ declare module "@elyra/canvas" {
       store: {
         store: any;
       };
+      getHighlightObjectIds(
+        pipelineId: string,
+        nodeIds: string[],
+        operator: string
+      ): { nodes: any; links: any };
     };
     getSupernodeObjReferencing(pipelineId: string): any;
     setLinksStyle(
@@ -5344,6 +5349,9 @@ declare module "@elyra/canvas" {
         control?: "readonly" | "oneofselect";
         place_holder_text?: {
           default: string;
+        };
+        data: {
+          [k: string]: unknown;
         };
       }[];
       action_info: any[];

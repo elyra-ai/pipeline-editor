@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-export interface Validator<T> {
-  enabled: boolean;
-  isValid: (value: T) => boolean;
-  message?: string;
-}
+import NestedEnumControl from "./NestedEnumControl";
 
-export function getErrorMessages<T>(value: T, validators: Validator<T>[]) {
-  return validators
-    .filter((v) => v.enabled && !v.isValid(value))
-    .map((v) => v.message);
-}
-
-export * from "./string-validators";
-export * from "./number-validators";
-export * from "./string-array-validators";
-export * from "./nested-enum-validators";
-export * from "./ErrorMessage";
+it("has an id", () => {
+  expect(NestedEnumControl.id()).toBe("NestedEnumControl");
+});

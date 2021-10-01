@@ -666,6 +666,9 @@ const PipelineEditor = forwardRef(
     }
 
     const selectedNodes = controller.current.idsToNodes(selectedNodeIDs ?? []);
+    const upstreamNodes = selectedNodeIDs?.[0]
+      ? controller.current.getUpstreamNodes(selectedNodeIDs[0])
+      : [];
 
     const panelTabs = [
       {
@@ -692,6 +695,7 @@ const PipelineEditor = forwardRef(
           <NodeProperties
             selectedNodes={selectedNodes}
             nodes={controller.current.getAllPaletteNodes()}
+            upstreamNodes={upstreamNodes}
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePropertiesChange}
