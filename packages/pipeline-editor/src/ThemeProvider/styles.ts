@@ -125,7 +125,7 @@ export const CanvasOverrides = css`
   .properties-wrapper textarea {
     box-sizing: border-box;
     padding: 4px;
-    background-color: ${({ theme }) => theme.palette.background.input};
+    background-color: transparent;
     color: ${({ theme }) => theme.palette.text.primary};
     border: 1px solid ${({ theme }) => theme.palette.inputBorder};
     width: 100%;
@@ -133,6 +133,7 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
+    border-radius: 4px;
   }
 
   .properties-wrapper p {
@@ -145,10 +146,18 @@ export const CanvasOverrides = css`
     resize: vertical;
   }
 
+  .properties-wrapper input[type="text" i]:hover,
+  .properties-wrapper input[type="number" i]:hover {
+    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
+    outline-offset: -1px;
+    outline-radius: 4px;
+  }
+
   .properties-wrapper input[type="text" i]:focus,
   .properties-wrapper input[type="number" i]:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
+    outline: 2px solid var(--jp-icon-contrast-color3);
     outline-offset: -1px;
+    outline-radius: 4px;
   }
 
   .properties-wrapper input[type="text" i]:disabled,
@@ -242,7 +251,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__field {
-    background-color: ${({ theme }) => theme.palette.secondary.main};
+    background-color: transparent;
     color: ${({ theme }) => theme.palette.secondary.contrastText};
     border: 1px solid ${({ theme }) => theme.palette.inputBorder};
     display: flex;
@@ -266,7 +275,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__field:hover {
-    background-color: ${({ theme }) => theme.palette.secondary.main};
+    background-color: transparent;
   }
 
   .properties-wrapper .bx--list-box__menu {
@@ -284,7 +293,7 @@ export const CanvasOverrides = css`
     left: 0;
     right: 0;
     color: ${({ theme }) => theme.palette.secondary.contrastText};
-    background-color: ${({ theme }) => theme.palette.secondary.main};
+    background-color: transparent;
     padding: 2px;
     padding-bottom: 4px;
   }
@@ -303,7 +312,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__menu-item:hover {
-    background-color: ${({ theme }) => theme.palette.hover};
+    background-color: transparent;
   }
 
   .properties-wrapper .bx--list-box__menu-item__selected-icon {
@@ -312,30 +321,35 @@ export const CanvasOverrides = css`
 
   .bx--list-box--expanded .bx--list-box__field,
   .bx--list-box--expanded .bx--list-box__menu {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
+    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
+    outline-radius: 4px;
+    background-color: transparent !important;
   }
 
   .bx--list-box__field:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
+    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
+    outline-radius: 4px;
   }
 
   /* button */
   .properties-wrapper button {
-    color: ${({ theme }) => theme.palette.primary.contrastText};
-    background-color: ${({ theme }) => theme.palette.primary.main};
+    color: ${({ theme }) => theme.palette.text.primary};
+    background-color: transparent;
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
     padding: 2px 14px;
     cursor: pointer;
     line-height: 1.4em;
-    border: none;
+    border: 1px solid ${({ theme }) => theme.palette.inputBorder};
+    border-radius: 4px;
   }
 
   .properties-wrapper button:hover {
-    background-color: ${({ theme }) => theme.palette.primary.hover};
+    background-color: transparent;
+    border: 1px solid ${({ theme }) => theme.palette.text.primary};
   }
 
   /* ========================================================================== */

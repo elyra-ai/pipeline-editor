@@ -106,7 +106,7 @@ const InputContainer = styled.div.attrs({ className: "elyra-inputContainer" })`
   box-sizing: border-box;
 
   & input {
-    background-color: inherit;
+    background-color: transparent;
     color: ${({ theme }) => theme.palette.text.primary};
     display: inline-block;
     box-sizing: border-box;
@@ -118,11 +118,20 @@ const InputContainer = styled.div.attrs({ className: "elyra-inputContainer" })`
     font-size: inherit;
     resize: none;
     padding: 4px;
+    border: 1px solid ${({ theme }) => theme.palette.inputBorder};
+    border-radius: 4px;
+  }
+
+  & input:hover {
+    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
+    outline-offset: -1px;
+    outline-radius: 4px;
   }
 
   & input:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
-    outline-offset: 0px;
+    outline: 2px solid var(--jp-icon-contrast-color3);
+    outline-offset: -1px;
+    outline-radus: 4px;
   }
 `;
 
@@ -135,6 +144,9 @@ const Actions = styled.div.attrs({ className: "elyra-stringArrayActions" })`
 
 const ListRow = styled.div.attrs({ className: "elyra-listRow" })`
   position: relative;
+  border: 1px solid ${({ theme }) => theme.palette.inputBorder};
+  border-radius: 4px;
+  background-color: transparent;
 
   &:hover ${Actions} {
     display: flex;
@@ -390,7 +402,7 @@ function StringArrayControl({ placeholder, format, canRefresh }: Props) {
               setEditingIndex("new");
             }}
           >
-            Add Item
+            {format === "file" ? "Add file dependency" : "Add Item"}
           </button>
           {format === "file" && (
             <button

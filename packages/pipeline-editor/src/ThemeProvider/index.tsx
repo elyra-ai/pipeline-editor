@@ -32,7 +32,7 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
     hover: "#2c313a",
     active: "rgba(255, 255, 255, 0.18)",
     tabBorder: "#e7e7e7",
-    inputBorder: "transparent",
+    inputBorder: "var(--jp-border-color0)",
     sash: "transparent",
     primary: {
       main: "#4d78cc",

@@ -19,7 +19,7 @@ import styled from "styled-components";
 export const EnumButton = styled.button.attrs({ type: "button" })`
   /* higher specificity to override button styles */
   && {
-    background-color: ${({ theme }) => theme.palette.secondary.main};
+    background-color: transparent;
     color: ${({ theme }) => theme.palette.secondary.contrastText};
     border: 1px solid ${({ theme }) => theme.palette.inputBorder};
     display: flex;
@@ -28,15 +28,21 @@ export const EnumButton = styled.button.attrs({ type: "button" })`
     align-items: center;
     justify-content: space-between;
     padding: 2px 8px;
+    background-color: transparent;
+    border-radius: 4px;
   }
 
   &&:hover {
-    background-color: ${({ theme }) => theme.palette.secondary.main};
+    background-color: transparent;
+    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
+    outline-offset: -1px;
+    outline-radius: 4px;
   }
 
   &&:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
+    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
+    outline-radius: 4px;
   }
 `;
 
@@ -64,6 +70,7 @@ export const EnumMenu = styled.ul`
   padding-bottom: 4px;
   margin: 0;
   list-style-type: none;
+  border-radius: 4px;
 `;
 
 export const EnumMenuItem = styled.li`
@@ -75,6 +82,7 @@ export const EnumMenuItem = styled.li`
 
   &:hover {
     background-color: ${({ theme }) => theme.palette.hover};
+    border-radius: 4px;
   }
 `;
 
