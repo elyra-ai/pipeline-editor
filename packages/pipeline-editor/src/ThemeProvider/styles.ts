@@ -98,7 +98,6 @@ export const CanvasOverrides = css`
     letter-spacing: normal;
     padding: 0;
     opacity: 0.9;
-    user-select: none;
   }
 
   /* elevate specificity */
