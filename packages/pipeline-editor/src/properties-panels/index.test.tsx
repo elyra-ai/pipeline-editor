@@ -67,7 +67,7 @@ it("renders if selected node op isn't defined in schema", () => {
     <NodeProperties nodes={[]} selectedNodes={[selectedNode]} />
   );
   expect(container.firstChild).toHaveTextContent(
-    /this node type doesn't have any editable properties/i
+    /This node uses a component that is not stored in your component registry/i
   );
 });
 

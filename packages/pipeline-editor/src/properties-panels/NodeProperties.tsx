@@ -82,6 +82,18 @@ function NodeProperties({
 
   const nodePropertiesSchema = nodes.find((n) => n.op === selectedNode.op);
 
+  if (nodePropertiesSchema === undefined) {
+    return (
+      <Message>
+        This node uses a component that is not stored in your component
+        registry.
+        {selectedNode.app_data.component_source !== undefined
+          ? ` The component's path is: ${selectedNode.app_data.component_source}`
+          : ""}
+      </Message>
+    );
+  }
+
   if (nodePropertiesSchema?.app_data.properties === undefined) {
     return (
       <Message>This node type doesn't have any editable properties.</Message>
