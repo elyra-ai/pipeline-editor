@@ -35,8 +35,8 @@ export interface MissingPropertyInfo {
   property: string;
 }
 
-export interface InvalidNodeInfo {
-  type: "invalidNode";
+export interface MissingComponentInfo {
+  type: "missingComponent";
   pipelineID: string;
   nodeID: string;
   op: string;
@@ -49,11 +49,11 @@ export interface Problem {
     length: number;
   };
   message: string;
-  info: CircularReferenceInfo | MissingPropertyInfo | InvalidNodeInfo;
+  info: CircularReferenceInfo | MissingPropertyInfo | MissingComponentInfo;
 }
 
 export interface PartialProblem {
   message: string;
   path: any[];
-  info: CircularReferenceInfo | MissingPropertyInfo | InvalidNodeInfo;
+  info: CircularReferenceInfo | MissingPropertyInfo | MissingComponentInfo;
 }
