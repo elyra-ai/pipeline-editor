@@ -23,7 +23,7 @@ describe("validate", () => {
     expect(problems).toHaveLength(0);
   });
 
-  it("should return an empty array if there are no problems", () => {
+  it("should find missing components", () => {
     const pipeline = {
       pipelines: [
         {
@@ -47,7 +47,8 @@ describe("validate", () => {
       ],
     };
     const problems = validate(JSON.stringify(pipeline), []);
-    expect(problems).toHaveLength(0);
+    expect(problems).toHaveLength(1);
+    expect(problems[0].info.type).toBe("missingComponent");
   });
 
   it("should return problems for a circular reference", () => {
@@ -98,7 +99,7 @@ describe("validate", () => {
       ],
     };
     const problems = validate(JSON.stringify(pipeline), []);
-    expect(problems).toHaveLength(2);
+    expect(problems).toHaveLength(4); // 2 for circular ref + 2 for missing component
     expect(problems[0].info.type).toBe("circularReference");
     expect(problems[1].info.type).toBe("circularReference");
   });
