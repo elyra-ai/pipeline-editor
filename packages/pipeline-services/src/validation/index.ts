@@ -62,6 +62,16 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
 
     const nodeDef = nodeDefinitions.find((n: any) => n.op === node.op);
     if (nodeDef === undefined) {
+      problems.push({
+        message: `The component '${node.op}' cannot be found.`,
+        path: ["nodes", n],
+        info: {
+          type: "missingComponent",
+          pipelineID: pipeline.id,
+          nodeID: node.id,
+          op: node.op,
+        },
+      });
       continue;
     }
 

@@ -238,45 +238,6 @@ class PipelineController extends CanvasController {
     }
   }
 
-  setInvalidNode(pipelineID: string, nodeID: string) {
-    const node = this.getNode(nodeID, pipelineID);
-    if (node.type !== "execution_node") {
-      return;
-    }
-    // TODO: this shouldn't be "red"
-    const image =
-      "data:image/svg+xml;utf8," +
-      encodeURIComponent(`<svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="100"
-            viewBox="0 0 22 22"
-          >
-            <text
-              x="11"
-              y="16.5"
-              text-anchor="middle"
-              fill="red" 
-              font-family="'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
-              font-size="15px"
-            >
-              ?
-            </text>
-          </svg>`);
-    this.setNodeProperties(
-      node.id,
-      {
-        app_data: {
-          ...node.app_data,
-          invalidNodeError: `"${node.op}" is an unsupported node type`,
-        },
-        description: undefined,
-        image: image,
-      },
-      pipelineID
-    );
-    this.setNodeLabel(node.id, "unsupported node", pipelineID);
-  }
-
   setLinkErrors(
     linkToBeStyled: { [key: string]: string[] },
     styleOptions?: { redColor: string }
@@ -431,6 +392,12 @@ class PipelineController extends CanvasController {
             nodeID: problem.info.nodeID,
             property: problem.info.property,
           });
+          break;
+        case "missingComponent":
+          nodesWithErrors[problem.info.pipelineID] = [
+            ...(nodesWithErrors[problem.info.pipelineID] ?? []),
+            problem.info.nodeID,
+          ];
           break;
       }
     }
