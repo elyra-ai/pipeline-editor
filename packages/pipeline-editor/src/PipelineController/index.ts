@@ -333,6 +333,9 @@ class PipelineController extends CanvasController {
               image: nodeDef.app_data.ui_data?.image,
               app_data: {
                 ...node.app_data,
+                // TODO: we can remove this eventually. Removing it now won't
+                // cause any harm, but all pipelines with the field would have
+                // it until manually deleted.
                 invalidNodeError: undefined,
               },
             },
@@ -415,45 +418,6 @@ class PipelineController extends CanvasController {
       ],
       styleOptions
     );
-
-    for (const pipeline of this.getPipelineFlow().pipelines) {
-      for (const node of pipeline.nodes) {
-        if (node.type !== "execution_node") {
-          continue;
-        }
-
-        const nodeProblems = missingProperties.filter(
-          (p) => p.nodeID === node.id
-        );
-        if (nodeProblems.length > 0) {
-          // All of this information should be defined, otherwise we wouldn't
-          // have had any problems reported.
-          const nodeDef = this.getAllPaletteNodes().find(
-            (n) => n.op === node.op
-          );
-
-          const message = nodeProblems
-            .map((problem) => {
-              const label = nodeDef!.app_data.properties!.uihints!.parameter_info.find(
-                (p) => p.parameter_ref === problem.property
-              )!.label.default;
-              return `property "${label}" is required`;
-            })
-            .join("\n");
-
-          this.setNodeProperties(
-            node.id,
-            {
-              app_data: {
-                ...node.app_data,
-                invalidNodeError: message,
-              },
-            },
-            pipeline.id
-          );
-        }
-      }
-    }
   }
 
   setPalette(palette: any) {
@@ -514,6 +478,45 @@ class PipelineController extends CanvasController {
       }
     }
     return undefined;
+  }
+
+  // TODO: only validate one node.
+  errors(nodeID: string) {
+    const node = this.findExecutionNode(nodeID);
+
+    if (node?.type === "execution_node") {
+      const nodes = this.getAllPaletteNodes();
+      const problems = validate(JSON.stringify(this.getPipelineFlow()), nodes);
+
+      const nodeProblems = [];
+
+      const nodeDef = this.getAllPaletteNodes().find((n) => n.op === node.op);
+
+      for (const p of problems) {
+        switch (p.info.type) {
+          case "missingProperty":
+            if (p.info.nodeID === nodeID) {
+              const property = p.info.property;
+              const label = nodeDef!.app_data.properties!.uihints!.parameter_info.find(
+                (info) => info.parameter_ref === property
+              )!.label.default;
+              nodeProblems.push(`property "${label}" is required`);
+            }
+            break;
+          case "missingComponent":
+            if (p.info.nodeID === nodeID) {
+              nodeProblems.push(`component "${p.info.op}" cannot be found`);
+            }
+            break;
+        }
+      }
+
+      if (nodeProblems.length > 0) {
+        return nodeProblems.join("\n");
+      }
+    }
+
+    return "";
   }
 
   properties(nodeID: string) {
