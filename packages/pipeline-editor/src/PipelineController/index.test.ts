@@ -1224,7 +1224,7 @@ describe("resetStyles", () => {
 });
 
 describe("validate", () => {
-  it("finds all the problems", () => {
+  it("does not persist invalidNodeError", () => {
     const controller = new PipelineController();
     const pipeline = {
       version: "3.0",
@@ -1238,6 +1238,9 @@ describe("validate", () => {
               id: "node1",
               type: "execution_node",
               op: "execute-notebook-node",
+              app_data: {
+                invalidNodeError: "old message should be deleted",
+              },
               inputs: [
                 {
                   links: [
@@ -1278,7 +1281,9 @@ describe("validate", () => {
     controller.validate();
 
     const flow = controller.getPipelineFlow();
-    expect(flow.pipelines[0].nodes[0].app_data?.invalidNodeError).toBeDefined();
+    expect(
+      flow.pipelines[0].nodes[0].app_data?.invalidNodeError
+    ).toBeUndefined();
     expect(
       flow.pipelines[0].nodes[1].app_data?.invalidNodeError
     ).toBeUndefined();
