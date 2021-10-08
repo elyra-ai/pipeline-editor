@@ -36,13 +36,13 @@ export const EnumButton = styled.button.attrs({ type: "button" })`
     background-color: transparent;
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
-    outline-radius: 4px;
+    outline-radius: ${({ theme }) => theme.palette.border.radius};
   }
 
   &&:focus {
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
-    outline-radius: 4px;
+    outline-radius: ${({ theme }) => theme.palette.border.radius};
   }
 `;
 

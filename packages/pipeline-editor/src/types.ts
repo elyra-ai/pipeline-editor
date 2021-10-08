@@ -19,7 +19,11 @@ export interface Theme {
   platform: "mac" | "win" | "other";
   palette: {
     focus: string;
-    border: string;
+    border: {
+      radius: string;
+      color: string;
+      focus: string;
+    };
     divider: string;
     hover: string;
     active: string;

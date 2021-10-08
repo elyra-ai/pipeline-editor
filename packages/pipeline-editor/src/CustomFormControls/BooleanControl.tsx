@@ -44,10 +44,12 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
   padding: 0;
   background-color: transparent;
   color: ${({ theme }) => theme.palette.secondary.contrastText};
+  border-radius: ${({ theme }) => theme.palette.border.radius};
 
   &:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
+    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
+    outline-radius: ${({ theme }) => theme.palette.border.radius};
   }
 
   &::before,

@@ -22,12 +22,12 @@ export const CanvasOverrides = css`
   ${canvasStyles}
 
   .toolbar-popover-list {
-    border: 1px solid ${({ theme }) => theme.palette.border};
+    border: 1px solid ${({ theme }) => theme.palette.border.color};
     background-color: ${({ theme }) => theme.palette.background.secondary};
   }
 
   .toolbar-divider {
-    border-right: 1px solid ${({ theme }) => theme.palette.border};
+    border-right: 1px solid ${({ theme }) => theme.palette.border.color};
     background-color: transparent;
   }
 
@@ -150,14 +150,14 @@ export const CanvasOverrides = css`
   .properties-wrapper input[type="number" i]:hover {
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
-    outline-radius: 4px;
+    outline-radius: ${({ theme }) => theme.palette.border.radius};
   }
 
   .properties-wrapper input[type="text" i]:focus,
   .properties-wrapper input[type="number" i]:focus {
     outline: 2px solid var(--jp-icon-contrast-color3);
     outline-offset: -1px;
-    outline-radius: 4px;
+    outline-radius: ${({ theme }) => theme.palette.border.radius};
   }
 
   .properties-wrapper input[type="text" i]:disabled,
@@ -172,7 +172,7 @@ export const CanvasOverrides = css`
   .common-canvas-tooltip {
     max-width: unset;
     background-color: ${({ theme }) => theme.palette.background.secondary};
-    border: 1px solid ${({ theme }) => theme.palette.border};
+    border: 1px solid ${({ theme }) => theme.palette.border.color};
     opacity: 100%;
     color: ${({ theme }) => theme.palette.text.secondary};
     border-radius: 0;
@@ -192,7 +192,7 @@ export const CanvasOverrides = css`
   }
 
   .common-canvas-tooltip #tipArrow polygon {
-    fill: ${({ theme }) => theme.palette.border};
+    fill: ${({ theme }) => theme.palette.border.color};
   }
 
   /* ========================================================================== */
@@ -323,14 +323,14 @@ export const CanvasOverrides = css`
   .bx--list-box--expanded .bx--list-box__menu {
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
-    outline-radius: 4px;
+    outline-radius: ${({ theme }) => theme.palette.border.radius};
     background-color: transparent !important;
   }
 
   .bx--list-box__field:focus {
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
-    outline-radius: 4px;
+    outline-radius: ${({ theme }) => theme.palette.border.radius};
   }
 
   /* button */
