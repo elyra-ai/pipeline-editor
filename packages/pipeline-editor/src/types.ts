@@ -19,11 +19,8 @@ export interface Theme {
   platform: "mac" | "win" | "other";
   palette: {
     focus: string;
-    border: {
-      radius: string;
-      color: string;
-      focus: string;
-    };
+    border: string;
+    borderFocus: string;
     divider: string;
     hover: string;
     active: string;
@@ -68,6 +65,9 @@ export interface Theme {
       hover: string;
       focus: string;
     };
+  };
+  shape: {
+    borderRadius: string;
   };
   typography: {
     fontFamily: string;

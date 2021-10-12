@@ -119,19 +119,19 @@ const InputContainer = styled.div.attrs({ className: "elyra-inputContainer" })`
     resize: none;
     padding: 4px;
     border: 1px solid ${({ theme }) => theme.palette.inputBorder};
-    border-radius: ${({ theme }) => theme.palette.border.radius};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   & input:hover {
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
-    outline-radius: ${({ theme }) => theme.palette.border.radius};
+    outline-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   & input:focus {
-    outline: 2px solid ${({ theme }) => theme.palette.border.focus};
+    outline: 2px solid ${({ theme }) => theme.palette.borderFocus};
     outline-offset: -1px;
-    outline-radus: ${({ theme }) => theme.palette.border.radius};
+    outline-radus: ${({ theme }) => theme.shape.borderRadius};
   }
 `;
 

@@ -27,11 +27,8 @@ import { deepmerge } from "./utils";
 const defaultTheme: Omit<Theme, "mode" | "platform"> = {
   palette: {
     focus: "#528bff",
-    border: {
-      color: "#181a1f",
-      radius: "4px",
-      focus: "var(--jp-icon-contrast-color3)",
-    },
+    border: "#181a1f",
+    borderFocus: "var(--jp-icon-contrast-color3)",
     divider: "rgba(128, 128, 128, 0.35)",
     hover: "#2c313a",
     active: "rgba(255, 255, 255, 0.18)",
@@ -76,6 +73,9 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
       hover: "rgba(128, 128, 128, 0.07)",
       focus: "rgba(128, 128, 128, 0.14)",
     },
+  },
+  shape: {
+    borderRadius: "4px",
   },
   typography: {
     fontFamily: "-apple-system, system-ui, sans-serif",
