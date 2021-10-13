@@ -28,12 +28,11 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
   palette: {
     focus: "#528bff",
     border: "#181a1f",
-    borderFocus: "var(--jp-icon-contrast-color3)",
     divider: "rgba(128, 128, 128, 0.35)",
     hover: "#2c313a",
     active: "rgba(255, 255, 255, 0.18)",
     tabBorder: "#e7e7e7",
-    inputBorder: "var(--jp-border-color0)",
+    inputBorder: "#bdbdbd",
     sash: "transparent",
     primary: {
       main: "#4d78cc",

@@ -20,7 +20,6 @@ export interface Theme {
   palette: {
     focus: string;
     border: string;
-    borderFocus: string;
     divider: string;
     hover: string;
     active: string;

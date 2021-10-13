@@ -129,7 +129,7 @@ const InputContainer = styled.div.attrs({ className: "elyra-inputContainer" })`
   }
 
   & input:focus {
-    outline: 2px solid ${({ theme }) => theme.palette.borderFocus};
+    outline: 2px solid ${({ theme }) => theme.palette.focus};
     outline-offset: -1px;
     outline-radus: ${({ theme }) => theme.shape.borderRadius};
   }
