@@ -106,7 +106,7 @@ const InputContainer = styled.div.attrs({ className: "elyra-inputContainer" })`
   box-sizing: border-box;
 
   & input {
-    background-color: transparent;
+    background-color: ${({ theme }) => theme.palette.background.input};
     color: ${({ theme }) => theme.palette.text.primary};
     display: inline-block;
     box-sizing: border-box;
@@ -145,8 +145,8 @@ const Actions = styled.div.attrs({ className: "elyra-stringArrayActions" })`
 const ListRow = styled.div.attrs({ className: "elyra-listRow" })`
   position: relative;
   border: 1px solid ${({ theme }) => theme.palette.inputBorder};
-  border-radius: 4px;
-  background-color: transparent;
+  border-radius:  ${({ theme }) => theme.shape.borderRadius};
+  background-color: ${({ theme }) => theme.palette.background.input};
 
   &:hover ${Actions} {
     display: flex;

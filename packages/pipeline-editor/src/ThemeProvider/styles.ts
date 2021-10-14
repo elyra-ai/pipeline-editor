@@ -125,7 +125,7 @@ export const CanvasOverrides = css`
   .properties-wrapper textarea {
     box-sizing: border-box;
     padding: 4px;
-    background-color: transparent;
+    background-color: ${({ theme }) => theme.palette.background.input};
     color: ${({ theme }) => theme.palette.text.primary};
     border: 1px solid ${({ theme }) => theme.palette.inputBorder};
     width: 100%;
@@ -133,7 +133,7 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
-    border-radius: 4px;
+    border-radius: ${({ theme }) => theme.shape.borderRadius};;
   }
 
   .properties-wrapper p {
@@ -150,12 +150,12 @@ export const CanvasOverrides = css`
   .properties-wrapper input[type="number" i]:hover {
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
-    outline-radius: ${({ theme }) => theme.shape.borderRadius};
+    outline-radius: ${({ theme }) => theme.platte.focus};
   }
 
   .properties-wrapper input[type="text" i]:focus,
   .properties-wrapper input[type="number" i]:focus {
-    outline: 2px solid var(--jp-icon-contrast-color3);
+    outline: 2px solid ${({ theme }) => theme.shape.borderRadius};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
   }
@@ -251,7 +251,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__field {
-    background-color: transparent;
+    background-color: ${({ theme }) => theme.palette.background.input};
     color: ${({ theme }) => theme.palette.secondary.contrastText};
     border: 1px solid ${({ theme }) => theme.palette.inputBorder};
     display: flex;
@@ -275,7 +275,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__field:hover {
-    background-color: transparent;
+    background-color: ${({ theme }) => theme.palette.background.input};
   }
 
   .properties-wrapper .bx--list-box__menu {
@@ -293,7 +293,7 @@ export const CanvasOverrides = css`
     left: 0;
     right: 0;
     color: ${({ theme }) => theme.palette.secondary.contrastText};
-    background-color: transparent;
+    background-color: ${({ theme }) => theme.palette.background.input};
     padding: 2px;
     padding-bottom: 4px;
   }
@@ -312,7 +312,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__menu-item:hover {
-    background-color: transparent;
+    background-color: ${({ theme }) => theme.palette.background.input};
   }
 
   .properties-wrapper .bx--list-box__menu-item__selected-icon {
@@ -324,7 +324,7 @@ export const CanvasOverrides = css`
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
-    background-color: transparent !important;
+    background-color: ${({ theme }) => theme.palette.background.input} !important;
   }
 
   .bx--list-box__field:focus {
@@ -336,7 +336,7 @@ export const CanvasOverrides = css`
   /* button */
   .properties-wrapper button {
     color: ${({ theme }) => theme.palette.text.primary};
-    background-color: transparent;
+    background-color: ${({ theme }) => theme.palette.background.input};
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
@@ -344,11 +344,11 @@ export const CanvasOverrides = css`
     cursor: pointer;
     line-height: 1.4em;
     border: 1px solid ${({ theme }) => theme.palette.inputBorder};
-    border-radius: 4px;
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   .properties-wrapper button:hover {
-    background-color: transparent;
+    background-color: ${({ theme }) => theme.palette.background.input};
     border: 1px solid ${({ theme }) => theme.palette.text.primary};
   }
 

@@ -65,7 +65,7 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
     background: {
       default: "#282c34",
       secondary: "#21252b",
-      input: "#1b1d23",
+      input: "transparent",
     },
     highlight: {
       border: "rgba(255, 255, 255, 0.12)",
