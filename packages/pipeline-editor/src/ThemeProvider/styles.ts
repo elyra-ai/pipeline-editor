@@ -150,7 +150,7 @@ export const CanvasOverrides = css`
   .properties-wrapper input[type="number" i]:hover {
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
-    outline-radius: ${({ theme }) => theme.platte.focus};
+    outline-radius: ${({ theme }) => theme.palette.focus};
   }
 
   .properties-wrapper input[type="text" i]:focus,
