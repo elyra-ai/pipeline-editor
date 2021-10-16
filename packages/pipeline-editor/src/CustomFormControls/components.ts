@@ -39,7 +39,7 @@ export const EnumButton = styled.button.attrs({ type: "button" })`
   }
 
   &&:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
+    outline: 1px solid ${({ theme }) => theme.palette.focus};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
   }

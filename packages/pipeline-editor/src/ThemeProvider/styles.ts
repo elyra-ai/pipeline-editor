@@ -93,7 +93,7 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
-    color: ${({ theme }) => theme.palette.text.primary};
+    color: ${({ theme }) => theme.palette.text.secondary};
     line-height: 1.4em;
     letter-spacing: normal;
     padding: 0;
@@ -106,7 +106,7 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 600;
     font-size: ${({ theme }) => theme.typography.fontSize};
-    color: ${({ theme }) => theme.palette.text.bold};
+    color: ${({ theme }) => theme.palette.text.secondary};
     line-height: 1.4em;
     letter-spacing: normal;
   }
@@ -133,7 +133,7 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
-    border-radius: ${({ theme }) => theme.shape.borderRadius};;
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   .properties-wrapper p {
@@ -155,7 +155,7 @@ export const CanvasOverrides = css`
 
   .properties-wrapper input[type="text" i]:focus,
   .properties-wrapper input[type="number" i]:focus {
-    outline: 2px solid ${({ theme }) => theme.shape.borderRadius};
+    outline: 2px solid ${({ theme }) => theme.palette.focus};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
   }
@@ -324,11 +324,12 @@ export const CanvasOverrides = css`
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
-    background-color: ${({ theme }) => theme.palette.background.input} !important;
+    background-color: ${({ theme }) =>
+      theme.palette.background.input} !important;
   }
 
   .bx--list-box__field:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
+    outline: 1px solid ${({ theme }) => theme.palette.focus};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
   }

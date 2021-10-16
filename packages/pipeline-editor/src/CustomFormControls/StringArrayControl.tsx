@@ -145,7 +145,7 @@ const Actions = styled.div.attrs({ className: "elyra-stringArrayActions" })`
 const ListRow = styled.div.attrs({ className: "elyra-listRow" })`
   position: relative;
   border: 1px solid ${({ theme }) => theme.palette.inputBorder};
-  border-radius:  ${({ theme }) => theme.shape.borderRadius};
+  border-radius: ${({ theme }) => theme.shape.borderRadius};
   background-color: ${({ theme }) => theme.palette.background.input};
 
   &:hover ${Actions} {
