@@ -148,7 +148,7 @@ export const CanvasOverrides = css`
 
   .properties-wrapper input[type="text" i]:hover,
   .properties-wrapper input[type="number" i]:hover {
-    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
+    outline: 1px solid ${({ theme }) => theme.palette.highlight.hover};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.palette.focus};
   }
@@ -321,7 +321,7 @@ export const CanvasOverrides = css`
 
   .bx--list-box--expanded .bx--list-box__field,
   .bx--list-box--expanded .bx--list-box__menu {
-    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
+    outline: 1px solid ${({ theme }) => theme.palette.highlight.hover};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
     background-color: ${({ theme }) => theme.palette.background.input};
@@ -349,7 +349,7 @@ export const CanvasOverrides = css`
 
   .properties-wrapper button:hover {
     background-color: ${({ theme }) => theme.palette.secondary.main};
-    border: 1px solid ${({ theme }) => theme.palette.text.primary};
+    border: 1px solid ${({ theme }) => theme.palette.highlight.hover};
   }
 
   /* ========================================================================== */
@@ -563,7 +563,7 @@ export const CanvasOverrides = css`
     .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper:hover {
-    background-color: ${({ theme }) => theme.palette.highlight.hover};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
   }
 
   .properties-editor-form

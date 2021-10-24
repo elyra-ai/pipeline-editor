@@ -33,7 +33,7 @@ export const EnumButton = styled.button.attrs({ type: "button" })`
 
   &&:hover {
     background-color: ${({ theme }) => theme.palette.secondary.main};
-    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
+    outline: 1px solid ${({ theme }) => theme.palette.highlight.hover};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
   }
