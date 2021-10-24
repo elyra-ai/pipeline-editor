@@ -100,6 +100,7 @@ const InputGroup = styled.div`
 const InputContainer = styled.div.attrs({ className: "elyra-inputContainer" })`
   background-color: ${({ theme }) => theme.palette.background.secondary};
   border: 1px solid ${({ theme }) => theme.palette.inputBorder};
+  border-radius: ${({ theme }) => theme.shape.borderRadius};
   height: 24px;
   max-width: 320px;
   margin-right: 4px;
@@ -126,12 +127,14 @@ const InputContainer = styled.div.attrs({ className: "elyra-inputContainer" })`
     outline: 1px solid ${({ theme }) => theme.palette.highlight.hover};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   & input:focus {
     outline: 2px solid ${({ theme }) => theme.palette.focus};
     outline-offset: -1px;
     outline-radus: ${({ theme }) => theme.shape.borderRadius};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 `;
 

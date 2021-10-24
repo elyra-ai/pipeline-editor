@@ -312,7 +312,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__menu-item:hover {
-    background-color: ${({ theme }) => theme.palette.secondary.main};
+    background-color: ${({ theme }) => theme.palette.primary.hover};
   }
 
   .properties-wrapper .bx--list-box__menu-item__selected-icon {
@@ -348,7 +348,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper button:hover {
-    background-color: ${({ theme }) => theme.palette.secondary.main};
+    background-color: ${({ theme }) => theme.palette.primary.hover};
     border: 1px solid ${({ theme }) => theme.palette.highlight.hover};
   }
 
@@ -563,7 +563,7 @@ export const CanvasOverrides = css`
     .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper:hover {
-    background-color: ${({ theme }) => theme.palette.secondary.main};
+    background-color: ${({ theme }) => theme.palette.primary.hover};
   }
 
   .properties-editor-form
