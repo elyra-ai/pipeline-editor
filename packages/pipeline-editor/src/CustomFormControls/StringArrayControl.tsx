@@ -98,7 +98,7 @@ const InputGroup = styled.div`
 `;
 
 const InputContainer = styled.div.attrs({ className: "elyra-inputContainer" })`
-  background-color: ${({ theme }) => theme.palette.secondary.main};
+  background-color: ${({ theme }) => theme.palette.background.secondary};
   border: 1px solid ${({ theme }) => theme.palette.inputBorder};
   height: 24px;
   max-width: 320px;
@@ -402,7 +402,7 @@ function StringArrayControl({ placeholder, format, canRefresh }: Props) {
               setEditingIndex("new");
             }}
           >
-            {format === "file" ? "Add file dependency" : "Add Item"}
+            Add Item
           </button>
           {format === "file" && (
             <button

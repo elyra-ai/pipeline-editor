@@ -19,7 +19,7 @@ import styled from "styled-components";
 export const EnumButton = styled.button.attrs({ type: "button" })`
   /* higher specificity to override button styles */
   && {
-    background-color: ${({ theme }) => theme.palette.background.input};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
     color: ${({ theme }) => theme.palette.secondary.contrastText};
     border: 1px solid ${({ theme }) => theme.palette.inputBorder};
     display: flex;
@@ -32,7 +32,7 @@ export const EnumButton = styled.button.attrs({ type: "button" })`
   }
 
   &&:hover {
-    background-color: ${({ theme }) => theme.palette.background.input};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
@@ -64,7 +64,7 @@ export const EnumMenu = styled.ul`
   left: 0;
   right: 0;
   color: ${({ theme }) => theme.palette.secondary.contrastText};
-  background-color: ${({ theme }) => theme.palette.secondary.main};
+  background-color: ${({ theme }) => theme.palette.background.secondary};
   padding: 2px;
   padding-bottom: 4px;
   margin: 0;

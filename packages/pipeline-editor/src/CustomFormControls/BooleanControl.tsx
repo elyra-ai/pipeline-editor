@@ -42,7 +42,7 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
   margin-right: 9px;
   margin-left: 0;
   padding: 0;
-  background-color: ${({ theme }) => theme.palette.background.input};
+  background-color: ${({ theme }) => theme.palette.secondary.main};
   color: ${({ theme }) => theme.palette.secondary.contrastText};
   border-radius: ${({ theme }) => theme.shape.borderRadius};
 

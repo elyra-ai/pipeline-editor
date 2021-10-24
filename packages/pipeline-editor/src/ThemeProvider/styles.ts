@@ -251,7 +251,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__field {
-    background-color: ${({ theme }) => theme.palette.background.input};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
     color: ${({ theme }) => theme.palette.secondary.contrastText};
     border: 1px solid ${({ theme }) => theme.palette.inputBorder};
     display: flex;
@@ -275,7 +275,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__field:hover {
-    background-color: ${({ theme }) => theme.palette.background.input};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
   }
 
   .properties-wrapper .bx--list-box__menu {
@@ -293,7 +293,7 @@ export const CanvasOverrides = css`
     left: 0;
     right: 0;
     color: ${({ theme }) => theme.palette.secondary.contrastText};
-    background-color: ${({ theme }) => theme.palette.background.input};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
     padding: 2px;
     padding-bottom: 4px;
   }
@@ -312,7 +312,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__menu-item:hover {
-    background-color: ${({ theme }) => theme.palette.background.input};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
   }
 
   .properties-wrapper .bx--list-box__menu-item__selected-icon {
@@ -324,8 +324,7 @@ export const CanvasOverrides = css`
     outline: 1px solid ${({ theme }) => theme.palette.text.primary};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
-    background-color: ${({ theme }) =>
-      theme.palette.background.input} !important;
+    background-color: ${({ theme }) => theme.palette.background.input};
   }
 
   .bx--list-box__field:focus {
@@ -337,7 +336,7 @@ export const CanvasOverrides = css`
   /* button */
   .properties-wrapper button {
     color: ${({ theme }) => theme.palette.text.primary};
-    background-color: ${({ theme }) => theme.palette.background.input};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
@@ -349,7 +348,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper button:hover {
-    background-color: ${({ theme }) => theme.palette.background.input};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
     border: 1px solid ${({ theme }) => theme.palette.text.primary};
   }
 

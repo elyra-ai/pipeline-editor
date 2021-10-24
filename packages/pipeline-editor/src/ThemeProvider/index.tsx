@@ -32,7 +32,7 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
     hover: "#2c313a",
     active: "rgba(255, 255, 255, 0.18)",
     tabBorder: "#e7e7e7",
-    inputBorder: "#bdbdbd",
+    inputBorder: "transparent",
     sash: "transparent",
     primary: {
       main: "#4d78cc",
@@ -65,7 +65,7 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
     background: {
       default: "#282c34",
       secondary: "#21252b",
-      input: "transparent",
+      input: "#1b1d23",
     },
     highlight: {
       border: "rgba(255, 255, 255, 0.12)",
@@ -74,7 +74,7 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
     },
   },
   shape: {
-    borderRadius: "4px",
+    borderRadius: "0px",
   },
   typography: {
     fontFamily: "-apple-system, system-ui, sans-serif",
