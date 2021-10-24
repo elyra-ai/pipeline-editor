@@ -47,7 +47,7 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
   border-radius: ${({ theme }) => theme.shape.borderRadius};
 
   &:hover {
-    outline: 1px solid ${({ theme }) => theme.palette.text.primary};
+    outline: 1px solid ${({ theme }) => theme.palette.highlight.hover};
     outline-offset: -1px;
     outline-radius: ${({ theme }) => theme.shape.borderRadius};
   }
