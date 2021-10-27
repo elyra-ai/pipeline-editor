@@ -73,6 +73,9 @@ const defaultTheme: Omit<Theme, "mode" | "platform"> = {
       focus: "rgba(128, 128, 128, 0.14)",
     },
   },
+  shape: {
+    borderRadius: "0px",
+  },
   typography: {
     fontFamily: "-apple-system, system-ui, sans-serif",
     fontWeight: "normal",

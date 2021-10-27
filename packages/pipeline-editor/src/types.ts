@@ -65,6 +65,9 @@ export interface Theme {
       focus: string;
     };
   };
+  shape: {
+    borderRadius: string;
+  };
   typography: {
     fontFamily: string;
     fontWeight: string;
