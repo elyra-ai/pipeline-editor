@@ -23,3 +23,4 @@ export { default as BooleanControl } from "./BooleanControl";
 export { default as EnumControl } from "./EnumControl";
 export { default as NestedEnumControl } from "./NestedEnumControl";
 export { default as NumberControl } from "./NumberControl";
+export { default as OneOfControl } from "./OneOfControl";

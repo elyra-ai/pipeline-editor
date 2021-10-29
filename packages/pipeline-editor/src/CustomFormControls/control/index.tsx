@@ -21,11 +21,13 @@ import { useSelector } from "react-redux";
 interface ContextValue {
   name: string;
   controller: any;
+  id: string;
 }
 
 const ControlContext = React.createContext<ContextValue>({
   name: "",
   controller: {},
+  id: "",
 });
 
 export function useHandlers() {
@@ -39,17 +41,51 @@ export function usePropertyID() {
   return name;
 }
 
-export function useControlState<T>() {
-  const { name, controller } = useContext(ControlContext);
+export function useControlState<T>(defaultControl?: T) {
+  const { name, controller, id } = useContext(ControlContext);
   const controllerRef = useRef(controller);
-  const value: T = useSelector((state: any) => state.propertiesReducer[name]);
+  const currentValue: any = useSelector((state: any) => {
+    return state.propertiesReducer[name];
+  });
+  const value: T = useSelector((state: any) => {
+    if (id !== "OneOfControl") {
+      return state.propertiesReducer[name];
+    } else {
+      const { activeControl } = state.propertiesReducer[name];
+      return state.propertiesReducer[name][activeControl];
+    }
+  });
+  const activeControl: string = useSelector((state: any) => {
+    return state.propertiesReducer[name]?.activeControl ?? defaultControl ?? "";
+  });
   const setValue = useCallback(
     (value: T) => {
-      controllerRef.current.updatePropertyValue({ name }, value);
+      if (id !== "OneOfControl") {
+        controllerRef.current.updatePropertyValue({ name }, value);
+      } else {
+        controllerRef.current.updatePropertyValue(
+          { name },
+          { ...currentValue, [activeControl]: value }
+        );
+      }
     },
-    [name]
+    [name, currentValue, activeControl, id]
   );
-  return [value, setValue] as [T | undefined, (value: T | undefined) => void];
+  const setActiveControl = useCallback(
+    (activeControl: string) => {
+      controllerRef.current.updatePropertyValue(
+        { name },
+        { ...currentValue, activeControl }
+      );
+    },
+    [name, currentValue]
+  );
+  return [value, setValue, activeControl, setActiveControl] as [
+    T | undefined,
+    (value: T | undefined) => void,
+    string,
+    (value: string) => void
+  ];
 }
 
 export function createControl(id: string, Component: any) {
@@ -59,7 +95,7 @@ export function createControl(id: string, Component: any) {
     controller: any,
     data: any
   ) {
-    this.value = { name: propertyId.name, controller };
+    this.value = { name: propertyId.name, controller, id };
     this.data = data;
   }
 

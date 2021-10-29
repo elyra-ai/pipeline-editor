@@ -16,10 +16,10 @@
 
 import { createControl, useControlState } from "./control";
 
-function DisplayControl() {
+export function DisplayControlRaw() {
   const [value] = useControlState<string>();
 
   return <p>{value}</p>;
 }
 
-export default createControl("DisplayControl", DisplayControl);
+export default createControl("DisplayControl", DisplayControlRaw);

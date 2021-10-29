@@ -288,7 +288,11 @@ export function ListItem({
   );
 }
 
-function StringArrayControl({ placeholder, format, canRefresh }: Props) {
+export function StringArrayControlRaw({
+  placeholder,
+  format,
+  canRefresh,
+}: Props) {
   const propertyID = usePropertyID();
   const [items = [], setItems] = useControlState<string[]>();
 
@@ -417,4 +421,4 @@ function StringArrayControl({ placeholder, format, canRefresh }: Props) {
   );
 }
 
-export default createControl("StringArrayControl", StringArrayControl);
+export default createControl("StringArrayControl", StringArrayControlRaw);
