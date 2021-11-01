@@ -51,7 +51,7 @@ function deserialize(value: number | undefined) {
   return value?.toString();
 }
 
-export function NumberControlRaw({
+export function NumberControl({
   type,
   multipleOf,
   minimum,
@@ -114,4 +114,4 @@ export function NumberControlRaw({
   );
 }
 
-export default createControl("NumberControl", NumberControlRaw);
+export default createControl("NumberControl", NumberControl);

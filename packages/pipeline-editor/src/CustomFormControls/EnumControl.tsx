@@ -33,7 +33,7 @@ interface Props {
   items: string[];
 }
 
-export function EnumControlRaw({ items }: Props) {
+export function EnumControl({ items }: Props) {
   const [value, setValue] = useControlState<string>();
 
   const theme = useTheme();
@@ -80,4 +80,4 @@ export function EnumControlRaw({ items }: Props) {
   );
 }
 
-export default createControl("EnumControl", EnumControlRaw);
+export default createControl("EnumControl", EnumControl);

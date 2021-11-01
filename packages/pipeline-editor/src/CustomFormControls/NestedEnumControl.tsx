@@ -78,7 +78,7 @@ function getLabel(value: FlatData, data: Data[], placeholder: string): string {
     : placeholder;
 }
 
-export function NestedEnumControlRaw({
+export function NestedEnumControl({
   data = [],
   placeholder = "Select a value",
   allowNoOptions = false,
@@ -154,4 +154,4 @@ export function NestedEnumControlRaw({
   );
 }
 
-export default createControl("NestedEnumControl", NestedEnumControlRaw);
+export default createControl("NestedEnumControl", NestedEnumControl);

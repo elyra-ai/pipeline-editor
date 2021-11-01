@@ -55,7 +55,7 @@ function serialize(value: string) {
 }
 
 // TODO: Make the file clearable
-export function StringControlRaw({
+export function StringControl({
   pattern,
   patternErrorMessage,
   minLength,
@@ -150,4 +150,4 @@ export function StringControlRaw({
   );
 }
 
-export default createControl("StringControl", StringControlRaw);
+export default createControl("StringControl", StringControl);

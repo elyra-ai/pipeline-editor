@@ -17,9 +17,9 @@
 import { useCallback } from "react";
 
 import { useSelect } from "downshift";
-import { useTheme } from "styled-components";
+import styled, { useTheme } from "styled-components";
 
-import { BooleanControlRaw } from "./BooleanControl";
+import { BooleanControl } from "./BooleanControl";
 import {
   EnumButton,
   EnumContainer,
@@ -29,52 +29,51 @@ import {
   EnumMenuItem,
 } from "./components";
 import { createControl, useControlState } from "./control";
-import { DisplayControlRaw } from "./DisplayControl";
-import { EnumControlRaw } from "./EnumControl";
-import { NestedEnumControlRaw } from "./NestedEnumControl";
-import { NumberControlRaw } from "./NumberControl";
-import { StringArrayControlRaw } from "./StringArrayControl";
-import { StringControlRaw } from "./StringControl";
+import { DisplayControl } from "./DisplayControl";
+import { EnumControl } from "./EnumControl";
+import { NestedEnumControl } from "./NestedEnumControl";
+import { NumberControl } from "./NumberControl";
+import { StringArrayControl } from "./StringArrayControl";
+import { StringControl } from "./StringControl";
 
 interface Props {
   controls: {
-    [k: string]: {
-      [j: string]: any;
+    [key: string]: {
+      [key: string]: any;
     };
   };
   required?: boolean;
 }
 
+export const ActiveControl = styled.div`
+  margin-top: 9px;
+`;
+
 function getControl(name: string, data: any) {
-  switch (name) {
-    case "StringControl":
-      return <StringControlRaw {...data} />;
-    case "DisplayControl":
-      return <DisplayControlRaw {...data} />;
-    case "StringArrayControl":
-      return <StringArrayControlRaw {...data} />;
-    case "BooleanControl":
-      return <BooleanControlRaw {...data} />;
-    case "EnumControl":
-      return <EnumControlRaw {...data} />;
-    case "NestedEnumControl":
-      return <NestedEnumControlRaw {...data} />;
-    case "NumberControl":
-      return <NumberControlRaw {...data} />;
-    default:
-      return null;
+  const controls: Record<string, any> = {
+    StringControl,
+    DisplayControl,
+    StringArrayControl,
+    BooleanControl,
+    EnumControl,
+    NestedEnumControl,
+    NumberControl,
+  };
+
+  const Control = controls[name];
+
+  if (Control) {
+    return <Control {...data} />;
   }
+  return null;
 }
 
-function OneOfControlRaw({ controls, required }: Props) {
-  const [
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    value,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setValue,
-    activeControl,
-    setActiveControl,
-  ] = useControlState<string>(Object.keys(controls)[0]);
+function OneOfControl({ controls, required }: Props) {
+  const controlsKeys = Object.keys(controls);
+
+  const controlState = useControlState<string>(controlsKeys[0]);
+  const activeControl = controlState[2];
+  const setActiveControl = controlState[3];
 
   const theme = useTheme();
 
@@ -92,8 +91,8 @@ function OneOfControlRaw({ controls, required }: Props) {
     getMenuProps,
     getItemProps,
   } = useSelect({
-    items: Object.keys(controls),
-    selectedItem: activeControl || Object.keys(controls)[0],
+    items: controlsKeys,
+    selectedItem: activeControl || controlsKeys[0],
     onSelectedItemChange: handleSelectedItemChange,
   });
 
@@ -108,7 +107,7 @@ function OneOfControlRaw({ controls, required }: Props) {
         </EnumButton>
         <EnumMenu {...getMenuProps()}>
           {isOpen &&
-            Object.keys(controls).map((item, index) => (
+            controlsKeys.map((item, index) => (
               <EnumMenuItem
                 key={`${item}${index}`}
                 {...getItemProps({ item, index })}
@@ -120,11 +119,13 @@ function OneOfControlRaw({ controls, required }: Props) {
             ))}
         </EnumMenu>
       </EnumContainer>
-      {selectedItem
-        ? getControl(selectedItem, { ...controls[selectedItem], required })
-        : null}
+      <ActiveControl>
+        {selectedItem
+          ? getControl(selectedItem, { ...controls[selectedItem], required })
+          : null}
+      </ActiveControl>
     </div>
   );
 }
 
-export default createControl("OneOfControl", OneOfControlRaw);
+export default createControl("OneOfControl", OneOfControl);
