@@ -41,7 +41,7 @@ export function usePropertyID() {
   return name;
 }
 
-export function useControlState<T>(defaultControl?: T) {
+export function useControlState<T>() {
   const { name, controller, id } = useContext(ControlContext);
   const controllerRef = useRef(controller);
   const currentValue: any = useSelector((state: any) => {
@@ -55,7 +55,7 @@ export function useControlState<T>(defaultControl?: T) {
     return state.propertiesReducer[name][activeControl];
   });
   const activeControl: string = useSelector((state: any) => {
-    return state.propertiesReducer[name]?.activeControl ?? defaultControl ?? "";
+    return state.propertiesReducer[name]?.activeControl ?? "";
   });
   const setValue = useCallback(
     (value: T) => {

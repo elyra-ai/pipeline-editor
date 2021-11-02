@@ -71,7 +71,7 @@ function getControl(name: string, data: any) {
 function OneOfControl({ controls, required }: Props) {
   const controlsKeys = Object.keys(controls);
 
-  const controlState = useControlState<string>(controlsKeys[0]);
+  const controlState = useControlState<string>();
   const activeControl = controlState[2];
   const setActiveControl = controlState[3];
 
