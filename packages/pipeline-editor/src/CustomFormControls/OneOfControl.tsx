@@ -36,7 +36,12 @@ import { NumberControl } from "./NumberControl";
 import { StringArrayControl } from "./StringArrayControl";
 import { StringControl } from "./StringControl";
 
-interface Props {
+interface ActiveControlProps {
+  name: string;
+  data: any;
+}
+
+interface OneOfControlProps {
   controls: {
     [key: string]: {
       [key: string]: any;
@@ -45,11 +50,11 @@ interface Props {
   required?: boolean;
 }
 
-export const ActiveControl = styled.div`
+export const ActiveControlContainer = styled.div`
   margin-top: 9px;
 `;
 
-function getControl(name: string, data: any) {
+function ActiveControl({ name, data }: ActiveControlProps) {
   const controls: Record<string, any> = {
     StringControl,
     DisplayControl,
@@ -68,7 +73,7 @@ function getControl(name: string, data: any) {
   return null;
 }
 
-function OneOfControl({ controls, required }: Props) {
+function OneOfControl({ controls, required }: OneOfControlProps) {
   const controlsKeys = Object.keys(controls);
 
   const controlState = useControlState<string>();
@@ -92,7 +97,7 @@ function OneOfControl({ controls, required }: Props) {
     getItemProps,
   } = useSelect({
     items: controlsKeys,
-    selectedItem: activeControl || controlsKeys[0],
+    selectedItem: activeControl,
     onSelectedItemChange: handleSelectedItemChange,
   });
 
@@ -119,11 +124,14 @@ function OneOfControl({ controls, required }: Props) {
             ))}
         </EnumMenu>
       </EnumContainer>
-      <ActiveControl>
-        {selectedItem
-          ? getControl(selectedItem, { ...controls[selectedItem], required })
-          : null}
-      </ActiveControl>
+      <ActiveControlContainer>
+        {selectedItem ? (
+          <ActiveControl
+            name={selectedItem}
+            data={{ ...controls[selectedItem], required }}
+          />
+        ) : null}
+      </ActiveControlContainer>
     </div>
   );
 }
