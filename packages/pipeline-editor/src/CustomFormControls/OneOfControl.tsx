@@ -101,11 +101,13 @@ function OneOfControl({ controls, required }: OneOfControlProps) {
     onSelectedItemChange: handleSelectedItemChange,
   });
 
+  const getLabel = (item: string | null) => controls[item ?? ""].label ?? item;
+
   return (
     <div>
       <EnumContainer isOpen={isOpen}>
         <EnumButton {...getToggleButtonProps()}>
-          <EnumLabel>{selectedItem}</EnumLabel>
+          <EnumLabel>{getLabel(selectedItem)}</EnumLabel>
           <EnumIcon className="elyricon elyricon-chevron-down">
             {theme.overrides?.chevronDownIcon}
           </EnumIcon>
@@ -117,9 +119,7 @@ function OneOfControl({ controls, required }: OneOfControlProps) {
                 key={`${item}${index}`}
                 {...getItemProps({ item, index })}
               >
-                <EnumLabel title={controls[item].label ?? item}>
-                  {controls[item].label ?? item}
-                </EnumLabel>
+                <EnumLabel title={getLabel(item)}>{getLabel(item)}</EnumLabel>
               </EnumMenuItem>
             ))}
         </EnumMenu>
