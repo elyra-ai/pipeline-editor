@@ -70,8 +70,15 @@ function flatten(data: Data[], allowNoOptions: boolean): any[] {
   return flattenedData;
 }
 
-function getLabel(value: FlatData, data: Data[], placeholder: string): string {
-  const entry = data.find((item) => item.value === value?.value);
+function getLabel(
+  value: FlatData | undefined,
+  data: Data[],
+  placeholder: string
+): string {
+  if (!value) {
+    return placeholder;
+  }
+  const entry = data.find((item) => item.value === value.value);
   const option = entry?.options?.find((opt) => opt.value === value.option);
   return entry
     ? entry.label + (option ? ": " + option?.label : "")
@@ -122,15 +129,19 @@ export function NestedEnumControl({
     onSelectedItemChange: handleSelectedItemChange,
   });
 
-  const validators = getNestedEnumValidators({ data, required });
+  const validators = getNestedEnumValidators({
+    data,
+    allowNoOptions,
+    required,
+  });
 
-  let errorMessages = required ? getErrorMessages(value, validators) : [];
+  const errorMessages = required ? getErrorMessages(value, validators) : [];
 
   return (
     <div className={errorMessages.length > 0 ? "error" : undefined}>
       <EnumContainer isOpen={isOpen}>
         <EnumButton {...getToggleButtonProps()}>
-          <EnumLabel>{getLabel(selectedItem, data, placeholder)}</EnumLabel>
+          <EnumLabel>{getLabel(value, data, placeholder)}</EnumLabel>
           <EnumIcon className="elyricon elyricon-chevron-down">
             {theme.overrides?.chevronDownIcon}
           </EnumIcon>
