@@ -28,15 +28,18 @@ export const EnumButton = styled.button.attrs({ type: "button" })`
     align-items: center;
     justify-content: space-between;
     padding: 2px 8px;
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   &&:hover {
     background-color: ${({ theme }) => theme.palette.secondary.main};
+    border: 1px solid ${({ theme }) => theme.palette.highlight.hover};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   &&:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
-    outline-offset: -1px;
+    border: 1px solid ${({ theme }) => theme.palette.focus};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 `;
 
@@ -59,11 +62,12 @@ export const EnumMenu = styled.ul`
   left: 0;
   right: 0;
   color: ${({ theme }) => theme.palette.secondary.contrastText};
-  background-color: ${({ theme }) => theme.palette.secondary.main};
+  background-color: ${({ theme }) => theme.palette.background.secondary};
   padding: 2px;
   padding-bottom: 4px;
   margin: 0;
   list-style-type: none;
+  border-radius: ${({ theme }) => theme.shape.borderRadius};
 `;
 
 export const EnumMenuItem = styled.li`
@@ -75,6 +79,7 @@ export const EnumMenuItem = styled.li`
 
   &:hover {
     background-color: ${({ theme }) => theme.palette.hover};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 `;
 
@@ -85,9 +90,8 @@ export const EnumContainer = styled.div<{ isOpen: boolean }>`
   max-width: 320px;
 
   & ${EnumButton}, & ${EnumMenu} {
-    outline: 1px solid
-      ${({ theme, isOpen }) => (isOpen ? theme.palette.focus : "transparent")};
-    outline-offset: -1px;
+    border: 1px solid ${({ theme }) => theme.palette.inputBorder};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   & ${EnumMenu} {

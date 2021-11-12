@@ -93,7 +93,7 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
-    color: ${({ theme }) => theme.palette.text.primary};
+    color: ${({ theme }) => theme.palette.text.secondary};
     line-height: 1.4em;
     letter-spacing: normal;
     padding: 0;
@@ -105,7 +105,7 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 600;
     font-size: ${({ theme }) => theme.typography.fontSize};
-    color: ${({ theme }) => theme.palette.text.bold};
+    color: ${({ theme }) => theme.palette.text.secondary};
     line-height: 1.4em;
     letter-spacing: normal;
   }
@@ -132,6 +132,7 @@ export const CanvasOverrides = css`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   .properties-wrapper p {
@@ -144,10 +145,16 @@ export const CanvasOverrides = css`
     resize: vertical;
   }
 
+  .properties-wrapper input[type="text" i]:hover,
+  .properties-wrapper input[type="number" i]:hover {
+    border: 1px solid ${({ theme }) => theme.palette.highlight.hover};
+    border-radius: ${({ theme }) => theme.shape.borderRadius}};
+  }
+
   .properties-wrapper input[type="text" i]:focus,
   .properties-wrapper input[type="number" i]:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
-    outline-offset: -1px;
+    border: 1px solid ${({ theme }) => theme.palette.focus};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   .properties-wrapper input[type="text" i]:disabled,
@@ -302,7 +309,7 @@ export const CanvasOverrides = css`
   }
 
   .properties-wrapper .bx--list-box__menu-item:hover {
-    background-color: ${({ theme }) => theme.palette.hover};
+    background-color: ${({ theme }) => theme.palette.primary.hover};
   }
 
   .properties-wrapper .bx--list-box__menu-item__selected-icon {
@@ -311,30 +318,33 @@ export const CanvasOverrides = css`
 
   .bx--list-box--expanded .bx--list-box__field,
   .bx--list-box--expanded .bx--list-box__menu {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
-    outline-offset: -1px;
+    border: 1px solid ${({ theme }) => theme.palette.highlight.hover};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
+    background-color: ${({ theme }) => theme.palette.background.input};
   }
 
   .bx--list-box__field:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
-    outline-offset: -1px;
+    border: 1px solid ${({ theme }) => theme.palette.focus};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   /* button */
   .properties-wrapper button {
-    color: ${({ theme }) => theme.palette.primary.contrastText};
-    background-color: ${({ theme }) => theme.palette.primary.main};
+    color: ${({ theme }) => theme.palette.text.primary};
+    background-color: ${({ theme }) => theme.palette.secondary.main};
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: ${({ theme }) => theme.typography.fontWeight};
     font-size: ${({ theme }) => theme.typography.fontSize};
     padding: 2px 14px;
     cursor: pointer;
     line-height: 1.4em;
-    border: none;
+    border: 1px solid ${({ theme }) => theme.palette.inputBorder};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   .properties-wrapper button:hover {
     background-color: ${({ theme }) => theme.palette.primary.hover};
+    border: 1px solid ${({ theme }) => theme.palette.highlight.hover};
   }
 
   /* ========================================================================== */
@@ -548,7 +558,7 @@ export const CanvasOverrides = css`
     .properties-control-panel
     > .properties-control-panel
     > .properties-ctrl-wrapper:hover {
-    background-color: ${({ theme }) => theme.palette.highlight.hover};
+    background-color: ${({ theme }) => theme.palette.primary.hover};
   }
 
   .properties-editor-form

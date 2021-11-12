@@ -44,10 +44,16 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
   padding: 0;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   color: ${({ theme }) => theme.palette.secondary.contrastText};
+  border-radius: ${({ theme }) => theme.shape.borderRadius};
+
+  &:hover {
+    border: 1px solid ${({ theme }) => theme.palette.highlight.hover};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
+  }
 
   &:focus {
-    outline: 1px solid ${({ theme }) => theme.palette.focus};
-    outline-offset: -1px;
+    border: 1px solid ${({ theme }) => theme.palette.focus};
+    border-radius: ${({ theme }) => theme.shape.borderRadius};
   }
 
   &::before,
