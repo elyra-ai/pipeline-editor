@@ -16,7 +16,6 @@
 
 import path from "path";
 
-// TODO: this map will need to be updated once https://github.com/elyra-ai/elyra/pull/2272 is merged
 const opMap: { [key: string]: string } = {
   run_notebook_using_papermill_Runnotebookusingpapermill:
     "local-directory-catalog:61e6f4141f65",
@@ -32,6 +31,21 @@ const opMap: { [key: string]: string } = {
   slack_operator_SlackAPIPostOperator: "local-file-catalog:81b4f925702e",
 };
 
+// const opMap: { [key: string]: string } = {
+//   run_notebook_using_papermill_Runnotebookusingpapermill:
+//     "elyra-kfp-examples-catalog:61e6f4141f65",
+//   filter_text_using_shell_and_grep_Filtertext:
+//     "elyra-kfp-examples-catalog:737915b826e9",
+//   component_Downloaddata: "elyra-kfp-examples-catalog:a08014f9252f",
+//   component_Calculatedatahash: "elyra-kfp-examples-catalog:d68ec7fcdf46",
+//   bash_operator_BashOperator: "elyra-airflow-examples-catalog:3a55d015ea96",
+//   email_operator_EmailOperator: "elyra-airflow-examples-catalog:a043648d3897",
+//   http_operator_SimpleHttpOperator: "elyra-airflow-examples-catalog:b94cd49692e",
+//   spark_sql_operator_SparkSqlOperator: "elyra-airflow-examples-catalog:3b639742748f",
+//   spark_submit_operator_SparkSubmitOperator: "elyra-airflow-examples-catalog:b29c25ec8bd6",
+//   slack_operator_SlackAPIPostOperator: "elyra-airflow-examples-catalog:16a204f716a2",
+// };
+
 const runtimeTypeMap: { [key: string]: string } = {
   kfp: "KUBEFLOW_PIPELINES",
   airflow: "APACHE_AIRFLOW",
@@ -40,56 +54,51 @@ const runtimeTypeMap: { [key: string]: string } = {
 
 function migrate(pipelineFlow: any, palette: any) {
   let paletteNodes = [];
-  for (const c of palette.categories) {
+  for (const c of palette?.categories) {
     if (c.node_types) {
       paletteNodes.push(...c.node_types);
     }
   }
 
-  // TODO: unwrap this once https://github.com/elyra-ai/elyra/pull/2263 is merged
-  if (false) {
-    pipelineFlow.app_data.runtime_type =
-      runtimeTypeMap[pipelineFlow.app_data.properties.runtime];
-    delete pipelineFlow.app_data.properties.runtime;
-  }
+  // Add runtime type based on previous runtime property
+  pipelineFlow.pipelines[0].app_data.runtime_type =
+    runtimeTypeMap[pipelineFlow.pipelines[0].app_data.properties.runtime];
+  delete pipelineFlow.pipelines[0].app_data.properties.runtime;
+
   for (const pipeline of pipelineFlow.pipelines) {
     for (const node of pipeline.nodes) {
       const newOp = opMap[node.op];
       if (newOp) {
+        // update op string
         node.op = newOp;
 
-        let catalog_type = "";
+        // update component_source from string to json
+        const opParts = newOp.split(":");
+        const catalog_type = opParts[0];
         const component_ref: { [key: string]: any } = {};
-        if (node.app_data.component_source.startsWith("http")) {
-          catalog_type = "url-catalog";
-          component_ref["url"] = node.app_data.component_source;
-        } else if (
-          node.app_data.component_source.includes("/components/kfp/")
-        ) {
-          catalog_type = "local-directory-catalog";
-          component_ref["base_dir"] = path.dirname(
-            node.app_data.component_source
-          );
-          component_ref["path"] = path.basename(node.app_data.component_source);
-        } else if (
-          node.app_data.component_source.includes("/components/airflow/")
-        ) {
-          catalog_type = "local-file-catalog";
-          const parts = node.app_data.component_source.split(
-            "/components/airflow/"
-          );
-          component_ref["base_dir"] = parts[0] + "/components";
-          component_ref["path"] = "airflow/" + parts[1];
+        component_ref["component-id"] = path.basename(
+          node.app_data.component_source
+        );
+        // handle the two cases where the filename changed
+        if (component_ref["component-id"] === "component.yaml") {
+          switch (opParts[1]) {
+            case "a08014f9252f":
+              component_ref["component-id"] = "download_data.yaml";
+              break;
+            case "d68ec7fcdf46":
+              component_ref["component-id"] = "calculate_hash.yaml";
+          }
         }
         node.app_data.component_source = { catalog_type, component_ref };
       }
-
+      console.log(palette);
+      console.log(paletteNodes);
+      // update format of values that have switch to using OneOfControl
       const nodePropertiesSchema = paletteNodes.find(
         (n: any) => n.op === node.op
       );
       const propertyDefs =
         nodePropertiesSchema?.app_data.properties.uihints.parameter_info;
-
       Object.keys(node.app_data.component_parameters).forEach((key) => {
         const propDef = propertyDefs.find(
           (p: any) => p.parameter_ref === "elyra_" + key
