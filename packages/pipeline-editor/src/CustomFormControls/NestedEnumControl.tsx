@@ -118,7 +118,6 @@ export function NestedEnumControl({
   }, [data, allowNoOptions, value, setValue]);
 
   const {
-    selectedItem,
     isOpen,
     getToggleButtonProps,
     getMenuProps,
