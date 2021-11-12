@@ -51,7 +51,7 @@ function deserialize(value: number | undefined) {
   return value?.toString();
 }
 
-function NumberControl({
+export function NumberControl({
   type,
   multipleOf,
   minimum,

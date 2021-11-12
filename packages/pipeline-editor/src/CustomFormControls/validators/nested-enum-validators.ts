@@ -19,11 +19,13 @@ import { Data, FlatData } from "../NestedEnumControl";
 
 export interface NestedEnumValidatorOptions {
   data: Data[];
+  allowNoOptions?: boolean;
   required?: boolean;
 }
 
 export function getNestedEnumValidators<T extends FlatData | undefined>({
   data,
+  allowNoOptions,
   required,
 }: NestedEnumValidatorOptions) {
   const validators: Validator<T>[] = [
@@ -38,7 +40,7 @@ export function getNestedEnumValidators<T extends FlatData | undefined>({
         const option = selected?.options?.find(
           (item: Data) => item.value === value?.option
         );
-        return !!(selected && option);
+        return !!selected && (allowNoOptions || !!option);
       },
       message: `Value must be a valid option`,
     },

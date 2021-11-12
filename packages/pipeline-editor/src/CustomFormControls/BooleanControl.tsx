@@ -62,7 +62,7 @@ const Checkbox = styled.div<{ isChecked: boolean }>`
   }
 `;
 
-function BooleanControl({ description }: Props) {
+export function BooleanControl({ description }: Props) {
   const theme = useTheme();
 
   const [isChecked = false, setIsChecked] = useControlState<boolean>();

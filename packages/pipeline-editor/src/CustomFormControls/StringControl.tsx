@@ -55,7 +55,7 @@ function serialize(value: string) {
 }
 
 // TODO: Make the file clearable
-function StringControl({
+export function StringControl({
   pattern,
   patternErrorMessage,
   minLength,

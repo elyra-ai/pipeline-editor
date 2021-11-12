@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-/* istanbul ignore file */
+import OneOfControl from "./OneOfControl";
 
-export { default as StringControl } from "./StringControl";
-export { default as DisplayControl } from "./DisplayControl";
-export { default as StringArrayControl } from "./StringArrayControl";
-export { default as BooleanControl } from "./BooleanControl";
-export { default as EnumControl } from "./EnumControl";
-export { default as NestedEnumControl } from "./NestedEnumControl";
-export { default as NumberControl } from "./NumberControl";
-export { default as OneOfControl } from "./OneOfControl";
+it("has an id", () => {
+  expect(OneOfControl.id()).toBe("OneOfControl");
+});

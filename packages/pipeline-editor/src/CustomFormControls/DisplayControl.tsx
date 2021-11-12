@@ -16,7 +16,7 @@
 
 import { createControl, useControlState } from "./control";
 
-function DisplayControl() {
+export function DisplayControl() {
   const [value] = useControlState<string>();
 
   return <p>{value}</p>;

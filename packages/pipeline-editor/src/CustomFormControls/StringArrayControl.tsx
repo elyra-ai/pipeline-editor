@@ -299,7 +299,7 @@ export function ListItem({
   );
 }
 
-function StringArrayControl({ placeholder, format, canRefresh }: Props) {
+export function StringArrayControl({ placeholder, format, canRefresh }: Props) {
   const propertyID = usePropertyID();
   const [items = [], setItems] = useControlState<string[]>();
 

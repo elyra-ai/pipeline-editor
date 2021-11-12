@@ -137,6 +137,17 @@ function NodeProperties({
             data,
             placeholder: "Select an input source",
           };
+        } else if (prop.data?.controls) {
+          for (const key in prop.data?.controls) {
+            if (prop.data?.controls[key].format === "inputpath") {
+              prop.data.controls[key] = {
+                ...prop.data.controls[key],
+                data,
+                allowNoOptions: true,
+                placeholder: "Select an input source",
+              };
+            }
+          }
         }
       }
     });

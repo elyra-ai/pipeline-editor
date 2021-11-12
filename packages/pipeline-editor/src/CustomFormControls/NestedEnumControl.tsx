@@ -45,12 +45,13 @@ export interface FlatData {
 }
 
 interface Props {
-  data: Data[];
-  placeholder: string;
+  data?: Data[];
+  placeholder?: string;
+  allowNoOptions?: boolean;
   required?: boolean;
 }
 
-function flatten(data: Data[]): any[] {
+function flatten(data: Data[], allowNoOptions: boolean): any[] {
   let flattenedData: FlatData[] = [];
   data.forEach((item: Data) => {
     item.options?.forEach((option: Data) => {
@@ -59,26 +60,42 @@ function flatten(data: Data[]): any[] {
         option: option.value,
       });
     });
+    if (allowNoOptions && (!item.options || item.options.length === 0)) {
+      flattenedData.push({
+        value: item.value,
+        option: "",
+      });
+    }
   });
   return flattenedData;
 }
 
-function getLabel(value: FlatData, data: Data[], placeholder: string): string {
-  const entry = data.find((item) => item.value === value?.value);
+function getLabel(
+  value: FlatData | undefined,
+  data: Data[],
+  placeholder: string
+): string {
+  if (!value) {
+    return placeholder;
+  }
+  const entry = data.find((item) => item.value === value.value);
   const option = entry?.options?.find((opt) => opt.value === value.option);
-  return entry && option ? entry.label + ": " + option.label : placeholder;
+  return entry
+    ? entry.label + (option ? ": " + option?.label : "")
+    : placeholder;
 }
 
-function NestedEnumControl({
+export function NestedEnumControl({
   data = [],
   placeholder = "Select a value",
+  allowNoOptions = false,
   required,
 }: Props) {
   const [value, setValue] = useControlState<FlatData>();
 
   const theme = useTheme();
 
-  const flattenedData = flatten(data);
+  const flattenedData = flatten(data, allowNoOptions);
 
   const handleSelectedItemChange = useCallback(
     ({ selectedItem }) => {
@@ -94,14 +111,13 @@ function NestedEnumControl({
   useEffect(() => {
     if (
       value !== undefined &&
-      !flatten(data).find((item) => item.value === value.value)
+      !flatten(data, allowNoOptions).find((item) => item.value === value.value)
     ) {
       setValue(undefined);
     }
-  }, [data, value, setValue]);
+  }, [data, allowNoOptions, value, setValue]);
 
   const {
-    selectedItem,
     isOpen,
     getToggleButtonProps,
     getMenuProps,
@@ -112,15 +128,19 @@ function NestedEnumControl({
     onSelectedItemChange: handleSelectedItemChange,
   });
 
-  const validators = getNestedEnumValidators({ data, required });
+  const validators = getNestedEnumValidators({
+    data,
+    allowNoOptions,
+    required,
+  });
 
-  let errorMessages = required ? getErrorMessages(value, validators) : [];
+  const errorMessages = required ? getErrorMessages(value, validators) : [];
 
   return (
     <div className={errorMessages.length > 0 ? "error" : undefined}>
       <EnumContainer isOpen={isOpen}>
         <EnumButton {...getToggleButtonProps()}>
-          <EnumLabel>{getLabel(selectedItem, data, placeholder)}</EnumLabel>
+          <EnumLabel>{getLabel(value, data, placeholder)}</EnumLabel>
           <EnumIcon className="elyricon elyricon-chevron-down">
             {theme.overrides?.chevronDownIcon}
           </EnumIcon>
