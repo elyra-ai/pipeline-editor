@@ -14,5 +14,10 @@
  * limitations under the License.
  */
 
-export * from "./migration";
-export { validate } from "./validation";
+export class ComponentNotFoundError extends Error {
+  constructor() {
+    /* istanbul ignore next */
+    super("Component not found in any catalogue");
+    Object.setPrototypeOf(this, ComponentNotFoundError.prototype);
+  }
+}

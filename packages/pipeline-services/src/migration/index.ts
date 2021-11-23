@@ -23,6 +23,8 @@ import migrateV4 from "./migrateV4";
 import migrateV5 from "./migrateV5";
 import migrateV6 from "./migrateV6";
 
+export * from "./errors";
+
 export function migrate(
   pipelineJSON: any,
   setNodePathsRelativeToPipelineV2?: (pipeline: any) => any,

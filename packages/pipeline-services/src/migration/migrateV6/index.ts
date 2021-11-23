@@ -16,40 +16,30 @@
 
 import path from "path";
 
+import { ComponentNotFoundError } from "../errors";
+
 const opMap: { [key: string]: string } = {
   run_notebook_using_papermill_Runnotebookusingpapermill:
-    "local-directory-catalog:61e6f4141f65",
+    "elyra-kfp-examples-catalog:61e6f4141f65",
   filter_text_using_shell_and_grep_Filtertext:
-    "local-directory-catalog:737915b826e9",
-  component_Downloaddata: "url-catalog:c6c0588048ae",
-  component_Calculatedatahash: "url-catalog:4fc759382b1b",
-  bash_operator_BashOperator: "url-catalog:49f8e61b78c3",
-  email_operator_EmailOperator: "url-catalog:8bef428ea3cd",
-  http_operator_SimpleHttpOperator: "url-catalog:e97030fb448a",
-  spark_sql_operator_SparkSqlOperator: "url-catalog:ff0d51b70719",
-  spark_submit_operator_SparkSubmitOperator: "url-catalog:2756314f3ff5",
-  slack_operator_SlackAPIPostOperator: "local-file-catalog:81b4f925702e",
+    "elyra-kfp-examples-catalog:737915b826e9",
+  component_Downloaddata: "elyra-kfp-examples-catalog:a08014f9252f",
+  component_Calculatedatahash: "elyra-kfp-examples-catalog:d68ec7fcdf46",
+  bash_operator_BashOperator: "elyra-airflow-examples-catalog:3a55d015ea96",
+  email_operator_EmailOperator: "elyra-airflow-examples-catalog:a043648d3897",
+  http_operator_SimpleHttpOperator:
+    "elyra-airflow-examples-catalog:b94cd49692e2",
+  spark_sql_operator_SparkSqlOperator:
+    "elyra-airflow-examples-catalog:3b639742748f",
+  spark_submit_operator_SparkSubmitOperator:
+    "elyra-airflow-examples-catalog:b29c25ec8bd6",
+  slack_operator_SlackAPIPostOperator:
+    "elyra-airflow-examples-catalog:16a204f716a2",
 };
-
-// const opMap: { [key: string]: string } = {
-//   run_notebook_using_papermill_Runnotebookusingpapermill:
-//     "elyra-kfp-examples-catalog:61e6f4141f65",
-//   filter_text_using_shell_and_grep_Filtertext:
-//     "elyra-kfp-examples-catalog:737915b826e9",
-//   component_Downloaddata: "elyra-kfp-examples-catalog:a08014f9252f",
-//   component_Calculatedatahash: "elyra-kfp-examples-catalog:d68ec7fcdf46",
-//   bash_operator_BashOperator: "elyra-airflow-examples-catalog:3a55d015ea96",
-//   email_operator_EmailOperator: "elyra-airflow-examples-catalog:a043648d3897",
-//   http_operator_SimpleHttpOperator: "elyra-airflow-examples-catalog:b94cd49692e",
-//   spark_sql_operator_SparkSqlOperator: "elyra-airflow-examples-catalog:3b639742748f",
-//   spark_submit_operator_SparkSubmitOperator: "elyra-airflow-examples-catalog:b29c25ec8bd6",
-//   slack_operator_SlackAPIPostOperator: "elyra-airflow-examples-catalog:16a204f716a2",
-// };
 
 const runtimeTypeMap: { [key: string]: string } = {
   kfp: "KUBEFLOW_PIPELINES",
   airflow: "APACHE_AIRFLOW",
-  Generic: "Generic",
 };
 
 function migrate(pipelineFlow: any, palette: any) {
@@ -62,8 +52,8 @@ function migrate(pipelineFlow: any, palette: any) {
 
   // Add runtime type based on previous runtime property
   pipelineFlow.pipelines[0].app_data.runtime_type =
-    runtimeTypeMap[pipelineFlow.pipelines[0].app_data.properties.runtime];
-  delete pipelineFlow.pipelines[0].app_data.properties.runtime;
+    runtimeTypeMap[pipelineFlow.pipelines[0].app_data.runtime];
+  delete pipelineFlow.pipelines[0].app_data.runtime;
 
   for (const pipeline of pipelineFlow.pipelines) {
     for (const node of pipeline.nodes) {
@@ -89,31 +79,37 @@ function migrate(pipelineFlow: any, palette: any) {
               component_ref["component-id"] = "calculate_hash.yaml";
           }
         }
-        node.app_data.component_source = { catalog_type, component_ref };
-      }
-      console.log(palette);
-      console.log(paletteNodes);
-      // update format of values that have switch to using OneOfControl
-      const nodePropertiesSchema = paletteNodes.find(
-        (n: any) => n.op === node.op
-      );
-      const propertyDefs =
-        nodePropertiesSchema?.app_data.properties.uihints.parameter_info;
-      Object.keys(node.app_data.component_parameters).forEach((key) => {
-        const propDef = propertyDefs.find(
-          (p: any) => p.parameter_ref === "elyra_" + key
+        node.app_data.component_source = JSON.stringify({
+          catalog_type,
+          component_ref,
+        });
+
+        // update format of values that have switch to using OneOfControl
+        // running this inside the if since only those nodes use OneOfControl
+        const nodePropertiesSchema = paletteNodes.find(
+          (n: any) => n.op === node.op
         );
-        if (propDef.custom_control_id === "OneOfControl") {
-          const activeControl: string =
-            Object.keys(propDef.data.controls).find(
-              (c: string) => c !== "NestedEnumControl"
-            ) || "";
-          node.app_data.component_parameters[key] = {
-            activeControl,
-            [activeControl]: node.app_data.component_parameters[key],
-          };
+        if (nodePropertiesSchema === undefined) {
+          throw new ComponentNotFoundError();
         }
-      });
+        const propertyDefs =
+          nodePropertiesSchema.app_data.properties.uihints.parameter_info;
+        Object.keys(node.app_data.component_parameters).forEach((key) => {
+          const propDef = propertyDefs.find(
+            (p: any) => p.parameter_ref === "elyra_" + key
+          );
+          if (propDef?.custom_control_id === "OneOfControl") {
+            const activeControl: string =
+              Object.keys(propDef.data.controls).find(
+                (c: string) => c !== "NestedEnumControl"
+              ) || "";
+            node.app_data.component_parameters[key] = {
+              activeControl,
+              [activeControl]: node.app_data.component_parameters[key],
+            };
+          }
+        });
+      }
     }
   }
 
