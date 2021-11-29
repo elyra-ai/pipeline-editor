@@ -101,7 +101,7 @@ function OneOfControl({ controls, required }: OneOfControlProps) {
     onSelectedItemChange: handleSelectedItemChange,
   });
 
-  const getLabel = (item: string | null) => controls[item ?? ""].label ?? item;
+  const getLabel = (item: string | null) => controls[item ?? ""]?.label ?? item;
 
   return (
     <div>
