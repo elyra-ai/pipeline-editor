@@ -16,6 +16,8 @@
 
 import { migrate } from "./";
 
+import { mockPalette } from "./utils";
+
 it("should migrate v0 to latest", () => {
   const v0 = {
     pipelines: [
@@ -31,7 +33,7 @@ it("should migrate v0 to latest", () => {
     ],
   };
 
-  const actual = migrate(v0);
+  const actual = migrate(v0, mockPalette);
 
   expect(actual).toMatchInlineSnapshot(`
     Object {
@@ -39,6 +41,7 @@ it("should migrate v0 to latest", () => {
         Object {
           "app_data": Object {
             "name": "title",
+            "runtime_type": undefined,
             "version": 6,
           },
           "nodes": Array [],
@@ -57,13 +60,14 @@ it("should migrate v0 to latest with missing app_data", () => {
     ],
   };
 
-  const actual = migrate(v0);
+  const actual = migrate(v0, mockPalette);
 
   expect(actual).toMatchInlineSnapshot(`
     Object {
       "pipelines": Array [
         Object {
           "app_data": Object {
+            "runtime_type": undefined,
             "version": 6,
           },
           "nodes": Array [],
@@ -91,7 +95,7 @@ it("should migrate v1 to latest", () => {
     ],
   };
 
-  const actual = migrate(v1);
+  const actual = migrate(v1, mockPalette);
 
   expect(actual).toMatchInlineSnapshot(`
     Object {
@@ -99,6 +103,7 @@ it("should migrate v1 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
+            "runtime_type": undefined,
             "version": 6,
           },
           "nodes": Array [
@@ -132,7 +137,7 @@ it("should migrate v2 to latest", () => {
     ],
   };
 
-  const actual = migrate(v2);
+  const actual = migrate(v2, mockPalette);
 
   expect(actual).toMatchInlineSnapshot(`
     Object {
@@ -140,6 +145,7 @@ it("should migrate v2 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
+            "runtime_type": undefined,
             "version": 6,
           },
           "nodes": Array [],
@@ -185,7 +191,7 @@ it("should migrate v3 to latest", () => {
     ],
   };
 
-  const actual = migrate(v3);
+  const actual = migrate(v3, mockPalette);
 
   expect(actual).toMatchInlineSnapshot(`
     Object {
@@ -193,6 +199,7 @@ it("should migrate v3 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
+            "runtime_type": undefined,
             "version": 6,
           },
           "nodes": Array [
@@ -275,7 +282,7 @@ it("should migrate v4 to latest", () => {
     ],
   };
 
-  const actual = migrate(v4);
+  const actual = migrate(v4, mockPalette);
 
   expect(actual).toMatchInlineSnapshot(`
     Object {
@@ -283,16 +290,21 @@ it("should migrate v4 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
+            "runtime_type": undefined,
             "version": 6,
           },
           "nodes": Array [
             Object {
-              "app_data": Object {},
+              "app_data": Object {
+                "component_source": "{\\"catalog_type\\":\\"elyra-kfp-examples-catalog\\",\\"component_ref\\":{\\"component-id\\":\\"run_notebook_using_papermill.yaml\\"}}",
+              },
               "op": "elyra-kfp-examples-catalog:61e6f4141f65",
               "type": "execution_node",
             },
             Object {
-              "app_data": Object {},
+              "app_data": Object {
+                "component_source": "{\\"catalog_type\\":\\"elyra-kfp-examples-catalog\\",\\"component_ref\\":{\\"component-id\\":\\"filter_text_using_shell_and_grep.yaml\\"}}",
+              },
               "op": "elyra-kfp-examples-catalog:737915b826e9",
               "type": "execution_node",
             },
@@ -306,7 +318,9 @@ it("should migrate v4 to latest", () => {
         Object {
           "nodes": Array [
             Object {
-              "app_data": Object {},
+              "app_data": Object {
+                "component_source": "{\\"catalog_type\\":\\"elyra-airflow-examples-catalog\\",\\"component_ref\\":{\\"component-id\\":\\"slack_operator.py\\"}}",
+              },
               "op": "elyra-airflow-examples-catalog:16a204f716a2",
               "type": "execution_node",
             },
@@ -334,7 +348,7 @@ it("should do nothing for latest version", () => {
     ],
   };
 
-  const actual = migrate(latest);
+  const actual = migrate(latest, mockPalette);
 
   expect(actual).toEqual(latest);
 });

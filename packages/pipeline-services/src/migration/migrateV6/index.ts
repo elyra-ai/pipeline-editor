@@ -42,7 +42,7 @@ const runtimeTypeMap: { [key: string]: string } = {
   airflow: "APACHE_AIRFLOW",
 };
 
-function migrate(pipelineFlow: any, palette: any) {
+function migrate(pipelineFlow: any, palette: any = {}) {
   let paletteNodes = [];
   for (const c of palette.categories) {
     if (c.node_types) {
@@ -94,7 +94,7 @@ function migrate(pipelineFlow: any, palette: any) {
         }
         const propertyDefs =
           nodePropertiesSchema.app_data.properties.uihints.parameter_info;
-        Object.keys(node.app_data.component_parameters).forEach((key) => {
+        Object.keys(node.app_data.component_parameters ?? {}).forEach((key) => {
           const propDef = propertyDefs.find(
             (p: any) => p.parameter_ref === "elyra_" + key
           );

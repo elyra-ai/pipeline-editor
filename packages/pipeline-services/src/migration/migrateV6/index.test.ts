@@ -17,9 +17,10 @@
 import produce from "immer";
 
 import rawMigrate from "./";
+import { mockPalette } from "../utils";
 
 // wrap migrate functions in immer
-const migrate = produce<any>((d: any) => rawMigrate(d));
+const migrate = produce<any>((f: any, p: any) => rawMigrate(f, p));
 
 it("should update old op name to new op name", () => {
   const v5 = {
@@ -33,14 +34,16 @@ it("should update old op name to new op name", () => {
           {
             type: "execution_node",
             op: "run_notebook_using_papermill_Runnotebookusingpapermill",
-            app_data: {},
+            app_data: {
+              component_source: "",
+            },
           },
         ],
       },
     ],
   };
 
-  const actual = migrate(v5);
+  const actual = migrate(v5, mockPalette);
   expect(actual.pipelines[0].nodes[0].op).toEqual(
     "elyra-kfp-examples-catalog:61e6f4141f65"
   );
@@ -65,9 +68,9 @@ it("should not update op name if already new op name", () => {
     ],
   };
 
-  const actual = migrate(v5);
+  const actual = migrate(v5, mockPalette);
   expect(actual.pipelines[0].nodes[0].op).toEqual(
-    "filter_text_using_shell_and_grep_Filtertext"
+    "elyra-airflow-examples-catalog:3a55d015ea96"
   );
 });
 
@@ -90,7 +93,7 @@ it("should not update op name if not in update list", () => {
     ],
   };
 
-  const actual = migrate(v5);
+  const actual = migrate(v5, mockPalette);
   expect(actual.pipelines[0].nodes[0].op).toEqual("some_op_name");
 });
 
@@ -112,7 +115,7 @@ it("should not error if op not set", () => {
     ],
   };
 
-  const actual = migrate(v5);
+  const actual = migrate(v5, mockPalette);
   expect(actual.pipelines[0].nodes[0].op).toBeUndefined();
 });
 
