@@ -39,7 +39,7 @@ it("should migrate v0 to latest", () => {
         Object {
           "app_data": Object {
             "name": "title",
-            "version": 5,
+            "version": 6,
           },
           "nodes": Array [],
         },
@@ -64,7 +64,7 @@ it("should migrate v0 to latest with missing app_data", () => {
       "pipelines": Array [
         Object {
           "app_data": Object {
-            "version": 5,
+            "version": 6,
           },
           "nodes": Array [],
         },
@@ -99,7 +99,7 @@ it("should migrate v1 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
-            "version": 5,
+            "version": 6,
           },
           "nodes": Array [
             Object {
@@ -140,7 +140,7 @@ it("should migrate v2 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
-            "version": 5,
+            "version": 6,
           },
           "nodes": Array [],
         },
@@ -193,7 +193,7 @@ it("should migrate v3 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
-            "version": 5,
+            "version": 6,
           },
           "nodes": Array [
             Object {
@@ -243,12 +243,16 @@ it("should migrate v4 to latest", () => {
           {
             type: "execution_node",
             op: "run-notebook-using-papermill",
-            app_data: {},
+            app_data: {
+              component_source: "kfp/run_notebook_using_papermill.yaml",
+            },
           },
           {
             type: "execution_node",
             op: "filter_text_using_shell_and_grep_Filtertext",
-            app_data: {},
+            app_data: {
+              component_source: "kfp/filter_text_using_shell_and_grep.yaml",
+            },
           },
           {
             type: "execution_node",
@@ -262,7 +266,9 @@ it("should migrate v4 to latest", () => {
           {
             type: "execution_node",
             op: "slack-operator_SlackAPIPostOperator",
-            app_data: {},
+            app_data: {
+              component_source: "airflow/slack_operator.py",
+            },
           },
         ],
       },
@@ -277,17 +283,17 @@ it("should migrate v4 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
-            "version": 5,
+            "version": 6,
           },
           "nodes": Array [
             Object {
               "app_data": Object {},
-              "op": "run_notebook_using_papermill_Runnotebookusingpapermill",
+              "op": "elyra-kfp-examples-catalog:61e6f4141f65",
               "type": "execution_node",
             },
             Object {
               "app_data": Object {},
-              "op": "filter_text_using_shell_and_grep_Filtertext",
+              "op": "elyra-kfp-examples-catalog:737915b826e9",
               "type": "execution_node",
             },
             Object {
@@ -301,7 +307,7 @@ it("should migrate v4 to latest", () => {
           "nodes": Array [
             Object {
               "app_data": Object {},
-              "op": "slack_operator_SlackAPIPostOperator",
+              "op": "elyra-airflow-examples-catalog:16a204f716a2",
               "type": "execution_node",
             },
           ],
@@ -311,13 +317,17 @@ it("should migrate v4 to latest", () => {
   `);
 });
 
+it("should migrate v5 to latest", () => {
+  // TODO
+});
+
 it("should do nothing for latest version", () => {
   const latest = {
     pipelines: [
       {
         app_data: {
           name: "name",
-          version: 5,
+          version: 6,
         },
         nodes: [],
       },

@@ -44,7 +44,7 @@ const runtimeTypeMap: { [key: string]: string } = {
 
 function migrate(pipelineFlow: any, palette: any) {
   let paletteNodes = [];
-  for (const c of palette?.categories) {
+  for (const c of palette.categories) {
     if (c.node_types) {
       paletteNodes.push(...c.node_types);
     }
