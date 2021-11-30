@@ -51,8 +51,8 @@ export function useControlState<T>() {
     if (id !== "OneOfControl") {
       return state.propertiesReducer[name];
     }
-    const { activeControl } = state.propertiesReducer[name];
-    return state.propertiesReducer[name][activeControl];
+    const { activeControl } = state.propertiesReducer[name] || {};
+    return state.propertiesReducer[name]?.[activeControl];
   });
   const activeControl: string = useSelector((state: any) => {
     return state.propertiesReducer[name]?.activeControl ?? "";
