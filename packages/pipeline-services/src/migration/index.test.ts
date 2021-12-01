@@ -331,7 +331,132 @@ it("should migrate v4 to latest", () => {
 });
 
 it("should migrate v5 to latest", () => {
-  // TODO
+  const v5 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          runtime: "airflow",
+          version: 5,
+        },
+        nodes: [
+          {
+            type: "execution_node",
+            op: "run_notebook_using_papermill_Runnotebookusingpapermill",
+            app_data: {
+              component_parameters: {
+                notebook: {
+                  value: "parent",
+                  option: "output",
+                },
+                parameters: "some string",
+                some_value: "string",
+              },
+              component_source: "kfp/run_notebook_using_papermill.yaml",
+            },
+          },
+          {
+            type: "execution_node",
+            op: "component_Downloaddata",
+            app_data: {
+              component_source: "kfp/component.yaml",
+            },
+          },
+          {
+            type: "execution_node",
+            op: "some_op",
+            app_data: {},
+          },
+        ],
+      },
+      {
+        nodes: [
+          {
+            type: "execution_node",
+            op: "spark_sql_operator_SparkSqlOperator",
+            app_data: {
+              component_parameters: {
+                conn_id: "test_string",
+                total_executor_cores: 42,
+                verbose: true,
+              },
+              component_source: "airflow/spark_sql_operator.py",
+            },
+          },
+        ],
+      },
+    ],
+  };
+
+  const actual = migrate(v5, mockPalette);
+
+  expect(actual).toMatchInlineSnapshot(`
+    Object {
+      "pipelines": Array [
+        Object {
+          "app_data": Object {
+            "name": "name",
+            "runtime_type": "APACHE_AIRFLOW",
+            "version": 6,
+          },
+          "nodes": Array [
+            Object {
+              "app_data": Object {
+                "component_parameters": Object {
+                  "notebook": Object {
+                    "option": "output",
+                    "value": "parent",
+                  },
+                  "parameters": "some string",
+                  "some_value": "string",
+                },
+                "component_source": "{\\"catalog_type\\":\\"elyra-kfp-examples-catalog\\",\\"component_ref\\":{\\"component-id\\":\\"run_notebook_using_papermill.yaml\\"}}",
+              },
+              "op": "elyra-kfp-examples-catalog:61e6f4141f65",
+              "type": "execution_node",
+            },
+            Object {
+              "app_data": Object {
+                "component_source": "{\\"catalog_type\\":\\"elyra-kfp-examples-catalog\\",\\"component_ref\\":{\\"component-id\\":\\"download_data.yaml\\"}}",
+              },
+              "op": "elyra-kfp-examples-catalog:a08014f9252f",
+              "type": "execution_node",
+            },
+            Object {
+              "app_data": Object {},
+              "op": "some_op",
+              "type": "execution_node",
+            },
+          ],
+        },
+        Object {
+          "nodes": Array [
+            Object {
+              "app_data": Object {
+                "component_parameters": Object {
+                  "conn_id": Object {
+                    "StringControl": "test_string",
+                    "activeControl": "StringControl",
+                  },
+                  "total_executor_cores": Object {
+                    "NumberControl": 42,
+                    "activeControl": "NumberControl",
+                  },
+                  "verbose": Object {
+                    "BooleanControl": true,
+                    "activeControl": "BooleanControl",
+                  },
+                },
+                "component_source": "{\\"catalog_type\\":\\"elyra-airflow-examples-catalog\\",\\"component_ref\\":{\\"component-id\\":\\"spark_sql_operator.py\\"}}",
+              },
+              "op": "elyra-airflow-examples-catalog:3b639742748f",
+              "type": "execution_node",
+            },
+          ],
+        },
+      ],
+    }
+  `);
 });
 
 it("should do nothing for latest version", () => {
