@@ -27,8 +27,8 @@ export * from "./errors";
 
 export function migrate(
   pipelineJSON: any,
-  setNodePathsRelativeToPipelineV2?: (pipeline: any) => any,
-  palette?: any
+  palette?: any,
+  setNodePathsRelativeToPipelineV2?: (pipeline: any) => any
 ) {
   return produce(pipelineJSON, (draft: any) => {
     const version = draft.pipelines[0].app_data?.version ?? 0;
