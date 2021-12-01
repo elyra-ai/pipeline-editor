@@ -15,7 +15,6 @@
  */
 
 import { migrate } from "./";
-
 import { mockPalette } from "./utils";
 
 it("should migrate v0 to latest", () => {
