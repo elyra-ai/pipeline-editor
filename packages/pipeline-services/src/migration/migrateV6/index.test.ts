@@ -280,12 +280,13 @@ it("should error with no palette", () => {
       {
         app_data: {
           name: "name",
+          runtime: "airflow",
           version: 5,
         },
         nodes: [
           {
             type: "execution_node",
-            op: "run_notebook_using_papermill_Runnotebookusingpapermill",
+            op: "http_operator_SimpleHttpOperator",
             app_data: {
               component_source: "some/path/to/component_source.py",
             },
@@ -325,6 +326,7 @@ it("should update property format for OneOfControl", () => {
       {
         app_data: {
           name: "name",
+          runtime: "airflow",
           version: 5,
         },
         nodes: [
@@ -347,7 +349,7 @@ it("should update property format for OneOfControl", () => {
   );
 });
 
-it("should not update property format for other controls", () => {
+it("should not update property format for kfp controls", () => {
   const component_parameters = {
     notebook: {
       value: "parent",
@@ -362,6 +364,7 @@ it("should not update property format for other controls", () => {
       {
         app_data: {
           name: "name",
+          runtime: "kfp",
           version: 5,
         },
         nodes: [

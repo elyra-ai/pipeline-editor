@@ -22,6 +22,7 @@ import migrateV3 from "./migrateV3";
 import migrateV4 from "./migrateV4";
 import migrateV5 from "./migrateV5";
 import migrateV6 from "./migrateV6";
+import migrateV7 from "./migrateV7";
 
 export * from "./errors";
 
@@ -55,6 +56,10 @@ export function migrate(
     if (version < 6) {
       console.debug("migrating pipeline from v5 to v6");
       migrateV6(draft, palette);
+    }
+    if (version < 7) {
+      console.debug("migrating pipeline from v6 to v7");
+      migrateV7(draft, palette);
     }
   });
 }
