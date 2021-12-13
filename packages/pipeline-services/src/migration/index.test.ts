@@ -41,7 +41,7 @@ it("should migrate v0 to latest", () => {
           "app_data": Object {
             "name": "title",
             "runtime_type": undefined,
-            "version": 6,
+            "version": 7,
           },
           "nodes": Array [],
         },
@@ -67,7 +67,7 @@ it("should migrate v0 to latest with missing app_data", () => {
         Object {
           "app_data": Object {
             "runtime_type": undefined,
-            "version": 6,
+            "version": 7,
           },
           "nodes": Array [],
         },
@@ -103,7 +103,7 @@ it("should migrate v1 to latest", () => {
           "app_data": Object {
             "name": "name",
             "runtime_type": undefined,
-            "version": 6,
+            "version": 7,
           },
           "nodes": Array [
             Object {
@@ -145,7 +145,7 @@ it("should migrate v2 to latest", () => {
           "app_data": Object {
             "name": "name",
             "runtime_type": undefined,
-            "version": 6,
+            "version": 7,
           },
           "nodes": Array [],
         },
@@ -199,7 +199,7 @@ it("should migrate v3 to latest", () => {
           "app_data": Object {
             "name": "name",
             "runtime_type": undefined,
-            "version": 6,
+            "version": 7,
           },
           "nodes": Array [
             Object {
@@ -290,7 +290,7 @@ it("should migrate v4 to latest", () => {
           "app_data": Object {
             "name": "name",
             "runtime_type": undefined,
-            "version": 6,
+            "version": 7,
           },
           "nodes": Array [
             Object {
@@ -397,7 +397,7 @@ it("should migrate v5 to latest", () => {
           "app_data": Object {
             "name": "name",
             "runtime_type": "APACHE_AIRFLOW",
-            "version": 6,
+            "version": 7,
           },
           "nodes": Array [
             Object {
@@ -407,7 +407,10 @@ it("should migrate v5 to latest", () => {
                     "option": "output",
                     "value": "parent",
                   },
-                  "parameters": "some string",
+                  "parameters": Object {
+                    "StringControl": "some string",
+                    "activeControl": "StringControl",
+                  },
                   "some_value": "string",
                 },
                 "component_source": "{\\"catalog_type\\":\\"elyra-kfp-examples-catalog\\",\\"component_ref\\":{\\"component-id\\":\\"run_notebook_using_papermill.yaml\\"}}",
@@ -459,13 +462,76 @@ it("should migrate v5 to latest", () => {
   `);
 });
 
+it("should migrate v6 to latest", () => {
+  const v6 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          runtime_type: "KUBEFLOW_PIPELINES",
+          version: 6,
+        },
+        nodes: [
+          {
+            type: "execution_node",
+            op: "elyra-kfp-examples-catalog:d68ec7fcdf46",
+            app_data: {
+              component_parameters: {
+                data: {
+                  value: "parent-id",
+                  option: "output_name",
+                },
+                hash_algorithm: "HASH",
+              },
+            },
+          },
+        ],
+      },
+    ],
+  };
+
+  const actual = migrate(v6, mockPalette);
+
+  expect(actual).toMatchInlineSnapshot(`
+    Object {
+      "pipelines": Array [
+        Object {
+          "app_data": Object {
+            "name": "name",
+            "runtime_type": "KUBEFLOW_PIPELINES",
+            "version": 7,
+          },
+          "nodes": Array [
+            Object {
+              "app_data": Object {
+                "component_parameters": Object {
+                  "data": Object {
+                    "option": "output_name",
+                    "value": "parent-id",
+                  },
+                  "hash_algorithm": Object {
+                    "StringControl": "HASH",
+                    "activeControl": "StringControl",
+                  },
+                },
+              },
+              "op": "elyra-kfp-examples-catalog:d68ec7fcdf46",
+              "type": "execution_node",
+            },
+          ],
+        },
+      ],
+    }
+  `);
+});
+
 it("should do nothing for latest version", () => {
   const latest = {
     pipelines: [
       {
         app_data: {
           name: "name",
-          version: 6,
+          version: 7,
         },
         nodes: [],
       },

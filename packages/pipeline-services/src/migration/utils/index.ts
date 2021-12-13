@@ -1032,7 +1032,10 @@ export const mockPalette: any = {
               current_parameters: {
                 label: "",
                 elyra_data: "None",
-                elyra_hash_algorithm: "SHA256",
+                elyra_hash_algorithm: {
+                  activeControl: "StringControl",
+                  StringControl: "SHA256",
+                },
                 elyra_output_hash: "",
                 component_source:
                   "{'catalog_type': 'elyra-kfp-examples-catalog', 'component_ref': {'component-id': 'calculate_hash.yaml'}}",
@@ -1089,7 +1092,7 @@ export const mockPalette: any = {
                   {
                     parameter_ref: "elyra_hash_algorithm",
                     control: "custom",
-                    custom_control_id: "StringControl",
+                    custom_control_id: "OneOfControl",
                     label: {
                       default: "Hash algorithm",
                     },
@@ -1099,7 +1102,17 @@ export const mockPalette: any = {
                       placement: "on_panel",
                     },
                     data: {
-                      format: "string",
+                      controls: {
+                        StringControl: {
+                          label: "Please enter a string value :",
+                          format: "string",
+                        },
+                        NestedEnumControl: {
+                          label: "Please select an output from a parent :",
+                          format: "inputpath",
+                          allownooptions: false,
+                        },
+                      },
                       required: true,
                     },
                   },
@@ -1221,8 +1234,14 @@ export const mockPalette: any = {
             properties: {
               current_parameters: {
                 label: "",
-                elyra_url: "",
-                elyra_curl_options: "--location",
+                elyra_url: {
+                  activeControl: "StringControl",
+                  StringControl: "",
+                },
+                elyra_curl_options: {
+                  activeControl: "StringControl",
+                  StringControl: "--location",
+                },
                 elyra_output_data: "",
                 component_source:
                   "{'catalog_type': 'elyra-kfp-examples-catalog', 'component_ref': {'component-id': 'download_data.yaml'}}",
@@ -1263,7 +1282,7 @@ export const mockPalette: any = {
                   {
                     parameter_ref: "elyra_url",
                     control: "custom",
-                    custom_control_id: "StringControl",
+                    custom_control_id: "OneOfControl",
                     label: {
                       default: "Url",
                     },
@@ -1272,14 +1291,24 @@ export const mockPalette: any = {
                       placement: "on_panel",
                     },
                     data: {
-                      format: "string",
+                      controls: {
+                        StringControl: {
+                          label: "Please enter a string value :",
+                          format: "string",
+                        },
+                        NestedEnumControl: {
+                          label: "Please select an output from a parent :",
+                          format: "inputpath",
+                          allownooptions: false,
+                        },
+                      },
                       required: true,
                     },
                   },
                   {
                     parameter_ref: "elyra_curl_options",
                     control: "custom",
-                    custom_control_id: "StringControl",
+                    custom_control_id: "OneOfControl",
                     label: {
                       default: "curl options",
                     },
@@ -1289,7 +1318,17 @@ export const mockPalette: any = {
                       placement: "on_panel",
                     },
                     data: {
-                      format: "string",
+                      controls: {
+                        StringControl: {
+                          label: "Please enter a string value :",
+                          format: "string",
+                        },
+                        NestedEnumControl: {
+                          label: "Please select an output from a parent :",
+                          format: "inputpath",
+                          allownooptions: false,
+                        },
+                      },
                       required: true,
                     },
                   },
@@ -1416,7 +1455,10 @@ export const mockPalette: any = {
                   "Filter input text according to the given regex pattern using shell and grep.",
                 label: "",
                 elyra_text: "None",
-                elyra_pattern: ".*",
+                elyra_pattern: {
+                  activeControl: "StringControl",
+                  StringControl: ".*",
+                },
                 elyra_output_filtered_text: "",
                 component_source:
                   "{'catalog_type': 'elyra-kfp-examples-catalog', 'component_ref': {'component-id': 'filter_text_using_shell_and_grep.yaml'}}",
@@ -1490,7 +1532,7 @@ export const mockPalette: any = {
                   {
                     parameter_ref: "elyra_pattern",
                     control: "custom",
-                    custom_control_id: "StringControl",
+                    custom_control_id: "OneOfControl",
                     label: {
                       default: "Pattern",
                     },
@@ -1499,7 +1541,17 @@ export const mockPalette: any = {
                       placement: "on_panel",
                     },
                     data: {
-                      format: "string",
+                      controls: {
+                        StringControl: {
+                          label: "Please enter a string value :",
+                          format: "string",
+                        },
+                        NestedEnumControl: {
+                          label: "Please select an output from a parent :",
+                          format: "inputpath",
+                          allownooptions: false,
+                        },
+                      },
                       required: false,
                     },
                   },
@@ -1631,9 +1683,18 @@ export const mockPalette: any = {
                   "Run Jupyter notebook using papermill. The notebook will receive the parameter values passed to it as well as the INPUT_DATA_PATH and OUTPUT_DATA_PATH variables that will be set to the input data path (if provided) and directory for the optional output data.",
                 label: "",
                 elyra_notebook: "None",
-                elyra_parameters: "{}",
-                elyra_packages_to_install: "[]",
-                elyra_input_data: "",
+                elyra_parameters: {
+                  activeControl: "StringControl",
+                  StringControl: "{}",
+                },
+                elyra_packages_to_install: {
+                  activeControl: "StringControl",
+                  StringControl: "[]",
+                },
+                elyra_input_data: {
+                  activeControl: "StringControl",
+                  StringControl: "",
+                },
                 elyra_output_notebook: "",
                 elyra_output_output_data: "",
                 component_source:
@@ -1717,7 +1778,7 @@ export const mockPalette: any = {
                   {
                     parameter_ref: "elyra_parameters",
                     control: "custom",
-                    custom_control_id: "StringControl",
+                    custom_control_id: "OneOfControl",
                     label: {
                       default: "Parameters",
                     },
@@ -1727,14 +1788,24 @@ export const mockPalette: any = {
                       placement: "on_panel",
                     },
                     data: {
-                      format: "string",
+                      controls: {
+                        StringControl: {
+                          label: "Please enter a string value :",
+                          format: "string",
+                        },
+                        NestedEnumControl: {
+                          label: "Please select an output from a parent :",
+                          format: "inputpath",
+                          allownooptions: false,
+                        },
+                      },
                       required: true,
                     },
                   },
                   {
                     parameter_ref: "elyra_packages_to_install",
                     control: "custom",
-                    custom_control_id: "StringControl",
+                    custom_control_id: "OneOfControl",
                     label: {
                       default: "Packages to install",
                     },
@@ -1743,14 +1814,24 @@ export const mockPalette: any = {
                       placement: "on_panel",
                     },
                     data: {
-                      format: "list",
+                      controls: {
+                        StringControl: {
+                          label: "Please enter a string value :",
+                          format: "list",
+                        },
+                        NestedEnumControl: {
+                          label: "Please select an output from a parent :",
+                          format: "inputpath",
+                          allownooptions: false,
+                        },
+                      },
                       required: true,
                     },
                   },
                   {
                     parameter_ref: "elyra_input_data",
                     control: "custom",
-                    custom_control_id: "StringControl",
+                    custom_control_id: "OneOfControl",
                     label: {
                       default: "Input data",
                     },
@@ -1760,7 +1841,17 @@ export const mockPalette: any = {
                       placement: "on_panel",
                     },
                     data: {
-                      format: "string",
+                      controls: {
+                        StringControl: {
+                          label: "Please enter a string value :",
+                          format: "string",
+                        },
+                        NestedEnumControl: {
+                          label: "Please select an output from a parent :",
+                          format: "inputpath",
+                          allownooptions: false,
+                        },
+                      },
                       required: false,
                     },
                   },
