@@ -2,7 +2,7 @@
   "private": true,
   "name": "pipeline-editor",
   "description": "",
-  "version": "1.5.0-rc.0",
+  "version": "1.5.0-rc.1",
   "workspaces": {
     "packages": [
       "packages/*"
