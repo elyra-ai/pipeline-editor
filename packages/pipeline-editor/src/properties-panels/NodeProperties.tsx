@@ -143,7 +143,6 @@ function NodeProperties({
               prop.data.controls[key] = {
                 ...prop.data.controls[key],
                 data,
-                allowNoOptions: true,
                 placeholder: "Select an input source",
               };
             }
