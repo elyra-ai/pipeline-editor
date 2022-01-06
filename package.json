@@ -72,7 +72,11 @@
     "lint": "eslint . --ignore-path .gitignore --ext .ts,.tsx,.js,.jsx --max-warnings=0",
     "lint:fix": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx,.js,.jsx",
     "format": "prettier --ignore-path .gitignore --write \"**/*.{tsx,ts,js,css,html,json}\"",
-    "format:check": "prettier --ignore-path .gitignore --check \"**/*.{tsx,ts,js,css,html,json}\""
+    "format:check": "prettier --ignore-path .gitignore --check \"**/*.{tsx,ts,js,css,html,json}\"",
+    "preinstall": "npx force-resolutions -y"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "resolutions": {
+    "immer": "9.0.7"
+  }
 }
