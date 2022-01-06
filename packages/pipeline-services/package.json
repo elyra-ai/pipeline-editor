@@ -22,7 +22,7 @@
     "link": "yarn link"
   },
   "dependencies": {
-    "immer": "^9.0.6",
+    "immer": "^9.0.7",
     "jsonc-parser": "^3.0.0"
   },
   "publishConfig": {

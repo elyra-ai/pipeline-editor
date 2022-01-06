@@ -11,10 +11,10 @@
   "main": "./packages/extension/dist/index.js",
   "devDependencies": {
     "@babel/core": "^7.13.8",
-    "@storybook/addon-actions": "^6.1.20",
-    "@storybook/addon-essentials": "^6.1.20",
-    "@storybook/addon-links": "^6.1.20",
-    "@storybook/react": "^6.1.20",
+    "@storybook/addon-actions": "^6.4.9",
+    "@storybook/addon-essentials": "^6.4.9",
+    "@storybook/addon-links": "^6.4.9",
+    "@storybook/react": "^6.4.9",
     "@testing-library/cypress": "^7.0.4",
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
@@ -72,7 +72,13 @@
     "lint": "eslint . --ignore-path .gitignore --ext .ts,.tsx,.js,.jsx --max-warnings=0",
     "lint:fix": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx,.js,.jsx",
     "format": "prettier --ignore-path .gitignore --write \"**/*.{tsx,ts,js,css,html,json}\"",
-    "format:check": "prettier --ignore-path .gitignore --check \"**/*.{tsx,ts,js,css,html,json}\""
+    "format:check": "prettier --ignore-path .gitignore --check \"**/*.{tsx,ts,js,css,html,json}\"",
+    "preinstall": "npx force-resolutions -y"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "resolutions": {
+    "immer": "9.0.7",
+    "prismjs": "1.25.0",
+    "trim": "0.0.3"
+  }
 }
