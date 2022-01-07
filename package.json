@@ -77,6 +77,8 @@
   },
   "dependencies": {},
   "resolutions": {
-    "immer": "9.0.7"
+    "immer": "9.0.7",
+    "prismjs": "1.25.0",
+    "trim": "0.0.3"
   }
 }
