@@ -532,13 +532,20 @@ class PipelineController extends CanvasController {
         if (i.parameter_ref.startsWith("elyra_")) {
           const strippedRef = i.parameter_ref.replace(/^elyra_/, "");
           const value = app_data?.component_parameters?.[strippedRef];
-          // Find the node corresponding to the input node
-          const inputNodeLabel = this.findExecutionNode(value?.value ?? "")
-            ?.app_data?.ui_data?.label;
-          return {
-            label: i.label.default,
-            value: inputNodeLabel ?? "None specified",
-          };
+          if (i.data.format === "inputpath") {
+            // Find the node corresponding to the input node
+            const inputNodeLabel = this.findExecutionNode(value?.value ?? "")
+              ?.app_data?.ui_data?.label;
+            return {
+              label: i.label.default,
+              value: inputNodeLabel ?? "None specified",
+            };
+          } else {
+            return {
+              label: i.label.default,
+              value: value ?? "None",
+            };
+          }
         }
         return {
           label: i.label.default,
