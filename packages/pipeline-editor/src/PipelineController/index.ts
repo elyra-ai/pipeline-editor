@@ -20,6 +20,7 @@ import {
   PaletteV3,
   ExecutionNodeDef,
   NodeType,
+  PropertyDefinitions,
 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
@@ -519,6 +520,44 @@ class PipelineController extends CanvasController {
     return "";
   }
 
+  getPropertyValue(info: any, value: any, label?: string): any {
+    if (info.data?.format === "inputpath" || info.format === "inputpath") {
+      // Find the node corresponding to the input node
+      const upstreamNode = this.findExecutionNode(value?.value ?? "");
+      const upstreamNodeLabel = upstreamNode?.app_data?.ui_data?.label;
+      const upstreamNodeDef = this.getAllPaletteNodes().find(
+        (nodeDef) => nodeDef.op === upstreamNode?.op
+      );
+      upstreamNodeDef?.app_data?.properties?.uihints?.parameter_info;
+      return {
+        label: label ?? info.label.default,
+        value: upstreamNodeLabel ?? "No value specified.",
+      };
+    } else if (
+      info.data?.format === "outputpath" ||
+      info.format === "outputpath"
+    ) {
+      return {
+        label: label ?? info.label.default,
+        value: "This is an output of the component.",
+      };
+    } else if (
+      value.activeControl &&
+      info.data?.controls[value.activeControl]
+    ) {
+      return this.getPropertyValue(
+        info.data.controls[value.activeControl],
+        value[value.activeControl],
+        info.label.default
+      );
+    } else {
+      return {
+        label: label ?? info.label.default,
+        value: value ?? "No value specified.",
+      };
+    }
+  }
+
   properties(nodeID: string) {
     let node = this.findExecutionNode(nodeID);
 
@@ -532,20 +571,7 @@ class PipelineController extends CanvasController {
         if (i.parameter_ref.startsWith("elyra_")) {
           const strippedRef = i.parameter_ref.replace(/^elyra_/, "");
           const value = app_data?.component_parameters?.[strippedRef];
-          if (i.data.format === "inputpath") {
-            // Find the node corresponding to the input node
-            const inputNodeLabel = this.findExecutionNode(value?.value ?? "")
-              ?.app_data?.ui_data?.label;
-            return {
-              label: i.label.default,
-              value: inputNodeLabel ?? "None specified",
-            };
-          } else {
-            return {
-              label: i.label.default,
-              value: value ?? "None",
-            };
-          }
+          return this.getPropertyValue(i, value);
         }
         return {
           label: i.label.default,
