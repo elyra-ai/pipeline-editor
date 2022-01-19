@@ -20,7 +20,6 @@ import {
   PaletteV3,
   ExecutionNodeDef,
   NodeType,
-  PropertyDefinitions,
 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 
@@ -528,10 +527,17 @@ class PipelineController extends CanvasController {
       const upstreamNodeDef = this.getAllPaletteNodes().find(
         (nodeDef) => nodeDef.op === upstreamNode?.op
       );
-      upstreamNodeDef?.app_data?.properties?.uihints?.parameter_info;
+      // Add each property with a format of outputpath to the options field
+      const upstreamNodeOption = upstreamNodeDef?.app_data?.properties?.uihints?.parameter_info?.find(
+        (prop) => {
+          return prop.parameter_ref === value.option;
+        }
+      )?.label?.default;
       return {
         label: label ?? info.label.default,
-        value: upstreamNodeLabel ?? "No value specified.",
+        value: upstreamNodeLabel
+          ? `${upstreamNodeLabel}: ${upstreamNodeOption ?? ""}`
+          : "No value specified.",
       };
     } else if (
       info.data?.format === "outputpath" ||
@@ -542,8 +548,8 @@ class PipelineController extends CanvasController {
         value: "This is an output of the component.",
       };
     } else if (
-      value.activeControl &&
-      info.data?.controls[value.activeControl]
+      value?.activeControl &&
+      info.data?.controls?.[value.activeControl]
     ) {
       return this.getPropertyValue(
         info.data.controls[value.activeControl],
@@ -553,7 +559,7 @@ class PipelineController extends CanvasController {
     } else {
       return {
         label: label ?? info.label.default,
-        value: value ?? "No value specified.",
+        value: value,
       };
     }
   }
