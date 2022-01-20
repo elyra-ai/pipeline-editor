@@ -519,8 +519,8 @@ class PipelineController extends CanvasController {
     return "";
   }
 
-  getPropertyValue(info: any, value: any, label?: string): any {
-    if (info.data?.format === "inputpath" || info.format === "inputpath") {
+  getPropertyValue(value: any, info?: any, label?: string): any {
+    if (info?.data?.format === "inputpath" || info?.format === "inputpath") {
       // Find the node corresponding to the input node
       const upstreamNode = this.findExecutionNode(value?.value ?? "");
       const upstreamNodeLabel = upstreamNode?.app_data?.ui_data?.label;
@@ -534,31 +534,29 @@ class PipelineController extends CanvasController {
         }
       )?.label?.default;
       return {
-        label: label ?? info.label.default,
-        value: upstreamNodeLabel
-          ? `${upstreamNodeLabel}: ${upstreamNodeOption ?? ""}`
-          : "No value specified.",
+        label: label,
+        value:
+          upstreamNodeLabel && upstreamNodeOption
+            ? `${upstreamNodeLabel}: ${upstreamNodeOption ?? ""}`
+            : "No value specified.",
       };
     } else if (
-      info.data?.format === "outputpath" ||
-      info.format === "outputpath"
+      info?.data?.format === "outputpath" ||
+      info?.format === "outputpath"
     ) {
       return {
-        label: label ?? info.label.default,
+        label: label,
         value: "This is an output of the component.",
       };
-    } else if (
-      value?.activeControl &&
-      info.data?.controls?.[value.activeControl]
-    ) {
+    } else if (value?.activeControl) {
       return this.getPropertyValue(
-        info.data.controls[value.activeControl],
         value[value.activeControl],
-        info.label.default
+        info?.data?.controls?.[value.activeControl],
+        label
       );
     } else {
       return {
-        label: label ?? info.label.default,
+        label: label,
         value: value,
       };
     }
@@ -577,7 +575,7 @@ class PipelineController extends CanvasController {
         if (i.parameter_ref.startsWith("elyra_")) {
           const strippedRef = i.parameter_ref.replace(/^elyra_/, "");
           const value = app_data?.component_parameters?.[strippedRef];
-          return this.getPropertyValue(i, value);
+          return this.getPropertyValue(value, i, i.label.default);
         }
         return {
           label: i.label.default,
