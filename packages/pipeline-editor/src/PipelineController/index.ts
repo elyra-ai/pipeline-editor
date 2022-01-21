@@ -537,7 +537,7 @@ class PipelineController extends CanvasController {
         label: label,
         value: upstreamNodeLabel
           ? upstreamNodeOption
-            ? `${upstreamNodeLabel}: ${upstreamNodeOption ?? ""}`
+            ? `${upstreamNodeLabel}: ${upstreamNodeOption}`
             : upstreamNodeLabel
           : "No value specified.",
       };
