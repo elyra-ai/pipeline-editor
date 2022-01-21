@@ -535,10 +535,11 @@ class PipelineController extends CanvasController {
       )?.label?.default;
       return {
         label: label,
-        value:
-          upstreamNodeLabel && upstreamNodeOption
+        value: upstreamNodeLabel
+          ? upstreamNodeOption
             ? `${upstreamNodeLabel}: ${upstreamNodeOption ?? ""}`
-            : "No value specified.",
+            : upstreamNodeLabel
+          : "No value specified.",
       };
     } else if (
       info?.data?.format === "outputpath" ||
