@@ -47,11 +47,11 @@ export interface FlatData {
 interface Props {
   data?: Data[];
   placeholder?: string;
-  allowNoOptions?: boolean;
+  allownooptions?: boolean;
   required?: boolean;
 }
 
-function flatten(data: Data[], allowNoOptions: boolean): any[] {
+function flatten(data: Data[], allownooptions: boolean): any[] {
   let flattenedData: FlatData[] = [];
   data.forEach((item: Data) => {
     item.options?.forEach((option: Data) => {
@@ -60,7 +60,7 @@ function flatten(data: Data[], allowNoOptions: boolean): any[] {
         option: option.value,
       });
     });
-    if (allowNoOptions && (!item.options || item.options.length === 0)) {
+    if (allownooptions && (!item.options || item.options.length === 0)) {
       flattenedData.push({
         value: item.value,
         option: "",
@@ -88,14 +88,14 @@ function getLabel(
 export function NestedEnumControl({
   data = [],
   placeholder = "Select a value",
-  allowNoOptions = false,
+  allownooptions = false,
   required,
 }: Props) {
   const [value, setValue] = useControlState<FlatData>();
 
   const theme = useTheme();
 
-  const flattenedData = flatten(data, allowNoOptions);
+  const flattenedData = flatten(data, allownooptions);
 
   const handleSelectedItemChange = useCallback(
     ({ selectedItem }) => {
@@ -111,11 +111,11 @@ export function NestedEnumControl({
   useEffect(() => {
     if (
       value !== undefined &&
-      !flatten(data, allowNoOptions).find((item) => item.value === value.value)
+      !flatten(data, allownooptions).find((item) => item.value === value.value)
     ) {
       setValue(undefined);
     }
-  }, [data, allowNoOptions, value, setValue]);
+  }, [data, allownooptions, value, setValue]);
 
   const {
     isOpen,
@@ -130,7 +130,7 @@ export function NestedEnumControl({
 
   const validators = getNestedEnumValidators({
     data,
-    allowNoOptions,
+    allownooptions,
     required,
   });
 
