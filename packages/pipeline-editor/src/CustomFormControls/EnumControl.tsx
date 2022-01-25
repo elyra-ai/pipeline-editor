@@ -17,7 +17,7 @@
 import { useCallback } from "react";
 
 import { useSelect } from "downshift";
-import { useTheme } from "styled-components";
+import styled, { useTheme } from "styled-components";
 
 import {
   EnumButton,
@@ -28,12 +28,23 @@ import {
   EnumMenuItem,
 } from "./components";
 import { createControl, useControlState } from "./control";
+import {
+  getErrorMessages,
+  getEnumValidators,
+  EnumValidatorOptions,
+  ErrorMessage,
+} from "./validators";
 
-interface Props {
+const Container = styled.div`
+  margin-top: 9px;
+  display: flex;
+`;
+
+interface Props extends EnumValidatorOptions {
   items: string[];
 }
 
-export function EnumControl({ items }: Props) {
+export function EnumControl({ items, required }: Props) {
   const [value, setValue] = useControlState<string>();
 
   const theme = useTheme();
@@ -44,6 +55,10 @@ export function EnumControl({ items }: Props) {
     },
     [setValue]
   );
+
+  const validators = getEnumValidators({ required });
+
+  let errorMessages = getErrorMessages(value || "", validators);
 
   const {
     selectedItem,
@@ -58,25 +73,30 @@ export function EnumControl({ items }: Props) {
   });
 
   return (
-    <EnumContainer isOpen={isOpen}>
-      <EnumButton {...getToggleButtonProps()}>
-        <EnumLabel>{selectedItem}</EnumLabel>
-        <EnumIcon className="elyricon elyricon-chevron-down">
-          {theme.overrides?.chevronDownIcon}
-        </EnumIcon>
-      </EnumButton>
-      <EnumMenu {...getMenuProps()}>
-        {isOpen &&
-          items.map((item, index) => (
-            <EnumMenuItem
-              key={`${item}${index}`}
-              {...getItemProps({ item, index })}
-            >
-              <EnumLabel title={item}>{item}</EnumLabel>
-            </EnumMenuItem>
-          ))}
-      </EnumMenu>
-    </EnumContainer>
+    <Container className={errorMessages.length > 0 ? "error" : undefined}>
+      <EnumContainer isOpen={isOpen}>
+        <EnumButton {...getToggleButtonProps()}>
+          <EnumLabel>{selectedItem}</EnumLabel>
+          <EnumIcon className="elyricon elyricon-chevron-down">
+            {theme.overrides?.chevronDownIcon}
+          </EnumIcon>
+        </EnumButton>
+        <EnumMenu {...getMenuProps()}>
+          {isOpen &&
+            items.map((item, index) => (
+              <EnumMenuItem
+                key={`${item}${index}`}
+                {...getItemProps({ item, index })}
+              >
+                <EnumLabel title={item}>{item}</EnumLabel>
+              </EnumMenuItem>
+            ))}
+        </EnumMenu>
+        {errorMessages[0] !== undefined && (
+          <ErrorMessage>{errorMessages[0]}</ErrorMessage>
+        )}
+      </EnumContainer>
+    </Container>
   );
 }
 
