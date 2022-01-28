@@ -58,7 +58,7 @@ export function EnumControl({ items, required }: Props) {
 
   const validators = getEnumValidators({ required });
 
-  let errorMessages = getErrorMessages(value || "", validators);
+  let errorMessages = getErrorMessages(value, validators);
 
   const {
     selectedItem,
