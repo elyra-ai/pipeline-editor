@@ -20,14 +20,14 @@ export interface EnumValidatorOptions {
   required?: boolean;
 }
 
-export function getEnumValidators<T extends string | undefined>({
+export function getEnumValidators<T extends string>({
   required,
 }: EnumValidatorOptions) {
   const validators: Validator<T>[] = [
     {
       enabled: required === true,
       isValid: (value: T) => {
-        return value !== undefined;
+        return value !== '';
       },
     },
   ];
