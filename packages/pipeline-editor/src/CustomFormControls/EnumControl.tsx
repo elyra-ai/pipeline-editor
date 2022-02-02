@@ -68,7 +68,7 @@ export function EnumControl({ items, required }: Props) {
     getItemProps,
   } = useSelect({
     items,
-    selectedItem: value ?? items[0],
+    selectedItem: value ?? "",
     onSelectedItemChange: handleSelectedItemChange,
   });
 
