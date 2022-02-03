@@ -519,6 +519,50 @@ class PipelineController extends CanvasController {
     return "";
   }
 
+  getPropertyValue(value: any, info?: any, label?: string): any {
+    if (info?.data?.format === "inputpath" || info?.format === "inputpath") {
+      // Find the node corresponding to the input node
+      const upstreamNode = this.findExecutionNode(value?.value ?? "");
+      const upstreamNodeLabel = upstreamNode?.app_data?.ui_data?.label;
+      const upstreamNodeDef = this.getAllPaletteNodes().find(
+        (nodeDef) => nodeDef.op === upstreamNode?.op
+      );
+      // Add each property with a format of outputpath to the options field
+      const upstreamNodeOption = upstreamNodeDef?.app_data?.properties?.uihints?.parameter_info?.find(
+        (prop) => {
+          return prop.parameter_ref === value.option;
+        }
+      )?.label?.default;
+      return {
+        label: label,
+        value: upstreamNodeLabel
+          ? upstreamNodeOption
+            ? `${upstreamNodeLabel}: ${upstreamNodeOption}`
+            : upstreamNodeLabel
+          : "No value specified.",
+      };
+    } else if (
+      info?.data?.format === "outputpath" ||
+      info?.format === "outputpath"
+    ) {
+      return {
+        label: label,
+        value: "This is an output of the component.",
+      };
+    } else if (value?.activeControl) {
+      return this.getPropertyValue(
+        value[value.activeControl],
+        info?.data?.controls?.[value.activeControl],
+        label
+      );
+    } else {
+      return {
+        label: label,
+        value: value,
+      };
+    }
+  }
+
   properties(nodeID: string) {
     let node = this.findExecutionNode(nodeID);
 
@@ -531,10 +575,8 @@ class PipelineController extends CanvasController {
       const properties = info.map((i) => {
         if (i.parameter_ref.startsWith("elyra_")) {
           const strippedRef = i.parameter_ref.replace(/^elyra_/, "");
-          return {
-            label: i.label.default,
-            value: app_data?.component_parameters?.[strippedRef],
-          };
+          const value = app_data?.component_parameters?.[strippedRef];
+          return this.getPropertyValue(value, i, i.label.default);
         }
         return {
           label: i.label.default,
