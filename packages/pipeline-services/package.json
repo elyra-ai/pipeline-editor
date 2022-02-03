@@ -1,6 +1,6 @@
 {
   "name": "@elyra/pipeline-services",
-  "version": "1.5.2",
+  "version": "1.6.0-rc.0",
   "main": "dist/index.js",
   "homepage": "https://github.com/elyra-ai/pipeline-editor",
   "bugs": {
