@@ -528,9 +528,11 @@ const PipelineEditor = forwardRef(
               e.targetObject?.app_data?.component_parameters?.[filenameRef];
           } else {
             type = "openComponentDef";
-            payload = controller.current
-              .getAllPaletteNodes()
-              .find((n) => n.op === e.targetObject.op)?.id;
+            payload =
+              controller.current
+                .getAllPaletteNodes()
+                .find((n) => n.op === e.targetObject.op)?.id ??
+              e.targetObject.op;
           }
         }
         onAction?.({ type: type, payload });
