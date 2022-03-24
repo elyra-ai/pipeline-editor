@@ -528,11 +528,12 @@ const PipelineEditor = forwardRef(
               e.targetObject?.app_data?.component_parameters?.[filenameRef];
           } else {
             type = "openComponentDef";
-            payload =
-              controller.current
+            payload = {
+              componentId: controller.current
                 .getAllPaletteNodes()
-                .find((n) => n.op === e.targetObject.op)?.id ??
-              e.targetObject.op;
+                .find((n) => n.op === e.targetObject.op)?.id,
+              componentSource: e.targetObject.app_data.component_source,
+            };
           }
         }
         onAction?.({ type: type, payload });
