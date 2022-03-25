@@ -329,14 +329,15 @@ const PipelineEditor = forwardRef(
               return [
                 {
                   action: "openFile",
-                  label: "Open File",
+                  label: filenameRef
+                    ? "Open File"
+                    : "Open Component Definition",
                   // NOTE: This only checks if the string is empty, but we
                   // should verify the file exists.
-                  enable: !!(
-                    filenameRef !== undefined &&
-                    parameters?.[filenameRef] !== undefined &&
-                    parameters?.[filenameRef].trim() !== ""
-                  ),
+                  enable:
+                    filenameRef === undefined ||
+                    (parameters?.[filenameRef] !== undefined &&
+                      parameters?.[filenameRef].trim() !== ""),
                 },
                 {
                   action: "properties",
@@ -516,6 +517,7 @@ const PipelineEditor = forwardRef(
     const handleEditAction = useCallback(
       async (e: CanvasEditEvent) => {
         let payload;
+        let type = e.editType;
         if (e.editType === "openFile") {
           const filenameRef = controller.current.resolveParameterRef(
             e.targetObject.op,
@@ -524,9 +526,17 @@ const PipelineEditor = forwardRef(
           if (filenameRef) {
             payload =
               e.targetObject?.app_data?.component_parameters?.[filenameRef];
+          } else {
+            type = "openComponentDef";
+            payload = {
+              componentId: controller.current
+                .getAllPaletteNodes()
+                .find((n) => n.op === e.targetObject.op)?.id,
+              componentSource: e.targetObject.app_data.component_source,
+            };
           }
         }
-        onAction?.({ type: e.editType, payload });
+        onAction?.({ type: type, payload });
 
         if (e.editType === "newFileNode") {
           const nodes = controller.current.getAllPaletteNodes();
