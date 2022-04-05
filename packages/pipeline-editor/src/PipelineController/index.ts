@@ -594,7 +594,6 @@ class PipelineController extends CanvasController {
     if (pipeline !== undefined) {
       const app_data: any = { component_parameters: {} };
       const nested = prefixedToNested(data);
-      console.log(nested);
       for (const [key, val] of Object.entries(
         nested.component_parameters ?? {}
       )) {
