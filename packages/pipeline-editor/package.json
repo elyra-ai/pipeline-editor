@@ -21,7 +21,7 @@
     "link": "yarn link"
   },
   "dependencies": {
-    "@elyra/canvas": "11.0.0",
+    "@elyra/canvas": "^12.11.0",
     "@elyra/pipeline-services": "^1.7.0",
     "downshift": "^6.1.2",
     "immer": "^9.0.7",
