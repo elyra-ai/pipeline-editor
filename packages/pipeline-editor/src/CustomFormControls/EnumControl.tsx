@@ -35,6 +35,8 @@ import {
   ErrorMessage,
 } from "./validators";
 
+const PLACEHOLDER = "Select a value...";
+
 const Container = styled.div`
   margin-top: 9px;
   display: flex;
@@ -51,6 +53,9 @@ export function EnumControl({ items, required }: Props) {
 
   const handleSelectedItemChange = useCallback(
     ({ selectedItem }) => {
+      if (selectedItem === PLACEHOLDER) {
+        setValue(undefined);
+      }
       setValue(selectedItem);
     },
     [setValue]
@@ -60,6 +65,10 @@ export function EnumControl({ items, required }: Props) {
 
   let errorMessages = getErrorMessages(value, validators);
 
+  if (!required) {
+    items = [PLACEHOLDER, ...items];
+  }
+
   const {
     selectedItem,
     isOpen,
@@ -68,7 +77,7 @@ export function EnumControl({ items, required }: Props) {
     getItemProps,
   } = useSelect({
     items,
-    selectedItem: value ?? "",
+    selectedItem: value ?? PLACEHOLDER,
     onSelectedItemChange: handleSelectedItemChange,
   });
 
