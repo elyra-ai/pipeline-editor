@@ -467,7 +467,7 @@ class PipelineController extends CanvasController {
             node.app_data.properties.uihints.parameter_info[propIndex];
           const propLabel = nodeProp?.data?.labels?.[propValue] ?? propValue;
           if (nodeProp && propLabel) {
-            nodeProp.data.placeholder = `${propLabel} (global)`;
+            nodeProp.data.placeholder = `${propLabel} (pipeline default)`;
             nodeProp.data.global = true;
           }
         });
