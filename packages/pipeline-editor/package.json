@@ -23,6 +23,9 @@
   "dependencies": {
     "@elyra/canvas": "~12.5.0",
     "@elyra/pipeline-services": "^1.7.0",
+    "carbon-components": "^10.43.0",
+    "carbon-components-react": "^7.48.0",
+    "carbon-icons": "7.0.7",
     "downshift": "^6.1.2",
     "immer": "^9.0.7",
     "nanoid": "^3.1.20",
@@ -30,10 +33,7 @@
     "react-intl": "^5.0.0",
     "react-redux": "^7.0.0",
     "redux": "^4.0.5",
-    "styled-components": "^5.2.1",
-    "carbon-components": "^10.43.0",
-    "carbon-components-react": "^7.48.0",
-    "carbon-icons": "7.0.7"
+    "styled-components": "^5.2.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.9",
