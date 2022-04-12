@@ -582,6 +582,16 @@ class PipelineController extends CanvasController {
         info?.data?.controls?.[value.activeControl],
         label
       );
+    } else if (
+      !value &&
+      info?.custom_control_id === "EnumControl" &&
+      info?.data?.global
+    ) {
+      // If no enum value is set show global value
+      return {
+        label: label,
+        value: info?.data?.placeholder,
+      };
     } else {
       return {
         label: label,
