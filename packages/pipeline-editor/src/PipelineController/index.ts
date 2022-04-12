@@ -592,13 +592,12 @@ class PipelineController extends CanvasController {
   updateProperties(nodeID: string, data: { [key: string]: any }) {
     const pipeline = this.findNodeParentPipeline(nodeID);
     if (pipeline !== undefined) {
-      const app_data: any = { component_parameters: {} };
-      const nested = prefixedToNested(data);
+      const app_data = prefixedToNested(data);
       for (const [key, val] of Object.entries(
-        nested.component_parameters ?? {}
+        app_data.component_parameters ?? {}
       )) {
-        if (val !== undefined && val !== null) {
-          app_data.component_parameters[key] = val;
+        if (val === undefined && val === null) {
+          delete app_data.component_parameters[key];
         }
       }
       this.setNodeProperties(nodeID, { app_data }, pipeline.id);
