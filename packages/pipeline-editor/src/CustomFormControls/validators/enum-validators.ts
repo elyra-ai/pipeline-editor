@@ -18,16 +18,18 @@ import { Validator } from ".";
 
 export interface EnumValidatorOptions {
   required?: boolean;
+  global?: boolean;
 }
 
 export function getEnumValidators<T extends string | undefined>({
   required,
+  global,
 }: EnumValidatorOptions) {
   const validators: Validator<T>[] = [
     {
       enabled: required === true,
       isValid: (value: T) => {
-        return value !== undefined;
+        return value !== undefined || !!global;
       },
     },
   ];

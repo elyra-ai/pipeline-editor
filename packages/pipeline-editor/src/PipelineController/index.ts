@@ -22,6 +22,7 @@ import {
   NodeType,
 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
+import produce from "immer";
 
 import {
   ElyraOutOfDateError,
@@ -444,8 +445,34 @@ class PipelineController extends CanvasController {
         nodes.push(...c.node_types);
       }
     }
+    nodes = this.propagateGlobalProperties(nodes, this.palette);
 
     return nodes;
+  }
+
+  propagateGlobalProperties(nodes: NodeType[], palette: PaletteV3): NodeType[] {
+    return produce(nodes, (draft: any) => {
+      const globalEnumProperties =
+        palette.properties?.uihints?.parameter_info.filter(
+          (param: any) => param.custom_control_id === "EnumControl"
+        ) ?? [];
+      for (const prop of globalEnumProperties) {
+        const propValue = this.getPipelineFlow()?.pipelines?.[0]?.app_data
+          ?.properties?.globals?.[prop.parameter_ref.replace(/^elyra_/, "")];
+        draft.forEach((node: any) => {
+          const propIndex = node.app_data.properties.uihints.parameter_info.findIndex(
+            (p: any) => p.parameter_ref === prop.parameter_ref
+          );
+          const nodeProp =
+            node.app_data.properties.uihints.parameter_info[propIndex];
+          const propLabel = nodeProp?.data?.labels?.[propValue] ?? propValue;
+          if (nodeProp && propLabel) {
+            nodeProp.data.placeholder = `${propLabel} (global)`;
+            nodeProp.data.global = true;
+          }
+        });
+      }
+    });
   }
 
   getUpstreamNodes(nodeId: string) {

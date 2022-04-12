@@ -2380,6 +2380,10 @@ declare module "@elyra/canvas" {
      * Array of palette categories
      */
     categories?: CategoryDef[];
+    /**
+     * Pipeline properties that can be edited by the user
+     */
+    properties?: PropertyDefinitions;
   }
   /**
    * Palette Category

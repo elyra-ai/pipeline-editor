@@ -28,12 +28,13 @@ export function getFileName(file: string, { withExtension }: Options) {
 export function nestedToPrefixed(app_data: { [key: string]: any }) {
   let current_parameters: any = {};
 
-  const { component_parameters, ...system } = app_data;
+  const { component_parameters, globals, ...system } = app_data;
   for (const [key, val] of Object.entries(system)) {
     current_parameters[key] = val;
   }
-  if (component_parameters) {
-    for (const [key, val] of Object.entries(component_parameters)) {
+  const nestedParameters = component_parameters ?? globals;
+  if (nestedParameters) {
+    for (const [key, val] of Object.entries(nestedParameters)) {
       current_parameters[`elyra_${key}`] = val;
     }
   }
@@ -41,15 +42,26 @@ export function nestedToPrefixed(app_data: { [key: string]: any }) {
   return current_parameters;
 }
 
-export function prefixedToNested(current_parameters: { [key: string]: any }) {
-  let app_data: any = {
-    component_parameters: {},
-  };
+export function prefixedToNested(
+  current_parameters: { [key: string]: any },
+  global?: boolean
+) {
+  let app_data: any = global
+    ? {
+        globals: {},
+      }
+    : {
+        component_parameters: {},
+      };
 
   for (const [key, val] of Object.entries(current_parameters)) {
     if (key.startsWith("elyra_")) {
       const strippedKey = key.replace(/^elyra_/, "");
-      app_data.component_parameters[strippedKey] = val;
+      if (global) {
+        app_data.globals[strippedKey] = val;
+      } else {
+        app_data.component_parameters[strippedKey] = val;
+      }
     } else {
       app_data[key] = val;
     }
