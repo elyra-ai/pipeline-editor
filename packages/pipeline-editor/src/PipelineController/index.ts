@@ -452,23 +452,26 @@ class PipelineController extends CanvasController {
 
   propagateGlobalProperties(nodes: NodeType[], palette: PaletteV3): NodeType[] {
     return produce(nodes, (draft: any) => {
-      const globalEnumProperties =
-        palette.properties?.uihints?.parameter_info.filter(
-          (param: any) => param.custom_control_id === "EnumControl"
-        ) ?? [];
-      for (const prop of globalEnumProperties) {
+      for (const prop of palette.properties?.uihints?.parameter_info ?? []) {
         const propValue = this.getPipelineFlow()?.pipelines?.[0]?.app_data
           ?.properties?.globals?.[prop.parameter_ref.replace(/^elyra_/, "")];
+
         draft.forEach((node: any) => {
           const propIndex = node.app_data.properties.uihints.parameter_info.findIndex(
             (p: any) => p.parameter_ref === prop.parameter_ref
           );
           const nodeProp =
             node.app_data.properties.uihints.parameter_info[propIndex];
-          const propLabel = nodeProp?.data?.labels?.[propValue] ?? propValue;
-          if (nodeProp && propLabel) {
-            nodeProp.data.placeholder = `${propLabel} (pipeline default)`;
-            nodeProp.data.global = true;
+          if (prop.custom_control_id === "EnumControl") {
+            const propLabel = nodeProp?.data?.labels?.[propValue] ?? propValue;
+            if (nodeProp && propLabel) {
+              nodeProp.data.placeholder = `${propLabel} (pipeline default)`;
+              nodeProp.data.global = true;
+            }
+          } else if (prop.custom_control_id === "StringArrayControl") {
+            if (nodeProp) {
+              nodeProp.data.global = true;
+            }
           }
         });
       }
@@ -591,6 +594,21 @@ class PipelineController extends CanvasController {
       return {
         label: label,
         value: info?.data?.placeholder,
+      };
+    } else if (
+      info?.custom_control_id === "StringArrayControl" &&
+      info?.data?.global
+    ) {
+      // Merge global prop array with node prop array
+      const globalValue: string[] = this.getPipelineFlow()?.pipelines?.[0]
+        .app_data?.properties?.globals?.[
+        info?.parameter_ref.replace(/^elyra_/, "")
+      ];
+      return {
+        label: label,
+        value: value.concat(
+          globalValue?.filter((item) => !value.includes(item)) ?? []
+        ),
       };
     } else {
       return {

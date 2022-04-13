@@ -5351,6 +5351,7 @@ declare module "@elyra/canvas" {
           default: string;
         };
         control?: "readonly" | "oneofselect";
+        custom_control_id?: string;
         place_holder_text?: {
           default: string;
         };
