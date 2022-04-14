@@ -21,7 +21,7 @@
     "link": "yarn link"
   },
   "dependencies": {
-    "@elyra/canvas": "~12.5.0",
+    "@elyra/canvas": "^12.11.2",
     "@elyra/pipeline-services": "^1.7.0",
     "carbon-components": "^10.43.0",
     "carbon-components-react": "^7.48.0",
