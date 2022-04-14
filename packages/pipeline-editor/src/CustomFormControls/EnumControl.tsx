@@ -64,7 +64,7 @@ export function EnumControl({
   placeholder = PLACEHOLDER,
   labels,
   required,
-  global,
+  pipeline_default,
 }: Props) {
   const [value, setValue] = useControlState<string>();
 
@@ -81,7 +81,7 @@ export function EnumControl({
     [placeholder, setValue]
   );
 
-  const validators = getEnumValidators({ required, global });
+  const validators = getEnumValidators({ required, pipeline_default });
 
   let errorMessages = getErrorMessages(value, validators);
 

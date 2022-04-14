@@ -445,16 +445,21 @@ class PipelineController extends CanvasController {
         nodes.push(...c.node_types);
       }
     }
-    nodes = this.propagateGlobalProperties(nodes, this.palette);
+    nodes = this.propagatePipelineDefaultProperties(nodes, this.palette);
 
     return nodes;
   }
 
-  propagateGlobalProperties(nodes: NodeType[], palette: PaletteV3): NodeType[] {
+  propagatePipelineDefaultProperties(
+    nodes: NodeType[],
+    palette: PaletteV3
+  ): NodeType[] {
     return produce(nodes, (draft: any) => {
       for (const prop of palette.properties?.uihints?.parameter_info ?? []) {
         const propValue = this.getPipelineFlow()?.pipelines?.[0]?.app_data
-          ?.properties?.globals?.[prop.parameter_ref.replace(/^elyra_/, "")];
+          ?.properties?.pipeline_defaults?.[
+          prop.parameter_ref.replace(/^elyra_/, "")
+        ];
 
         draft.forEach((node: any) => {
           const propIndex = node.app_data.properties.uihints.parameter_info.findIndex(
@@ -466,11 +471,11 @@ class PipelineController extends CanvasController {
             const propLabel = nodeProp?.data?.labels?.[propValue] ?? propValue;
             if (nodeProp && propLabel) {
               nodeProp.data.placeholder = `${propLabel} (pipeline default)`;
-              nodeProp.data.global = true;
+              nodeProp.data.pipeline_default = true;
             }
           } else if (prop.custom_control_id === "StringArrayControl") {
             if (nodeProp) {
-              nodeProp.data.global = true;
+              nodeProp.data.pipeline_default = true;
             }
           }
         });
@@ -588,26 +593,26 @@ class PipelineController extends CanvasController {
     } else if (
       !value &&
       info?.custom_control_id === "EnumControl" &&
-      info?.data?.global
+      info?.data?.pipeline_default
     ) {
-      // If no enum value is set show global value
+      // If no enum value is set show pipeline default value
       return {
         label: label,
         value: info?.data?.placeholder,
       };
     } else if (
       info?.custom_control_id === "StringArrayControl" &&
-      info?.data?.global
+      info?.data?.pipeline_default
     ) {
-      // Merge global prop array with node prop array
-      const globalValue: string[] = this.getPipelineFlow()?.pipelines?.[0]
-        .app_data?.properties?.globals?.[
+      // Merge pipeline defaults prop array with node prop array
+      const pipelineDefaultValue: string[] = this.getPipelineFlow()
+        ?.pipelines?.[0].app_data?.properties?.pipeline_defaults?.[
         info?.parameter_ref.replace(/^elyra_/, "")
       ];
       return {
         label: label,
-        value: value.concat(
-          globalValue?.filter((item) => !value.includes(item)) ?? []
+        value: value?.concat(
+          pipelineDefaultValue?.filter((item) => !value.includes(item)) ?? []
         ),
       };
     } else {

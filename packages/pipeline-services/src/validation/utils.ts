@@ -55,11 +55,11 @@ export function rangeForLocation(location: Node | undefined) {
   return { offset, length };
 }
 
-export function getValue(app_data: any, key: string, globalProperties?: any) {
+export function getValue(app_data: any, key: string, pipelineDefaults?: any) {
   if (key.startsWith("elyra_")) {
     const stripped = key.replace(/^elyra_/, "");
     return (
-      app_data.component_parameters?.[stripped] ?? globalProperties?.[stripped]
+      app_data.component_parameters?.[stripped] ?? pipelineDefaults?.[stripped]
     );
   }
   return app_data[key];

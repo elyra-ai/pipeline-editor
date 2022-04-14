@@ -90,7 +90,7 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       const value = getValue(
         node.app_data,
         prop.parameter_ref,
-        pipeline.app_data?.properties?.globals
+        pipeline.app_data?.properties?.pipeline_defaults
       );
       if (prop.data?.required && !value) {
         problems.push({
