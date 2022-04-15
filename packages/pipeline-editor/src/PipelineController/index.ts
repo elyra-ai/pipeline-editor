@@ -475,7 +475,7 @@ class PipelineController extends CanvasController {
             }
           } else if (prop.custom_control_id === "StringArrayControl") {
             if (nodeProp) {
-              nodeProp.data.pipeline_default = true;
+              nodeProp.data.pipeline_defaults = propValue;
             }
           }
         });

@@ -33,6 +33,7 @@ interface Props extends StringArrayValidatorOptions {
   placeholder?: string;
   format?: "file";
   canRefresh?: boolean;
+  pipeline_defaults?: string[];
 }
 
 interface ListItemProps {
@@ -87,6 +88,31 @@ const ListItemValue = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+const ReadOnlyListItem = styled.div`
+  display: flex;
+  margin-right: 2px;
+  margin-left: 2px;
+  line-height: 24px;
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: ${({ theme }) => theme.typography.fontWeight};
+  font-size: ${({ theme }) => theme.typography.fontSize};
+  color: ${({ theme }) => theme.palette.text.primary};
+
+  & .left {
+    flex: 1;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .right {
+    float: right;
+    text-align: right;
+    white-space: nowrap;
+  }
 `;
 
 const InputGroup = styled.div`
@@ -299,7 +325,12 @@ export function ListItem({
   );
 }
 
-export function StringArrayControl({ placeholder, format, canRefresh }: Props) {
+export function StringArrayControl({
+  placeholder,
+  format,
+  canRefresh,
+  pipeline_defaults,
+}: Props) {
   const propertyID = usePropertyID();
   const [items = [], setItems] = useControlState<string[]>();
 
@@ -392,6 +423,16 @@ export function StringArrayControl({ placeholder, format, canRefresh }: Props) {
             }}
           />
         )}
+        {pipeline_defaults
+          ?.filter((item) => !items.includes(item))
+          ?.map((item, index) => (
+            <ListRow key={`${item}${index}`} data-testid="list-row">
+              <ReadOnlyListItem>
+                <div className="left">{item}</div>
+                <div className="right">(pipeline default)</div>
+              </ReadOnlyListItem>
+            </ListRow>
+          ))}
       </ListGroup>
 
       {editingIndex !== "new" && (
