@@ -117,6 +117,7 @@ const ReadOnlyListItem = styled.div`
 
 const InputGroup = styled.div`
   display: flex;
+  margin-bottom: 3px;
 
   & button:first-of-type {
     margin: 0 4px;
