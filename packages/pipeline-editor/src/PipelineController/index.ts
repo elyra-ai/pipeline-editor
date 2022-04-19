@@ -602,7 +602,7 @@ class PipelineController extends CanvasController {
       };
     } else if (
       info?.custom_control_id === "StringArrayControl" &&
-      info?.data?.pipeline_default
+      info?.data?.pipeline_defaults
     ) {
       // Merge pipeline defaults prop array with node prop array
       const pipelineDefaultValue: string[] = this.getPipelineFlow()
