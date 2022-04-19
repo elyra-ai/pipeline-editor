@@ -467,16 +467,18 @@ class PipelineController extends CanvasController {
           );
           const nodeProp =
             node.app_data.properties.uihints.parameter_info[propIndex];
+          if (!nodeProp) {
+            // skip nodes that dont have the property
+            return;
+          }
           if (prop.custom_control_id === "EnumControl") {
             const propLabel = nodeProp?.data?.labels?.[propValue] ?? propValue;
-            if (nodeProp && propLabel) {
+            if (propLabel) {
               nodeProp.data.placeholder = `${propLabel} (pipeline default)`;
               nodeProp.data.pipeline_default = true;
             }
           } else if (prop.custom_control_id === "StringArrayControl") {
-            if (nodeProp) {
-              nodeProp.data.pipeline_defaults = propValue;
-            }
+            nodeProp.data.pipeline_defaults = propValue;
           }
         });
       }
