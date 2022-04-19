@@ -590,20 +590,13 @@ class PipelineController extends CanvasController {
         info?.data?.controls?.[value.activeControl],
         label
       );
-    } else if (
-      !value &&
-      info?.custom_control_id === "EnumControl" &&
-      info?.data?.pipeline_default
-    ) {
+    } else if (info?.custom_control_id === "EnumControl") {
       // If no enum value is set show pipeline default value
       return {
         label: label,
-        value: info?.data?.placeholder,
+        value: info?.data?.labels?.[value] ?? value ?? info?.data?.placeholder,
       };
-    } else if (
-      info?.custom_control_id === "StringArrayControl" &&
-      info?.data?.pipeline_defaults
-    ) {
+    } else if (info?.custom_control_id === "StringArrayControl") {
       // Merge pipeline defaults prop array with node prop array
       const pipelineDefaultValue: string[] = this.getPipelineFlow()
         ?.pipelines?.[0].app_data?.properties?.pipeline_defaults?.[
@@ -612,7 +605,9 @@ class PipelineController extends CanvasController {
       return {
         label: label,
         value: value?.concat(
-          pipelineDefaultValue?.filter((item) => !value.includes(item)) ?? []
+          pipelineDefaultValue
+            ?.filter((item) => !value.includes(item))
+            ?.map((i) => i + " (pipeline default)") ?? []
         ),
       };
     } else {
