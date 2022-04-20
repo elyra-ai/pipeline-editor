@@ -2380,6 +2380,10 @@ declare module "@elyra/canvas" {
      * Array of palette categories
      */
     categories?: CategoryDef[];
+    /**
+     * Pipeline properties that can be edited by the user
+     */
+    properties?: PropertyDefinitions;
   }
   /**
    * Palette Category
@@ -5347,6 +5351,7 @@ declare module "@elyra/canvas" {
           default: string;
         };
         control?: "readonly" | "oneofselect";
+        custom_control_id?: string;
         place_holder_text?: {
           default: string;
         };

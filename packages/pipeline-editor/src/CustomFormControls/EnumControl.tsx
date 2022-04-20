@@ -35,6 +35,8 @@ import {
   ErrorMessage,
 } from "./validators";
 
+const PLACEHOLDER = "Select a value...";
+
 const Container = styled.div`
   margin-top: 9px;
   display: flex;
@@ -42,33 +44,57 @@ const Container = styled.div`
 
 interface Props extends EnumValidatorOptions {
   items: string[];
+  placeholder?: string;
+  labels?: { [key: string]: string };
 }
 
-export function EnumControl({ items, required }: Props) {
+function getLabel(
+  item: string | undefined,
+  placeholder: string,
+  labels?: { [key: string]: string }
+): string {
+  if (!item) {
+    return placeholder;
+  }
+  return labels?.[item] ?? item;
+}
+
+export function EnumControl({
+  items,
+  placeholder = PLACEHOLDER,
+  labels,
+  required,
+  pipeline_default,
+}: Props) {
   const [value, setValue] = useControlState<string>();
 
   const theme = useTheme();
 
   const handleSelectedItemChange = useCallback(
     ({ selectedItem }) => {
-      setValue(selectedItem);
+      if (selectedItem === placeholder) {
+        setValue(undefined);
+      } else {
+        setValue(selectedItem);
+      }
     },
-    [setValue]
+    [placeholder, setValue]
   );
 
-  const validators = getEnumValidators({ required });
+  const validators = getEnumValidators({ required, pipeline_default });
 
   let errorMessages = getErrorMessages(value, validators);
 
+  const selectItems = [placeholder, ...items];
+
   const {
-    selectedItem,
     isOpen,
     getToggleButtonProps,
     getMenuProps,
     getItemProps,
   } = useSelect({
-    items,
-    selectedItem: value ?? "",
+    items: selectItems,
+    selectedItem: value ?? placeholder,
     onSelectedItemChange: handleSelectedItemChange,
   });
 
@@ -76,21 +102,24 @@ export function EnumControl({ items, required }: Props) {
     <Container className={errorMessages.length > 0 ? "error" : undefined}>
       <EnumContainer isOpen={isOpen}>
         <EnumButton {...getToggleButtonProps()}>
-          <EnumLabel>{selectedItem}</EnumLabel>
+          <EnumLabel>{getLabel(value, placeholder, labels)}</EnumLabel>
           <EnumIcon className="elyricon elyricon-chevron-down">
             {theme.overrides?.chevronDownIcon}
           </EnumIcon>
         </EnumButton>
         <EnumMenu {...getMenuProps()}>
           {isOpen &&
-            items.map((item, index) => (
-              <EnumMenuItem
-                key={`${item}${index}`}
-                {...getItemProps({ item, index })}
-              >
-                <EnumLabel title={item}>{item}</EnumLabel>
-              </EnumMenuItem>
-            ))}
+            selectItems.map((item, index) => {
+              const label = getLabel(item, placeholder, labels);
+              return (
+                <EnumMenuItem
+                  key={`${item}${index}`}
+                  {...getItemProps({ item, index })}
+                >
+                  <EnumLabel title={label}>{label}</EnumLabel>
+                </EnumMenuItem>
+              );
+            })}
         </EnumMenu>
         {errorMessages[0] !== undefined && (
           <ErrorMessage>{errorMessages[0]}</ErrorMessage>
