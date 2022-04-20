@@ -22,6 +22,7 @@ import {
   NodeType,
 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
+import produce from "immer";
 
 import {
   ElyraOutOfDateError,
@@ -444,8 +445,44 @@ class PipelineController extends CanvasController {
         nodes.push(...c.node_types);
       }
     }
+    nodes = this.propagatePipelineDefaultProperties(nodes, this.palette);
 
     return nodes;
+  }
+
+  propagatePipelineDefaultProperties(
+    nodes: NodeType[],
+    palette: PaletteV3
+  ): NodeType[] {
+    return produce(nodes, (draft: any) => {
+      for (const prop of palette.properties?.uihints?.parameter_info ?? []) {
+        const propValue = this.getPipelineFlow()?.pipelines?.[0]?.app_data
+          ?.properties?.pipeline_defaults?.[
+          prop.parameter_ref.replace(/^elyra_/, "")
+        ];
+
+        draft.forEach((node: any) => {
+          const propIndex = node.app_data.properties.uihints.parameter_info.findIndex(
+            (p: any) => p.parameter_ref === prop.parameter_ref
+          );
+          const nodeProp =
+            node.app_data.properties.uihints.parameter_info[propIndex];
+          if (!nodeProp) {
+            // skip nodes that dont have the property
+            return;
+          }
+          if (prop.custom_control_id === "EnumControl") {
+            const propLabel = nodeProp?.data?.labels?.[propValue] ?? propValue;
+            if (propLabel) {
+              nodeProp.data.placeholder = `${propLabel} (pipeline default)`;
+              nodeProp.data.pipeline_default = true;
+            }
+          } else if (prop.custom_control_id === "StringArrayControl") {
+            nodeProp.data.pipeline_defaults = propValue;
+          }
+        });
+      }
+    });
   }
 
   getUpstreamNodes(nodeId: string) {
@@ -555,6 +592,26 @@ class PipelineController extends CanvasController {
         info?.data?.controls?.[value.activeControl],
         label
       );
+    } else if (info?.custom_control_id === "EnumControl") {
+      // If no enum value is set show pipeline default value
+      return {
+        label: label,
+        value: info?.data?.labels?.[value] ?? value ?? info?.data?.placeholder,
+      };
+    } else if (info?.custom_control_id === "StringArrayControl") {
+      // Merge pipeline defaults prop array with node prop array
+      const pipelineDefaultValue: string[] = this.getPipelineFlow()
+        ?.pipelines?.[0].app_data?.properties?.pipeline_defaults?.[
+        info?.parameter_ref.replace(/^elyra_/, "")
+      ];
+      return {
+        label: label,
+        value: value?.concat(
+          pipelineDefaultValue
+            ?.filter((item) => !value.includes(item))
+            ?.map((i) => i + " (pipeline default)") ?? []
+        ),
+      };
     } else {
       return {
         label: label,
