@@ -650,6 +650,13 @@ class PipelineController extends CanvasController {
     const pipeline = this.findNodeParentPipeline(nodeID);
     if (pipeline !== undefined) {
       const app_data = prefixedToNested(data);
+      for (const [key, val] of Object.entries(
+        app_data.component_parameters ?? {}
+      )) {
+        if (val === undefined || val === null) {
+          delete app_data.component_parameters[key];
+        }
+      }
       this.setNodeProperties(nodeID, { app_data }, pipeline.id);
       if (data.label !== data.ui_data?.label) {
         const node = this.getNode(nodeID, pipeline.id);

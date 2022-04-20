@@ -3,5 +3,6 @@
     "/examples/create-react-app",
     "/examples/create-react-app-with-typescript"
   ],
-  "silent": true
+  "silent": true,
+  "node": "16"
 }

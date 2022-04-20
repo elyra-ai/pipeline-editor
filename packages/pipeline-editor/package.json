@@ -21,8 +21,11 @@
     "link": "yarn link"
   },
   "dependencies": {
-    "@elyra/canvas": "11.0.0",
+    "@elyra/canvas": "^12.11.2",
     "@elyra/pipeline-services": "^1.7.0",
+    "carbon-components": "^10.43.0",
+    "carbon-components-react": "^7.48.0",
+    "carbon-icons": "7.0.7",
     "downshift": "^6.1.2",
     "immer": "^9.0.7",
     "nanoid": "^3.1.20",
