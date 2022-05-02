@@ -16,6 +16,11 @@
 
 import { useCallback } from "react";
 
+import {
+  getErrorMessages,
+  getEnumValidators,
+  EnumValidatorOptions,
+} from "@elyra/pipeline-services";
 import { useSelect } from "downshift";
 import styled, { useTheme } from "styled-components";
 
@@ -28,12 +33,7 @@ import {
   EnumMenuItem,
 } from "./components";
 import { createControl, useControlState } from "./control";
-import {
-  getErrorMessages,
-  getEnumValidators,
-  EnumValidatorOptions,
-  ErrorMessage,
-} from "./validators";
+import { ErrorMessage } from "./ErrorMessage";
 
 const PLACEHOLDER = "Select a value...";
 

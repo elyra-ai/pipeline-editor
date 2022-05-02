@@ -19,7 +19,7 @@ import { nodeSpec } from "./test-utils";
 
 describe("validate", () => {
   it("should return an empty array for a junk string", () => {
-    const problems = validate("bad json", {});
+    const problems = validate("bad json", {}, {});
     expect(problems).toHaveLength(0);
   });
 
@@ -46,7 +46,7 @@ describe("validate", () => {
         },
       ],
     };
-    const problems = validate(JSON.stringify(pipeline), []);
+    const problems = validate(JSON.stringify(pipeline), [], {});
     expect(problems).toHaveLength(1);
     expect(problems[0].info.type).toBe("missingComponent");
   });
@@ -98,7 +98,7 @@ describe("validate", () => {
         },
       ],
     };
-    const problems = validate(JSON.stringify(pipeline), []);
+    const problems = validate(JSON.stringify(pipeline), [], {});
     expect(problems).toHaveLength(4); // 2 for circular ref + 2 for missing component
     expect(problems[0].info.type).toBe("circularReference");
     expect(problems[1].info.type).toBe("circularReference");

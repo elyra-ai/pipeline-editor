@@ -373,12 +373,12 @@ class PipelineController extends CanvasController {
 
     const problems = validate(
       JSON.stringify(this.getPipelineFlow()),
-      this.getAllPaletteNodes()
+      this.getAllPaletteNodes(),
+      {}
     );
 
     const linksWithErrors: { [key: string]: string[] } = {};
     const nodesWithErrors: { [key: string]: string[] } = {};
-    const missingProperties = [];
     for (const problem of problems) {
       switch (problem.info.type) {
         case "circularReference":
@@ -390,12 +390,14 @@ class PipelineController extends CanvasController {
         case "missingProperty":
           nodesWithErrors[problem.info.pipelineID] = [
             ...(nodesWithErrors[problem.info.pipelineID] ?? []),
-            problem.info.nodeID,
+            problem.info.nodeID ?? "",
           ];
-          missingProperties.push({
-            nodeID: problem.info.nodeID,
-            property: problem.info.property,
-          });
+          break;
+        case "invalidProperty":
+          nodesWithErrors[problem.info.pipelineID] = [
+            ...(nodesWithErrors[problem.info.pipelineID] ?? []),
+            problem.info.nodeID ?? "",
+          ];
           break;
         case "missingComponent":
           nodesWithErrors[problem.info.pipelineID] = [
@@ -523,7 +525,11 @@ class PipelineController extends CanvasController {
 
     if (node?.type === "execution_node") {
       const nodes = this.getAllPaletteNodes();
-      const problems = validate(JSON.stringify(this.getPipelineFlow()), nodes);
+      const problems = validate(
+        JSON.stringify(this.getPipelineFlow()),
+        nodes,
+        {}
+      );
 
       const nodeProblems = [];
 
@@ -538,6 +544,17 @@ class PipelineController extends CanvasController {
                 (info) => info.parameter_ref === property
               )!.label.default;
               nodeProblems.push(`property "${label}" is required`);
+            }
+            break;
+          case "invalidProperty":
+            if (p.info.nodeID === nodeID) {
+              const property = p.info.property;
+              const label = nodeDef!.app_data.properties!.uihints!.parameter_info.find(
+                (info) => info.parameter_ref === property
+              )!.label.default;
+              nodeProblems.push(
+                `property "${label}" is invalid: ${p.info.message}`
+              );
             }
             break;
           case "missingComponent":

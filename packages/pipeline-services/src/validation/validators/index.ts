@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-import styled from "styled-components";
+export interface Validator<T> {
+  enabled: boolean;
+  isValid: (value: T) => boolean;
+  message?: string;
+}
 
-export const ErrorMessage = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  padding: 5px;
-  box-sizing: border-box;
-  margin-top: -1px;
-  z-index: 1;
-  border-style: solid;
-  border-width: 1px;
-  border-color: ${({ theme }) => theme.palette.errorMessage.errorBorder};
-  background-color: ${({ theme }) => theme.palette.errorMessage.main};
-  color: ${({ theme }) => theme.palette.errorMessage.contrastText};
-`;
+export function getErrorMessages<T>(value: T, validators: Validator<T>[]) {
+  return validators
+    .filter((v) => v.enabled && !v.isValid(value))
+    .map((v) => v.message);
+}
+
+export * from "./string-validators";
+export * from "./number-validators";
+export * from "./string-array-validators";
+export * from "./enum-validators";
+export * from "./nested-enum-validators";

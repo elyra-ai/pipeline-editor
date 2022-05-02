@@ -20,12 +20,22 @@ export interface StringArrayValidatorOptions {
   uniqueItems?: boolean;
   minItems?: number; // for restricting array length
   maxItems?: number; // for restricting array length
+  keyValueEntries?: boolean; // if array item are in in the key=value format
 }
+
+const isKeyValueFormat = (item: string): boolean => {
+  const validParts = item
+    .split("=")
+    .map((i) => i.trim())
+    .filter(Boolean);
+  return validParts.length >= 2;
+};
 
 export function getStringArrayValidators<T extends string[]>({
   uniqueItems,
   minItems,
   maxItems,
+  keyValueEntries,
 }: StringArrayValidatorOptions) {
   const validators: Validator<T>[] = [
     {
@@ -42,6 +52,13 @@ export function getStringArrayValidators<T extends string[]>({
       enabled: maxItems !== undefined,
       isValid: (value: T) => value.length < maxItems!,
       message: `Array must have at most ${maxItems} items.`,
+    },
+    {
+      enabled: keyValueEntries === true,
+      isValid: (value: T) => {
+        return !value.some((item) => !isKeyValueFormat(item));
+      },
+      message: "Array items must be in key=value format.",
     },
   ];
 

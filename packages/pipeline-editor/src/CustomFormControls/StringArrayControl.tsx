@@ -17,6 +17,11 @@
 import { useCallback, useRef, useState } from "react";
 import { useEffect } from "react";
 
+import {
+  getErrorMessages,
+  getStringArrayValidators,
+  StringArrayValidatorOptions,
+} from "@elyra/pipeline-services";
 import produce from "immer";
 import styled, { useTheme } from "styled-components";
 
@@ -27,7 +32,7 @@ import {
   useHandlers,
   usePropertyID,
 } from "./control";
-import { StringArrayValidatorOptions } from "./validators";
+import { ErrorMessage } from "./ErrorMessage";
 
 interface Props extends StringArrayValidatorOptions {
   placeholder?: string;
@@ -60,6 +65,7 @@ const ListGroup = styled.div`
 const ButtonGroup = styled.div`
   display: flex;
   margin-top: 4px;
+  margin-bottom: 4px;
   & button {
     margin-right: 4px;
   }
@@ -327,6 +333,10 @@ export function ListItem({
 }
 
 export function StringArrayControl({
+  uniqueItems,
+  minItems,
+  maxItems,
+  keyValueEntries,
   placeholder,
   format,
   canRefresh,
@@ -373,9 +383,17 @@ export function StringArrayControl({
   }, [actionHandler, propertyID, setItems]);
 
   // TODO: validate string arrays.
+  const validators = getStringArrayValidators({
+    uniqueItems,
+    minItems,
+    maxItems,
+    keyValueEntries,
+  });
+
+  let errorMessages = getErrorMessages(items, validators);
 
   return (
-    <Container>
+    <Container className={errorMessages.length > 0 ? "error" : undefined}>
       <ListGroup>
         {items.map((item, index) => (
           <ListItem
@@ -465,6 +483,9 @@ export function StringArrayControl({
             </button>
           )}
         </ButtonGroup>
+      )}
+      {errorMessages[0] !== undefined && (
+        <ErrorMessage>{errorMessages[0]}</ErrorMessage>
       )}
     </Container>
   );
