@@ -373,8 +373,7 @@ class PipelineController extends CanvasController {
 
     const problems = validate(
       JSON.stringify(this.getPipelineFlow()),
-      this.getAllPaletteNodes(),
-      {}
+      this.getAllPaletteNodes()
     );
 
     const linksWithErrors: { [key: string]: string[] } = {};
@@ -525,11 +524,7 @@ class PipelineController extends CanvasController {
 
     if (node?.type === "execution_node") {
       const nodes = this.getAllPaletteNodes();
-      const problems = validate(
-        JSON.stringify(this.getPipelineFlow()),
-        nodes,
-        {}
-      );
+      const problems = validate(JSON.stringify(this.getPipelineFlow()), nodes);
 
       const nodeProblems = [];
 

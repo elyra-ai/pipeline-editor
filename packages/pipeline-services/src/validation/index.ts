@@ -228,7 +228,7 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
 export function validate(
   pipeline: string,
   nodeDefinitions: any,
-  pipelineProperties: any
+  pipelineProperties?: any
 ) {
   const pipelineTreeRoot = parseTree(pipeline);
   if (pipelineTreeRoot === undefined) {
