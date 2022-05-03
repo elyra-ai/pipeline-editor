@@ -16,7 +16,9 @@
 
 import styled from "styled-components";
 
-export const ErrorMessage = styled.div`
+export const ErrorMessage = styled.div.attrs({
+  className: "elyra-errorMessage",
+})`
   position: absolute;
   left: 0;
   right: 0;
