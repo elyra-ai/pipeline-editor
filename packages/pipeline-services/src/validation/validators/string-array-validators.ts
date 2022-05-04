@@ -24,11 +24,8 @@ export interface StringArrayValidatorOptions {
 }
 
 const isKeyValueFormat = (item: string): boolean => {
-  const validParts = item
-    .split("=")
-    .map((i) => i.trim())
-    .filter(Boolean);
-  return validParts.length >= 2;
+  const parts = item.split("=");
+  return parts.length >= 2 && parts[0] !== "";
 };
 
 export function getStringArrayValidators<T extends string[]>({

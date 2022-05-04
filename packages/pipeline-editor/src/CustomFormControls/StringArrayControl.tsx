@@ -347,10 +347,23 @@ export function StringArrayControl({
 
   const [editingIndex, setEditingIndex] = useState<number | "new">();
 
+  const trimItems = (itemsToTrim: string[]): string[] => {
+    if (keyValueEntries) {
+      const trimmedItems = itemsToTrim.map((item: string): string => {
+        const parts = item.split("=");
+        const key = parts[0].trim();
+        const value = parts.slice(1).join("=").trim();
+        return key && value ? `${key}=${value}` : item.trim();
+      });
+      return trimmedItems;
+    }
+    return itemsToTrim.map((i: string) => i.trim());
+  };
+
   const handleAction = useCallback(
     (action) => {
       const newItems = reducer(items, action);
-      setItems(newItems);
+      setItems(trimItems(newItems));
     },
     [items, setItems]
   );
@@ -379,7 +392,9 @@ export function StringArrayControl({
 
   const handleRefreshProperties = useCallback(async () => {
     const updatedProperties = await actionHandler?.("refresh_properties");
-    setItems(updatedProperties[propertyID]);
+    if (updatedProperties?.[propertyID]) {
+      setItems(trimItems(updatedProperties[propertyID]));
+    }
   }, [actionHandler, propertyID, setItems]);
 
   // TODO: validate string arrays.

@@ -51,7 +51,7 @@ function serialize(value: string) {
   if (value.trim() === "") {
     return undefined;
   }
-  return value;
+  return value.trim();
 }
 
 // TODO: Make the file clearable
