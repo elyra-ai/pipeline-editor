@@ -400,7 +400,6 @@ export function StringArrayControl({
     }
   }, [actionHandler, propertyID, setItems, trimItems]);
 
-  // TODO: validate string arrays.
   const validators = getStringArrayValidators({
     uniqueItems,
     minItems,
