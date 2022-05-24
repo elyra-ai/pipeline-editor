@@ -31,8 +31,16 @@ export interface CircularReferenceInfo {
 export interface MissingPropertyInfo {
   type: "missingProperty";
   pipelineID: string;
-  nodeID: string;
+  nodeID?: string;
   property: string;
+}
+
+export interface InvalidPropertyInfo {
+  type: "invalidProperty";
+  pipelineID: string;
+  nodeID?: string;
+  property: string;
+  message: string;
 }
 
 export interface MissingComponentInfo {
@@ -49,11 +57,33 @@ export interface Problem {
     length: number;
   };
   message: string;
-  info: CircularReferenceInfo | MissingPropertyInfo | MissingComponentInfo;
+  info:
+    | CircularReferenceInfo
+    | MissingPropertyInfo
+    | InvalidPropertyInfo
+    | MissingComponentInfo;
 }
 
 export interface PartialProblem {
   message: string;
   path: any[];
-  info: CircularReferenceInfo | MissingPropertyInfo | MissingComponentInfo;
+  info:
+    | CircularReferenceInfo
+    | MissingPropertyInfo
+    | InvalidPropertyInfo
+    | MissingComponentInfo;
+}
+
+export interface NestedEnumData {
+  value: string;
+  label: string;
+  options?: {
+    value: string;
+    label: string;
+  }[];
+}
+
+export interface NestedEnumFlatData {
+  value: string;
+  option: string;
 }

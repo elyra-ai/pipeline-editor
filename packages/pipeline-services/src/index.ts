@@ -15,4 +15,4 @@
  */
 
 export * from "./migration";
-export { validate } from "./validation";
+export * from "./validation";

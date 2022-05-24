@@ -16,13 +16,14 @@
 
 import styled from "styled-components";
 
-export const ErrorMessage = styled.div`
+export const ErrorMessage = styled.div.attrs({
+  className: "elyra-errorMessage",
+})`
   position: absolute;
   left: 0;
   right: 0;
   padding: 5px;
   box-sizing: border-box;
-  margin-top: -1px;
   z-index: 1;
   border-style: solid;
   border-width: 1px;

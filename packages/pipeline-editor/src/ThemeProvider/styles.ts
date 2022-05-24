@@ -525,7 +525,6 @@ export const CanvasOverrides = css`
     .error::before {
     display: block;
     content: "";
-    position: absolute;
     width: 6px;
     border-left-width: 2px;
     border-left-style: solid;
@@ -533,6 +532,22 @@ export const CanvasOverrides = css`
     top: 15px;
     bottom: 18px;
     border-color: ${({ theme }) => theme.palette.error.main};
+  }
+
+  .properties-editor-form
+  .properties-control-panel
+  > .properties-control-panel
+  > .properties-ctrl-wrapper:only-child
+  .error::before {
+    position: absolute;
+  }
+
+  .properties-editor-form
+  .properties-control-panel
+  > .properties-control-panel
+  > .properties-ctrl-wrapper:only-child
+  .elyra-errorMessage {
+    position: unset;
   }
 
   .properties-input-control.error input:not([disabled]) {

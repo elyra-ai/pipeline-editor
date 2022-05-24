@@ -16,6 +16,11 @@
 
 import { useCallback, useState } from "react";
 
+import {
+  getErrorMessages,
+  getStringValidators,
+  StringValidatorOptions,
+} from "@elyra/pipeline-services";
 import styled from "styled-components";
 
 import {
@@ -24,12 +29,7 @@ import {
   useHandlers,
   usePropertyID,
 } from "./control";
-import {
-  getErrorMessages,
-  getStringValidators,
-  StringValidatorOptions,
-  ErrorMessage,
-} from "./validators";
+import { ErrorMessage } from "./ErrorMessage";
 
 export interface Props extends StringValidatorOptions {
   placeholder?: string;
@@ -51,7 +51,7 @@ function serialize(value: string) {
   if (value.trim() === "") {
     return undefined;
   }
-  return value;
+  return value.trim();
 }
 
 // TODO: Make the file clearable

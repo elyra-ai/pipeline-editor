@@ -15,7 +15,10 @@
  */
 
 import { Validator } from ".";
-import { Data, FlatData } from "../NestedEnumControl";
+import {
+  NestedEnumData as Data,
+  NestedEnumFlatData as FlatData,
+} from "../types";
 
 export interface NestedEnumValidatorOptions {
   data: Data[];

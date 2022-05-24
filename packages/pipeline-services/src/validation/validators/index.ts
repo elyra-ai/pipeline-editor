@@ -31,4 +31,3 @@ export * from "./number-validators";
 export * from "./string-array-validators";
 export * from "./enum-validators";
 export * from "./nested-enum-validators";
-export * from "./ErrorMessage";

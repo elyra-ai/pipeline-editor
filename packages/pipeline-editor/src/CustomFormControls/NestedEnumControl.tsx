@@ -16,6 +16,12 @@
 
 import { useCallback, useEffect } from "react";
 
+import {
+  getErrorMessages,
+  getNestedEnumValidators,
+  NestedEnumData as Data,
+  NestedEnumFlatData as FlatData,
+} from "@elyra/pipeline-services";
 import { useSelect } from "downshift";
 import { useTheme } from "styled-components";
 
@@ -28,21 +34,7 @@ import {
   EnumMenuItem,
 } from "./components";
 import { createControl, useControlState } from "./control";
-import { getErrorMessages, getNestedEnumValidators } from "./validators";
-
-export interface Data {
-  value: string;
-  label: string;
-  options?: {
-    value: string;
-    label: string;
-  }[];
-}
-
-export interface FlatData {
-  value: string;
-  option: string;
-}
+import { ErrorMessage } from "./ErrorMessage";
 
 interface Props {
   data?: Data[];
@@ -159,6 +151,9 @@ export function NestedEnumControl({
               );
             })}
         </EnumMenu>
+        {errorMessages[0] !== undefined && (
+          <ErrorMessage>{errorMessages[0]}</ErrorMessage>
+        )}
       </EnumContainer>
     </div>
   );

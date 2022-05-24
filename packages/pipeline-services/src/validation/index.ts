@@ -25,6 +25,14 @@ import {
   getValue,
   rangeForLocation,
 } from "./utils";
+import {
+  getErrorMessages,
+  getEnumValidators,
+  getNestedEnumValidators,
+  getNumberValidators,
+  getStringValidators,
+  getStringArrayValidators,
+} from "./validators";
 
 export function getLinkProblems(pipeline: any) {
   const links = getLinks(pipeline);
@@ -47,6 +55,95 @@ export function getLinkProblems(pipeline: any) {
         linkID: linkID,
       },
     });
+  }
+
+  return problems;
+}
+
+function getPropertyValidationErrors(prop: any, value: any): any[] {
+  let errorMessages: any[] = [];
+  switch (prop.custom_control_id) {
+    case "EnumControl":
+      const enumValidators = getEnumValidators(prop.data);
+      errorMessages = getErrorMessages(value, enumValidators);
+      break;
+    case "NestedEnumControl":
+      const nestedEnumValidators = getNestedEnumValidators(prop.data);
+      errorMessages = prop.data?.required
+        ? getErrorMessages(value, nestedEnumValidators)
+        : [];
+      break;
+    case "NumberControl":
+      const trimmedNumber = (value?.toString() ?? "").trim();
+      if (!prop.data?.required && trimmedNumber === "") {
+        break;
+      }
+      const numberValidators = getNumberValidators(prop.data);
+      errorMessages = getErrorMessages(trimmedNumber, numberValidators);
+      break;
+    case "StringArrayControl":
+      const stringArrayValidators = getStringArrayValidators(prop.data);
+      errorMessages = getErrorMessages(value ?? [], stringArrayValidators);
+      break;
+    case "StringControl":
+      const trimmedString = (value ?? "").trim();
+      if (!prop.data?.required && trimmedString === "") {
+        break;
+      }
+      const stringValidators = getStringValidators(prop.data);
+      errorMessages = getErrorMessages(trimmedString, stringValidators);
+      break;
+  }
+  return errorMessages;
+}
+
+export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
+  let problems: PartialProblem[] = [];
+
+  for (const prop of pipelineProperties?.uihints.parameter_info ?? []) {
+    // If the property isn't in the json, report the error one level higher.
+    let path = ["pipeline", "0", "app_data"];
+    if (pipeline.app_data?.[prop.parameter_ref] !== undefined) {
+      path.push(prop.parameter_ref);
+    }
+
+    // this should be safe because a boolean can't be required
+    // otherwise we would need to check strings for undefined or empty string
+    // NOTE: 0 is also falsy, but we don't have any number inputs right now?
+    // TODO: We should update this to do type checking.
+    const value = getValue(
+      pipeline.app_data?.properties,
+      prop.parameter_ref,
+      pipeline.app_data?.properties?.pipeline_defaults
+    );
+    if (prop.data?.required && !value) {
+      problems.push({
+        message: `The pipeline property '${prop.label.default}' is required.`,
+        path,
+        info: {
+          type: "missingProperty",
+          pipelineID: pipeline.id,
+          // do not strip elyra here, we need to differentiate between pipeline_defaults still.
+          property: prop.parameter_ref,
+        },
+      });
+    }
+
+    let errorMessages = getPropertyValidationErrors(prop, value);
+
+    if (errorMessages[0] !== undefined) {
+      problems.push({
+        message: `The pipeline property '${prop.label.default}' is invalid: ${errorMessages[0]}`,
+        path,
+        info: {
+          type: "invalidProperty",
+          pipelineID: pipeline.id,
+          // do not strip elyra here, we need to differentiate between pipeline_defaults still.
+          property: prop.parameter_ref,
+          message: errorMessages[0],
+        },
+      });
+    }
   }
 
   return problems;
@@ -105,13 +202,34 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
           },
         });
       }
+
+      let errorMessages = getPropertyValidationErrors(prop, value);
+
+      if (errorMessages[0] !== undefined) {
+        problems.push({
+          message: `The property '${prop.label.default}' on node '${node.app_data.ui_data.label}' is invalid: ${errorMessages[0]}`,
+          path,
+          info: {
+            type: "invalidProperty",
+            pipelineID: pipeline.id,
+            nodeID: node.id,
+            // do not strip elyra here, we need to differentiate between component_parameters still.
+            property: prop.parameter_ref,
+            message: errorMessages[0],
+          },
+        });
+      }
     }
   }
 
   return problems;
 }
 
-export function validate(pipeline: string, nodeDefinitions: any) {
+export function validate(
+  pipeline: string,
+  nodeDefinitions: any,
+  pipelineProperties?: any
+) {
   const pipelineTreeRoot = parseTree(pipeline);
   if (pipelineTreeRoot === undefined) {
     return [];
@@ -123,6 +241,7 @@ export function validate(pipeline: string, nodeDefinitions: any) {
   for (const [p, pipeline] of pipelineJSON.pipelines.entries()) {
     let partials: PartialProblem[] = [];
 
+    partials.push(...getPipelineProblems(pipeline, pipelineProperties));
     partials.push(...getLinkProblems(pipeline));
     partials.push(...getNodeProblems(pipeline, nodeDefinitions));
 
@@ -146,3 +265,6 @@ export function validate(pipeline: string, nodeDefinitions: any) {
 
   return problems;
 }
+
+export * from "./validators";
+export * from "./types";

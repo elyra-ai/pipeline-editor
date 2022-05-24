@@ -16,15 +16,15 @@
 
 import { useCallback, useState } from "react";
 
-import styled from "styled-components";
-
-import { createControl, useControlState } from "./control";
 import {
   getErrorMessages,
   getNumberValidators,
   NumberValidatorOptions,
-  ErrorMessage,
-} from "./validators";
+} from "@elyra/pipeline-services";
+import styled from "styled-components";
+
+import { createControl, useControlState } from "./control";
+import { ErrorMessage } from "./ErrorMessage";
 
 interface Props extends NumberValidatorOptions {}
 
