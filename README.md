@@ -27,7 +27,7 @@ limitations under the License.
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@elyra/pipeline-editor"><img alt="NPM Status" src="https://img.shields.io/npm/v/@elyra/pipeline-editor.svg?style=flat"></a>
-  <a href="https://github.com/elyra-ai/pipeline-editor/actions?query=branch%3Amaster+workflow%3AElyra%20Pipeline%20Editor%20Tests"><img alt="Test Status" src="https://github.com/elyra-ai/pipeline-editor/workflows/Elyra%20Pipeline%20Editor%20Tests/badge.svg?branch=master"></a>
+  <a href="https://github.com/elyra-ai/pipeline-editor/actions?query=branch%3Amain+workflow%3AElyra%20Pipeline%20Editor%20Tests"><img alt="Test Status" src="https://github.com/elyra-ai/pipeline-editor/workflows/Elyra%20Pipeline%20Editor%20Tests/badge.svg?branch=main"></a>
 </p>
 
 ## Installation
