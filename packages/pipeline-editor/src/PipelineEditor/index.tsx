@@ -54,40 +54,49 @@ const rjsfPipelineProperties: JSONSchema7 = {
   type: "object",
   properties: {
     name: {
+      title: "Name",
       const: "hi",
     },
     runtime: {
+      title: "Runtime image",
       const: "kfp",
     },
     description: {
+      title: "Description",
       type: "string",
     },
     generic_node_defaults: {
+      title: "Node Defaults",
       type: "object",
       properties: {
         cos_object_prefix: {
+          title: "COS Object Prefix",
           type: "string",
           enum: ["anaconda", "pandas", "pytorch"],
         },
         elyra_runtime_image: {
+          title: "Runtime image",
           type: "array",
           items: {
             type: "string",
           },
         },
         elyra_env_vars: {
+          title: "Environment Variables",
           type: "array",
           items: {
             type: "string",
           },
         },
         elyra_kubernetes_secrets: {
+          title: "Kubernetes Secrets",
           type: "array",
           items: {
             type: "string",
           },
         },
         elyra_mounted_volumes: {
+          title: "Mounted Volumes",
           type: "array",
           items: {
             type: "string",
