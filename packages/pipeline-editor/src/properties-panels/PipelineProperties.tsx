@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import { PropertyDefinitions } from "@elyra/canvas";
+import Form, { UiSchema } from "@rjsf/core";
+import { JSONSchema7 } from "json-schema";
 
-import { PropertiesPanel, Message } from "./PropertiesPanel";
+import { Message } from "./PropertiesPanel";
 
 interface Props {
   pipelineFlow: any;
-  propertiesSchema?: PropertyDefinitions;
+  propertiesSchema?: JSONSchema7;
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
   onChange?: (data: any) => any;
@@ -37,16 +38,26 @@ function PipelineProperties({
     return <Message>No pipeline properties defined.</Message>;
   }
 
+  const uiSchema: UiSchema = {};
+  for (const field in propertiesSchema.properties) {
+    const properties = propertiesSchema.properties[field];
+    if (typeof properties !== "boolean" && properties.const) {
+      uiSchema[field] = {
+        "ui:readonly": true,
+        default: properties.const,
+      };
+    }
+  }
+
   return (
-    <PropertiesPanel
-      currentProperties={
-        pipelineFlow?.pipelines?.[0]?.app_data?.properties ?? {}
-      }
-      onPropertiesUpdateRequested={onPropertiesUpdateRequested}
-      propertiesSchema={propertiesSchema}
-      onFileRequested={onFileRequested}
-      onChange={onChange}
-      id={pipelineFlow?.id}
+    <Form
+      formData={pipelineFlow?.pipelines?.[0]?.app_data?.properties ?? {}}
+      uiSchema={uiSchema}
+      // onPropertiesUpdateRequested={onPropertiesUpdateRequested}
+      schema={propertiesSchema as any}
+      // onFileRequested={onFileRequested}
+      onChange={(e) => onChange?.(e.formData)}
+      // id={pipelineFlow?.id}
     />
   );
 }

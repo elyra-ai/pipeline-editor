@@ -39,6 +39,7 @@ import {
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
 import styled, { useTheme } from "styled-components";
+import { JSONSchema7 } from "json-schema";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
@@ -48,6 +49,54 @@ import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
 import { InternalThemeProvider } from "../ThemeProvider";
 import useBlockEvents from "./useBlockEvents";
+
+const rjsfPipelineProperties: JSONSchema7 = {
+  type: "object",
+  properties: {
+    name: {
+      const: "hi",
+    },
+    runtime: {
+      const: "kfp",
+    },
+    description: {
+      type: "string",
+    },
+    generic_node_defaults: {
+      type: "object",
+      properties: {
+        cos_object_prefix: {
+          type: "string",
+          enum: ["anaconda", "pandas", "pytorch"],
+        },
+        elyra_runtime_image: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+        },
+        elyra_env_vars: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+        },
+        elyra_kubernetes_secrets: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+        },
+        elyra_mounted_volumes: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+        },
+      },
+    },
+  },
+};
 
 interface Props {
   pipeline: any;
@@ -692,7 +741,7 @@ const PipelineEditor = forwardRef(
         content: (
           <PipelineProperties
             pipelineFlow={pipeline}
-            propertiesSchema={pipelineProperties}
+            propertiesSchema={rjsfPipelineProperties}
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePipelinePropertiesChange}
