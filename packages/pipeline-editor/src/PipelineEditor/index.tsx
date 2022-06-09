@@ -39,7 +39,6 @@ import {
 } from "@elyra/canvas";
 import { IntlProvider } from "react-intl";
 import styled, { useTheme } from "styled-components";
-import { JSONSchema7 } from "json-schema";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
@@ -49,63 +48,6 @@ import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
 import { InternalThemeProvider } from "../ThemeProvider";
 import useBlockEvents from "./useBlockEvents";
-
-const rjsfPipelineProperties: JSONSchema7 = {
-  type: "object",
-  properties: {
-    name: {
-      title: "Name",
-      const: "hi",
-    },
-    runtime: {
-      title: "Runtime image",
-      const: "kfp",
-    },
-    description: {
-      title: "Description",
-      type: "string",
-    },
-    generic_node_defaults: {
-      title: "Node Defaults",
-      type: "object",
-      properties: {
-        cos_object_prefix: {
-          title: "COS Object Prefix",
-          type: "string",
-          enum: ["anaconda", "pandas", "pytorch"],
-        },
-        elyra_runtime_image: {
-          title: "Runtime image",
-          type: "array",
-          items: {
-            type: "string",
-          },
-        },
-        elyra_env_vars: {
-          title: "Environment Variables",
-          type: "array",
-          items: {
-            type: "string",
-          },
-        },
-        elyra_kubernetes_secrets: {
-          title: "Kubernetes Secrets",
-          type: "array",
-          items: {
-            type: "string",
-          },
-        },
-        elyra_mounted_volumes: {
-          title: "Mounted Volumes",
-          type: "array",
-          items: {
-            type: "string",
-          },
-        },
-      },
-    },
-  },
-};
 
 interface Props {
   pipeline: any;
@@ -750,7 +692,7 @@ const PipelineEditor = forwardRef(
         content: (
           <PipelineProperties
             pipelineFlow={pipeline}
-            propertiesSchema={rjsfPipelineProperties}
+            propertiesSchema={pipelineProperties}
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePipelinePropertiesChange}

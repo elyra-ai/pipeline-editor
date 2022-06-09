@@ -19,15 +19,12 @@ import Form, {
   FieldTemplateProps,
   UiSchema,
 } from "@rjsf/core";
-import { JSONSchema7 } from "json-schema";
 
 import { Message } from "./PropertiesPanel";
 
 interface Props {
   pipelineFlow: any;
-  propertiesSchema?: JSONSchema7;
-  onFileRequested?: (options: any) => any;
-  onPropertiesUpdateRequested?: (options: any) => any;
+  propertiesSchema?: any;
   onChange?: (data: any) => any;
 }
 
@@ -95,8 +92,6 @@ const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
 function PipelineProperties({
   pipelineFlow,
   propertiesSchema,
-  onFileRequested,
-  onPropertiesUpdateRequested,
   onChange,
 }: Props) {
   if (propertiesSchema === undefined) {
@@ -106,11 +101,8 @@ function PipelineProperties({
   const uiSchema: UiSchema = {};
   for (const field in propertiesSchema.properties) {
     const properties = propertiesSchema.properties[field];
-    if (typeof properties !== "boolean" && properties.const) {
-      uiSchema[field] = {
-        "ui:readonly": true,
-        default: properties.const,
-      };
+    if (typeof properties !== "boolean" && properties.uihints) {
+      uiSchema[field] = properties.uihints;
     }
   }
 
@@ -118,10 +110,6 @@ function PipelineProperties({
     <Form
       formData={pipelineFlow?.pipelines?.[0]?.app_data?.properties ?? {}}
       uiSchema={uiSchema}
-      formContext={{
-        onPropertiesUpdateRequested,
-        onFileRequested,
-      }}
       schema={propertiesSchema as any}
       onChange={(e) => onChange?.(e.formData)}
       id={pipelineFlow?.id}
