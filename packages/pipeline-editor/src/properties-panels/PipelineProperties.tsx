@@ -115,6 +115,7 @@ function PipelineProperties({
       id={pipelineFlow?.id}
       ArrayFieldTemplate={ArrayTemplate}
       FieldTemplate={CustomFieldTemplate}
+      className={"elyra-formEditor"}
     />
   );
 }
