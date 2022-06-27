@@ -100,11 +100,11 @@ function getPropertyValidationErrors(prop: any, value: any): any[] {
 export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
   let problems: PartialProblem[] = [];
 
-  for (const prop of pipelineProperties?.uihints.parameter_info ?? []) {
+  for (const prop of pipelineProperties?.properties ?? []) {
     // If the property isn't in the json, report the error one level higher.
     let path = ["pipeline", "0", "app_data"];
-    if (pipeline.app_data?.[prop.parameter_ref] !== undefined) {
-      path.push(prop.parameter_ref);
+    if (pipeline.app_data?.[prop] !== undefined) {
+      path.push(pipelineProperties[prop]);
     }
 
     // this should be safe because a boolean can't be required
@@ -172,8 +172,7 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       continue;
     }
 
-    for (const prop of nodeDef.app_data.properties?.uihints.parameter_info ??
-      []) {
+    for (const prop of nodeDef.app_data.properties?.properties ?? []) {
       // If the property isn't in the json, report the error one level higher.
       let path = ["nodes", n, "app_data"];
       if (node.app_data[prop.parameter_ref] !== undefined) {
@@ -243,7 +242,7 @@ export function validate(
 
     partials.push(...getPipelineProblems(pipeline, pipelineProperties));
     partials.push(...getLinkProblems(pipeline));
-    partials.push(...getNodeProblems(pipeline, nodeDefinitions));
+    // partials.push(...getNodeProblems(pipeline, nodeDefinitions));
 
     problems.push(
       ...partials.map((partial) => {

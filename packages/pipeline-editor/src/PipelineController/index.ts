@@ -446,7 +446,7 @@ class PipelineController extends CanvasController {
         nodes.push(...c.node_types);
       }
     }
-    nodes = this.propagatePipelineDefaultProperties(nodes, this.palette);
+    // nodes = this.propagatePipelineDefaultProperties(nodes, this.palette);
 
     return nodes;
   }

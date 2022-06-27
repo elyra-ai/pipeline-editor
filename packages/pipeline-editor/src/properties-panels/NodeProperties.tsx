@@ -15,6 +15,7 @@
  */
 
 import produce from "immer";
+import { useState } from "react";
 import styled from "styled-components";
 
 import { PropertiesPanel, Message } from "./PropertiesPanel";
@@ -112,8 +113,7 @@ function NodeProperties({
       const options = [];
 
       // Add each property with a format of outputpath to the options field
-      for (const prop of nodeDef?.app_data.properties.uihints.parameter_info ??
-        []) {
+      for (const prop of nodeDef?.app_data.properties.properties ?? []) {
         if (prop.data.format === "outputpath") {
           options.push({
             value: prop.parameter_ref,
@@ -130,18 +130,21 @@ function NodeProperties({
 
     // update property data to include data for properties with inputpath format
     return produce(nodePropertiesSchema?.app_data.properties, (draft: any) => {
-      for (let prop of draft.uihints.parameter_info) {
-        if (prop.data?.format === "inputpath") {
-          prop.data = {
-            ...prop.data,
+      for (let prop in draft.properties) {
+        if (draft.properties[prop].uihints?.format === "inputpath") {
+          draft.properties[prop].uihints = {
+            ...draft.properties[prop].uihints,
             data,
             placeholder: "Select an input source",
           };
-        } else if (prop.data?.controls) {
-          for (const key in prop.data?.controls) {
-            if (prop.data?.controls[key].format === "inputpath") {
-              prop.data.controls[key] = {
-                ...prop.data.controls[key],
+        } else if (draft.properties[prop].uihints?.controls) {
+          for (const key in draft.properties[prop].uihints?.controls) {
+            if (
+              draft.properties[prop].uihints?.controls[key].format ===
+              "inputpath"
+            ) {
+              draft.properties[prop].uihints.controls[key] = {
+                ...draft.properties[prop].uihints.controls[key],
                 data,
                 placeholder: "Select an input source",
               };
@@ -152,19 +155,18 @@ function NodeProperties({
     });
   };
 
+  const [formData, setFormData] = useState(getNodeProperties());
+
   return (
     <div>
       <Heading>{nodePropertiesSchema.label}</Heading>
       <PropertiesPanel
-        refs={refs}
-        currentProperties={selectedNode.app_data}
-        onPropertiesUpdateRequested={onPropertiesUpdateRequested}
-        propertiesSchema={getNodeProperties()}
-        onFileRequested={onFileRequested}
+        schema={nodePropertiesSchema.app_data.properties ?? {}}
+        data={formData}
         onChange={(data: any) => {
+          setFormData(data);
           onChange?.(selectedNode.id, data);
         }}
-        id={selectedNode.id}
       />
     </div>
   );

@@ -48,6 +48,7 @@ import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
 import { InternalThemeProvider } from "../ThemeProvider";
 import useBlockEvents from "./useBlockEvents";
+import { PropertiesPanel } from "../properties-panels/PropertiesPanel";
 
 interface Props {
   pipeline: any;
@@ -690,11 +691,11 @@ const PipelineEditor = forwardRef(
         title: "Edit pipeline properties",
         icon: theme.overrides?.pipelineIcon,
         content: (
-          <PipelineProperties
-            pipelineFlow={pipeline}
-            propertiesSchema={pipelineProperties}
-            onFileRequested={onFileRequested}
-            onPropertiesUpdateRequested={onPropertiesUpdateRequested}
+          <PropertiesPanel
+            data={pipeline?.pipelines?.[0]?.app_data?.properties}
+            schema={pipelineProperties}
+            // onFileRequested={onFileRequested}
+            // onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePipelinePropertiesChange}
           />
         ),
