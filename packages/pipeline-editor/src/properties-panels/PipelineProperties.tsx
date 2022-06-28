@@ -27,7 +27,7 @@ function PipelineProperties(props: Props) {
     return <Message>No pipeline properties defined.</Message>;
   }
 
-  return <PropertiesPanel {...props} />;
+  return <div />;
 }
 
 export default PipelineProperties;

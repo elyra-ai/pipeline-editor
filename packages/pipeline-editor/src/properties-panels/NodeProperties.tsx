@@ -113,11 +113,14 @@ function NodeProperties({
       const options = [];
 
       // Add each property with a format of outputpath to the options field
-      for (const prop of nodeDef?.app_data.properties.properties ?? []) {
-        if (prop.data.format === "outputpath") {
+      for (const prop in nodeDef?.app_data.properties.component_properties ??
+        {}) {
+        const properties =
+          nodeDef?.app_data.properties.component_properties[prop] ?? {};
+        if (properties.uihints?.format === "outputpath") {
           options.push({
-            value: prop.parameter_ref,
-            label: prop.label.default,
+            value: prop,
+            label: properties.title,
           });
         }
       }
@@ -130,21 +133,22 @@ function NodeProperties({
 
     // update property data to include data for properties with inputpath format
     return produce(nodePropertiesSchema?.app_data.properties, (draft: any) => {
-      for (let prop in draft.properties) {
-        if (draft.properties[prop].uihints?.format === "inputpath") {
-          draft.properties[prop].uihints = {
-            ...draft.properties[prop].uihints,
+      for (let prop in draft.component_properties) {
+        if (draft.component_properties[prop].uihints?.format === "inputpath") {
+          draft.component_properties[prop].uihints = {
+            ...draft.component_properties[prop].uihints,
             data,
             placeholder: "Select an input source",
           };
-        } else if (draft.properties[prop].uihints?.controls) {
-          for (const key in draft.properties[prop].uihints?.controls) {
+        } else if (draft.component_properties[prop].uihints?.controls) {
+          for (const key in draft.component_properties[prop].uihints
+            ?.controls) {
             if (
-              draft.properties[prop].uihints?.controls[key].format ===
+              draft.component_properties[prop].uihints?.controls[key].format ===
               "inputpath"
             ) {
-              draft.properties[prop].uihints.controls[key] = {
-                ...draft.properties[prop].uihints.controls[key],
+              draft.component_properties[prop].uihints.controls[key] = {
+                ...draft.component_properties[prop].uihints.controls[key],
                 data,
                 placeholder: "Select an input source",
               };
@@ -155,13 +159,13 @@ function NodeProperties({
     });
   };
 
-  const [formData, setFormData] = useState(getNodeProperties());
+  const [formData, setFormData] = useState(selectedNodes[0].app_data);
 
   return (
     <div>
       <Heading>{nodePropertiesSchema.label}</Heading>
       <PropertiesPanel
-        schema={nodePropertiesSchema.app_data.properties ?? {}}
+        schema={getNodeProperties()}
         data={formData}
         onChange={(data: any) => {
           setFormData(data);
