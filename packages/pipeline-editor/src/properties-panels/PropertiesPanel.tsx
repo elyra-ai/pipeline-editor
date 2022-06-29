@@ -21,7 +21,8 @@ import Form, {
   FieldTemplateProps,
   UiSchema,
 } from "@rjsf/core";
-import { useState } from "react";
+
+import { FileWidget } from "../CustomFormControls";
 
 export const Message = styled.div`
   margin-top: 14px;
@@ -37,6 +38,8 @@ interface Props {
   data: any;
   schema?: any;
   onChange?: (data: any) => any;
+  onFileRequested?: (options: any) => any;
+  onPropertiesUpdateRequested?: (options: any) => any;
 }
 
 /**
@@ -100,14 +103,29 @@ const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
   );
 };
 
-export function PropertiesPanel({ data, schema, onChange }: Props) {
+export function PropertiesPanel({
+  data,
+  schema,
+  onChange,
+  onFileRequested,
+  onPropertiesUpdateRequested,
+}: Props) {
   if (schema === undefined) {
     return <Message>No properties defined.</Message>;
   }
 
   const uiSchema: UiSchema = {};
   for (const field in schema.properties) {
+    uiSchema[field] = {};
     const properties = schema.properties[field];
+    if (properties.type === "object") {
+      for (const subField in properties.properties) {
+        const subProps = properties.properties[subField];
+        if (typeof subProps !== "boolean" && subProps.uihints) {
+          uiSchema[field][subField] = subProps.uihints;
+        }
+      }
+    }
     if (typeof properties !== "boolean" && properties.uihints) {
       uiSchema[field] = properties.uihints;
     }
@@ -119,7 +137,14 @@ export function PropertiesPanel({ data, schema, onChange }: Props) {
       uiSchema={uiSchema}
       schema={schema as any}
       onChange={(e) => onChange?.(e.formData)}
+      formContext={{
+        onFileRequested,
+        onPropertiesUpdateRequested,
+      }}
       id={data?.id}
+      widgets={{
+        file: FileWidget,
+      }}
       ArrayFieldTemplate={ArrayTemplate}
       FieldTemplate={CustomFieldTemplate}
       className={"elyra-formEditor"}

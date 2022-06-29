@@ -16,11 +16,4 @@
 
 /* istanbul ignore file */
 
-export { default as StringControl } from "./StringControl";
-export { default as DisplayControl } from "./DisplayControl";
-export { default as StringArrayControl } from "./StringArrayControl";
-export { default as BooleanControl } from "./BooleanControl";
-export { default as EnumControl } from "./EnumControl";
-export { default as NestedEnumControl } from "./NestedEnumControl";
-export { default as NumberControl } from "./NumberControl";
-export { default as OneOfControl } from "./OneOfControl";
+export * from "./StringControl";

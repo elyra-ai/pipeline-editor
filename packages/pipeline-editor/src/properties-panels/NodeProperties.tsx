@@ -171,6 +171,8 @@ function NodeProperties({
           setFormData(data);
           onChange?.(selectedNode.id, data);
         }}
+        onFileRequested={onFileRequested}
+        onPropertiesUpdateRequested={onPropertiesUpdateRequested}
       />
     </div>
   );

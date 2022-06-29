@@ -16,138 +16,36 @@
 
 import { useCallback, useState } from "react";
 
-import {
-  getErrorMessages,
-  getStringValidators,
-  StringValidatorOptions,
-} from "@elyra/pipeline-services";
-import styled from "styled-components";
-
-import {
-  createControl,
-  useControlState,
-  useHandlers,
-  usePropertyID,
-} from "./control";
-import { ErrorMessage } from "./ErrorMessage";
-
-export interface Props extends StringValidatorOptions {
-  placeholder?: string;
-  extensions?: string[];
-}
-
-const Container = styled.div`
-  margin-top: 9px;
-  display: flex;
-`;
-
-const InputContainer = styled.div`
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-`;
-
-function serialize(value: string) {
-  if (value.trim() === "") {
-    return undefined;
-  }
-  return value.trim();
-}
+import { Widget } from "@rjsf/core";
 
 // TODO: Make the file clearable
-export function StringControl({
-  pattern,
-  patternErrorMessage,
-  minLength,
-  maxLength,
-  format,
-  required,
-  placeholder,
-  extensions,
-}: Props) {
-  const propertyID = usePropertyID();
-  const [value, setValue] = useControlState<string>();
+export const FileWidget: Widget = (props) => {
+  const [value, setValue] = useState<string>(props.value);
 
-  const [localValue, setLocalValue] = useState<string>();
-
-  const update = useCallback(
-    (value) => {
-      setLocalValue(value);
-      setValue(serialize(value));
-    },
-    [setValue]
-  );
-
-  const handleChange = useCallback(
-    (e) => {
-      update(e.target.value);
-    },
-    [update]
-  );
-
-  const handleBlur = useCallback(() => {
-    setLocalValue(undefined);
-  }, []);
-
-  const { actionHandler } = useHandlers();
   const handleChooseFile = useCallback(async () => {
-    const values = await actionHandler?.("browse_file", undefined, {
+    const values = await props.formContext.onFileRequested({
       canSelectMany: false,
       defaultUri: value,
-      filters: { File: extensions },
-      propertyID,
+      filters: { File: props.uiSchema.extensions },
+      id: props.id,
     });
-    //  Don't set if nothing was chosen.
-    if (values !== undefined && values.length > 0) {
-      update(values[0]);
-    }
-  }, [actionHandler, value, extensions, propertyID, update]);
-
-  const validators = getStringValidators({
-    pattern,
-    patternErrorMessage,
-    minLength,
-    maxLength,
-    format,
-    required,
-  });
-
-  const renderedValue = localValue ?? value ?? "";
-
-  const trimmedValue = renderedValue.trim();
-
-  let errorMessages = getErrorMessages(trimmedValue, validators);
-  if (!required && trimmedValue === "") {
-    errorMessages = [];
-  }
+    console.log(values);
+    props.onChange(values[0]);
+    setValue(values[0]);
+  }, [props.formContext.actionHandler, value, props.uiSchema]);
 
   return (
-    <Container className={errorMessages.length > 0 ? "error" : undefined}>
-      <InputContainer>
-        {format === "multiline" ? (
-          <textarea
-            value={renderedValue}
-            placeholder={placeholder}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-        ) : (
-          <input
-            type="text"
-            value={renderedValue}
-            placeholder={placeholder}
-            onChange={handleChange}
-            disabled={format === "file"}
-            onBlur={handleBlur}
-          />
-        )}
-        {errorMessages[0] !== undefined && (
-          <ErrorMessage>{errorMessages[0]}</ErrorMessage>
-        )}
-      </InputContainer>
-      {format === "file" && <button onClick={handleChooseFile}>Browse</button>}
-    </Container>
+    <div>
+      <input
+        type="text"
+        value={value}
+        placeholder={props.uiSchema?.["ui:placeholder"]}
+        onChange={(e) => {
+          console.log(e);
+        }}
+        disabled
+      />
+      <button onClick={handleChooseFile}>Browse</button>
+    </div>
   );
-}
-
-export default createControl("StringControl", StringControl);
+};
