@@ -18,11 +18,17 @@ import styled from "styled-components";
 
 import Form, {
   ArrayFieldTemplateProps,
+  Field,
   FieldTemplateProps,
   UiSchema,
+  Widget,
+  utils,
+  WidgetProps,
+  FieldProps,
 } from "@rjsf/core";
 
 import { FileWidget } from "../CustomFormControls";
+import { useEffect, useState } from "react";
 
 export const Message = styled.div`
   margin-top: 14px;
@@ -33,6 +39,11 @@ export const Message = styled.div`
   color: ${({ theme }) => theme.palette.text.primary};
   opacity: 0.5;
 `;
+
+const widgets: { [id: string]: Widget } = {
+  file: FileWidget,
+  inputpath: FileWidget,
+};
 
 interface Props {
   data: any;
@@ -75,7 +86,147 @@ const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
   );
 };
 
+const CustomOneOf: Field = (props) => {
+  const {
+    baseType,
+    disabled,
+    readonly,
+    hideError,
+    errorSchema,
+    formData,
+    idPrefix,
+    idSeparator,
+    idSchema,
+    onBlur,
+    onChange,
+    onFocus,
+    options,
+    registry,
+    uiSchema,
+    schema,
+    formContext,
+  } = props;
+  console.log("ONEOF");
+  const [selectedOption, setSelectedOption] = useState(
+    utils.getMatchingOption(formData, options, registry)
+  );
+
+  const onOptionChange = (option: any) => {
+    const selectedOption = parseInt(option, 10);
+    const { rootSchema } = registry;
+    const newOption = utils.retrieveSchema(
+      options[selectedOption],
+      rootSchema,
+      formData
+    );
+
+    // If the new option is of type object and the current data is an object,
+    // discard properties added using the old option.
+    let newFormData = undefined;
+    if (
+      utils.guessType(formData) === "object" &&
+      (newOption.type === "object" || newOption.properties)
+    ) {
+      newFormData = Object.assign({}, formData);
+
+      const optionsToDiscard = options.slice();
+      optionsToDiscard.splice(selectedOption, 1);
+
+      // Discard any data added using other options
+      for (const option of optionsToDiscard) {
+        if (option.properties) {
+          for (const key in option.properties) {
+            if (newFormData.hasOwnProperty(key)) {
+              delete newFormData[key];
+            }
+          }
+        }
+      }
+    }
+    // Call getDefaultFormState to make sure defaults are populated on change.
+    onChange(
+      utils.getDefaultFormState(
+        options[selectedOption],
+        newFormData,
+        rootSchema
+      )
+    );
+
+    setSelectedOption(parseInt(option, 10));
+  };
+
+  const _SchemaField = registry.fields.SchemaField as React.FC<FieldProps>;
+  const { widgets } = registry;
+  const uiOptions = (utils.getUiOptions(uiSchema) ?? {}) as WidgetProps;
+  const Widget = utils.getWidget(
+    { type: "number" },
+    "select",
+    widgets
+  ) as React.FC<WidgetProps>;
+
+  const option = options[selectedOption] || null;
+  let optionSchema;
+
+  if (option) {
+    // If the subschema doesn't declare a type, infer the type from the
+    // parent schema
+    optionSchema = option.type
+      ? option
+      : Object.assign({}, option, { type: baseType });
+  }
+
+  const enumOptions = options.map((option: any, index: number) => ({
+    label: option.title || `Option ${index + 1}`,
+    value: index,
+  }));
+
+  console.log(optionSchema);
+
+  return (
+    <div className="panel panel-default panel-body">
+      <div className="form-group">
+        <Widget
+          {...uiOptions}
+          id={`${idSchema.$id}${
+            schema.oneOf ? "__oneof_select" : "__anyof_select"
+          }`}
+          schema={{ type: "number", default: 0 }}
+          onChange={onOptionChange}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          value={selectedOption}
+          options={{ enumOptions }}
+          registry={registry}
+        />
+      </div>
+
+      {option !== null && (
+        <_SchemaField
+          {...props}
+          schema={optionSchema}
+          uiSchema={optionSchema.uihints}
+          errorSchema={errorSchema}
+          idSchema={idSchema}
+          idPrefix={idPrefix}
+          idSeparator={idSeparator}
+          formData={formData}
+          onChange={onChange}
+          formContext={formContext}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          registry={registry}
+          disabled={disabled}
+          readonly={readonly}
+          hideError={hideError}
+        />
+      )}
+    </div>
+  );
+};
+
 const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
+  console.log(props);
+  console.log("CUSTOMFIELD");
   return (
     <div className={props.classNames}>
       {props.schema.title !== undefined && props.schema.title !== " " ? (
@@ -131,6 +282,9 @@ export function PropertiesPanel({
     }
   }
 
+  console.log(uiSchema);
+  console.log(schema);
+
   return (
     <Form
       formData={data}
@@ -142,8 +296,9 @@ export function PropertiesPanel({
         onPropertiesUpdateRequested,
       }}
       id={data?.id}
-      widgets={{
-        file: FileWidget,
+      widgets={widgets}
+      fields={{
+        OneOfField: CustomOneOf,
       }}
       ArrayFieldTemplate={ArrayTemplate}
       FieldTemplate={CustomFieldTemplate}
