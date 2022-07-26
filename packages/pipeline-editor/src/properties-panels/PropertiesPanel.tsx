@@ -107,8 +107,17 @@ const CustomOneOf: Field = (props) => {
     formContext,
   } = props;
   console.log("ONEOF");
+  const findOption = (widgetName: string): any => {
+    for (const i in options as any[]) {
+      const option = options[i];
+      if (option.uihints?.value?.["ui:widget"] === widgetName) {
+        return i;
+      }
+    }
+    return 0;
+  };
   const [selectedOption, setSelectedOption] = useState(
-    utils.getMatchingOption(formData, options, registry)
+    findOption(formData["widget"])
   );
 
   const onOptionChange = (option: any) => {
@@ -142,6 +151,8 @@ const CustomOneOf: Field = (props) => {
           }
         }
       }
+
+      newFormData["ui:widget"] = (newOption as any).uihints?.["ui:widget"];
     }
     // Call getDefaultFormState to make sure defaults are populated on change.
     onChange(
@@ -290,7 +301,21 @@ export function PropertiesPanel({
       formData={data}
       uiSchema={uiSchema}
       schema={schema as any}
-      onChange={(e) => onChange?.(e.formData)}
+      onChange={(e) => {
+        const newFormData = e.formData;
+        const params = schema.properties?.component_parameters?.properties;
+        for (const field in params) {
+          if (params[field].oneOf) {
+            for (const option of params[field].oneOf) {
+              if (option.widget?.const !== undefined) {
+                newFormData.component_parameters[field].widget =
+                  option.widget.const;
+              }
+            }
+          }
+        }
+        onChange?.(e.formData);
+      }}
       formContext={{
         onFileRequested,
         onPropertiesUpdateRequested,
