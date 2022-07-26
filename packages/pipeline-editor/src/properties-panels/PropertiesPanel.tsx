@@ -87,26 +87,7 @@ const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
 };
 
 const CustomOneOf: Field = (props) => {
-  const {
-    baseType,
-    disabled,
-    readonly,
-    hideError,
-    errorSchema,
-    formData,
-    idPrefix,
-    idSeparator,
-    idSchema,
-    onBlur,
-    onChange,
-    onFocus,
-    options,
-    registry,
-    uiSchema,
-    schema,
-    formContext,
-  } = props;
-  console.log("ONEOF");
+  const { options, formData, registry } = props;
   const findOption = (widgetName: string): any => {
     for (const i in options as any[]) {
       const option = options[i];
@@ -122,7 +103,7 @@ const CustomOneOf: Field = (props) => {
 
   const onOptionChange = (option: any) => {
     const selectedOption = parseInt(option, 10);
-    const { rootSchema } = registry;
+    const { rootSchema } = props.registry;
     const newOption = utils.retrieveSchema(
       options[selectedOption],
       rootSchema,
@@ -151,11 +132,9 @@ const CustomOneOf: Field = (props) => {
           }
         }
       }
-
-      newFormData["ui:widget"] = (newOption as any).uihints?.["ui:widget"];
     }
     // Call getDefaultFormState to make sure defaults are populated on change.
-    onChange(
+    props.onChange(
       utils.getDefaultFormState(
         options[selectedOption],
         newFormData,
@@ -168,7 +147,7 @@ const CustomOneOf: Field = (props) => {
 
   const _SchemaField = registry.fields.SchemaField as React.FC<FieldProps>;
   const { widgets } = registry;
-  const uiOptions = (utils.getUiOptions(uiSchema) ?? {}) as WidgetProps;
+  const uiOptions = (utils.getUiOptions(props.uiSchema) ?? {}) as WidgetProps;
   const Widget = utils.getWidget(
     { type: "number" },
     "select",
@@ -183,7 +162,7 @@ const CustomOneOf: Field = (props) => {
     // parent schema
     optionSchema = option.type
       ? option
-      : Object.assign({}, option, { type: baseType });
+      : Object.assign({}, option, { type: props.baseType });
   }
 
   const enumOptions = options.map((option: any, index: number) => ({
@@ -191,20 +170,18 @@ const CustomOneOf: Field = (props) => {
     value: index,
   }));
 
-  console.log(optionSchema);
-
   return (
     <div className="panel panel-default panel-body">
       <div className="form-group">
         <Widget
           {...uiOptions}
-          id={`${idSchema.$id}${
-            schema.oneOf ? "__oneof_select" : "__anyof_select"
+          id={`${props.idSchema.$id}${
+            props.schema.oneOf ? "__oneof_select" : "__anyof_select"
           }`}
           schema={{ type: "number", default: 0 }}
           onChange={onOptionChange}
-          onBlur={onBlur}
-          onFocus={onFocus}
+          onBlur={props.onBlur}
+          onFocus={props.onFocus}
           value={selectedOption}
           options={{ enumOptions }}
           registry={registry}
@@ -216,19 +193,6 @@ const CustomOneOf: Field = (props) => {
           {...props}
           schema={optionSchema}
           uiSchema={optionSchema.uihints}
-          errorSchema={errorSchema}
-          idSchema={idSchema}
-          idPrefix={idPrefix}
-          idSeparator={idSeparator}
-          formData={formData}
-          onChange={onChange}
-          formContext={formContext}
-          onBlur={onBlur}
-          onFocus={onFocus}
-          registry={registry}
-          disabled={disabled}
-          readonly={readonly}
-          hideError={hideError}
         />
       )}
     </div>
@@ -236,8 +200,6 @@ const CustomOneOf: Field = (props) => {
 };
 
 const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
-  console.log(props);
-  console.log("CUSTOMFIELD");
   return (
     <div className={props.classNames}>
       {props.schema.title !== undefined && props.schema.title !== " " ? (
