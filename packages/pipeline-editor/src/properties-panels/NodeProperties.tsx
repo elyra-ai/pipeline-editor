@@ -56,6 +56,7 @@ function NodeProperties({
   onPropertiesUpdateRequested,
   onChange,
 }: Props) {
+  console.log("nodeproperties");
   if (selectedNodes === undefined || selectedNodes.length === 0) {
     return <Message>Select a node to edit its properties.</Message>;
   }
@@ -105,59 +106,86 @@ function NodeProperties({
 
   // returns the node properties for selectedNode with the most recent content
   const getNodeProperties = (): any => {
-    const data: any[] = [];
+    const oneOfValues: any[] = [];
 
     // add each upstream node to the data list
     for (const upstreamNode of upstreamNodes ?? []) {
       const nodeDef = nodes.find((n) => n.op === upstreamNode.op);
       const options = [];
 
+      const nodeProperties =
+        nodeDef?.app_data.properties.properties.component_parameters.properties;
       // Add each property with a format of outputpath to the options field
-      for (const prop in nodeDef?.app_data.properties.component_properties ??
-        {}) {
-        const properties =
-          nodeDef?.app_data.properties.component_properties[prop] ?? {};
-        if (properties.uihints?.format === "outputpath") {
-          options.push({
-            value: prop,
-            label: properties.title,
+      for (const prop in nodeProperties ?? {}) {
+        const properties = nodeProperties[prop] ?? {};
+        if (properties.uihints?.outputpath) {
+          // Creates a "oneof" object for each node / output pair
+          oneOfValues.push({
+            title: `${upstreamNode.app_data?.ui_data?.label}: ${properties.title}`,
+            type: "object",
+            properties: {
+              value: {
+                type: "string",
+                default: upstreamNode.id,
+              },
+              option: {
+                type: "string",
+                default: prop,
+              },
+            },
+            uihints: {
+              value: {
+                "ui:widget": "hidden",
+              },
+              option: {
+                "ui:widget": "hidden",
+              },
+              label: "false",
+            },
           });
         }
       }
-      data.push({
-        value: upstreamNode.id,
-        label: upstreamNode.app_data?.ui_data?.label,
-        options: options,
-      });
     }
 
     // update property data to include data for properties with inputpath format
-    return produce(nodePropertiesSchema?.app_data.properties, (draft: any) => {
-      for (let prop in draft.component_properties) {
-        if (draft.component_properties[prop].uihints?.format === "inputpath") {
-          draft.component_properties[prop].uihints = {
-            ...draft.component_properties[prop].uihints,
-            data,
-            placeholder: "Select an input source",
-          };
-        } else if (draft.component_properties[prop].uihints?.controls) {
-          for (const key in draft.component_properties[prop].uihints
-            ?.controls) {
-            if (
-              draft.component_properties[prop].uihints?.controls[key].format ===
-              "inputpath"
-            ) {
-              draft.component_properties[prop].uihints.controls[key] = {
-                ...draft.component_properties[prop].uihints.controls[key],
-                data,
-                placeholder: "Select an input source",
-              };
+    return produce(
+      nodePropertiesSchema?.app_data.properties.properties.component_parameters,
+      (draft: any) => {
+        for (let prop in draft.properties) {
+          if (draft.properties[prop].uihints?.["ui:widget"] === "inputpath") {
+            if (oneOfValues.length === 0) {
+              draft.properties[prop].uihints["ui:disabled"] = true;
+              draft.properties[prop].type = "null";
+            } else {
+              draft.properties[prop].oneOf = oneOfValues;
+            }
+          } else if (draft.properties[prop].oneOf) {
+            for (const i in draft.properties[prop].oneOf) {
+              if (
+                draft.properties[prop].oneOf[i].properties.widget.default ===
+                "inputpath"
+              ) {
+                if (oneOfValues.length === 0) {
+                  draft.properties[prop].oneOf[i].properties.value.type =
+                    "null";
+                  draft.properties[prop].oneOf[i].uihints.value = {
+                    "ui:disabled": true,
+                  };
+                } else {
+                  draft.properties[prop].oneOf[
+                    i
+                  ].properties.value.oneOf = oneOfValues;
+                  delete draft.properties[prop].oneOf[i].uihints.value;
+                }
+              }
             }
           }
         }
       }
-    });
+    );
   };
+
+  console.log(getNodeProperties());
 
   const [formData, setFormData] = useState(selectedNodes[0].app_data);
 

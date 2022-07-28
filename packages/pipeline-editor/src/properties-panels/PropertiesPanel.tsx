@@ -42,7 +42,6 @@ export const Message = styled.div`
 
 const widgets: { [id: string]: Widget } = {
   file: FileWidget,
-  inputpath: FileWidget,
 };
 
 interface Props {
@@ -57,7 +56,7 @@ interface Props {
  * React component that allows for custom add / remove buttons in the array
  * field component.
  */
-const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
+export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
   return (
     <div className={props.className}>
       {props.items.map((item) => {
@@ -86,20 +85,33 @@ const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
   );
 };
 
-const CustomOneOf: Field = (props) => {
+export const CustomOneOf: Field = (props) => {
   const { options, formData, registry } = props;
-  const findOption = (widgetName: string): any => {
+  const findOption = (): any => {
+    // For inputpaths, expect a oneOf that has { value, option } for each entry
+    if ((props.schema as any).uihints?.["inputpath"]) {
+      for (const i in props.schema.oneOf ?? []) {
+        const properties: any = props.schema.oneOf?.[i];
+        if (
+          formData.value === (properties as any).properties.value.default &&
+          formData.option === (properties as any).properties.option.default
+        ) {
+          return i;
+        }
+      }
+      return 0;
+    }
+    // for other oneOfs, check for widget specified in the "value" uihints to match the saved widget
     for (const i in options as any[]) {
       const option = options[i];
-      if (option.uihints?.value?.["ui:widget"] === widgetName) {
+      console.log(option);
+      if (option.uihints?.value?.["ui:widget"] === formData?.widget) {
         return i;
       }
     }
     return 0;
   };
-  const [selectedOption, setSelectedOption] = useState(
-    findOption(formData["widget"])
-  );
+  const [selectedOption, setSelectedOption] = useState(findOption());
 
   const onOptionChange = (option: any) => {
     const selectedOption = parseInt(option, 10);
@@ -254,9 +266,6 @@ export function PropertiesPanel({
       uiSchema[field] = properties.uihints;
     }
   }
-
-  console.log(uiSchema);
-  console.log(schema);
 
   return (
     <Form
