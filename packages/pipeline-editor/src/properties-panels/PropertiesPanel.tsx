@@ -105,7 +105,7 @@ export const CustomOneOf: Field = (props) => {
     for (const i in options as any[]) {
       const option = options[i];
       console.log(option);
-      if (option.uihints?.value?.["ui:widget"] === formData?.widget) {
+      if (option.properties.widget?.default === formData?.widget) {
         return i;
       }
     }
