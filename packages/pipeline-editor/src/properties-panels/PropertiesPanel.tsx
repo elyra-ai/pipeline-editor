@@ -219,19 +219,27 @@ export const CustomOneOf: Field = (props) => {
 };
 
 const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
+  let label;
+  if (
+    props.schema.title !== undefined &&
+    props.schema.title !== " " &&
+    props.displayLabel
+  ) {
+    label = props.schema.title;
+  }
   return (
     <div className={props.classNames}>
-      {props.schema.title !== undefined && props.schema.title !== " " ? (
+      {label !== undefined ? (
         <div className="label-header">
           <label className="control-label" htmlFor={props.id}>
-            {`${props.schema.title}${props.required ? "*" : ""}`}
+            {`${label}${props.required ? "*" : ""}`}
           </label>
           {props.schema.description && (
             <div className="description-wrapper">
               <div className="description-button">?</div>
               <p
                 className={`field-description ${
-                  props.schema.title.length < 10 ? "short-title" : ""
+                  label.length < 10 ? "short-title" : ""
                 }`}
               >
                 {props.schema.description}
