@@ -85,6 +85,14 @@ export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
   );
 };
 
+/**
+ * A custom oneOf field to handle the 2 custom oneOf cases that Elyra has:
+ * 1. Each oneOf entry represents a different widget:
+ *       Selecting the options based on widget type: assumes the value of the field
+ *       is { value, widget } so that the widget type can be saved in the json.
+ * 2. "inputpath": Each oneOf entry represents a different set object
+ *       Selecting the options based on the default values of the given oneOf object.
+ */
 export const CustomOneOf: Field = (props) => {
   const { options, formData, registry } = props;
   const findOption = (): any => {
@@ -104,7 +112,6 @@ export const CustomOneOf: Field = (props) => {
     // for other oneOfs, check for widget specified in the "value" uihints to match the saved widget
     for (const i in options as any[]) {
       const option = options[i];
-      console.log(option);
       if (option.properties.widget?.default === formData?.widget) {
         return i;
       }

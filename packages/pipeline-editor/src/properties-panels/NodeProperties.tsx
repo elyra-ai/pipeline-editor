@@ -56,7 +56,6 @@ function NodeProperties({
   onPropertiesUpdateRequested,
   onChange,
 }: Props) {
-  console.log("nodeproperties");
   if (selectedNodes === undefined || selectedNodes.length === 0) {
     return <Message>Select a node to edit its properties.</Message>;
   }
@@ -184,8 +183,6 @@ function NodeProperties({
       }
     );
   };
-
-  console.log(getNodeProperties());
 
   const [formData, setFormData] = useState(selectedNodes[0].app_data);
 
