@@ -134,10 +134,10 @@ function NodeProperties({
             },
             uihints: {
               value: {
-                "ui:widget": "hidden",
+                "ui:field": "hidden",
               },
               option: {
-                "ui:widget": "hidden",
+                "ui:field": "hidden",
               },
               label: "false",
             },

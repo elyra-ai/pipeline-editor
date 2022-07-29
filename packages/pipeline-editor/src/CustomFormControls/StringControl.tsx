@@ -35,9 +35,10 @@ export const FileWidget: Widget = (props) => {
   }, [props.formContext.actionHandler, value, props.uiSchema]);
 
   return (
-    <div>
+    <div style={{ display: "flex" }}>
       <input
         type="text"
+        className="form-control"
         value={value}
         placeholder={props.uiSchema?.["ui:placeholder"]}
         onChange={(e) => {
@@ -45,7 +46,13 @@ export const FileWidget: Widget = (props) => {
         }}
         disabled
       />
-      <button onClick={handleChooseFile}>Browse</button>
+      <button
+        className="form-control"
+        style={{ width: "fit-content" }}
+        onClick={handleChooseFile}
+      >
+        Browse
+      </button>
     </div>
   );
 };
