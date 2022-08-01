@@ -95,14 +95,15 @@ export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
  */
 export const CustomOneOf: Field = (props) => {
   const { options, formData, registry } = props;
+  console.log(options);
   const findOption = (): any => {
     // For inputpaths, expect a oneOf that has { value, option } for each entry
     if ((props.schema as any).uihints?.["inputpath"]) {
       for (const i in props.schema.oneOf ?? []) {
         const properties: any = props.schema.oneOf?.[i];
         if (
-          formData.value === (properties as any).properties.value.default &&
-          formData.option === (properties as any).properties.option.default
+          formData?.value === (properties as any).properties.value.default &&
+          formData?.option === (properties as any).properties.option.default
         ) {
           return i;
         }

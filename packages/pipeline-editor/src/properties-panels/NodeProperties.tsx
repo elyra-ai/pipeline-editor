@@ -151,12 +151,12 @@ function NodeProperties({
       nodePropertiesSchema?.app_data.properties.properties.component_parameters,
       (draft: any) => {
         for (let prop in draft.properties) {
-          if (draft.properties[prop].uihints?.["ui:widget"] === "inputpath") {
-            if (oneOfValues.length === 0) {
-              draft.properties[prop].uihints["ui:disabled"] = true;
-              draft.properties[prop].type = "null";
-            } else {
+          if (draft.properties[prop].uihints?.inputpath) {
+            if (oneOfValues.length > 0) {
               draft.properties[prop].oneOf = oneOfValues;
+            } else {
+              draft.properties[prop].type = "string";
+              draft.properties[prop].enum = [];
             }
           } else if (draft.properties[prop].oneOf) {
             for (const i in draft.properties[prop].oneOf) {
@@ -166,10 +166,8 @@ function NodeProperties({
               ) {
                 if (oneOfValues.length === 0) {
                   draft.properties[prop].oneOf[i].properties.value.type =
-                    "null";
-                  draft.properties[prop].oneOf[i].uihints.value = {
-                    "ui:disabled": true,
-                  };
+                    "string";
+                  draft.properties[prop].oneOf[i].properties.value.enum = [];
                 } else {
                   draft.properties[prop].oneOf[
                     i
