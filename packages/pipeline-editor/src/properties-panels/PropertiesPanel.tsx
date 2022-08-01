@@ -233,7 +233,11 @@ const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
       }`}
     >
       {props.schema.title !== undefined && props.schema.title !== " " ? (
-        <div className="label-header">
+        <div
+          className={`label-header ${
+            props.uiSchema["ui:field"] === "header" ? "category-header" : ""
+          }`}
+        >
           <label className="control-label" htmlFor={props.id}>
             {`${props.schema.title}${props.required ? "*" : ""}`}
           </label>
