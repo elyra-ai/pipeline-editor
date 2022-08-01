@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { utils } from "@rjsf/core";
 import produce from "immer";
 import { useState } from "react";
 import styled from "styled-components";
@@ -185,10 +184,7 @@ function NodeProperties({
     );
   };
 
-  const nodeProperties = getNodeProperties();
-  const [formData, setFormData] = useState(
-    utils.getDefaultFormState(nodeProperties, selectedNodes[0].app_data)
-  );
+  const [formData, setFormData] = useState(selectedNodes[0].app_data);
 
   return (
     <div>

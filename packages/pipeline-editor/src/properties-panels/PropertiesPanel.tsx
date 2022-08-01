@@ -219,8 +219,12 @@ export const CustomOneOf: Field = (props) => {
 };
 
 const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
+  let children = props.children;
   if (props.uiSchema["ui:field"] === "hidden") {
     return <div />;
+  }
+  if (props.uiSchema["ui:readonly"]) {
+    children = <p>{props.formData ?? props.schema.default}</p>;
   }
   return (
     <div
@@ -247,7 +251,7 @@ const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
           )}
         </div>
       ) : undefined}
-      {props.children}
+      {children}
       {props.errors}
     </div>
   );
