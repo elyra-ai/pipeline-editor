@@ -150,6 +150,13 @@ function NodeProperties({
     return produce(
       nodePropertiesSchema?.app_data.properties.properties.component_parameters,
       (draft: any) => {
+        draft.properties = {
+          label: {
+            title: "Label",
+            type: "string",
+          },
+          ...draft.properties,
+        };
         for (let prop in draft.properties) {
           if (draft.properties[prop].uihints?.inputpath) {
             if (oneOfValues.length > 0) {
