@@ -25,6 +25,7 @@ import Form, {
   utils,
   WidgetProps,
   FieldProps,
+  AjvError,
 } from "@rjsf/core";
 
 import { FileWidget } from "../CustomFormControls";
@@ -322,6 +323,16 @@ export function PropertiesPanel({
       ArrayFieldTemplate={ArrayTemplate}
       FieldTemplate={CustomFieldTemplate}
       className={"elyra-formEditor"}
+      transformErrors={(errors: AjvError[]) => {
+        // Suppress the "oneof" validation because we're using oneOf in a custom way.
+        const transformed = [];
+        for (const error of errors) {
+          if (error.message !== "should match exactly one schema in oneOf") {
+            transformed.push(error);
+          }
+        }
+        return transformed;
+      }}
     />
   );
 }
