@@ -16,5 +16,5 @@
 
 /* istanbul ignore file */
 
-export * from "./StringControl";
+export * from "./FileWidget";
 export * from "./ObjectEnumWidget";

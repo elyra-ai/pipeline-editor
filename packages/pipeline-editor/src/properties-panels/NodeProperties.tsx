@@ -189,16 +189,13 @@ function NodeProperties({
     );
   };
 
-  const [formData, setFormData] = useState(selectedNodes[0].app_data);
-
   return (
     <div>
       <Heading>{nodePropertiesSchema.label}</Heading>
       <PropertiesPanel
         schema={getNodeProperties()}
-        data={formData}
+        data={selectedNodes[0].app_data}
         onChange={(data: any) => {
-          setFormData(data);
           onChange?.(selectedNode.id, data);
         }}
         onFileRequested={onFileRequested}
