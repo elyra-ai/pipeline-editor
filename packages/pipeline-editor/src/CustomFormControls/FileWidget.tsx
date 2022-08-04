@@ -30,8 +30,10 @@ export const FileWidget: Widget = (props) => {
       id: props.id,
     });
     console.log(values);
-    props.onChange(values[0]);
-    setValue(values[0]);
+    if (values?.[0]) {
+      props.onChange(values[0]);
+      setValue(values[0]);
+    }
   }, [props.formContext.actionHandler, value, props.uiSchema]);
 
   return (

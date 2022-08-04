@@ -110,7 +110,6 @@ function NodeProperties({
     // add each upstream node to the data list
     for (const upstreamNode of upstreamNodes ?? []) {
       const nodeDef = nodes.find((n) => n.op === upstreamNode.op);
-      const options = [];
 
       const nodeProperties =
         nodeDef?.app_data.properties.properties.component_parameters.properties;
@@ -194,9 +193,14 @@ function NodeProperties({
       <Heading>{nodePropertiesSchema.label}</Heading>
       <PropertiesPanel
         schema={getNodeProperties()}
-        data={selectedNodes[0].app_data}
+        data={selectedNodes[0].app_data?.component_parameters}
         onChange={(data: any) => {
-          onChange?.(selectedNode.id, data);
+          onChange?.(selectedNode.id, {
+            label: data?.label,
+            component_parameters: {
+              ...data,
+            },
+          });
         }}
         onFileRequested={onFileRequested}
         onPropertiesUpdateRequested={onPropertiesUpdateRequested}

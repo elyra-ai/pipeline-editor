@@ -30,6 +30,7 @@ import Form, {
 
 import { FileWidget } from "../CustomFormControls";
 import { useEffect, useState } from "react";
+import { ErrorMessage } from "../CustomFormControls/ErrorMessage";
 
 export const Message = styled.div`
   margin-top: 14px;
@@ -234,6 +235,7 @@ const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
         props.schema.oneOf ? "field-oneOf" : ""
       }`}
     >
+      {props.rawErrors && <div className="errorIndicator" />}
       {props.schema.title !== undefined && props.schema.title !== " " ? (
         <div
           className={`label-header ${
@@ -320,6 +322,7 @@ export function PropertiesPanel({
       fields={{
         OneOfField: CustomOneOf,
       }}
+      liveValidate
       ArrayFieldTemplate={ArrayTemplate}
       FieldTemplate={CustomFieldTemplate}
       className={"elyra-formEditor"}
