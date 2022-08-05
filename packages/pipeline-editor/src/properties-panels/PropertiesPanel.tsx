@@ -156,13 +156,15 @@ export const CustomOneOf: Field = (props) => {
       }
     }
     // Call getDefaultFormState to make sure defaults are populated on change.
-    props.onChange(
-      utils.getDefaultFormState(
+    let defaults;
+    try {
+      defaults = utils.getDefaultFormState(
         options[selectedOption],
         newFormData,
         rootSchema
-      )
-    );
+      );
+    } catch {}
+    props.onChange(defaults);
 
     setSelectedOption(parseInt(option, 10));
   };
