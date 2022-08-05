@@ -231,8 +231,12 @@ const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
   if (props.uiSchema["ui:readonly"]) {
     children = <p>{props.formData ?? props.schema.default}</p>;
   }
-  const hasError =
-    props.rawErrors || (props.required && props.formData === undefined);
+  const requiredError =
+    (props.required && props.formData === undefined) ||
+    (props.required &&
+      props.schema.oneOf &&
+      props.formData?.value === undefined);
+  const hasError = props.rawErrors || requiredError;
   return (
     <div
       className={`${props.classNames} ${
@@ -265,9 +269,7 @@ const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
       ) : undefined}
       {children}
       {props.errors}
-      {props.required && props.formData === undefined && (
-        <li className="text-danger">is a required property</li>
-      )}
+      {requiredError && <li className="text-danger">is a required property</li>}
     </div>
   );
 };
