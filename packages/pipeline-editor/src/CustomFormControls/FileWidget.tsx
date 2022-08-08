@@ -14,34 +14,31 @@
  * limitations under the License.
  */
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 import { Widget } from "@rjsf/core";
 
 // TODO: Make the file clearable
 export const FileWidget: Widget = (props) => {
-  const [value, setValue] = useState<string>(props.value);
-
   const handleChooseFile = useCallback(async () => {
     const values = await props.formContext.onFileRequested({
       canSelectMany: false,
-      defaultUri: value,
+      defaultUri: props.value,
       filters: { File: props.uiSchema.extensions },
       id: props.id,
     });
     console.log(values);
     if (values?.[0]) {
       props.onChange(values[0]);
-      setValue(values[0]);
     }
-  }, [props.formContext.actionHandler, value, props.uiSchema]);
+  }, [props.formContext.actionHandler, props.value, props.uiSchema]);
 
   return (
     <div style={{ display: "flex" }}>
       <input
         type="text"
         className="form-control"
-        value={value}
+        value={props.value ?? ""}
         placeholder={props.uiSchema?.["ui:placeholder"]}
         onChange={(e) => {
           console.log(e);

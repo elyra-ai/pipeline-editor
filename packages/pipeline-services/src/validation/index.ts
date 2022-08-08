@@ -100,12 +100,14 @@ function getPropertyValidationErrors(prop: any, value: any): any[] {
 export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
   let problems: PartialProblem[] = [];
 
-  for (const prop of pipelineProperties?.properties ?? []) {
+  for (const fieldName in pipelineProperties?.properties ?? []) {
     // If the property isn't in the json, report the error one level higher.
     let path = ["pipeline", "0", "app_data"];
-    if (pipeline.app_data?.[prop] !== undefined) {
-      path.push(pipelineProperties[prop]);
+    if (pipeline.app_data?.[fieldName] !== undefined) {
+      path.push(pipelineProperties[fieldName]);
     }
+
+    const prop = pipelineProperties.properties[fieldName];
 
     // this should be safe because a boolean can't be required
     // otherwise we would need to check strings for undefined or empty string
@@ -113,18 +115,18 @@ export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
     // TODO: We should update this to do type checking.
     const value = getValue(
       pipeline.app_data?.properties,
-      prop.parameter_ref,
+      fieldName,
       pipeline.app_data?.properties?.pipeline_defaults
     );
     if (prop.data?.required && !value) {
       problems.push({
-        message: `The pipeline property '${prop.label.default}' is required.`,
+        message: `The pipeline property '${prop.title}' is required.`,
         path,
         info: {
           type: "missingProperty",
           pipelineID: pipeline.id,
           // do not strip elyra here, we need to differentiate between pipeline_defaults still.
-          property: prop.parameter_ref,
+          property: fieldName,
         },
       });
     }
@@ -133,13 +135,13 @@ export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
 
     if (errorMessages[0] !== undefined) {
       problems.push({
-        message: `The pipeline property '${prop.label.default}' is invalid: ${errorMessages[0]}`,
+        message: `The pipeline property '${prop.title}' is invalid: ${errorMessages[0]}`,
         path,
         info: {
           type: "invalidProperty",
           pipelineID: pipeline.id,
           // do not strip elyra here, we need to differentiate between pipeline_defaults still.
-          property: prop.parameter_ref,
+          property: fieldName,
           message: errorMessages[0],
         },
       });
