@@ -535,18 +535,18 @@ class PipelineController extends CanvasController {
           case "missingProperty":
             if (p.info.nodeID === nodeID) {
               const property = p.info.property;
-              const label = nodeDef!.app_data.properties!.uihints!.parameter_info.find(
+              const label = (nodeDef!.app_data.properties!.uihints!.parameter_info.find(
                 (info) => info.parameter_ref === property
-              )!.title;
+              ) as any).title;
               nodeProblems.push(`property "${label}" is required`);
             }
             break;
           case "invalidProperty":
             if (p.info.nodeID === nodeID) {
               const property = p.info.property;
-              const label = nodeDef!.app_data.properties!.uihints!.parameter_info.find(
+              const label = (nodeDef!.app_data.properties!.uihints!.parameter_info.find(
                 (info) => info.parameter_ref === property
-              )!.title;
+              ) as any)!.title;
               nodeProblems.push(
                 `property "${label}" is invalid: ${p.info.message}`
               );
