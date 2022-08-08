@@ -172,10 +172,13 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       continue;
     }
 
-    for (const prop of nodeDef.app_data.properties?.properties ?? []) {
+    const nodeProperties =
+      nodeDef.app_data.properties?.properties?.component_parameters?.properties;
+    for (const fieldName in nodeProperties ?? []) {
+      const prop = nodeProperties[fieldName];
       // If the property isn't in the json, report the error one level higher.
       let path = ["nodes", n, "app_data"];
-      if (node.app_data[prop.parameter_ref] !== undefined) {
+      if (node.app_data.component_parameters?.[fieldName] !== undefined) {
         path.push(prop.parameter_ref);
       }
 
@@ -184,20 +187,24 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       // NOTE: 0 is also falsy, but we don't have any number inputs right now?
       // TODO: We should update this to do type checking.
       const value = getValue(
-        node.app_data,
-        prop.parameter_ref,
+        node.app_data.component_parameters ?? {},
+        fieldName,
         pipeline.app_data?.properties?.pipeline_defaults
       );
-      if (prop.data?.required && !value) {
+      if (
+        nodeDef.app_data.properties?.properties?.component_parameters?.required?.includes(
+          fieldName
+        ) &&
+        !value
+      ) {
         problems.push({
-          message: `The property '${prop.label.default}' on node '${node.app_data.ui_data.label}' is required.`,
+          message: `The property '${prop.title}' on node '${node.app_data.ui_data.label}' is required.`,
           path,
           info: {
             type: "missingProperty",
             pipelineID: pipeline.id,
             nodeID: node.id,
-            // do not strip elyra here, we need to differentiate between component_parameters still.
-            property: prop.parameter_ref,
+            property: fieldName,
           },
         });
       }
@@ -242,7 +249,7 @@ export function validate(
 
     partials.push(...getPipelineProblems(pipeline, pipelineProperties));
     partials.push(...getLinkProblems(pipeline));
-    // partials.push(...getNodeProblems(pipeline, nodeDefinitions));
+    partials.push(...getNodeProblems(pipeline, nodeDefinitions));
 
     problems.push(
       ...partials.map((partial) => {
