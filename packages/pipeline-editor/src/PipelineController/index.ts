@@ -537,7 +537,7 @@ class PipelineController extends CanvasController {
               const property = p.info.property;
               const label = nodeDef!.app_data.properties!.uihints!.parameter_info.find(
                 (info) => info.parameter_ref === property
-              )!.label.default;
+              )!.title;
               nodeProblems.push(`property "${label}" is required`);
             }
             break;
@@ -546,7 +546,7 @@ class PipelineController extends CanvasController {
               const property = p.info.property;
               const label = nodeDef!.app_data.properties!.uihints!.parameter_info.find(
                 (info) => info.parameter_ref === property
-              )!.label.default;
+              )!.title;
               nodeProblems.push(
                 `property "${label}" is invalid: ${p.info.message}`
               );

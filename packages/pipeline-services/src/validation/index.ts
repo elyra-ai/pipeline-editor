@@ -215,7 +215,7 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
 
       if (errorMessages[0] !== undefined) {
         problems.push({
-          message: `The property '${prop.label.default}' on node '${node.app_data.ui_data.label}' is invalid: ${errorMessages[0]}`,
+          message: `The property '${prop.title}' on node '${node.app_data.ui_data.label}' is invalid: ${errorMessages[0]}`,
           path,
           info: {
             type: "invalidProperty",
