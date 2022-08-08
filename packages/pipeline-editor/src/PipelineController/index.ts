@@ -639,19 +639,17 @@ class PipelineController extends CanvasController {
       const { op, app_data } = node;
       const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
 
-      const info = nodeDef?.app_data.properties?.uihints?.parameter_info ?? [];
+      const info =
+        (nodeDef?.app_data.properties?.properties as any)?.component_parameters
+          ?.properties ?? {};
 
-      const properties = info.map((i) => {
-        if (i.parameter_ref.startsWith("elyra_")) {
-          const strippedRef = i.parameter_ref.replace(/^elyra_/, "");
-          const value = app_data?.component_parameters?.[strippedRef];
-          return this.getPropertyValue(value, i, i.label.default);
-        }
-        return {
-          label: i.label.default,
-          value: app_data?.[i.parameter_ref],
-        };
-      });
+      const properties = [];
+      for (const prop in info) {
+        properties.push({
+          label: info[prop].title,
+          value: app_data?.component_parameters?.[prop],
+        });
+      }
       return properties;
     }
 
