@@ -446,7 +446,7 @@ class PipelineController extends CanvasController {
         nodes.push(...c.node_types);
       }
     }
-    // nodes = this.propagatePipelineDefaultProperties(nodes, this.palette);
+    nodes = this.propagatePipelineDefaultProperties(nodes, this.palette);
 
     return nodes;
   }
@@ -456,6 +456,8 @@ class PipelineController extends CanvasController {
     palette: PaletteV3
   ): NodeType[] {
     return produce(nodes, (draft: any) => {
+      console.log(nodes);
+      console.log(palette);
       for (const prop of palette.properties?.uihints?.parameter_info ?? []) {
         const propValue = this.getPipelineFlow()?.pipelines?.[0]?.app_data
           ?.properties?.pipeline_defaults?.[
@@ -472,14 +474,16 @@ class PipelineController extends CanvasController {
             // skip nodes that dont have the property
             return;
           }
-          if (prop.custom_control_id === "EnumControl") {
+          if (prop.enum) {
             const propLabel = nodeProp?.data?.labels?.[propValue] ?? propValue;
             if (propLabel) {
-              nodeProp.data.placeholder = `${propLabel} (pipeline default)`;
-              nodeProp.data.pipeline_default = true;
+              nodeProp.uihints[
+                "ui:placeholder"
+              ] = `${propLabel} (pipeline default)`;
+              nodeProp.uihints.pipeline_default = true;
             }
           } else if (prop.custom_control_id === "StringArrayControl") {
-            nodeProp.data.pipeline_defaults = propValue;
+            nodeProp.uihints.pipeline_defaults = propValue;
           }
         });
       }
@@ -529,24 +533,22 @@ class PipelineController extends CanvasController {
       const nodeProblems = [];
 
       const nodeDef = this.getAllPaletteNodes().find((n) => n.op === node.op);
+      const componentProperties = nodeDef!.app_data.properties.properties
+        ?.component_parameters?.properties;
 
       for (const p of problems) {
         switch (p.info.type) {
           case "missingProperty":
             if (p.info.nodeID === nodeID) {
               const property = p.info.property;
-              const label = (nodeDef!.app_data.properties!.uihints!.parameter_info.find(
-                (info) => info.parameter_ref === property
-              ) as any).title;
+              const label = componentProperties[property].title;
               nodeProblems.push(`property "${label}" is required`);
             }
             break;
           case "invalidProperty":
             if (p.info.nodeID === nodeID) {
               const property = p.info.property;
-              const label = (nodeDef!.app_data.properties!.uihints!.parameter_info.find(
-                (info) => info.parameter_ref === property
-              ) as any)!.title;
+              const label = componentProperties[property].title;
               nodeProblems.push(
                 `property "${label}" is invalid: ${p.info.message}`
               );
@@ -578,7 +580,7 @@ class PipelineController extends CanvasController {
       );
       // Add each property with a format of outputpath to the options field
       const upstreamNodeOption = upstreamNodeDef?.app_data?.properties?.uihints?.parameter_info?.find(
-        (prop) => {
+        (prop: any) => {
           return prop.parameter_ref === value.option;
         }
       )?.label?.default;
