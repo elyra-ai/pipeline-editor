@@ -456,33 +456,34 @@ class PipelineController extends CanvasController {
     palette: PaletteV3
   ): NodeType[] {
     return produce(nodes, (draft: any) => {
-      console.log(nodes);
-      console.log(palette);
-      for (const prop of palette.properties?.uihints?.parameter_info ?? []) {
+      const properties =
+        palette.properties?.properties?.pipeline_defaults?.properties ?? {};
+      for (const prop in properties) {
         const propValue = this.getPipelineFlow()?.pipelines?.[0]?.app_data
-          ?.properties?.pipeline_defaults?.[
-          prop.parameter_ref.replace(/^elyra_/, "")
-        ];
+          ?.properties?.pipeline_defaults?.[prop];
 
         draft.forEach((node: any) => {
-          const propIndex = node.app_data.properties.uihints.parameter_info.findIndex(
-            (p: any) => p.parameter_ref === prop.parameter_ref
-          );
-          const nodeProp =
-            node.app_data.properties.uihints.parameter_info[propIndex];
+          const componentParameters =
+            node.app_data.properties.properties.component_parameters;
+          const nodeProp = componentParameters.properties[prop];
           if (!nodeProp) {
             // skip nodes that dont have the property
             return;
           }
-          if (prop.enum) {
-            const propLabel = nodeProp?.data?.labels?.[propValue] ?? propValue;
+          if (properties[prop].enum) {
+            const valueIndex = properties[prop].enum.indexOf(propValue);
+            const propLabel = nodeProp?.enumNames?.[valueIndex] ?? propValue;
             if (propLabel) {
               nodeProp.uihints[
                 "ui:placeholder"
               ] = `${propLabel} (pipeline default)`;
               nodeProp.uihints.pipeline_default = true;
             }
-          } else if (prop.custom_control_id === "StringArrayControl") {
+            const requiredIndex = componentParameters.required?.indexOf(prop);
+            if (requiredIndex > -1) {
+              componentParameters.required.splice(requiredIndex, 1);
+            }
+          } else if (properties[prop].type === "array") {
             nodeProp.uihints.pipeline_defaults = propValue;
           }
         });
