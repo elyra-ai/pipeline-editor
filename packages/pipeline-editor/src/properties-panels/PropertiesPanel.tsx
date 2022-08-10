@@ -75,6 +75,14 @@ export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
           </div>
         );
       })}
+      {props.uiSchema.pipeline_defaults?.map((item: any) => {
+        return (
+          <div className="array-pipelineDefaults form-control">
+            <div className="left">{item}</div>
+            <div className="right">(pipeline default)</div>
+          </div>
+        );
+      })}
       {props.canAdd && (
         <button
           className="jp-mod-styled jp-mod-reject"
@@ -97,7 +105,6 @@ export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
  */
 export const CustomOneOf: Field = (props) => {
   const { options, formData, registry } = props;
-  console.log(options);
   const findOption = (): any => {
     // For inputpaths, expect a oneOf that has { value, option } for each entry
     if ((props.schema as any).uihints?.["inputpath"]) {
