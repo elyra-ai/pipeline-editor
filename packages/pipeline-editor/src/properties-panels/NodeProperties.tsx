@@ -107,13 +107,13 @@ function NodeProperties({
         registry.
         {selectedNode.app_data.component_source !== undefined
           ? 
-          {parseComponent()
-            .map((line, i) => (
-              <span key={i}>
-                <br />
-                {line}
-              </span>
-            ))}
+            {parseComponent()
+              .map((line, i) => (
+                <span key={i}>
+                  <br />
+                  {line}
+                </span>
+              ))}
           : ""}
       </Message>
     );
@@ -195,4 +195,4 @@ function NodeProperties({
   );
 }
 
-export default NodeProperties;  
+export default NodeProperties;
