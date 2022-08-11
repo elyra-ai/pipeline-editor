@@ -461,7 +461,10 @@ class PipelineController extends CanvasController {
       for (const prop in properties) {
         const propValue = this.getPipelineFlow()?.pipelines?.[0]?.app_data
           ?.properties?.pipeline_defaults?.[prop];
-
+        if (propValue === undefined) {
+          // Skip propagation if the pipeline default isn't defined
+          return;
+        }
         draft.forEach((node: any) => {
           const componentParameters =
             node.app_data.properties.properties.component_parameters;
@@ -484,7 +487,10 @@ class PipelineController extends CanvasController {
               componentParameters.required.splice(requiredIndex, 1);
             }
           } else if (properties[prop].type === "array") {
-            nodeProp.uihints.pipeline_defaults = propValue;
+            nodeProp.uihints = {
+              pipeline_defaults: propValue,
+              ...nodeProp.uihints,
+            };
           }
         });
       }

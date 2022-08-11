@@ -23,7 +23,7 @@
   "dependencies": {
     "@elyra/canvas": "^12.11.2",
     "@elyra/pipeline-services": "^1.9.0",
-    "@rjsf/core": "^4.2.0",
+    "@rjsf/core": "4.2.3",
     "carbon-components": "^10.43.0",
     "carbon-components-react": "^7.48.0",
     "carbon-icons": "7.0.7",
