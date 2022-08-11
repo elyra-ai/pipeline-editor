@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import styled from "styled-components";
+import { useState } from "react";
 
 import Form, {
   ArrayFieldTemplateProps,
@@ -27,10 +27,9 @@ import Form, {
   FieldProps,
   AjvError,
 } from "@rjsf/core";
+import styled from "styled-components";
 
 import { FileWidget } from "../CustomFormControls";
-import { useEffect, useState } from "react";
-import { ErrorMessage } from "../CustomFormControls/ErrorMessage";
 
 export const Message = styled.div`
   margin-top: 14px;
@@ -176,7 +175,7 @@ export const CustomOneOf: Field = (props) => {
     setSelectedOption(parseInt(option, 10));
   };
 
-  const _SchemaField = registry.fields.SchemaField as React.FC<FieldProps>;
+  const SchemaField = registry.fields.SchemaField as React.FC<FieldProps>;
   const { widgets } = registry;
   const uiOptions = (utils.getUiOptions(props.uiSchema) ?? {}) as WidgetProps;
   const Widget = utils.getWidget(
@@ -220,7 +219,7 @@ export const CustomOneOf: Field = (props) => {
       </div>
 
       {option !== null && (
-        <_SchemaField
+        <SchemaField
           {...props}
           schema={optionSchema}
           uiSchema={optionSchema.uihints}

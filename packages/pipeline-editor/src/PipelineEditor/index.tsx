@@ -43,12 +43,12 @@ import styled, { useTheme } from "styled-components";
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
 import PipelineController, { prefixedToNested } from "../PipelineController";
-import { NodeProperties, PipelineProperties } from "../properties-panels";
+import { NodeProperties } from "../properties-panels";
+import { PropertiesPanel } from "../properties-panels/PropertiesPanel";
 import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
 import { InternalThemeProvider } from "../ThemeProvider";
 import useBlockEvents from "./useBlockEvents";
-import { PropertiesPanel } from "../properties-panels/PropertiesPanel";
 
 interface Props {
   pipeline: any;

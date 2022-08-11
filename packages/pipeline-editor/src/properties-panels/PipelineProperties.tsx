@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Message, PropertiesPanel } from "./PropertiesPanel";
+import { Message } from "./PropertiesPanel";
 
 interface Props {
   pipelineFlow: any;

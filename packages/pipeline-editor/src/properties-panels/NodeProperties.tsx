@@ -15,7 +15,6 @@
  */
 
 import produce from "immer";
-import { useState } from "react";
 import styled from "styled-components";
 
 import { PropertiesPanel, Message } from "./PropertiesPanel";
@@ -47,6 +46,32 @@ const Heading = styled.div`
   color: ${({ theme }) => theme.palette.text.primary};
   opacity: 0.5;
 `;
+
+function getOneOfValue(value: string, option: string, label: string) {
+  return {
+    title: label,
+    type: "object",
+    properties: {
+      value: {
+        type: "string",
+        default: value,
+      },
+      option: {
+        type: "string",
+        default: option,
+      },
+    },
+    uihints: {
+      value: {
+        "ui:field": "hidden",
+      },
+      option: {
+        "ui:field": "hidden",
+      },
+      label: "false",
+    },
+  };
+}
 
 function NodeProperties({
   selectedNodes,
@@ -101,15 +126,15 @@ function NodeProperties({
     );
   }
 
-  const refs = nodePropertiesSchema.app_data.parameter_refs;
-
   // returns the node properties for selectedNode with the most recent content
   const getNodeProperties = (): any => {
     const oneOfValues: any[] = [];
+    const oneOfValuesNoOpt: any[] = [];
 
     // add each upstream node to the data list
     for (const upstreamNode of upstreamNodes ?? []) {
       const nodeDef = nodes.find((n) => n.op === upstreamNode.op);
+      const prevLen = oneOfValuesNoOpt.length;
 
       const nodeProperties =
         nodeDef?.app_data.properties.properties.component_parameters.properties;
@@ -118,30 +143,24 @@ function NodeProperties({
         const properties = nodeProperties[prop] ?? {};
         if (properties.uihints?.outputpath) {
           // Creates a "oneof" object for each node / output pair
-          oneOfValues.push({
-            title: `${upstreamNode.app_data?.ui_data?.label}: ${properties.title}`,
-            type: "object",
-            properties: {
-              value: {
-                type: "string",
-                default: upstreamNode.id,
-              },
-              option: {
-                type: "string",
-                default: prop,
-              },
-            },
-            uihints: {
-              value: {
-                "ui:field": "hidden",
-              },
-              option: {
-                "ui:field": "hidden",
-              },
-              label: "false",
-            },
-          });
+          const oneOfValue = getOneOfValue(
+            upstreamNode.id,
+            prop,
+            `${upstreamNode.app_data?.ui_data?.label}: ${properties.title}`
+          );
+          oneOfValues.push(oneOfValue);
+          oneOfValuesNoOpt.push(oneOfValue);
         }
+      }
+      if (oneOfValuesNoOpt.length <= prevLen) {
+        // Add oneOfValue for parent without specified outputs
+        oneOfValuesNoOpt.push(
+          getOneOfValue(
+            upstreamNode.id,
+            "",
+            upstreamNode.app_data?.ui_data?.label
+          )
+        );
       }
     }
 
@@ -157,9 +176,12 @@ function NodeProperties({
           ...draft.properties,
         };
         for (let prop in draft.properties) {
+          const oneOf = draft.properties[prop].uihints?.allownooptions
+            ? oneOfValuesNoOpt
+            : oneOfValues;
           if (draft.properties[prop].uihints?.inputpath) {
-            if (oneOfValues.length > 0) {
-              draft.properties[prop].oneOf = oneOfValues;
+            if (oneOf.length > 0) {
+              draft.properties[prop].oneOf = oneOf;
             } else {
               draft.properties[prop].type = "string";
               draft.properties[prop].enum = [];
@@ -170,14 +192,14 @@ function NodeProperties({
                 draft.properties[prop].oneOf[i].properties.widget.default ===
                 "inputpath"
               ) {
-                if (oneOfValues.length === 0) {
+                if (oneOf.length === 0) {
                   draft.properties[prop].oneOf[i].properties.value.type =
                     "string";
                   draft.properties[prop].oneOf[i].properties.value.enum = [];
                 } else {
                   draft.properties[prop].oneOf[
                     i
-                  ].properties.value.oneOf = oneOfValues;
+                  ].properties.value.oneOf = oneOf;
                   delete draft.properties[prop].oneOf[i].uihints.value;
                 }
               }

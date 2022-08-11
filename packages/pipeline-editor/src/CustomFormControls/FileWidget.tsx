@@ -31,7 +31,7 @@ export const FileWidget: Widget = (props) => {
     if (values?.[0]) {
       props.onChange(values[0]);
     }
-  }, [props.formContext.actionHandler, props.value, props.uiSchema]);
+  }, [props]);
 
   return (
     <div style={{ display: "flex" }}>
