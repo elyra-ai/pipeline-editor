@@ -171,6 +171,7 @@ function NodeProperties({
         draft.properties = {
           label: {
             title: "Label",
+            description: "A custom label for the node.",
             type: "string",
           },
           ...draft.properties,
