@@ -435,7 +435,7 @@ class PipelineController extends CanvasController {
           ?.properties?.pipeline_defaults?.[prop];
         if (propValue === undefined) {
           // Skip propagation if the pipeline default isn't defined
-          return;
+          continue;
         }
         draft.forEach((node: any) => {
           const componentParameters =
