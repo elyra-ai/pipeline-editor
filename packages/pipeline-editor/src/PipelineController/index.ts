@@ -169,38 +169,10 @@ class PipelineController extends CanvasController {
     const filenameRef = this.resolveParameterRef(op, "filehandler");
 
     if (path && filenameRef) {
-      data.nodeTemplate.app_data.component_parameters[filenameRef] = path;
-
-      if (typeof onPropertiesUpdateRequested === "function") {
-        // properties should be a flat object with elyra_ prefixed keys
-        // e.g. {
-        //   label: "",
-        //   elyra_filename: ""
-        //   elyra_runtime_image: ""
-        // }
-        const properties = await onPropertiesUpdateRequested(
-          nestedToPrefixed(data.nodeTemplate.app_data)
-        );
-
-        const {
-          component_parameters: oldComponentParameters,
-          ...oldAppData
-        } = data.nodeTemplate.app_data;
-
-        const {
-          component_parameters: newComponentParameters,
-          ...newAppData
-        } = prefixedToNested(properties);
-
-        data.nodeTemplate.app_data = {
-          ...oldAppData,
-          ...newAppData,
-          component_parameters: {
-            ...oldComponentParameters,
-            ...newComponentParameters,
-          },
-        };
+      if (data.nodeTemplate.app_data.component_parameters === undefined) {
+        data.nodeTemplate.app_data.component_parameters = {};
       }
+      data.nodeTemplate.app_data.component_parameters[filenameRef] = path;
     }
 
     this.editActionHandler(data);
