@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { NodeType } from "@elyra/canvas";
+
 import produce from "immer";
 import styled from "styled-components";
 
@@ -21,17 +23,7 @@ import { PropertiesPanel, Message } from "./PropertiesPanel";
 
 interface Props {
   selectedNodes?: any[];
-  nodes: {
-    description: any;
-    op: string;
-    label?: string;
-    app_data: {
-      properties?: any;
-      parameter_refs?: {
-        filehandler?: string;
-      };
-    };
-  }[];
+  nodes: NodeType[];
   upstreamNodes?: any[];
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
@@ -190,18 +182,22 @@ function NodeProperties({
             }
           } else if (draft.properties[prop].oneOf) {
             for (const i in draft.properties[prop].oneOf) {
+              const nestedOneOf = draft.properties[prop].oneOf[i].uihints
+                ?.allownooptions
+                ? oneOfValuesNoOpt
+                : oneOfValues;
               if (
                 draft.properties[prop].oneOf[i].properties.widget.default ===
                 "inputpath"
               ) {
-                if (oneOf.length === 0) {
+                if (nestedOneOf.length === 0) {
                   draft.properties[prop].oneOf[i].properties.value.type =
                     "string";
                   draft.properties[prop].oneOf[i].properties.value.enum = [];
                 } else {
                   draft.properties[prop].oneOf[
                     i
-                  ].properties.value.oneOf = oneOf;
+                  ].properties.value.oneOf = nestedOneOf;
                   delete draft.properties[prop].oneOf[i].uihints.value;
                 }
               }
