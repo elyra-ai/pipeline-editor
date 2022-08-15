@@ -22,6 +22,7 @@ import { PropertiesPanel, Message } from "./PropertiesPanel";
 interface Props {
   selectedNodes?: any[];
   nodes: {
+    description: any;
     op: string;
     label?: string;
     app_data: {
@@ -214,6 +215,9 @@ function NodeProperties({
   return (
     <div>
       <Heading>{nodePropertiesSchema.label}</Heading>
+      <span className="nodeDescription">
+        {nodePropertiesSchema.description}
+      </span>
       <PropertiesPanel
         schema={getNodeProperties()}
         data={selectedNodes[0].app_data?.component_parameters}
