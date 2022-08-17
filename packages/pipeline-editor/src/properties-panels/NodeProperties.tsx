@@ -170,15 +170,18 @@ function NodeProperties({
       const component_properties =
         draft.properties.component_parameters.properties;
       for (let prop in component_properties) {
-        const oneOf = component_properties[prop].uihints?.allownooptions
-          ? oneOfValuesNoOpt
-          : oneOfValues;
-        if (component_properties[prop].uihints?.inputpath) {
-          if (oneOf.length > 0) {
-            component_properties[prop].oneOf = oneOf;
-          } else {
-            component_properties[prop].type = "string";
-            component_properties[prop].enum = [];
+        if (component_properties[prop].properties) {
+          const properties = component_properties[prop].properties;
+          const oneOf = properties.value?.uihints?.allownooptions
+            ? oneOfValuesNoOpt
+            : oneOfValues;
+          if (properties?.widget?.default === "inputpath" && properties.value) {
+            if (oneOf.length > 0) {
+              properties.value.oneOf = oneOf;
+            } else {
+              properties.value.type = "string";
+              properties.value.enum = [];
+            }
           }
         } else if (component_properties[prop].oneOf) {
           for (const i in component_properties[prop].oneOf) {
