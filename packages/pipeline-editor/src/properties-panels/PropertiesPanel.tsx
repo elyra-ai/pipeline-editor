@@ -345,7 +345,11 @@ export function PropertiesPanel({
         // Suppress the "oneof" validation because we're using oneOf in a custom way.
         const transformed = [];
         for (const error of errors) {
-          if (error.message !== "should match exactly one schema in oneOf") {
+          if (
+            error.message !== "should match exactly one schema in oneOf" &&
+            (error as any).schemaPath?.includes("oneOf") &&
+            error.message !== "should be object"
+          ) {
             transformed.push(error);
           }
         }

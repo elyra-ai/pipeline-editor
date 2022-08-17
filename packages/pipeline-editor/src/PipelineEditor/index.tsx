@@ -613,10 +613,7 @@ const PipelineEditor = forwardRef(
       (data) => {
         const pipeline = controller.current.getPipelineFlow();
         if (pipeline?.pipelines?.[0]?.app_data) {
-          pipeline.pipelines[0].app_data.properties = prefixedToNested(
-            data,
-            true
-          );
+          pipeline.pipelines[0].app_data.properties = data;
           controller.current.setPipelineFlow(pipeline);
           onChange?.(controller.current.getPipelineFlow());
         }
@@ -694,8 +691,8 @@ const PipelineEditor = forwardRef(
           <PropertiesPanel
             data={pipeline?.pipelines?.[0]?.app_data?.properties}
             schema={pipelineProperties}
-            // onFileRequested={onFileRequested}
-            // onPropertiesUpdateRequested={onPropertiesUpdateRequested}
+            onFileRequested={onFileRequested}
+            onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePipelinePropertiesChange}
           />
         ),
