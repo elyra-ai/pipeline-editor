@@ -158,54 +158,53 @@ function NodeProperties({
     }
 
     // update property data to include data for properties with inputpath format
-    return produce(
-      nodePropertiesSchema?.app_data.properties.properties.component_parameters,
-      (draft: any) => {
-        draft.properties = {
-          label: {
-            title: "Label",
-            description: "A custom label for the node.",
-            type: "string",
-          },
-          ...draft.properties,
-        };
-        for (let prop in draft.properties) {
-          const oneOf = draft.properties[prop].uihints?.allownooptions
-            ? oneOfValuesNoOpt
-            : oneOfValues;
-          if (draft.properties[prop].uihints?.inputpath) {
-            if (oneOf.length > 0) {
-              draft.properties[prop].oneOf = oneOf;
-            } else {
-              draft.properties[prop].type = "string";
-              draft.properties[prop].enum = [];
-            }
-          } else if (draft.properties[prop].oneOf) {
-            for (const i in draft.properties[prop].oneOf) {
-              const nestedOneOf = draft.properties[prop].oneOf[i].uihints
-                ?.allownooptions
-                ? oneOfValuesNoOpt
-                : oneOfValues;
-              if (
-                draft.properties[prop].oneOf[i].properties.widget.default ===
-                "inputpath"
-              ) {
-                if (nestedOneOf.length === 0) {
-                  draft.properties[prop].oneOf[i].properties.value.type =
-                    "string";
-                  draft.properties[prop].oneOf[i].properties.value.enum = [];
-                } else {
-                  draft.properties[prop].oneOf[
-                    i
-                  ].properties.value.oneOf = nestedOneOf;
-                  delete draft.properties[prop].oneOf[i].uihints.value;
-                }
+    return produce(nodePropertiesSchema?.app_data.properties, (draft: any) => {
+      draft.properties = {
+        label: {
+          title: "Label",
+          description: "A custom label for the node.",
+          type: "string",
+        },
+        ...draft.properties,
+      };
+      const component_properties =
+        draft.properties.component_parameters.properties;
+      for (let prop in component_properties) {
+        const oneOf = component_properties[prop].uihints?.allownooptions
+          ? oneOfValuesNoOpt
+          : oneOfValues;
+        if (component_properties[prop].uihints?.inputpath) {
+          if (oneOf.length > 0) {
+            component_properties[prop].oneOf = oneOf;
+          } else {
+            component_properties[prop].type = "string";
+            component_properties[prop].enum = [];
+          }
+        } else if (component_properties[prop].oneOf) {
+          for (const i in component_properties[prop].oneOf) {
+            const nestedOneOf = component_properties[prop].oneOf[i].uihints
+              ?.allownooptions
+              ? oneOfValuesNoOpt
+              : oneOfValues;
+            if (
+              component_properties[prop].oneOf[i].properties.widget.default ===
+              "inputpath"
+            ) {
+              if (nestedOneOf.length === 0) {
+                component_properties[prop].oneOf[i].properties.value.type =
+                  "string";
+                component_properties[prop].oneOf[i].properties.value.enum = [];
+              } else {
+                component_properties[prop].oneOf[
+                  i
+                ].properties.value.oneOf = nestedOneOf;
+                delete component_properties[prop].oneOf[i].uihints.value;
               }
             }
           }
         }
       }
-    );
+    });
   };
 
   return (
@@ -216,13 +215,11 @@ function NodeProperties({
       </span>
       <PropertiesPanel
         schema={getNodeProperties()}
-        data={selectedNodes[0].app_data?.component_parameters}
+        data={selectedNode.app_data}
         onChange={(data: any) => {
           onChange?.(selectedNode.id, {
             label: data?.label,
-            component_parameters: {
-              ...data,
-            },
+            ...data,
           });
         }}
         onFileRequested={onFileRequested}
