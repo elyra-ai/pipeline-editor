@@ -181,6 +181,7 @@ function NodeProperties({
             } else {
               properties.value.type = "string";
               properties.value.enum = [];
+              delete properties.value.oneOf;
             }
           }
         } else if (component_properties[prop].oneOf) {
@@ -197,6 +198,8 @@ function NodeProperties({
                 component_properties[prop].oneOf[i].properties.value.type =
                   "string";
                 component_properties[prop].oneOf[i].properties.value.enum = [];
+                delete component_properties[prop].oneOf[i].properties.value
+                  .oneOf;
               } else {
                 component_properties[prop].oneOf[
                   i
