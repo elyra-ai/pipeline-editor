@@ -175,6 +175,7 @@ function NodeProperties({
           const oneOf = properties.value?.uihints?.allownooptions
             ? oneOfValuesNoOpt
             : oneOfValues;
+          component_properties[prop].required = ["value"];
           if (properties?.widget?.default === "inputpath" && properties.value) {
             if (oneOf.length > 0) {
               properties.value.oneOf = oneOf;
@@ -190,6 +191,7 @@ function NodeProperties({
               ?.allownooptions
               ? oneOfValuesNoOpt
               : oneOfValues;
+            component_properties[prop].oneOf[i].required = ["value"];
             if (
               component_properties[prop].oneOf[i].properties.widget.default ===
               "inputpath"
