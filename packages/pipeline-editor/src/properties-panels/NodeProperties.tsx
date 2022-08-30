@@ -170,6 +170,7 @@ function NodeProperties({
       const component_properties =
         draft.properties.component_parameters.properties;
       for (let prop in component_properties) {
+        console.log(component_properties[prop]);
         if (component_properties[prop].properties) {
           const properties = component_properties[prop].properties;
           const oneOf = properties.value?.uihints?.allownooptions
@@ -225,10 +226,7 @@ function NodeProperties({
         schema={getNodeProperties()}
         data={selectedNode.app_data}
         onChange={(data: any) => {
-          onChange?.(selectedNode.id, {
-            label: data?.label,
-            ...data,
-          });
+          onChange?.(selectedNode.id, data);
         }}
         onFileRequested={onFileRequested}
         onPropertiesUpdateRequested={onPropertiesUpdateRequested}
