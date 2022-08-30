@@ -78,7 +78,6 @@ it("renders common properties with one node selected", () => {
     </IntlProvider>
   );
   expect(screen.getByText(/notebook label/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/properties/i)).toBeInTheDocument();
 });
 
 it("calls onFileRequested when a browse button is pressed", async () => {
@@ -99,7 +98,7 @@ it("calls onFileRequested when a browse button is pressed", async () => {
     defaultUri: "example.ipynb",
     filters: { File: undefined },
     filename: "example.ipynb",
-    propertyID: "elyra_filename",
+    propertyID: "filename",
   });
 });
 

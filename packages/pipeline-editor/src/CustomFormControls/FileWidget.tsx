@@ -25,7 +25,7 @@ export const FileWidget: Widget = (props) => {
       canSelectMany: false,
       defaultUri: props.value,
       filters: { File: props.uiSchema.extensions },
-      id: props.id,
+      propertyID: props.id.replace("root_", ""),
     });
     console.log(values);
     if (values?.[0]) {

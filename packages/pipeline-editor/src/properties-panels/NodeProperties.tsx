@@ -158,62 +158,70 @@ function NodeProperties({
     }
 
     // update property data to include data for properties with inputpath format
-    return produce(nodePropertiesSchema?.app_data.properties, (draft: any) => {
-      draft.properties = {
-        label: {
-          title: "Label",
-          description: "A custom label for the node.",
-          type: "string",
-        },
-        ...draft.properties,
-      };
-      const component_properties =
-        draft.properties.component_parameters.properties;
-      for (let prop in component_properties) {
-        console.log(component_properties[prop]);
-        if (component_properties[prop].properties) {
-          const properties = component_properties[prop].properties;
-          const oneOf = properties.value?.uihints?.allownooptions
-            ? oneOfValuesNoOpt
-            : oneOfValues;
-          component_properties[prop].required = ["value"];
-          if (properties?.widget?.default === "inputpath" && properties.value) {
-            if (oneOf.length > 0) {
-              properties.value.oneOf = oneOf;
-            } else {
-              properties.value.type = "string";
-              properties.value.enum = [];
-              delete properties.value.oneOf;
-            }
-          }
-        } else if (component_properties[prop].oneOf) {
-          for (const i in component_properties[prop].oneOf) {
-            const nestedOneOf = component_properties[prop].oneOf[i].uihints
-              ?.allownooptions
+    return produce(
+      nodePropertiesSchema?.app_data?.properties ?? {},
+      (draft: any) => {
+        draft.properties = {
+          label: {
+            title: "Label",
+            description: "A custom label for the node.",
+            type: "string",
+          },
+          ...draft.properties,
+        };
+        const component_properties =
+          draft.properties.component_parameters?.properties ?? {};
+        for (let prop in component_properties) {
+          console.log(component_properties[prop]);
+          if (component_properties[prop].properties) {
+            const properties = component_properties[prop].properties;
+            const oneOf = properties.value?.uihints?.allownooptions
               ? oneOfValuesNoOpt
               : oneOfValues;
-            component_properties[prop].oneOf[i].required = ["value"];
+            component_properties[prop].required = ["value"];
             if (
-              component_properties[prop].oneOf[i].properties.widget.default ===
-              "inputpath"
+              properties?.widget?.default === "inputpath" &&
+              properties.value
             ) {
-              if (nestedOneOf.length === 0) {
-                component_properties[prop].oneOf[i].properties.value.type =
-                  "string";
-                component_properties[prop].oneOf[i].properties.value.enum = [];
-                delete component_properties[prop].oneOf[i].properties.value
-                  .oneOf;
+              if (oneOf.length > 0) {
+                properties.value.oneOf = oneOf;
               } else {
-                component_properties[prop].oneOf[
-                  i
-                ].properties.value.oneOf = nestedOneOf;
-                delete component_properties[prop].oneOf[i].uihints.value;
+                properties.value.type = "string";
+                properties.value.enum = [];
+                delete properties.value.oneOf;
+              }
+            }
+          } else if (component_properties[prop].oneOf) {
+            for (const i in component_properties[prop].oneOf) {
+              const nestedOneOf = component_properties[prop].oneOf[i].uihints
+                ?.allownooptions
+                ? oneOfValuesNoOpt
+                : oneOfValues;
+              component_properties[prop].oneOf[i].required = ["value"];
+              if (
+                component_properties[prop].oneOf[i].properties.widget
+                  .default === "inputpath"
+              ) {
+                if (nestedOneOf.length === 0) {
+                  component_properties[prop].oneOf[i].properties.value.type =
+                    "string";
+                  component_properties[prop].oneOf[
+                    i
+                  ].properties.value.enum = [];
+                  delete component_properties[prop].oneOf[i].properties.value
+                    .oneOf;
+                } else {
+                  component_properties[prop].oneOf[
+                    i
+                  ].properties.value.oneOf = nestedOneOf;
+                  delete component_properties[prop].oneOf[i].uihints.value;
+                }
               }
             }
           }
         }
       }
-    });
+    );
   };
 
   return (

@@ -112,152 +112,70 @@ export const nodeSpec: CustomNodeSpecification = {
   },
   image: undefined,
   properties: {
-    current_parameters: {
-      label: "",
-      elyra_filename: "",
-      elyra_runtime_image: "",
-      elyra_dependencies: [],
-      elyra_include_subdirectories: false,
-      elyra_env_vars: [],
-      elyra_outputs: [],
-    },
-    parameters: [
-      { id: "label" },
-      { id: "elyra_filename" },
-      { id: "elyra_runtime_image" },
-      { id: "elyra_dependencies" },
-      { id: "elyra_include_subdirectories" },
-      { id: "elyra_env_vars" },
-      { id: "elyra_outputs" },
-    ],
-    uihints: {
-      parameter_info: [
-        {
-          control: "custom",
-          custom_control_id: "StringControl",
-          parameter_ref: "label",
-          label: { default: "Label" },
-          description: {
-            default: "The label.",
-            placement: "on_panel",
+    type: "object",
+    properties: {
+      component_parameters: {
+        type: "object",
+        properties: {
+          label: {
+            type: "string",
+            title: "Label",
+            description: "The label.",
           },
-        },
-        {
-          control: "custom",
-          custom_control_id: "StringControl",
-          parameter_ref: "elyra_filename",
-          label: { default: "File" },
-          description: {
-            default: "The path to the notebook file.",
-            placement: "on_panel",
+          filename: {
+            title: "File",
+            type: "string",
+            description: "The path to the notebook file.",
+            uihints: {
+              "ui:widget": "file",
+              required: true,
+            },
           },
-          data: {
-            format: "file",
-            required: true,
+          runtime_image: {
+            title: "Runtime Image",
+            type: "string",
+            enum: ["runtime1, runtime2"],
+            description: "Docker image used as execution environment.",
+            uihints: {
+              items: [
+                "continuumio/anaconda3:2020.07",
+                "amancevice/pandas:1.0.3",
+              ],
+            },
           },
-        },
-        {
-          control: "custom",
-          custom_control_id: "EnumControl",
-          parameter_ref: "elyra_runtime_image",
-          label: { default: "Runtime Image" },
-          description: {
-            default: "Docker image used as execution environment.",
-            placement: "on_panel",
-          },
-          data: {
-            items: ["continuumio/anaconda3:2020.07", "amancevice/pandas:1.0.3"],
-          },
-        },
-        {
-          control: "custom",
-          custom_control_id: "StringArrayControl",
-          parameter_ref: "elyra_dependencies",
-          label: { default: "File Dependencies" },
-          description: {
-            default:
-              "Local file dependencies that need to be copied to remote execution environment.",
-            placement: "on_panel",
-          },
-          data: { placeholder: "*.py" },
-        },
-        {
-          control: "custom",
-          custom_control_id: "BooleanControl",
-          parameter_ref: "elyra_include_subdirectories",
-          label: { default: "Include Subdirectories" },
-          data: {
+          dependencies: {
+            title: "File Dependencies",
+            type: "string",
             description:
-              "Wether or not to include recursively include subdirectories when submitting a pipeline (This may increase submission time).",
+              "Local file dependencies that need to be copied to remote execution environment.",
+            uihints: { "ui:placeholder": "*.py" },
           },
-        },
-        {
-          control: "custom",
-          custom_control_id: "StringArrayControl",
-          parameter_ref: "elyra_env_vars",
-          label: { default: "Environment Variables" },
-          description: {
-            default:
+          include_subdirectories: {
+            type: "boolean",
+            title: "Include Subdirectories",
+            data:
+              "Whether or not to include recursively include subdirectories when submitting a pipeline (This may increase submission time).",
+          },
+          env_vars: {
+            title: "Environment Variables",
+            type: "array",
+            items: {
+              type: "string",
+            },
+            description:
               "Environment variables to be set on the execution environment.",
-            placement: "on_panel",
+            uihints: { "ui:placeholder": "ENV_VAR=value" },
           },
-          data: { placeholder: "ENV_VAR=value" },
-        },
-        {
-          control: "custom",
-          custom_control_id: "StringArrayControl",
-          parameter_ref: "elyra_outputs",
-          label: { default: "Output Files" },
-          description: {
-            default:
+          outputs: {
+            title: "Output Files",
+            type: "string",
+            description:
               "Files generated during execution that will become available to all subsequent pipeline steps.",
-            placement: "on_panel",
+            uihints: { "ui:placeholder": "*.csv" },
           },
-          data: { placeholder: "*.csv" },
         },
-      ],
-      group_info: [
-        {
-          type: "panels",
-          group_info: [
-            {
-              id: "label",
-              type: "controls",
-              parameter_refs: ["label"],
-            },
-            {
-              id: "elyra_filename",
-              type: "controls",
-              parameter_refs: ["elyra_filename"],
-            },
-            {
-              id: "elyra_runtime_image",
-              type: "controls",
-              parameter_refs: ["elyra_runtime_image"],
-            },
-            {
-              id: "elyra_dependencies",
-              type: "controls",
-              parameter_refs: ["elyra_dependencies"],
-            },
-            {
-              id: "elyra_include_subdirectories",
-              type: "controls",
-              parameter_refs: ["elyra_include_subdirectories"],
-            },
-            {
-              id: "elyra_env_vars",
-              type: "controls",
-              parameter_refs: ["elyra_env_vars"],
-            },
-            {
-              id: "elyra_outputs",
-              type: "controls",
-              parameter_refs: ["elyra_outputs"],
-            },
-          ],
-        },
-      ],
+        required: ["filename"],
+      },
     },
   },
 };
