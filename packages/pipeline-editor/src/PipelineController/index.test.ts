@@ -1363,35 +1363,11 @@ describe("updateProperties", () => {
         label: "Example Node Label",
         image: undefined,
         properties: {
-          current_parameters: {
-            elyra_param_with_default: "<default-value>",
-          },
-          parameters: [{ id: "elyra_param_with_default" }],
-          uihints: {
-            parameter_info: [
-              {
-                control: "custom",
-                custom_control_id: "StringControl",
-                parameter_ref: "elyra_param_with_default",
-                label: { default: "Example Label" },
-                description: {
-                  default: "Example description.",
-                  placement: "on_panel",
-                },
-              },
-            ],
-            group_info: [
-              {
-                type: "panels",
-                group_info: [
-                  {
-                    id: "elyra_param_with_default",
-                    type: "controls",
-                    parameter_refs: ["elyra_param_with_default"],
-                  },
-                ],
-              },
-            ],
+          param_with_default: {
+            default: "<default-value>",
+            title: "Example Label",
+            type: "string",
+            description: "Example description.",
           },
         },
       },
