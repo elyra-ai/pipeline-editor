@@ -145,10 +145,13 @@ export const nodeSpec: CustomNodeSpecification = {
           },
           dependencies: {
             title: "File Dependencies",
-            type: "string",
+            type: "array",
+            items: {
+              type: "string",
+            },
             description:
               "Local file dependencies that need to be copied to remote execution environment.",
-            uihints: { "ui:placeholder": "*.py" },
+            uihints: { items: { "ui:placeholder": "*.py" } },
           },
           include_subdirectories: {
             type: "boolean",
@@ -168,10 +171,13 @@ export const nodeSpec: CustomNodeSpecification = {
           },
           outputs: {
             title: "Output Files",
-            type: "string",
+            type: "array",
+            items: {
+              type: "string",
+            },
             description:
               "Files generated during execution that will become available to all subsequent pipeline steps.",
-            uihints: { "ui:placeholder": "*.csv" },
+            uihints: { items: { "ui:placeholder": "*.csv" } },
           },
         },
         required: ["filename"],
