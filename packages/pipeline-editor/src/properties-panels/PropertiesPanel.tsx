@@ -90,6 +90,18 @@ export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
           {"Add"}
         </button>
       )}
+      {props.uiSchema.canRefresh && (
+        <button
+          className="jp-mod-styled jp-mod-reject"
+          onClick={() =>
+            props.formContext?.onPropertiesUpdateRequested(
+              props.formContext.formData
+            )
+          }
+        >
+          {"Refresh"}
+        </button>
+      )}
     </div>
   );
 };
@@ -326,7 +338,11 @@ export function PropertiesPanel({
       }}
       formContext={{
         onFileRequested,
-        onPropertiesUpdateRequested,
+        onPropertiesUpdateRequested: async (args: any) => {
+          const newData = await onPropertiesUpdateRequested?.(args);
+          onChange?.(newData);
+        },
+        formData: data,
       }}
       id={data?.id}
       widgets={widgets}
@@ -335,6 +351,7 @@ export function PropertiesPanel({
       }}
       liveValidate
       ArrayFieldTemplate={ArrayTemplate}
+      noHtml5Validate
       FieldTemplate={CustomFieldTemplate}
       className={"elyra-formEditor"}
       transformErrors={(errors: AjvError[]) => {

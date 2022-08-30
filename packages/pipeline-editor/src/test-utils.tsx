@@ -68,15 +68,13 @@ export const samplePalette = {
               filehandler: "filename",
             },
             properties: {
-              current_parameters: {
-                stringExample: "is-set",
-                emptyArrayExample: [],
-                emptyObjectExample: {},
-                trueExample: true,
-                falseExample: false,
-                undefinedExample: undefined,
-                nullExample: null,
-              },
+              stringExample: "is-set",
+              emptyArrayExample: [],
+              emptyObjectExample: {},
+              trueExample: true,
+              falseExample: false,
+              undefinedExample: undefined,
+              nullExample: null,
             },
             ui_data: {
               description: "",
