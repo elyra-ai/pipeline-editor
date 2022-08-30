@@ -18,7 +18,7 @@ import path from "path";
 
 import { ComponentNotFoundError } from "../errors";
 
-const opMap: { [key: string]: string } = {
+export const opMap: { [key: string]: string } = {
   run_notebook_using_papermill_Runnotebookusingpapermill:
     "elyra-kfp-examples-catalog:61e6f4141f65",
   filter_text_using_shell_and_grep_Filtertext:

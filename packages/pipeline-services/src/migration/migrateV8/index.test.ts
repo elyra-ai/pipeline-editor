@@ -16,67 +16,77 @@
 
 import produce from "immer";
 
-import { ComponentNotFoundError } from "../errors";
-import { mockPaletteV7 } from "../utils";
 import rawMigrate from "./";
 
 // wrap migrate functions in immer
-const migrate = produce<any>((f: any, p: any) => rawMigrate(f, p));
-
-it("should error with no palette", () => {
-  const v6 = {
-    pipelines: [
-      {
-        app_data: {
-          name: "name",
-          runtime_type: "KUBEFLOW_PIPELINES",
-          version: 6,
-        },
-        nodes: [
-          {
-            type: "execution_node",
-            op: "elyra-kfp-examples-catalog:61e6f4141f65",
-          },
-        ],
-      },
-    ],
-  };
-
-  expect(() => migrate(v6)).toThrow(ComponentNotFoundError);
-});
+const migrate = produce<any>((f: any) => rawMigrate(f));
 
 it("should update property format for OneOfControl", () => {
   const component_parameters = {
-    data: {
+    some_prop: "string",
+    some_bool: true,
+    parent_value: {
       value: "parent-id",
       option: "output_name",
     },
-    hash_algorithm: "some string",
-  };
-
-  const new_component_parameters = {
-    data: {
-      value: "parent-id",
-      option: "output_name",
-    },
-    hash_algorithm: {
+    stringOneOf: {
       activeControl: "StringControl",
       StringControl: "some string",
     },
+    boolOneOf: {
+      activeControl: "BooleanControl",
+      BooleanControl: true,
+    },
+    numOneOf: {
+      activeControl: "NumberControl",
+      NumberControl: 42,
+    },
+    parentOneOf: {
+      activeControl: "NestedEnumControl",
+      NestedEnumControl: {
+        value: "parent-id",
+        option: "output_name",
+      },
+    },
   };
 
-  const v6 = {
+  const new_component_parameters = {
+    some_prop: "string",
+    some_bool: true,
+    parent_value: {
+      value: "parent-id",
+      option: "output_name",
+    },
+    stringOneOf: {
+      widget: "string",
+      value: "some string",
+    },
+    boolOneOf: {
+      widget: "boolean",
+      value: true,
+    },
+    numOneOf: {
+      widget: "number",
+      value: 42,
+    },
+    parentOneOf: {
+      widget: "inputpath",
+      value: {
+        value: "parent-id",
+        option: "output_name",
+      },
+    },
+  };
+
+  const v7 = {
     pipelines: [
       {
         app_data: {
           name: "name",
-          runtime_type: "KUBEFLOW_PIPELINES",
-          version: 6,
+          version: 7,
         },
         nodes: [
           {
-            type: "execution_node",
-            op: "elyra-kfp-examples-catalog:d68ec7fcdf46",
             app_data: {
               component_parameters,
             },
@@ -86,7 +96,7 @@ it("should update property format for OneOfControl", () => {
     ],
   };
 
-  const actual = migrate(v6, mockPaletteV7);
+  const actual = migrate(v7);
   expect(actual.pipelines[0].nodes[0].app_data.component_parameters).toEqual(
     new_component_parameters
   );

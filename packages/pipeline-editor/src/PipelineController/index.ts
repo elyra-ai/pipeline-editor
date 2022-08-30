@@ -31,7 +31,7 @@ import {
 } from "./../errors";
 import { getFileName, prefixedToNested } from "./utils";
 
-export const PIPELINE_CURRENT_VERSION = 7;
+export const PIPELINE_CURRENT_VERSION = 7.5; // TODO: Update to 8 prior to 1.10 release
 
 // TODO: Experiment with pipeline editor settings.
 const SHOW_EXTENSIONS = true;
@@ -547,70 +547,6 @@ class PipelineController extends CanvasController {
     }
 
     return "";
-  }
-
-  getPropertyValue(value: any, info?: any, label?: string): any {
-    if (info?.data?.format === "inputpath" || info?.format === "inputpath") {
-      // Find the node corresponding to the input node
-      const upstreamNode = this.findExecutionNode(value?.value ?? "");
-      const upstreamNodeLabel = upstreamNode?.app_data?.ui_data?.label;
-      const upstreamNodeDef = this.getAllPaletteNodes().find(
-        (nodeDef) => nodeDef.op === upstreamNode?.op
-      );
-      // Add each property with a format of outputpath to the options field
-      const upstreamNodeOption = upstreamNodeDef?.app_data?.properties?.uihints?.parameter_info?.find(
-        (prop: any) => {
-          return prop.parameter_ref === value.option;
-        }
-      )?.label?.default;
-      return {
-        label: label,
-        value: upstreamNodeLabel
-          ? upstreamNodeOption
-            ? `${upstreamNodeLabel}: ${upstreamNodeOption}`
-            : upstreamNodeLabel
-          : "No value specified.",
-      };
-    } else if (
-      info?.data?.format === "outputpath" ||
-      info?.format === "outputpath"
-    ) {
-      return {
-        label: label,
-        value: "This is an output of the component.",
-      };
-    } else if (value?.activeControl) {
-      return this.getPropertyValue(
-        value[value.activeControl],
-        info?.data?.controls?.[value.activeControl],
-        label
-      );
-    } else if (info?.custom_control_id === "EnumControl") {
-      // If no enum value is set show pipeline default value
-      return {
-        label: label,
-        value: info?.data?.labels?.[value] ?? value ?? info?.data?.placeholder,
-      };
-    } else if (info?.custom_control_id === "StringArrayControl") {
-      // Merge pipeline defaults prop array with node prop array
-      const pipelineDefaultValue: string[] = this.getPipelineFlow()
-        ?.pipelines?.[0].app_data?.properties?.pipeline_defaults?.[
-        info?.parameter_ref.replace(/^elyra_/, "")
-      ];
-      return {
-        label: label,
-        value: value?.concat(
-          pipelineDefaultValue
-            ?.filter((item) => !value.includes(item))
-            ?.map((i) => i + " (pipeline default)") ?? []
-        ),
-      };
-    } else {
-      return {
-        label: label,
-        value: value,
-      };
-    }
   }
 
   properties(nodeID: string) {

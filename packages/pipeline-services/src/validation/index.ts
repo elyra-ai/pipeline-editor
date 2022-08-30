@@ -60,6 +60,7 @@ export function getLinkProblems(pipeline: any) {
   return problems;
 }
 
+// TODO: Update this to validate the new schema format (before v1.10)
 function getPropertyValidationErrors(prop: any, value: any): any[] {
   let errorMessages: any[] = [];
   switch (prop.custom_control_id) {
