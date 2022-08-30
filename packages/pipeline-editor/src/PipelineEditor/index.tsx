@@ -42,7 +42,7 @@ import styled, { useTheme } from "styled-components";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
-import PipelineController, { prefixedToNested } from "../PipelineController";
+import PipelineController from "../PipelineController";
 import { NodeProperties } from "../properties-panels";
 import { PropertiesPanel } from "../properties-panels/PropertiesPanel";
 import SplitPanelLayout from "../SplitPanelLayout";

@@ -15,7 +15,6 @@
  */
 
 import { NodeType } from "@elyra/canvas";
-
 import produce from "immer";
 import styled from "styled-components";
 

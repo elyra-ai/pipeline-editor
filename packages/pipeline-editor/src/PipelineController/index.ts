@@ -29,7 +29,7 @@ import {
   PipelineOutOfDateError,
   InvalidPipelineError,
 } from "./../errors";
-import { getFileName, nestedToPrefixed, prefixedToNested } from "./utils";
+import { getFileName, prefixedToNested } from "./utils";
 
 export const PIPELINE_CURRENT_VERSION = 7;
 
