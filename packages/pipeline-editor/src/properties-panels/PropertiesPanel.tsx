@@ -256,6 +256,7 @@ const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
       className={`${props.classNames} ${
         props.schema.oneOf ? "field-oneOf" : ""
       }`}
+      id={props.id}
     >
       {hasError && <div className="errorIndicator" />}
       {props.schema.title !== undefined && props.schema.title !== " " ? (

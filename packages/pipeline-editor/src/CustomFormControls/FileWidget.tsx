@@ -34,7 +34,7 @@ export const FileWidget: Widget = (props) => {
   }, [props]);
 
   return (
-    <div style={{ display: "flex" }}>
+    <div id={props.id} style={{ display: "flex" }}>
       <input
         type="text"
         className="form-control"

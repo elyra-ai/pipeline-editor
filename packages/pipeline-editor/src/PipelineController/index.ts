@@ -159,13 +159,6 @@ class PipelineController extends CanvasController {
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
     };
 
-    const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
-    if (nodeDef?.app_data.properties?.current_parameters) {
-      data.nodeTemplate.app_data = {
-        ...prefixedToNested(nodeDef.app_data.properties.current_parameters),
-      };
-    }
-
     const filenameRef = this.resolveParameterRef(op, "filehandler");
 
     if (path && filenameRef) {
