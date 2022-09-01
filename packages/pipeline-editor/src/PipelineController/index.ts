@@ -149,7 +149,9 @@ class PipelineController extends CanvasController {
       ...rest
     } = item;
 
-    const nodeTemplate = this.getPaletteNode(op);
+    const nodeTemplate: any = this.getPaletteNode(op);
+    // TODO: Fill with default values.
+    nodeTemplate.app_data = { component_parameters: {} };
 
     const data = {
       ...rest,
