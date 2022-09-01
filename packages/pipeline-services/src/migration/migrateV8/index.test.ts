@@ -54,8 +54,11 @@ it("should update property format for OneOfControl", () => {
     some_prop: "string",
     some_bool: true,
     parent_value: {
-      value: "parent-id",
-      option: "output_name",
+      widget: "inputpath",
+      value: {
+        value: "parent-id",
+        option: "output_name",
+      },
     },
     stringOneOf: {
       widget: "string",

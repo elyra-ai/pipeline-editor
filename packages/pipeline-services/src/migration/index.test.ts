@@ -403,8 +403,11 @@ it("should migrate v5 to latest", () => {
               "app_data": Object {
                 "component_parameters": Object {
                   "notebook": Object {
-                    "option": "output",
-                    "value": "parent",
+                    "value": Object {
+                      "option": "output",
+                      "value": "parent",
+                    },
+                    "widget": "inputpath",
                   },
                   "parameters": Object {
                     "value": "some string",
@@ -505,8 +508,11 @@ it("should migrate v6 to latest", () => {
               "app_data": Object {
                 "component_parameters": Object {
                   "data": Object {
-                    "option": "output_name",
-                    "value": "parent-id",
+                    "value": Object {
+                      "option": "output_name",
+                      "value": "parent-id",
+                    },
+                    "widget": "inputpath",
                   },
                   "hash_algorithm": Object {
                     "value": "HASH",
@@ -599,8 +605,11 @@ it("should migrate v7 to latest", () => {
                     "widget": "inputpath",
                   },
                   "parent_value": Object {
-                    "option": "output_name",
-                    "value": "parent-id",
+                    "value": Object {
+                      "option": "output_name",
+                      "value": "parent-id",
+                    },
+                    "widget": "inputpath",
                   },
                   "some_bool": true,
                   "some_prop": "string",
