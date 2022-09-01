@@ -31,6 +31,9 @@ import {
 } from "./../errors";
 import { getFileName, prefixedToNested } from "./utils";
 
+import { getDefaultFormState, ValidatorType } from "@rjsf/utils";
+import validator from "@rjsf/validator-ajv6";
+
 export const PIPELINE_CURRENT_VERSION = 7.5; // TODO: Update to 8 prior to 1.10 release
 
 // TODO: Experiment with pipeline editor settings.
@@ -150,8 +153,11 @@ class PipelineController extends CanvasController {
     } = item;
 
     const nodeTemplate: any = this.getPaletteNode(op);
-    // TODO: Fill with default values.
-    nodeTemplate.app_data = { component_parameters: {} };
+    const defaults = getDefaultFormState(
+      validator,
+      nodeTemplate.app_data.properties ?? {}
+    );
+    nodeTemplate.app_data = defaults;
 
     const data = {
       ...rest,

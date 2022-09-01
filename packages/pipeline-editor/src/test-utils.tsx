@@ -68,20 +68,47 @@ export const samplePalette = {
               filehandler: "filename",
             },
             properties: {
-              stringExample: "is-set",
-              emptyArrayExample: [],
-              emptyObjectExample: {},
-              trueExample: true,
-              falseExample: false,
-              undefinedExample: undefined,
-              nullExample: null,
-            },
-            ui_data: {
-              description: "",
-              label: "",
-              image: "",
-              x_pos: 0,
-              y_pos: 0,
+              type: "object",
+              properties: {
+                component_parameters: {
+                  type: "object",
+                  properties: {
+                    emptyArrayExample: {
+                      type: "array",
+                      items: {
+                        type: null,
+                      },
+                      default: [],
+                    },
+                    emptyObjectExample: {
+                      type: "object",
+                    },
+                    falseExample: {
+                      type: "boolean",
+                      default: false,
+                    },
+                    nullExample: {
+                      type: "null",
+                      default: null,
+                    },
+                    stringExample: {
+                      type: "string",
+                      default: "is-set",
+                    },
+                    trueExample: {
+                      type: "boolean",
+                      default: true,
+                    },
+                  },
+                },
+              },
+              ui_data: {
+                description: "",
+                label: "",
+                image: "",
+                x_pos: 0,
+                y_pos: 0,
+              },
             },
           },
         },

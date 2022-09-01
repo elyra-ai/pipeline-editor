@@ -272,14 +272,14 @@ describe("addNode", () => {
 
     expect(editActionHandler).toHaveBeenCalledTimes(1);
     expect(editActionHandler.mock.calls[0][0].nodeTemplate.app_data).toEqual({
-      component_parameters: {},
-      stringExample: "is-set",
-      emptyArrayExample: [],
-      emptyObjectExample: {},
-      trueExample: true,
-      falseExample: false,
-      undefinedExample: undefined,
-      nullExample: null,
+      component_parameters: {
+        stringExample: "is-set",
+        emptyArrayExample: [],
+        emptyObjectExample: {},
+        trueExample: true,
+        falseExample: false,
+        nullExample: null,
+      },
     });
   });
 
@@ -297,7 +297,11 @@ describe("addNode", () => {
       path: "fake.py",
       onPropertiesUpdateRequested: () => {
         return new Promise((resolve) => {
-          resolve({ emptyArrayExample: ["one", "two", "three"] });
+          resolve({
+            component_parameters: {
+              emptyArrayExample: ["one", "two", "three"],
+            },
+          });
         });
       },
     });
@@ -306,14 +310,13 @@ describe("addNode", () => {
     expect(editActionHandler.mock.calls[0][0].nodeTemplate.app_data).toEqual({
       component_parameters: {
         filename: "fake.py",
+        stringExample: "is-set",
+        emptyArrayExample: ["one", "two", "three"],
+        emptyObjectExample: {},
+        trueExample: true,
+        falseExample: false,
+        nullExample: null,
       },
-      stringExample: "is-set",
-      emptyArrayExample: ["one", "two", "three"],
-      emptyObjectExample: {},
-      trueExample: true,
-      falseExample: false,
-      undefinedExample: undefined,
-      nullExample: null,
     });
   });
 });
