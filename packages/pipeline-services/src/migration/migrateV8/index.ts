@@ -25,6 +25,7 @@ function migrate(pipelineFlow: any) {
   console.log(pipelineFlow);
   for (const pipeline of pipelineFlow.pipelines) {
     for (const node of pipeline.nodes) {
+      // Update oneOf format
       Object.keys(node.app_data.component_parameters ?? {}).forEach((key) => {
         const activeControl =
           node.app_data.component_parameters[key]?.activeControl;
@@ -32,6 +33,18 @@ function migrate(pipelineFlow: any) {
           node.app_data.component_parameters[key] = {
             widget: widgetMap[activeControl],
             value: node.app_data.component_parameters[key][activeControl],
+          };
+        }
+        // Update inputpath format
+        const propKeys = Object.keys(node.app_data.component_parameters[key]);
+        if (
+          propKeys.length === 2 &&
+          propKeys.includes("option") &&
+          propKeys.includes("value")
+        ) {
+          node.app_data.component_parameters[key] = {
+            widget: "inputpath",
+            value: node.app_data.component_parameters[key],
           };
         }
       });
