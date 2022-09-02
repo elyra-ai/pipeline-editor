@@ -338,7 +338,12 @@ export function PropertiesPanel({
         onChange?.(e.formData);
       }}
       formContext={{
-        onFileRequested,
+        onFileRequested: async (args: any) => {
+          return await onFileRequested?.({
+            ...args,
+            filename: data.component_parameters.filename,
+          });
+        },
         onPropertiesUpdateRequested: async (args: any) => {
           const newData = await onPropertiesUpdateRequested?.(args);
           onChange?.(newData);
