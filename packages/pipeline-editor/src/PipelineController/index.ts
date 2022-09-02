@@ -156,6 +156,7 @@ class PipelineController extends CanvasController {
       validator,
       nodeTemplate.app_data.properties ?? {}
     );
+    defaults.label = "";
     nodeTemplate.app_data = defaults;
 
     const data = {
