@@ -279,6 +279,7 @@ describe("addNode", () => {
         trueExample: true,
         falseExample: false,
         nullExample: null,
+        label: "",
       },
     });
   });
@@ -316,6 +317,7 @@ describe("addNode", () => {
         trueExample: true,
         falseExample: false,
         nullExample: null,
+        label: "",
       },
     });
   });
