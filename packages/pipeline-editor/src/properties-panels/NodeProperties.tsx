@@ -165,6 +165,7 @@ function NodeProperties({
             title: "Label",
             description: "A custom label for the node.",
             type: "string",
+            default: "",
           },
           ...draft.properties,
         };
