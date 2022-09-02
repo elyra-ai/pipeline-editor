@@ -24,7 +24,6 @@ export const FileWidget: Widget = (props) => {
     const values = await props.formContext.onFileRequested({
       canSelectMany: false,
       defaultUri: props.value,
-      filename: props.value,
       filters: { File: props.uiSchema.extensions },
       propertyID: props.id.replace("root_component_parameters_", ""),
     });
