@@ -22,6 +22,8 @@ import {
   NodeType,
 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
+import { getDefaultFormState } from "@rjsf/utils";
+import validator from "@rjsf/validator-ajv6";
 import produce from "immer";
 
 import {
@@ -30,9 +32,6 @@ import {
   InvalidPipelineError,
 } from "./../errors";
 import { getFileName, prefixedToNested } from "./utils";
-
-import { getDefaultFormState, ValidatorType } from "@rjsf/utils";
-import validator from "@rjsf/validator-ajv6";
 
 export const PIPELINE_CURRENT_VERSION = 7.5; // TODO: Update to 8 prior to 1.10 release
 
