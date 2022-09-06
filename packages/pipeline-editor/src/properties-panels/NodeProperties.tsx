@@ -229,6 +229,7 @@ function NodeProperties({
         {nodePropertiesSchema.description}
       </span>
       <PropertiesPanel
+        key={selectedNode.id}
         schema={getNodeProperties()}
         data={selectedNode.app_data}
         onChange={(data: any) => {
