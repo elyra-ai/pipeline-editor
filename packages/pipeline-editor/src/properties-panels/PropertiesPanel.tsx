@@ -247,7 +247,11 @@ const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
     return <div />;
   }
   if (props.uiSchema["ui:readonly"]) {
-    children = <p>{props.formData ?? props.schema.default}</p>;
+    children = (
+      <div style={{ paddingTop: "8px" }}>
+        {props.formData ?? props.schema.default}
+      </div>
+    );
   }
   const requiredError = props.required && props.formData === undefined;
   const hasError = props.rawErrors || requiredError;
