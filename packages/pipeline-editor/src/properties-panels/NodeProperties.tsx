@@ -183,10 +183,8 @@ function NodeProperties({
             ) {
               if (oneOf.length > 0) {
                 properties.value.oneOf = oneOf;
-              } else {
-                properties.value.type = "string";
-                properties.value.enum = [];
-                delete properties.value.oneOf;
+                delete properties.value.enum;
+                delete properties.value.type;
               }
             }
           } else if (component_properties[prop].oneOf) {
@@ -200,19 +198,14 @@ function NodeProperties({
                 component_properties[prop].oneOf[i].properties.widget
                   .default === "inputpath"
               ) {
-                if (nestedOneOf.length === 0) {
-                  component_properties[prop].oneOf[i].properties.value.type =
-                    "string";
-                  component_properties[prop].oneOf[
-                    i
-                  ].properties.value.enum = [];
-                  delete component_properties[prop].oneOf[i].properties.value
-                    .oneOf;
-                } else {
+                if (nestedOneOf.length > 0) {
                   component_properties[prop].oneOf[
                     i
                   ].properties.value.oneOf = nestedOneOf;
-                  delete component_properties[prop].oneOf[i].uihints.value;
+                  delete component_properties[prop].oneOf[i].properties.value
+                    .type;
+                  delete component_properties[prop].oneOf[i].properties.value
+                    .enum;
                 }
               }
             }
