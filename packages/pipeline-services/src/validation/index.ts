@@ -194,22 +194,21 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
         fieldName,
         pipeline.app_data?.properties?.pipeline_defaults
       );
-      if (
-        nodeDef.app_data.properties?.properties?.component_parameters?.required?.includes(
-          fieldName
-        ) &&
-        !value
-      ) {
-        problems.push({
-          message: `The property '${prop.title}' on node '${node.app_data.ui_data.label}' is required.`,
-          path,
-          info: {
-            type: "missingProperty",
-            pipelineID: pipeline.id,
-            nodeID: node.id,
-            property: fieldName,
-          },
-        });
+      const component_parameters =
+        nodeDef.app_data.properties?.properties?.component_parameters ?? {};
+      if (component_parameters.required?.includes(fieldName)) {
+        if (!value || (value?.widget && (!value.value || value.value === ""))) {
+          problems.push({
+            message: `The property '${prop.title}' on node '${node.app_data.ui_data.label}' is required.`,
+            path,
+            info: {
+              type: "missingProperty",
+              pipelineID: pipeline.id,
+              nodeID: node.id,
+              property: fieldName,
+            },
+          });
+        }
       }
 
       let errorMessages = getPropertyValidationErrors(prop, value);

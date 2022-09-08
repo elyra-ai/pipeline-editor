@@ -375,7 +375,8 @@ export function PropertiesPanel({
           if (
             error.message !== "should match exactly one schema in oneOf" &&
             (error as any).schemaPath?.includes("oneOf") &&
-            error.message !== "should be object"
+            error.message !== "should be object" &&
+            error.message !== "should be string"
           ) {
             transformed.push(error);
           }
