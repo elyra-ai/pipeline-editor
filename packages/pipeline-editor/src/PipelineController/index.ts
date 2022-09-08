@@ -573,6 +573,76 @@ class PipelineController extends CanvasController {
     return "";
   }
 
+  getPropertyValue(value: any, key: string, info?: any, label?: string): any {
+    if (value?.widget === "inputpath") {
+      // Find the node corresponding to the input node
+      const upstreamNode = this.findExecutionNode(value?.value ?? "");
+      const upstreamNodeLabel = upstreamNode?.app_data?.ui_data?.label;
+      const upstreamNodeDef = this.getAllPaletteNodes().find(
+        (nodeDef) => nodeDef.op === upstreamNode?.op
+      );
+      // Add each property with a format of outputpath to the options field
+      for (const prop in upstreamNodeDef?.app_data?.properties?.properties
+        ?.component_parameters?.properties ?? {}) {
+        if (prop === value.option) {
+          const upstreamNodeOption =
+            upstreamNodeDef?.app_data?.properties?.properties
+              ?.component_parameters?.[prop]?.title;
+          return {
+            label: label,
+            value: upstreamNodeLabel
+              ? upstreamNodeOption
+                ? `${upstreamNodeLabel}: ${upstreamNodeOption}`
+                : upstreamNodeLabel
+              : "No value specified.",
+          };
+        }
+      }
+      return {
+        label: label,
+        value: "No value specified.",
+      };
+    } else if (info?.uihints?.outputpath === true) {
+      return {
+        label: label,
+        value: "This is an output of the component.",
+      };
+    } else if (value?.widget) {
+      return this.getPropertyValue(
+        value[value.widget],
+        key,
+        info?.data?.controls?.[value.widget],
+        label
+      );
+    } else if (info?.enum !== undefined) {
+      // If no enum value is set show pipeline default value
+      return {
+        label: label,
+        value:
+          info?.data?.labels?.[value] ??
+          value ??
+          info?.uihints?.["ui:placeholder"],
+      };
+    } else if (info?.type === "array") {
+      // Merge pipeline defaults prop array with node prop array
+      const pipelineDefaultValue: string[] = this.getPipelineFlow()
+        ?.pipelines?.[0].app_data?.properties?.pipeline_defaults?.[key];
+      return {
+        label: label,
+        value: value?.concat(
+          pipelineDefaultValue
+            ?.filter((item) => !value.includes(item))
+            ?.map((i) => i + " (pipeline default)") ?? []
+        ),
+      };
+    } else {
+      return {
+        label: label,
+        value: value,
+      };
+    }
+  }
+
   properties(nodeID: string) {
     let node = this.findExecutionNode(nodeID);
 
@@ -586,10 +656,17 @@ class PipelineController extends CanvasController {
 
       const properties = [];
       for (const prop in info) {
-        properties.push({
-          label: info[prop].title,
-          value: app_data?.component_parameters?.[prop],
-        });
+        if (info[prop].type === "null") {
+          continue;
+        }
+        properties.push(
+          this.getPropertyValue(
+            app_data?.component_parameters?.[prop],
+            prop,
+            info[prop],
+            info[prop].title
+          )
+        );
       }
       return properties;
     }
