@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { Field, FieldProps, utils, WidgetProps } from "@rjsf/core";
 import { useState } from "react";
+
+import { Field, FieldProps, utils, WidgetProps } from "@rjsf/core";
 
 /**
  * A custom oneOf field to handle the 2 custom oneOf cases that Elyra has:

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { useState } from "react";
-
 import Form, { UiSchema, Widget, AjvError } from "@rjsf/core";
 import styled from "styled-components";
 
