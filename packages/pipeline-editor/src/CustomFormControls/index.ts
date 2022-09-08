@@ -17,3 +17,6 @@
 /* istanbul ignore file */
 
 export * from "./FileWidget";
+export * from "./CustomFieldTemplate";
+export * from "./CustomArray";
+export * from "./CustomOneOf";
