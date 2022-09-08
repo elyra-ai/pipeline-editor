@@ -75,6 +75,9 @@ export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
         );
       })}
       {props.uiSchema.pipeline_defaults?.map((item: any) => {
+        if (item === null || item === "") {
+          return undefined;
+        }
         return (
           <div className="array-pipelineDefaults form-control">
             <div className="left">{item}</div>
