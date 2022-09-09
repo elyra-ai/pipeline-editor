@@ -576,18 +576,24 @@ class PipelineController extends CanvasController {
   getPropertyValue(value: any, key: string, info?: any, label?: string): any {
     if (value?.widget === "inputpath") {
       // Find the node corresponding to the input node
-      const upstreamNode = this.findExecutionNode(value?.value ?? "");
+      const upstreamNode = this.findExecutionNode(value.value?.value ?? "");
       const upstreamNodeLabel = upstreamNode?.app_data?.ui_data?.label;
       const upstreamNodeDef = this.getAllPaletteNodes().find(
         (nodeDef) => nodeDef.op === upstreamNode?.op
       );
+      if (value.value?.value && value.value.option === "") {
+        return {
+          label: label,
+          value: upstreamNodeLabel,
+        };
+      }
+      const component_parameters =
+        upstreamNodeDef?.app_data?.properties?.properties?.component_parameters
+          ?.properties ?? {};
       // Add each property with a format of outputpath to the options field
-      for (const prop in upstreamNodeDef?.app_data?.properties?.properties
-        ?.component_parameters?.properties ?? {}) {
-        if (prop === value.option) {
-          const upstreamNodeOption =
-            upstreamNodeDef?.app_data?.properties?.properties
-              ?.component_parameters?.[prop]?.title;
+      for (const prop in component_parameters) {
+        if (prop === value.value.option) {
+          const upstreamNodeOption = component_parameters[prop]?.title;
           return {
             label: label,
             value: upstreamNodeLabel
@@ -609,9 +615,11 @@ class PipelineController extends CanvasController {
       };
     } else if (value?.widget) {
       return this.getPropertyValue(
-        value[value.widget],
+        value.value,
         key,
-        info?.data?.controls?.[value.widget],
+        info?.oneOf?.find((def: any) => {
+          return def.properties?.widget?.default === value.widget;
+        })?.properties?.value,
         label
       );
     } else if (info?.enum !== undefined) {
