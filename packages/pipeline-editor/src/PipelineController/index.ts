@@ -536,6 +536,9 @@ class PipelineController extends CanvasController {
       const nodeProblems = [];
 
       const nodeDef = this.getAllPaletteNodes().find((n) => n.op === node.op);
+      if (nodeDef === undefined) {
+        return "Node type not found.";
+      }
       const componentProperties = nodeDef!.app_data.properties.properties
         ?.component_parameters?.properties;
 
