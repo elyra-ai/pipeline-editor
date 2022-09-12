@@ -195,6 +195,15 @@ function NodeProperties({
                 : oneOfValues;
               component_properties[prop].oneOf[i].required = ["value"];
               if (
+                component_properties[prop].oneOf[i].properties?.value
+                  ?.default === undefined &&
+                component_properties[prop].oneOf[i].properties?.value?.type ===
+                  "string"
+              ) {
+                component_properties[prop].oneOf[i].properties.value.default =
+                  "";
+              }
+              if (
                 component_properties[prop].oneOf[i].properties.widget
                   .default === "inputpath"
               ) {

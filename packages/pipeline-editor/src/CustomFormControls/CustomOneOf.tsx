@@ -51,52 +51,20 @@ export const CustomOneOf: Field = (props) => {
     }
     return 0;
   };
-  const [selectedOption, setSelectedOption] = useState(findOption());
-
   const onOptionChange = (option: any) => {
     const selectedOption = parseInt(option, 10);
     const { rootSchema } = props.registry;
-    const newOption = utils.retrieveSchema(
-      options[selectedOption],
-      rootSchema,
-      formData
-    );
 
-    // If the new option is of type object and the current data is an object,
-    // discard properties added using the old option.
-    let newFormData = undefined;
-    if (
-      utils.guessType(formData) === "object" &&
-      (newOption.type === "object" || newOption.properties)
-    ) {
-      newFormData = Object.assign({}, formData);
-
-      const optionsToDiscard = options.slice();
-      optionsToDiscard.splice(selectedOption, 1);
-
-      // Discard any data added using other options
-      for (const option of optionsToDiscard) {
-        if (option.properties) {
-          for (const key in option.properties) {
-            if (newFormData.hasOwnProperty(key)) {
-              delete newFormData[key];
-            }
-          }
-        }
-      }
-    }
     // Call getDefaultFormState to make sure defaults are populated on change.
     let defaults;
     try {
       defaults = utils.getDefaultFormState(
         options[selectedOption],
-        newFormData,
+        undefined,
         rootSchema
       );
     } catch {}
     props.onChange(defaults);
-
-    setSelectedOption(parseInt(option, 10));
   };
 
   const SchemaField = registry.fields.SchemaField as React.FC<FieldProps>;
@@ -108,7 +76,7 @@ export const CustomOneOf: Field = (props) => {
     widgets
   ) as React.FC<WidgetProps>;
 
-  const option = options[selectedOption] || null;
+  const option = options[findOption()] || null;
   let optionSchema;
 
   if (option) {
@@ -136,7 +104,7 @@ export const CustomOneOf: Field = (props) => {
           onChange={onOptionChange}
           onBlur={props.onBlur}
           onFocus={props.onFocus}
-          value={selectedOption}
+          value={findOption()}
           options={{ enumOptions }}
           registry={registry}
         />
