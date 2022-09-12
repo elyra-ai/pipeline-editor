@@ -36,7 +36,9 @@ function migrate(pipelineFlow: any) {
           };
         }
         // Update inputpath format
-        const propKeys = Object.keys(node.app_data.component_parameters[key]);
+        const propKeys = Object.keys(
+          node.app_data.component_parameters[key] ?? {}
+        );
         if (
           propKeys.length === 2 &&
           propKeys.includes("option") &&
