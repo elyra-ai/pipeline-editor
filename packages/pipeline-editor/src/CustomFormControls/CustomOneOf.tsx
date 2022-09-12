@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { useState } from "react";
-
 import { Field, FieldProps, utils, WidgetProps } from "@rjsf/core";
 
 /**
