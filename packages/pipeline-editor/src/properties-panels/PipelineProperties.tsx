@@ -14,41 +14,20 @@
  * limitations under the License.
  */
 
-import { PropertyDefinitions } from "@elyra/canvas";
-
-import { PropertiesPanel, Message } from "./PropertiesPanel";
+import { Message } from "./PropertiesPanel";
 
 interface Props {
   pipelineFlow: any;
-  propertiesSchema?: PropertyDefinitions;
-  onFileRequested?: (options: any) => any;
-  onPropertiesUpdateRequested?: (options: any) => any;
+  propertiesSchema?: any;
   onChange?: (data: any) => any;
 }
 
-function PipelineProperties({
-  pipelineFlow,
-  propertiesSchema,
-  onFileRequested,
-  onPropertiesUpdateRequested,
-  onChange,
-}: Props) {
-  if (propertiesSchema === undefined) {
+function PipelineProperties(props: Props) {
+  if (props.propertiesSchema === undefined) {
     return <Message>No pipeline properties defined.</Message>;
   }
 
-  return (
-    <PropertiesPanel
-      currentProperties={
-        pipelineFlow?.pipelines?.[0]?.app_data?.properties ?? {}
-      }
-      onPropertiesUpdateRequested={onPropertiesUpdateRequested}
-      propertiesSchema={propertiesSchema}
-      onFileRequested={onFileRequested}
-      onChange={onChange}
-      id={pipelineFlow?.id}
-    />
-  );
+  return <div />;
 }
 
 export default PipelineProperties;

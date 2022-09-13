@@ -60,6 +60,7 @@ export function getLinkProblems(pipeline: any) {
   return problems;
 }
 
+// TODO: Update this to validate the new schema format (before v1.10)
 function getPropertyValidationErrors(prop: any, value: any): any[] {
   let errorMessages: any[] = [];
   switch (prop.custom_control_id) {
@@ -100,12 +101,14 @@ function getPropertyValidationErrors(prop: any, value: any): any[] {
 export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
   let problems: PartialProblem[] = [];
 
-  for (const prop of pipelineProperties?.uihints.parameter_info ?? []) {
+  for (const fieldName in pipelineProperties?.properties ?? []) {
     // If the property isn't in the json, report the error one level higher.
     let path = ["pipeline", "0", "app_data"];
-    if (pipeline.app_data?.[prop.parameter_ref] !== undefined) {
-      path.push(prop.parameter_ref);
+    if (pipeline.app_data?.[fieldName] !== undefined) {
+      path.push(pipelineProperties[fieldName]);
     }
+
+    const prop = pipelineProperties.properties[fieldName];
 
     // this should be safe because a boolean can't be required
     // otherwise we would need to check strings for undefined or empty string
@@ -113,18 +116,18 @@ export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
     // TODO: We should update this to do type checking.
     const value = getValue(
       pipeline.app_data?.properties,
-      prop.parameter_ref,
+      fieldName,
       pipeline.app_data?.properties?.pipeline_defaults
     );
     if (prop.data?.required && !value) {
       problems.push({
-        message: `The pipeline property '${prop.label.default}' is required.`,
+        message: `The pipeline property '${prop.title}' is required.`,
         path,
         info: {
           type: "missingProperty",
           pipelineID: pipeline.id,
           // do not strip elyra here, we need to differentiate between pipeline_defaults still.
-          property: prop.parameter_ref,
+          property: fieldName,
         },
       });
     }
@@ -133,13 +136,13 @@ export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
 
     if (errorMessages[0] !== undefined) {
       problems.push({
-        message: `The pipeline property '${prop.label.default}' is invalid: ${errorMessages[0]}`,
+        message: `The pipeline property '${prop.title}' is invalid: ${errorMessages[0]}`,
         path,
         info: {
           type: "invalidProperty",
           pipelineID: pipeline.id,
           // do not strip elyra here, we need to differentiate between pipeline_defaults still.
-          property: prop.parameter_ref,
+          property: fieldName,
           message: errorMessages[0],
         },
       });
@@ -172,11 +175,13 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       continue;
     }
 
-    for (const prop of nodeDef.app_data.properties?.uihints.parameter_info ??
-      []) {
+    const nodeProperties =
+      nodeDef.app_data.properties?.properties?.component_parameters?.properties;
+    for (const fieldName in nodeProperties ?? []) {
+      const prop = nodeProperties[fieldName];
       // If the property isn't in the json, report the error one level higher.
       let path = ["nodes", n, "app_data"];
-      if (node.app_data[prop.parameter_ref] !== undefined) {
+      if (node.app_data.component_parameters?.[fieldName] !== undefined) {
         path.push(prop.parameter_ref);
       }
 
@@ -185,29 +190,32 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       // NOTE: 0 is also falsy, but we don't have any number inputs right now?
       // TODO: We should update this to do type checking.
       const value = getValue(
-        node.app_data,
-        prop.parameter_ref,
+        node.app_data.component_parameters ?? {},
+        fieldName,
         pipeline.app_data?.properties?.pipeline_defaults
       );
-      if (prop.data?.required && !value) {
-        problems.push({
-          message: `The property '${prop.label.default}' on node '${node.app_data.ui_data.label}' is required.`,
-          path,
-          info: {
-            type: "missingProperty",
-            pipelineID: pipeline.id,
-            nodeID: node.id,
-            // do not strip elyra here, we need to differentiate between component_parameters still.
-            property: prop.parameter_ref,
-          },
-        });
+      const component_parameters =
+        nodeDef.app_data.properties?.properties?.component_parameters ?? {};
+      if (component_parameters.required?.includes(fieldName)) {
+        if (!value || (value?.widget && (!value.value || value.value === ""))) {
+          problems.push({
+            message: `The property '${prop.title}' on node '${node.app_data.ui_data.label}' is required.`,
+            path,
+            info: {
+              type: "missingProperty",
+              pipelineID: pipeline.id,
+              nodeID: node.id,
+              property: fieldName,
+            },
+          });
+        }
       }
 
       let errorMessages = getPropertyValidationErrors(prop, value);
 
       if (errorMessages[0] !== undefined) {
         problems.push({
-          message: `The property '${prop.label.default}' on node '${node.app_data.ui_data.label}' is invalid: ${errorMessages[0]}`,
+          message: `The property '${prop.title}' on node '${node.app_data.ui_data.label}' is invalid: ${errorMessages[0]}`,
           path,
           info: {
             type: "invalidProperty",

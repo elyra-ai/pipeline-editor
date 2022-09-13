@@ -42,8 +42,9 @@ import styled, { useTheme } from "styled-components";
 
 import NodeTooltip from "../NodeTooltip";
 import PalettePanel from "../PalettePanel";
-import PipelineController, { prefixedToNested } from "../PipelineController";
-import { NodeProperties, PipelineProperties } from "../properties-panels";
+import PipelineController from "../PipelineController";
+import { NodeProperties } from "../properties-panels";
+import { PropertiesPanel } from "../properties-panels/PropertiesPanel";
 import SplitPanelLayout from "../SplitPanelLayout";
 import TabbedPanelLayout from "../TabbedPanelLayout";
 import { InternalThemeProvider } from "../ThemeProvider";
@@ -612,10 +613,7 @@ const PipelineEditor = forwardRef(
       (data) => {
         const pipeline = controller.current.getPipelineFlow();
         if (pipeline?.pipelines?.[0]?.app_data) {
-          pipeline.pipelines[0].app_data.properties = prefixedToNested(
-            data,
-            true
-          );
+          pipeline.pipelines[0].app_data.properties = data;
           controller.current.setPipelineFlow(pipeline);
           onChange?.(controller.current.getPipelineFlow());
         }
@@ -690,9 +688,9 @@ const PipelineEditor = forwardRef(
         title: "Edit pipeline properties",
         icon: theme.overrides?.pipelineIcon,
         content: (
-          <PipelineProperties
-            pipelineFlow={pipeline}
-            propertiesSchema={pipelineProperties}
+          <PropertiesPanel
+            data={pipeline?.pipelines?.[0]?.app_data?.properties}
+            schema={pipelineProperties}
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePipelinePropertiesChange}

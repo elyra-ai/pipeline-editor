@@ -144,7 +144,7 @@ describe("getNodeProblems", () => {
     const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
     expect(problems).toHaveLength(1);
     expect(problems[0].info.type).toBe("missingProperty");
-    expect(problems[0].info.property).toBe("elyra_filename");
+    expect(problems[0].info.property).toBe("filename");
   });
 
   it("should have issues when required property has a default value and is empty", () => {
@@ -152,39 +152,22 @@ describe("getNodeProblems", () => {
       op: "execute-notebook-node",
       app_data: {
         properties: {
-          current_parameters: {
-            has_default: "default",
-          },
-          parameters: [{ id: "has_default" }],
-          uihints: {
-            parameter_info: [
-              {
-                control: "custom",
-                custom_control_id: "StringControl",
-                parameter_ref: "has_default",
-                label: { default: "Example" },
-                description: {
-                  default: "this is an example.",
-                  placement: "on_panel",
-                },
-                data: {
-                  required: true,
+          type: "object",
+          properties: {
+            component_parameters: {
+              type: "object",
+              properties: {
+                has_default: {
+                  title: "Example",
+                  description: "this is an example.",
+                  type: "string",
+                  default: "default",
                 },
               },
-            ],
-            group_info: [
-              {
-                type: "panels",
-                group_info: [
-                  {
-                    id: "has_default",
-                    type: "controls",
-                    parameter_refs: ["has_default"],
-                  },
-                ],
-              },
-            ],
+              required: ["has_default"],
+            },
           },
+          required: ["component_parameters"],
         },
       },
     };
@@ -233,7 +216,7 @@ describe("getNodeProblems", () => {
     const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
     expect(problems).toHaveLength(1);
     expect(problems[0].info.type).toBe("missingProperty");
-    expect(problems[0].info.property).toBe("elyra_filename");
+    expect(problems[0].info.property).toBe("filename");
   });
 
   it("should return no problems if required properties are provided", () => {
