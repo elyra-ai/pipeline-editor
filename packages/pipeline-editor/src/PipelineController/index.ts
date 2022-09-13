@@ -616,6 +616,11 @@ class PipelineController extends CanvasController {
         label: label,
         value: "This is an output of the component.",
       };
+    } else if (value?.widget === "file") {
+      return {
+        label: label,
+        value: `Input file: ${value.value}`,
+      };
     } else if (value?.widget) {
       return this.getPropertyValue(
         value.value,
