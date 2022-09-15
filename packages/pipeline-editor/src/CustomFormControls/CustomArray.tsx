@@ -16,11 +16,62 @@
 
 import { ArrayFieldTemplateProps } from "@rjsf/core";
 
+const renderDefaults = (
+  items: any[],
+  props: any
+): React.ReactElement | undefined => {
+  const allRendered = [];
+  if (items.length === 0) {
+    return undefined;
+  } else if (props.schema.items?.type === "object") {
+    for (const item of items) {
+      const itemRendered = [];
+      for (const key in props.schema.items.properties ?? {}) {
+        itemRendered.push(
+          <div style={{ margin: "5px" }}>
+            <label className="control-label">{`${props.schema.items.properties[key].title}: `}</label>
+            <div style={{ margin: "10px" }}>{item[key]}</div>
+          </div>
+        );
+      }
+      allRendered.push(
+        <div className="array-item" style={{ width: "fit-content" }}>
+          <label
+            className="control-label"
+            style={{ color: "var(--jp-content-font-color2)" }}
+          >
+            (pipeline default)
+          </label>
+          {itemRendered}
+        </div>
+      );
+    }
+  } else {
+    for (const item of items) {
+      if (item === null || item === undefined || item === "") {
+        return undefined;
+      } else {
+        return (
+          <div className="array-pipelineDefaults form-control">
+            <div className="left">{item}</div>
+            <div className="right">(pipeline default)</div>
+          </div>
+        );
+      }
+    }
+  }
+  return <div>{allRendered}</div>;
+};
+
 /**
  * React component that allows for custom add / remove buttons in the array
  * field component.
  */
 export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
+  const renderedDefaults = renderDefaults(
+    props.uiSchema.pipeline_defaults ?? [],
+    props
+  );
   return (
     <div className={props.className}>
       {props.items.map((item) => {
@@ -37,17 +88,7 @@ export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
           </div>
         );
       })}
-      {props.uiSchema.pipeline_defaults?.map((item: any) => {
-        if (item === null || item === "") {
-          return undefined;
-        }
-        return (
-          <div className="array-pipelineDefaults form-control">
-            <div className="left">{item}</div>
-            <div className="right">(pipeline default)</div>
-          </div>
-        );
-      })}
+      {renderedDefaults}
       {props.canAdd && (
         <button
           className="jp-mod-styled jp-mod-reject"
