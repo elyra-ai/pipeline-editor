@@ -40,7 +40,7 @@ it("should migrate v0 to latest", () => {
           "app_data": Object {
             "name": "title",
             "runtime_type": undefined,
-            "version": 7.5,
+            "version": 8,
           },
           "nodes": Array [],
         },
@@ -66,7 +66,7 @@ it("should migrate v0 to latest with missing app_data", () => {
         Object {
           "app_data": Object {
             "runtime_type": undefined,
-            "version": 7.5,
+            "version": 8,
           },
           "nodes": Array [],
         },
@@ -102,7 +102,7 @@ it("should migrate v1 to latest", () => {
           "app_data": Object {
             "name": "name",
             "runtime_type": undefined,
-            "version": 7.5,
+            "version": 8,
           },
           "nodes": Array [
             Object {
@@ -144,7 +144,7 @@ it("should migrate v2 to latest", () => {
           "app_data": Object {
             "name": "name",
             "runtime_type": undefined,
-            "version": 7.5,
+            "version": 8,
           },
           "nodes": Array [],
         },
@@ -198,7 +198,7 @@ it("should migrate v3 to latest", () => {
           "app_data": Object {
             "name": "name",
             "runtime_type": undefined,
-            "version": 7.5,
+            "version": 8,
           },
           "nodes": Array [
             Object {
@@ -289,7 +289,7 @@ it("should migrate v4 to latest", () => {
           "app_data": Object {
             "name": "name",
             "runtime_type": undefined,
-            "version": 7.5,
+            "version": 8,
           },
           "nodes": Array [
             Object {
@@ -396,7 +396,7 @@ it("should migrate v5 to latest", () => {
           "app_data": Object {
             "name": "name",
             "runtime_type": "APACHE_AIRFLOW",
-            "version": 7.5,
+            "version": 8,
           },
           "nodes": Array [
             Object {
@@ -501,7 +501,7 @@ it("should migrate v6 to latest", () => {
           "app_data": Object {
             "name": "name",
             "runtime_type": "KUBEFLOW_PIPELINES",
-            "version": 7.5,
+            "version": 8,
           },
           "nodes": Array [
             Object {
@@ -583,7 +583,7 @@ it("should migrate v7 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
-            "version": 7.5,
+            "version": 8,
           },
           "nodes": Array [
             Object {
@@ -633,7 +633,7 @@ it("should do nothing for latest version", () => {
       {
         app_data: {
           name: "name",
-          version: 7.5, // TODO: Update to 8 prior to 1.10 release (+above)
+          version: 8,
         },
         nodes: [],
       },

@@ -33,7 +33,7 @@ import {
 } from "./../errors";
 import { getFileName, prefixedToNested } from "./utils";
 
-export const PIPELINE_CURRENT_VERSION = 7.5; // TODO: Update to 8 prior to 1.10 release
+export const PIPELINE_CURRENT_VERSION = 8;
 
 // TODO: Experiment with pipeline editor settings.
 const SHOW_EXTENSIONS = true;

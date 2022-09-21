@@ -21,12 +21,36 @@ const widgetMap: { [key: string]: string } = {
   StringControl: "string",
 };
 
+const regexMap: { [key: string]: RegExp } = {
+  env_vars: /(?<env_var>\w+)=?(?<value>[^,]*?)(?= \w+=|$)/,
+  mounted_volumes: /(?<path>[\w/]+)=?(?<pvc_name>[^,]*?)(?= \w+=|$)/,
+  kubernetes_pod_annotations: /(?<key>\w+)=?(?<value>[^,]*?)(?= \w+=|$)/,
+  kubernetes_secrets: /(?<env_var>\w+)=?(?<name>[^:,\n\]]*):?(?<key>[^,]*?)(?= \w+=|$)/,
+  kubernetes_tolerations: /\w+=(?<key>.*?):(?<operator>[^,]*?):(?<value>[^,]*?):(?<effect>[^,]*?)(?= \w+=|$)/,
+};
+
 function migrate(pipelineFlow: any) {
   console.log(pipelineFlow);
   for (const pipeline of pipelineFlow.pipelines) {
+    Object.keys(pipeline.app_data?.properties?.pipeline_defaults ?? {}).forEach(
+      (key) => {
+        // Update KeyValue arrays to dict arrays
+        if (Object.keys(regexMap).includes(key)) {
+          const new_items: any[] = [];
+          for (const item of pipeline.app_data.properties.pipeline_defaults[
+            key
+          ]) {
+            const dict = item.match(regexMap[key]).groups;
+            new_items.push(dict);
+          }
+          pipeline.app_data.properties.pipeline_defaults[key] = new_items;
+        }
+      }
+    );
+
     for (const node of pipeline.nodes) {
-      // Update oneOf format
-      Object.keys(node.app_data.component_parameters ?? {}).forEach((key) => {
+      Object.keys(node.app_data?.component_parameters ?? {}).forEach((key) => {
+        // Update oneOf format
         const activeControl =
           node.app_data.component_parameters[key]?.activeControl;
         if (activeControl) {
@@ -49,11 +73,20 @@ function migrate(pipelineFlow: any) {
             value: node.app_data.component_parameters[key],
           };
         }
+        // Update KeyValue arrays to dict arrays
+        if (Object.keys(regexMap).includes(key)) {
+          const new_items: any[] = [];
+          for (const item of node.app_data.component_parameters[key]) {
+            const dict = item.match(regexMap[key]).groups;
+            new_items.push(dict);
+          }
+          node.app_data.component_parameters[key] = new_items;
+        }
       });
     }
   }
 
-  pipelineFlow.pipelines[0].app_data.version = 7.5; // TODO: Update to 8 prior to 1.10 release
+  pipelineFlow.pipelines[0].app_data.version = 8;
 
   return pipelineFlow;
 }
