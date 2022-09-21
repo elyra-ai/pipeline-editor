@@ -32,7 +32,7 @@ export function toPrettyString(o: any) {
   }
 
   if (Array.isArray(o)) {
-    return o.map((v) => toString(v?.value ?? v)).join("\n");
+    return o.map((v) => toString(v)).join("\n");
   }
 
   if (!!o && o.constructor === Object) {

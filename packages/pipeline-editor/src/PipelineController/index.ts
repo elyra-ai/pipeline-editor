@@ -642,15 +642,37 @@ class PipelineController extends CanvasController {
       };
     } else if (info?.type === "array") {
       // Merge pipeline defaults prop array with node prop array
-      const pipelineDefaultValue: string[] = this.getPipelineFlow()
-        ?.pipelines?.[0].app_data?.properties?.pipeline_defaults?.[key];
+      const pipelineDefaultValue: any[] = this.getPipelineFlow()?.pipelines?.[0]
+        .app_data?.properties?.pipeline_defaults?.[key];
       return {
         label: label,
-        value: value?.concat(
-          pipelineDefaultValue
-            ?.filter((item) => !value.includes(item))
-            ?.map((i) => i + " (pipeline default)") ?? []
-        ),
+        value: value
+          ?.map((i: any) => {
+            if (typeof i === "object") {
+              let rendered = "";
+              for (const key in i) {
+                rendered += `${key}: ${i[key]}\n`;
+              }
+              return rendered;
+            } else {
+              return i;
+            }
+          })
+          ?.concat(
+            pipelineDefaultValue
+              ?.filter((item) => !value.includes(item))
+              ?.map((i) => {
+                if (typeof i === "object") {
+                  let rendered = "(pipeline default)";
+                  for (const key in i) {
+                    rendered += `\n${key}: ${i[key]}`;
+                  }
+                  return rendered;
+                } else {
+                  return i + " (pipeline default)";
+                }
+              }) ?? []
+          ),
       };
     } else {
       return {
