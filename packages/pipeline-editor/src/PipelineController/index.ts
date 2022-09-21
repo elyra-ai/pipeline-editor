@@ -473,10 +473,11 @@ class PipelineController extends CanvasController {
             const valueIndex = properties[prop].enum.indexOf(propValue);
             const propLabel = nodeProp?.enumNames?.[valueIndex] ?? propValue;
             if (propLabel) {
-              nodeProp.uihints[
-                "ui:placeholder"
-              ] = `${propLabel} (pipeline default)`;
-              nodeProp.uihints.pipeline_default = true;
+              nodeProp.uihints = {
+                ...nodeProp.uihints,
+                "ui:placeholder": `${propLabel} (pipeline default)`,
+                pipeline_default: true,
+              };
             }
             const requiredIndex = componentParameters.required?.indexOf(prop);
             if (requiredIndex > -1) {
