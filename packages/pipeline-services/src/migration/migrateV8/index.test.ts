@@ -104,3 +104,115 @@ it("should update property format for OneOfControl", () => {
     new_component_parameters
   );
 });
+
+it("should update property format for KeyValue arrays", () => {
+  const component_parameters = {
+    env_vars: ["HOME=/user", "JAVA_HOME=", "HOST="],
+    kubernetes_secrets: ["var=secret:key", "var2=secret2:key2"],
+    kubernetes_tolerations: [
+      "id=key:Equal:val:NoExecute",
+      "id2=key2:Equal:val2:NoExecute",
+      "id3=:Equal::",
+    ],
+    kubernetes_pod_annotations: ["key=val", "key2=val2"],
+    mounted_volumes: ["mount=name", "mount2=name2"],
+  };
+
+  const new_component_parameters = {
+    env_vars: [
+      {
+        env_var: "HOME",
+        value: "/user",
+      },
+      {
+        env_var: "JAVA_HOME",
+        value: "",
+      },
+      {
+        env_var: "HOST",
+        value: "",
+      },
+    ],
+    kubernetes_secrets: [
+      {
+        env_var: "var",
+        name: "secret",
+        key: "key",
+      },
+      {
+        env_var: "var2",
+        name: "secret2",
+        key: "key2",
+      },
+    ],
+    kubernetes_tolerations: [
+      {
+        key: "key",
+        operator: "Equal",
+        value: "val",
+        effect: "NoExecute",
+      },
+      {
+        key: "key2",
+        operator: "Equal",
+        value: "val2",
+        effect: "NoExecute",
+      },
+      {
+        key: "",
+        operator: "Equal",
+        value: "",
+        effect: "",
+      },
+    ],
+    kubernetes_pod_annotations: [
+      {
+        key: "key",
+        value: "val",
+      },
+      {
+        key: "key2",
+        value: "val2",
+      },
+    ],
+    mounted_volumes: [
+      {
+        path: "mount",
+        pvc_name: "name",
+      },
+      {
+        path: "mount2",
+        pvc_name: "name2",
+      },
+    ],
+  };
+
+  const v7 = {
+    pipelines: [
+      {
+        app_data: {
+          name: "name",
+          version: 7,
+          properties: {
+            pipeline_defaults: component_parameters,
+          },
+        },
+        nodes: [
+          {
+            app_data: {
+              component_parameters,
+            },
+          },
+        ],
+      },
+    ],
+  };
+
+  const actual = migrate(v7);
+  expect(actual.pipelines[0].nodes[0].app_data.component_parameters).toEqual(
+    new_component_parameters
+  );
+  expect(actual.pipelines[0].app_data.properties.pipeline_defaults).toEqual(
+    new_component_parameters
+  );
+});

@@ -537,6 +537,19 @@ it("should migrate v7 to latest", () => {
         app_data: {
           name: "name",
           version: 7,
+          properties: {
+            pipeline_defaults: {
+              env_vars: ["HOME=/user", "JAVA_HOME=", "HOST="],
+              kubernetes_secrets: ["var=secret:key", "var2=secret2:key2"],
+              kubernetes_tolerations: [
+                "id=key:Equal:val:NoExecute",
+                "id2=key2:Equal:val2:NoExecute",
+                "id3=:Equal::",
+              ],
+              kubernetes_pod_annotations: ["key=val", "key2=val2"],
+              mounted_volumes: ["mount=name", "mount2=name2"],
+            },
+          },
         },
         nodes: [
           {
@@ -567,6 +580,15 @@ it("should migrate v7 to latest", () => {
                     option: "output_name",
                   },
                 },
+                env_vars: ["HOME=/user", "JAVA_HOME=", "HOST="],
+                kubernetes_secrets: ["var=secret:key", "var2=secret2:key2"],
+                kubernetes_tolerations: [
+                  "id=key:Equal:val:NoExecute",
+                  "id2=key2:Equal:val2:NoExecute",
+                  "id3=:Equal::",
+                ],
+                kubernetes_pod_annotations: ["key=val", "key2=val2"],
+                mounted_volumes: ["mount=name", "mount2=name2"],
               },
             },
           },
@@ -583,6 +605,76 @@ it("should migrate v7 to latest", () => {
         Object {
           "app_data": Object {
             "name": "name",
+            "properties": Object {
+              "pipeline_defaults": Object {
+                "env_vars": Array [
+                  Object {
+                    "env_var": "HOME",
+                    "value": "/user",
+                  },
+                  Object {
+                    "env_var": "JAVA_HOME",
+                    "value": "",
+                  },
+                  Object {
+                    "env_var": "HOST",
+                    "value": "",
+                  },
+                ],
+                "kubernetes_pod_annotations": Array [
+                  Object {
+                    "key": "key",
+                    "value": "val",
+                  },
+                  Object {
+                    "key": "key2",
+                    "value": "val2",
+                  },
+                ],
+                "kubernetes_secrets": Array [
+                  Object {
+                    "env_var": "var",
+                    "key": "key",
+                    "name": "secret",
+                  },
+                  Object {
+                    "env_var": "var2",
+                    "key": "key2",
+                    "name": "secret2",
+                  },
+                ],
+                "kubernetes_tolerations": Array [
+                  Object {
+                    "effect": "NoExecute",
+                    "key": "key",
+                    "operator": "Equal",
+                    "value": "val",
+                  },
+                  Object {
+                    "effect": "NoExecute",
+                    "key": "key2",
+                    "operator": "Equal",
+                    "value": "val2",
+                  },
+                  Object {
+                    "effect": "",
+                    "key": "",
+                    "operator": "Equal",
+                    "value": "",
+                  },
+                ],
+                "mounted_volumes": Array [
+                  Object {
+                    "path": "mount",
+                    "pvc_name": "name",
+                  },
+                  Object {
+                    "path": "mount2",
+                    "pvc_name": "name2",
+                  },
+                ],
+              },
+            },
             "version": 8,
           },
           "nodes": Array [
@@ -593,6 +685,72 @@ it("should migrate v7 to latest", () => {
                     "value": true,
                     "widget": "boolean",
                   },
+                  "env_vars": Array [
+                    Object {
+                      "env_var": "HOME",
+                      "value": "/user",
+                    },
+                    Object {
+                      "env_var": "JAVA_HOME",
+                      "value": "",
+                    },
+                    Object {
+                      "env_var": "HOST",
+                      "value": "",
+                    },
+                  ],
+                  "kubernetes_pod_annotations": Array [
+                    Object {
+                      "key": "key",
+                      "value": "val",
+                    },
+                    Object {
+                      "key": "key2",
+                      "value": "val2",
+                    },
+                  ],
+                  "kubernetes_secrets": Array [
+                    Object {
+                      "env_var": "var",
+                      "key": "key",
+                      "name": "secret",
+                    },
+                    Object {
+                      "env_var": "var2",
+                      "key": "key2",
+                      "name": "secret2",
+                    },
+                  ],
+                  "kubernetes_tolerations": Array [
+                    Object {
+                      "effect": "NoExecute",
+                      "key": "key",
+                      "operator": "Equal",
+                      "value": "val",
+                    },
+                    Object {
+                      "effect": "NoExecute",
+                      "key": "key2",
+                      "operator": "Equal",
+                      "value": "val2",
+                    },
+                    Object {
+                      "effect": "",
+                      "key": "",
+                      "operator": "Equal",
+                      "value": "",
+                    },
+                  ],
+                  "mounted_volumes": Array [
+                    Object {
+                      "path": "mount",
+                      "pvc_name": "name",
+                    },
+                    Object {
+                      "path": "mount2",
+                      "pvc_name": "name2",
+                    },
+                  ],
                   "numOneOf": Object {
                     "value": 42,
                     "widget": "number",
