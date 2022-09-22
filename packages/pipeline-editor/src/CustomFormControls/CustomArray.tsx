@@ -28,14 +28,18 @@ const renderDefaults = (
       const itemRendered = [];
       for (const key in props.schema.items.properties ?? {}) {
         itemRendered.push(
-          <div style={{ margin: "5px" }}>
+          <div key={`${key}-defaultValue`} style={{ margin: "5px" }}>
             <label className="control-label">{`${props.schema.items.properties[key].title}: `}</label>
-            <div style={{ margin: "10px" }}>{item[key]}</div>
+            <input readOnly value={item[key]} className="form-control" />
           </div>
         );
       }
       allRendered.push(
-        <div className="array-item" style={{ width: "fit-content" }}>
+        <div
+          key={`${props.id}-defaultValues`}
+          className="array-item"
+          style={{ width: "fit-content" }}
+        >
           <label
             className="control-label"
             style={{ color: "var(--jp-content-font-color2)" }}
