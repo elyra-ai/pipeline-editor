@@ -35,11 +35,7 @@ const renderDefaults = (
         );
       }
       allRendered.push(
-        <div
-          key={`${props.id}-defaultValues`}
-          className="array-item"
-          style={{ width: "fit-content" }}
-        >
+        <div key={`${props.id}-defaultValues`} className="array-item">
           <label
             className="control-label"
             style={{ color: "var(--jp-content-font-color2)" }}

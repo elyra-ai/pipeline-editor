@@ -30,7 +30,6 @@ const regexMap: { [key: string]: RegExp } = {
 };
 
 function migrate(pipelineFlow: any) {
-  console.log(pipelineFlow);
   for (const pipeline of pipelineFlow.pipelines) {
     Object.keys(pipeline.app_data?.properties?.pipeline_defaults ?? {}).forEach(
       (key) => {
@@ -74,7 +73,10 @@ function migrate(pipelineFlow: any) {
           };
         }
         // Update KeyValue arrays to dict arrays
-        if (Object.keys(regexMap).includes(key)) {
+        if (
+          Object.keys(regexMap).includes(key) &&
+          Array.isArray(node.app_data.component_parameters[key])
+        ) {
           const new_items: any[] = [];
           for (const item of node.app_data.component_parameters[key]) {
             const dict = item.match(regexMap[key]).groups;
