@@ -33,7 +33,7 @@ import {
 } from "./../errors";
 import { getFileName, prefixedToNested } from "./utils";
 
-export const PIPELINE_CURRENT_VERSION = 7.5; // TODO: Update to 8 prior to 1.10 release
+export const PIPELINE_CURRENT_VERSION = 8;
 
 // TODO: Experiment with pipeline editor settings.
 const SHOW_EXTENSIONS = true;
@@ -473,10 +473,11 @@ class PipelineController extends CanvasController {
             const valueIndex = properties[prop].enum.indexOf(propValue);
             const propLabel = nodeProp?.enumNames?.[valueIndex] ?? propValue;
             if (propLabel) {
-              nodeProp.uihints[
-                "ui:placeholder"
-              ] = `${propLabel} (pipeline default)`;
-              nodeProp.uihints.pipeline_default = true;
+              nodeProp.uihints = {
+                ...nodeProp.uihints,
+                "ui:placeholder": `${propLabel} (pipeline default)`,
+                pipeline_default: true,
+              };
             }
             const requiredIndex = componentParameters.required?.indexOf(prop);
             if (requiredIndex > -1) {
@@ -641,15 +642,37 @@ class PipelineController extends CanvasController {
       };
     } else if (info?.type === "array") {
       // Merge pipeline defaults prop array with node prop array
-      const pipelineDefaultValue: string[] = this.getPipelineFlow()
-        ?.pipelines?.[0].app_data?.properties?.pipeline_defaults?.[key];
+      const pipelineDefaultValue: any[] = this.getPipelineFlow()?.pipelines?.[0]
+        .app_data?.properties?.pipeline_defaults?.[key];
       return {
         label: label,
-        value: value?.concat(
-          pipelineDefaultValue
-            ?.filter((item) => !value.includes(item))
-            ?.map((i) => i + " (pipeline default)") ?? []
-        ),
+        value: value
+          ?.map((i: any) => {
+            if (typeof i === "object") {
+              let rendered = "";
+              for (const key in i) {
+                rendered += `${key}: ${i[key]}\n`;
+              }
+              return rendered;
+            } else {
+              return i;
+            }
+          })
+          ?.concat(
+            pipelineDefaultValue
+              ?.filter((item) => !value.includes(item))
+              ?.map((i) => {
+                if (typeof i === "object") {
+                  let rendered = "(pipeline default)";
+                  for (const key in i) {
+                    rendered += `\n${key}: ${i[key]}`;
+                  }
+                  return rendered;
+                } else {
+                  return i + " (pipeline default)";
+                }
+              }) ?? []
+          ),
       };
     } else {
       return {

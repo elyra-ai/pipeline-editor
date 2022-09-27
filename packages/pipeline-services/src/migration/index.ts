@@ -64,8 +64,7 @@ export function migrate(
       console.debug("migrating pipeline from v6 to v7");
       migrateV7(draft, mockPaletteV7);
     }
-    if (version < 7.5) {
-      // TODO: Update to 8 prior to 1.10 release
+    if (version < 8) {
       console.debug("migrating pipeline from v7 to v8");
       migrateV8(draft);
     }
