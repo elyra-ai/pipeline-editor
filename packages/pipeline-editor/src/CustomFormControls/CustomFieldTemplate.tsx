@@ -33,8 +33,10 @@ export const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
   return (
     <div
       className={`${props.classNames} ${
-        props.schema.oneOf ? "field-oneOf" : ""
-      }`}
+        props.schema.properties?.value &&
+        props.schema.properties?.widget &&
+        "small-object-field"
+      } ${props.schema.oneOf ? "field-oneOf" : ""}`}
       id={props.id}
     >
       {hasError && <div className="errorIndicator" />}
