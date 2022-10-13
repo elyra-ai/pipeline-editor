@@ -464,10 +464,12 @@ class PipelineController extends CanvasController {
         draft.pipeline_defaults = propValue;
       } else if (schema.type === "object") {
         for (const property in schema.properties) {
-          draft[property] = this.addPipelineDefaultUihints(
-            schema.properties[property],
-            propValue[property]
-          );
+          if (propValue[property] !== undefined) {
+            draft[property] = this.addPipelineDefaultUihints(
+              schema.properties[property],
+              propValue[property]
+            );
+          }
         }
       }
     });
