@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { FieldTemplateProps } from "@rjsf/core";
+import { FieldTemplateProps } from "@rjsf/utils";
 
 export const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
   let children = props.children;
-  if (props.uiSchema["ui:field"] === "hidden") {
+  if (props.uiSchema?.["ui:field"] === "hidden") {
     return <div />;
   }
-  if (props.uiSchema["ui:readonly"]) {
+  if (props.uiSchema?.["ui:readonly"]) {
     children = (
       <div style={{ paddingTop: "8px" }}>
         {props.formData ?? props.schema.default}
@@ -60,7 +60,7 @@ export const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
       {props.schema.title !== undefined && props.schema.title !== " " ? (
         <div
           className={`label-header ${
-            props.uiSchema["ui:field"] === "header" ? "category-header" : ""
+            props.uiSchema?.["ui:field"] === "header" ? "category-header" : ""
           }`}
         >
           <label className="control-label" htmlFor={props.id}>

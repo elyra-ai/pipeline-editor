@@ -23,7 +23,7 @@
   "dependencies": {
     "@elyra/canvas": "^12.23.2",
     "@elyra/pipeline-services": "^1.12.1",
-    "@rjsf/core": "^4.2.3",
+    "@rjsf/core": "^5.0.0-beta.2",
     "@rjsf/utils": "^5.0.0-beta.2",
     "@rjsf/validator-ajv6": "^5.0.0-beta.2",
     "carbon-components": "^10.43.0",

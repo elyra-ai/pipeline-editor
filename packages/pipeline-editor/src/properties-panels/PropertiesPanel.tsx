@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-import Form, { UiSchema, Widget, AjvError } from "@rjsf/core";
 import { produce } from "immer";
+import Form from "@rjsf/core";
+import { UiSchema, Widget } from "@rjsf/utils";
+import {
+  transformErrors,
+  createCustomValidator,
+} from "@elyra/pipeline-services";
+import validator from "@rjsf/validator-ajv6";
 import styled from "styled-components";
 
 import {
@@ -88,6 +94,7 @@ export function PropertiesPanel({
       formData={data}
       uiSchema={uiSchema}
       schema={schema as any}
+      customValidate={createCustomValidator(schema)}
       onChange={(e) => {
         const newFormData = e.formData;
         const params = schema.properties?.component_parameters?.properties;
@@ -137,25 +144,14 @@ export function PropertiesPanel({
         OneOfField: CustomOneOf,
       }}
       liveValidate={!noValidate}
-      ArrayFieldTemplate={ArrayTemplate}
-      noHtml5Validate
-      FieldTemplate={CustomFieldTemplate}
-      className={"elyra-formEditor"}
-      transformErrors={(errors: AjvError[]) => {
-        // Suppress the "oneof" validation because we're using oneOf in a custom way.
-        const transformed = [];
-        for (const error of errors) {
-          if (
-            error.message !== "should match exactly one schema in oneOf" &&
-            !(error as any).schemaPath?.includes("oneOf") &&
-            error.message !== "should be object" &&
-            error.message !== "should be string"
-          ) {
-            transformed.push(error);
-          }
-        }
-        return transformed;
+      validator={validator}
+      templates={{
+        ArrayFieldTemplate: ArrayTemplate,
+        FieldTemplate: CustomFieldTemplate,
       }}
+      noHtml5Validate
+      className={"elyra-formEditor"}
+      transformErrors={transformErrors}
     />
   );
 }

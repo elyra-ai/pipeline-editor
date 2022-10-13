@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-import { Field, FieldProps, utils, WidgetProps } from "@rjsf/core";
+import {
+  Field,
+  FieldProps,
+  WidgetProps,
+  getDefaultFormState,
+  getUiOptions,
+  getWidget,
+} from "@rjsf/utils";
 
 /**
  * A custom oneOf field to handle the 2 custom oneOf cases that Elyra has:
@@ -60,23 +67,15 @@ export const CustomOneOf: Field = (props) => {
     // Call getDefaultFormState to make sure defaults are populated on change.
     let defaults;
     try {
-      defaults = utils.getDefaultFormState(
-        options[selectedOption],
-        undefined,
-        rootSchema
-      );
+      defaults = getDefaultFormState(options[selectedOption], {}, rootSchema);
     } catch {}
     props.onChange(defaults);
   };
 
   const SchemaField = registry.fields.SchemaField as React.FC<FieldProps>;
   const { widgets } = registry;
-  const uiOptions = (utils.getUiOptions(props.uiSchema) ?? {}) as WidgetProps;
-  const Widget = utils.getWidget(
-    { type: "number" },
-    "select",
-    widgets
-  ) as React.FC<WidgetProps>;
+  const uiOptions = getUiOptions(props.uiSchema ?? {});
+  const Widget = getWidget({ type: "number" }, "select", widgets);
 
   const option = options[findOption()] || null;
   let optionSchema;
@@ -109,7 +108,8 @@ export const CustomOneOf: Field = (props) => {
     <div className="panel panel-default panel-body">
       <div className="form-group">
         <Widget
-          {...uiOptions}
+          uiSchema={uiOptions}
+          label={""}
           id={`${props.idSchema.$id}${
             props.schema.oneOf ? "__oneof_select" : "__anyof_select"
           }`}

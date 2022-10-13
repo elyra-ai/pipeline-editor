@@ -25,14 +25,34 @@ import {
   getValue,
   rangeForLocation,
 } from "./utils";
-import {
-  getErrorMessages,
-  getEnumValidators,
-  getNestedEnumValidators,
-  getNumberValidators,
-  getStringValidators,
-  getStringArrayValidators,
-} from "./validators";
+
+import validator from "@rjsf/validator-ajv6";
+import { ErrorTransformer, CustomValidator, FormValidation } from "@rjsf/utils";
+
+export const transformErrors: ErrorTransformer = (errors) => {
+  const newErrors = [];
+  for (const error of errors ?? []) {
+    if (error.name !== "minItems") {
+      newErrors.push(error);
+    }
+  }
+  return newErrors;
+};
+
+export function createCustomValidator(schema: any): CustomValidator {
+  return (formData: any, errors: FormValidation) => {
+    for (const field in formData) {
+      if (
+        schema.required?.includes(field) &&
+        formData[field]?.widget &&
+        (formData[field]?.value === undefined || formData[field]?.value === "")
+      ) {
+        errors[field]?.addError("required field");
+      }
+    }
+    return errors;
+  };
+}
 
 export function getLinkProblems(pipeline: any) {
   const links = getLinks(pipeline);
@@ -60,93 +80,28 @@ export function getLinkProblems(pipeline: any) {
   return problems;
 }
 
-// TODO: Update this to validate the new schema format
-function getPropertyValidationErrors(prop: any, value: any): any[] {
-  let errorMessages: any[] = [];
-  switch (prop.custom_control_id) {
-    case "EnumControl":
-      const enumValidators = getEnumValidators(prop.data);
-      errorMessages = getErrorMessages(value, enumValidators);
-      break;
-    case "NestedEnumControl":
-      const nestedEnumValidators = getNestedEnumValidators(prop.data);
-      errorMessages = prop.data?.required
-        ? getErrorMessages(value, nestedEnumValidators)
-        : [];
-      break;
-    case "NumberControl":
-      const trimmedNumber = (value?.toString() ?? "").trim();
-      if (!prop.data?.required && trimmedNumber === "") {
-        break;
-      }
-      const numberValidators = getNumberValidators(prop.data);
-      errorMessages = getErrorMessages(trimmedNumber, numberValidators);
-      break;
-    case "StringArrayControl":
-      const stringArrayValidators = getStringArrayValidators(prop.data);
-      errorMessages = getErrorMessages(value ?? [], stringArrayValidators);
-      break;
-    case "StringControl":
-      const trimmedString = (value ?? "").trim();
-      if (!prop.data?.required && trimmedString === "") {
-        break;
-      }
-      const stringValidators = getStringValidators(prop.data);
-      errorMessages = getErrorMessages(trimmedString, stringValidators);
-      break;
-  }
-  return errorMessages;
-}
-
 export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
   let problems: PartialProblem[] = [];
+  let errorMessages = validator.validateFormData(
+    pipeline.app_data ?? {},
+    pipelineProperties ?? {},
+    undefined,
+    transformErrors
+  ).errors;
 
-  for (const fieldName in pipelineProperties?.properties ?? []) {
-    // If the property isn't in the json, report the error one level higher.
-    let path = ["pipeline", "0", "app_data"];
-    if (pipeline.app_data?.[fieldName] !== undefined) {
-      path.push(pipelineProperties[fieldName]);
-    }
-
-    const prop = pipelineProperties.properties[fieldName];
-
-    // this should be safe because a boolean can't be required
-    // otherwise we would need to check strings for undefined or empty string
-    // NOTE: 0 is also falsy, but we don't have any number inputs right now?
-    // TODO: We should update this to do type checking.
-    const value = getValue(
-      pipeline.app_data?.properties,
-      fieldName,
-      pipeline.app_data?.properties?.pipeline_defaults
-    );
-    if (prop.data?.required && !value) {
-      problems.push({
-        message: `The pipeline property '${prop.title}' is required.`,
-        path,
-        info: {
-          type: "missingProperty",
-          pipelineID: pipeline.id,
-          // do not strip elyra here, we need to differentiate between pipeline_defaults still.
-          property: fieldName,
-        },
-      });
-    }
-
-    let errorMessages = getPropertyValidationErrors(prop, value);
-
-    if (errorMessages[0] !== undefined) {
-      problems.push({
-        message: `The pipeline property '${prop.title}' is invalid: ${errorMessages[0]}`,
-        path,
-        info: {
-          type: "invalidProperty",
-          pipelineID: pipeline.id,
-          // do not strip elyra here, we need to differentiate between pipeline_defaults still.
-          property: fieldName,
-          message: errorMessages[0],
-        },
-      });
-    }
+  for (const error of errorMessages) {
+    problems.push({
+      message: error.message ?? "",
+      path: error.params,
+      info: {
+        pipelineID: pipeline.id,
+        property:
+          error.property
+            ?.replace(".properties['", "")
+            ?.replace("'].required", "") ?? "",
+        type: "missingProperty",
+      },
+    });
   }
 
   return problems;
@@ -176,57 +131,26 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
     }
 
     const nodeProperties =
-      nodeDef.app_data.properties?.properties?.component_parameters?.properties;
-    for (const fieldName in nodeProperties ?? []) {
-      const prop = nodeProperties[fieldName];
-      // If the property isn't in the json, report the error one level higher.
-      let path = ["nodes", n, "app_data"];
-      if (node.app_data.component_parameters?.[fieldName] !== undefined) {
-        path.push(prop.parameter_ref);
-      }
+      nodeDef.app_data.properties?.properties?.component_parameters ?? {};
 
-      // this should be safe because a boolean can't be required
-      // otherwise we would need to check strings for undefined or empty string
-      // NOTE: 0 is also falsy, but we don't have any number inputs right now?
-      // TODO: We should update this to do type checking.
-      const value = getValue(
-        node.app_data.component_parameters ?? {},
-        fieldName,
-        pipeline.app_data?.properties?.pipeline_defaults
-      );
-      const component_parameters =
-        nodeDef.app_data.properties?.properties?.component_parameters ?? {};
-      if (component_parameters.required?.includes(fieldName)) {
-        if (!value || (value?.widget && (!value.value || value.value === ""))) {
-          problems.push({
-            message: `The property '${prop.title}' on node '${node.app_data.ui_data.label}' is required.`,
-            path,
-            info: {
-              type: "missingProperty",
-              pipelineID: pipeline.id,
-              nodeID: node.id,
-              property: fieldName,
-            },
-          });
-        }
-      }
-
-      let errorMessages = getPropertyValidationErrors(prop, value);
-
-      if (errorMessages[0] !== undefined) {
-        problems.push({
-          message: `The property '${prop.title}' on node '${node.app_data.ui_data.label}' is invalid: ${errorMessages[0]}`,
-          path,
-          info: {
-            type: "invalidProperty",
-            pipelineID: pipeline.id,
-            nodeID: node.id,
-            // do not strip elyra here, we need to differentiate between component_parameters still.
-            property: prop.parameter_ref,
-            message: errorMessages[0],
-          },
-        });
-      }
+    const errorMessages = validator.validateFormData(
+      node.app_data.component_parameters ?? {},
+      nodeProperties,
+      createCustomValidator(nodeProperties),
+      transformErrors
+    ).errors;
+    for (const error of errorMessages) {
+      const property = error.property?.replace(".", "") ?? "";
+      problems.push({
+        message: error.message ?? "",
+        path: error.params,
+        info: {
+          pipelineID: pipeline.id,
+          nodeID: node.id,
+          property: property,
+          type: "missingProperty",
+        },
+      });
     }
   }
 
@@ -259,7 +183,7 @@ export function validate(
         const location = findNodeAtLocation(pipelineTreeRoot, [
           "pipelines",
           p,
-          ...path,
+          ...(path ?? []),
         ]);
 
         return {
