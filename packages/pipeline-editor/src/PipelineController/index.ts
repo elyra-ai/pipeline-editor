@@ -447,6 +447,32 @@ class PipelineController extends CanvasController {
     return nodes;
   }
 
+  // Updates the uihints to include pipeline default
+  addPipelineDefaultUihints(schema: any, propValue: any) {
+    return produce(schema.uihints ?? {}, (draft: any) => {
+      if (schema.enum) {
+        const valueIndex = schema.enum.indexOf(propValue);
+        const propLabel = schema.enumNames?.[valueIndex] ?? propValue;
+        if (propLabel) {
+          draft["ui:placeholder"] = `${propLabel} (pipeline default)`;
+          draft.pipeline_default = true;
+        }
+      } else if (schema.type === "number") {
+        draft["ui:placeholder"] = `${propValue} (pipeline default)`;
+        draft.pipeline_default = true;
+      } else if (schema.type === "array") {
+        draft.pipeline_defaults = propValue;
+      } else if (schema.type === "object") {
+        for (const property in schema.properties) {
+          draft[property] = this.addPipelineDefaultUihints(
+            schema.properties[property],
+            propValue[property]
+          );
+        }
+      }
+    });
+  }
+
   propagatePipelineDefaultProperties(
     nodes: NodeType[],
     palette: PaletteV3
@@ -469,26 +495,14 @@ class PipelineController extends CanvasController {
             // skip nodes that dont have the property
             return;
           }
-          if (properties[prop].enum) {
-            const valueIndex = properties[prop].enum.indexOf(propValue);
-            const propLabel = nodeProp?.enumNames?.[valueIndex] ?? propValue;
-            if (propLabel) {
-              nodeProp.uihints = {
-                ...nodeProp.uihints,
-                "ui:placeholder": `${propLabel} (pipeline default)`,
-                pipeline_default: true,
-              };
-            }
-            const requiredIndex = componentParameters.required?.indexOf(prop);
-            if (requiredIndex > -1) {
-              componentParameters.required.splice(requiredIndex, 1);
-            }
-          } else if (properties[prop].type === "array") {
-            nodeProp.uihints = {
-              pipeline_defaults: propValue,
-              ...nodeProp.uihints,
-            };
+          const requiredIndex = componentParameters.required?.indexOf(prop);
+          if (requiredIndex > -1) {
+            componentParameters.required.splice(requiredIndex, 1);
           }
+          componentParameters.properties[prop].uihints = {
+            ...componentParameters.properties[prop].uihints,
+            ...this.addPipelineDefaultUihints(nodeProp, propValue),
+          };
         });
       }
     });
