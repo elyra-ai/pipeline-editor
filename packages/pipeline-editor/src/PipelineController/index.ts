@@ -448,7 +448,11 @@ class PipelineController extends CanvasController {
   }
 
   // Updates the uihints to include pipeline default
-  addPipelineDefaultUihints(schema: any, propValue: any) {
+  addPipelineDefaultUihints(
+    schema: any,
+    propValue: any,
+    existingPlaceholder?: any
+  ) {
     return produce(schema.uihints ?? {}, (draft: any) => {
       if (schema.enum) {
         const valueIndex = schema.enum.indexOf(propValue);
@@ -458,8 +462,15 @@ class PipelineController extends CanvasController {
           draft.pipeline_default = true;
         }
       } else if (schema.type === "number") {
-        draft["ui:placeholder"] = `${propValue} (pipeline default)`;
-        draft.pipeline_default = true;
+        // If the placeholder is already the value of the pipeline default,
+        // don't add in the pipeline default text
+        if (existingPlaceholder !== propValue) {
+          draft["ui:placeholder"] = `${propValue} (pipeline default)`;
+          draft.pipeline_default = true;
+        } else {
+          // Added this to make sure that the placeholder is given as a string
+          draft["ui:placeholder"] = `${existingPlaceholder}`;
+        }
       } else if (schema.type === "array") {
         draft.pipeline_defaults = propValue;
       } else if (schema.type === "object") {
@@ -467,7 +478,8 @@ class PipelineController extends CanvasController {
           if (propValue[property] !== undefined) {
             draft[property] = this.addPipelineDefaultUihints(
               schema.properties[property],
-              propValue[property]
+              propValue[property],
+              schema.uihints?.[property]?.["ui:placeholder"]
             );
           }
         }
