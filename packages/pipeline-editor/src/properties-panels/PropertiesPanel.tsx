@@ -96,18 +96,6 @@ export function PropertiesPanel({
       schema={schema as any}
       customValidate={createCustomValidator(schema)}
       onChange={(e) => {
-        const newFormData = e.formData;
-        const params = schema.properties?.component_parameters?.properties;
-        for (const field in params) {
-          if (params[field].oneOf) {
-            for (const option of params[field].oneOf) {
-              if (option.widget?.const !== undefined) {
-                newFormData.component_parameters[field].widget =
-                  option.widget.const;
-              }
-            }
-          }
-        }
         onChange?.(e.formData);
       }}
       formContext={{

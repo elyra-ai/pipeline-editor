@@ -32,7 +32,12 @@ import { ErrorTransformer, CustomValidator, FormValidation } from "@rjsf/utils";
 export const transformErrors: ErrorTransformer = (errors) => {
   const newErrors = [];
   for (const error of errors ?? []) {
-    if (error.name !== "minItems") {
+    if (
+      error.name !== "minItems" &&
+      error.name !== "oneOf" &&
+      error.message !== "should be object" &&
+      error.message !== "should be string"
+    ) {
       newErrors.push(error);
     }
   }
@@ -40,7 +45,7 @@ export const transformErrors: ErrorTransformer = (errors) => {
 };
 
 export function createCustomValidator(schema: any): CustomValidator {
-  return (formData: any, errors: FormValidation) => {
+  const validate = (formData: any, errors: FormValidation) => {
     for (const field in formData) {
       if (
         schema.required?.includes(field) &&
@@ -50,8 +55,19 @@ export function createCustomValidator(schema: any): CustomValidator {
         errors[field]?.addError("required field");
       }
     }
+    for (const field in formData.component_parameters ?? {}) {
+      if (
+        schema.properties?.component_parameters?.required?.includes(field) &&
+        formData.component_parameters[field]?.widget &&
+        (formData.component_parameters[field]?.value === undefined ||
+          formData.component_parameters[field]?.value === "")
+      ) {
+        errors["component_parameters"]?.[field]?.addError("required field");
+      }
+    }
     return errors;
   };
+  return validate;
 }
 
 export function getLinkProblems(pipeline: any) {

@@ -17,11 +17,11 @@
 import {
   Field,
   FieldProps,
-  WidgetProps,
   getDefaultFormState,
   getUiOptions,
   getWidget,
 } from "@rjsf/utils";
+import validator from "@rjsf/validator-ajv6";
 
 /**
  * A custom oneOf field to handle the 2 custom oneOf cases that Elyra has:
@@ -67,7 +67,12 @@ export const CustomOneOf: Field = (props) => {
     // Call getDefaultFormState to make sure defaults are populated on change.
     let defaults;
     try {
-      defaults = getDefaultFormState(options[selectedOption], {}, rootSchema);
+      defaults = getDefaultFormState(
+        validator,
+        options[selectedOption],
+        {},
+        rootSchema
+      );
     } catch {}
     props.onChange(defaults);
   };
@@ -128,6 +133,7 @@ export const CustomOneOf: Field = (props) => {
           {...props}
           schema={optionSchema}
           uiSchema={optionSchema.uihints}
+          errorSchema={props.errorSchema?.["value"]}
         />
       )}
     </div>
