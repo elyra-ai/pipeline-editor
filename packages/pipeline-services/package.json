@@ -22,6 +22,8 @@
     "link": "yarn link"
   },
   "dependencies": {
+    "@rjsf/utils": "^5.0.0-beta.11",
+    "@rjsf/validator-ajv6": "^5.0.0-beta.11",
     "immer": "^9.0.7",
     "jsonc-parser": "^3.0.0"
   },

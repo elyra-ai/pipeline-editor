@@ -15,12 +15,12 @@
  */
 
 import { produce } from "immer";
-import Form from "@rjsf/core";
-import { UiSchema, Widget } from "@rjsf/utils";
 import {
   transformErrors,
   createCustomValidator,
 } from "@elyra/pipeline-services";
+import Form from "@rjsf/core";
+import { UiSchema, Widget } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv6";
 import styled from "styled-components";
 
