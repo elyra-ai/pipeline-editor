@@ -171,7 +171,10 @@ function NodeProperties({
         const component_properties =
           draft.properties.component_parameters?.properties ?? {};
         for (let prop in component_properties) {
-          if (component_properties[prop].properties) {
+          if (
+            component_properties[prop].properties?.value &&
+            component_properties[prop].properties?.widget
+          ) {
             const properties = component_properties[prop].properties;
             const oneOf = properties.value?.uihints?.allownooptions
               ? oneOfValuesNoOpt

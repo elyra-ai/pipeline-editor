@@ -447,6 +447,46 @@ class PipelineController extends CanvasController {
     return nodes;
   }
 
+  // Updates the uihints to include pipeline default
+  addPipelineDefaultUihints(
+    schema: any,
+    propValue: any,
+    existingPlaceholder?: any
+  ) {
+    return produce(schema.uihints ?? {}, (draft: any) => {
+      if (schema.enum) {
+        const valueIndex = schema.enum.indexOf(propValue);
+        const propLabel = schema.enumNames?.[valueIndex] ?? propValue;
+        if (propLabel) {
+          draft["ui:placeholder"] = `${propLabel} (pipeline default)`;
+          draft.pipeline_default = true;
+        }
+      } else if (schema.type === "number") {
+        // If the placeholder is already the value of the pipeline default,
+        // don't add in the pipeline default text
+        if (existingPlaceholder !== propValue) {
+          draft["ui:placeholder"] = `${propValue} (pipeline default)`;
+          draft.pipeline_default = true;
+        } else {
+          // Added this to make sure that the placeholder is given as a string
+          draft["ui:placeholder"] = `${existingPlaceholder}`;
+        }
+      } else if (schema.type === "array") {
+        draft.pipeline_defaults = propValue;
+      } else if (schema.type === "object") {
+        for (const property in schema.properties) {
+          if (propValue[property] !== undefined) {
+            draft[property] = this.addPipelineDefaultUihints(
+              schema.properties[property],
+              propValue[property],
+              schema.uihints?.[property]?.["ui:placeholder"]
+            );
+          }
+        }
+      }
+    });
+  }
+
   propagatePipelineDefaultProperties(
     nodes: NodeType[],
     palette: PaletteV3
@@ -469,26 +509,14 @@ class PipelineController extends CanvasController {
             // skip nodes that dont have the property
             return;
           }
-          if (properties[prop].enum) {
-            const valueIndex = properties[prop].enum.indexOf(propValue);
-            const propLabel = nodeProp?.enumNames?.[valueIndex] ?? propValue;
-            if (propLabel) {
-              nodeProp.uihints = {
-                ...nodeProp.uihints,
-                "ui:placeholder": `${propLabel} (pipeline default)`,
-                pipeline_default: true,
-              };
-            }
-            const requiredIndex = componentParameters.required?.indexOf(prop);
-            if (requiredIndex > -1) {
-              componentParameters.required.splice(requiredIndex, 1);
-            }
-          } else if (properties[prop].type === "array") {
-            nodeProp.uihints = {
-              pipeline_defaults: propValue,
-              ...nodeProp.uihints,
-            };
+          const requiredIndex = componentParameters.required?.indexOf(prop);
+          if (requiredIndex > -1) {
+            componentParameters.required.splice(requiredIndex, 1);
           }
+          componentParameters.properties[prop].uihints = {
+            ...componentParameters.properties[prop].uihints,
+            ...this.addPipelineDefaultUihints(nodeProp, propValue),
+          };
         });
       }
     });
