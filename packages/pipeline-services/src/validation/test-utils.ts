@@ -37,7 +37,6 @@ export const nodeSpec = {
             runtime_image: {
               type: "string",
               title: "Runtime Image",
-              required: true,
               description: "Container image used as execution environment.",
               uihints: { items: [] },
               enumNames: ["Anaconda (2021.11) with Python 3.x", "Pandas 1.4.1"],

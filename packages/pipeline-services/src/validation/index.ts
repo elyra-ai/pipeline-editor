@@ -47,13 +47,23 @@ export function createCustomValidator(schema: any): CustomValidator {
       ) {
         errors[field]?.addError("required field");
       }
+      if (schema.required?.includes(field) && formData[field] === "") {
+        errors[field]?.addError("required field");
+      }
     }
+    const component_parameters = schema.properties?.component_parameters ?? {};
     for (const field in formData.component_parameters ?? {}) {
       if (
-        schema.properties?.component_parameters?.required?.includes(field) &&
+        component_parameters.required?.includes(field) &&
         formData.component_parameters[field]?.widget &&
         (formData.component_parameters[field]?.value === undefined ||
           formData.component_parameters[field]?.value === "")
+      ) {
+        errors["component_parameters"]?.[field]?.addError("required field");
+      }
+      if (
+        component_parameters.required?.includes(field) &&
+        formData.component_parameters?.[field] === ""
       ) {
         errors["component_parameters"]?.[field]?.addError("required field");
       }
@@ -149,7 +159,11 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       transformErrors
     ).errors;
     for (const error of errorMessages) {
-      const property = error.property?.replace(".", "") ?? "";
+      const property =
+        error.property
+          ?.replace(".properties['", "")
+          ?.replace("'].required", "")
+          ?.replace(".", "") ?? "";
       problems.push({
         message: error.message ?? "",
         path: error.params,

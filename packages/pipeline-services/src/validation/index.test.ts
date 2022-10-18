@@ -147,52 +147,6 @@ describe("getNodeProblems", () => {
     expect(problems[0].info.property).toBe("filename");
   });
 
-  it("should have issues when required property has a default value and is empty", () => {
-    const nodeSpec = {
-      op: "execute-notebook-node",
-      app_data: {
-        properties: {
-          type: "object",
-          properties: {
-            component_parameters: {
-              type: "object",
-              properties: {
-                has_default: {
-                  title: "Example",
-                  description: "this is an example.",
-                  type: "string",
-                  default: "default",
-                },
-              },
-              required: ["has_default"],
-            },
-          },
-          required: ["component_parameters"],
-        },
-      },
-    };
-
-    const pipeline = {
-      nodes: [
-        {
-          id: "node-1",
-          type: "execution_node",
-          op: "execute-notebook-node",
-          app_data: {
-            ui_data: {
-              label: "Node 1",
-            },
-          },
-        },
-      ],
-    };
-
-    const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
-    expect(problems).toHaveLength(1);
-    expect(problems[0].info.type).toBe("missingProperty");
-    expect(problems[0].info.property).toBe("has_default");
-  });
-
   it("should find missing properties for empty strings", () => {
     const pipeline = {
       nodes: [
@@ -214,9 +168,11 @@ describe("getNodeProblems", () => {
     };
 
     const problems = getNodeProblems(pipeline, [nodeSpec]) as any;
-    expect(problems).toHaveLength(1);
+    expect(problems).toHaveLength(2);
     expect(problems[0].info.type).toBe("missingProperty");
-    expect(problems[0].info.property).toBe("filename");
+    expect(problems[0].info.property).toBe("runtime_image");
+    expect(problems[1].info.type).toBe("missingProperty");
+    expect(problems[1].info.property).toBe("filename");
   });
 
   it("should return no problems if required properties are provided", () => {
@@ -229,7 +185,7 @@ describe("getNodeProblems", () => {
           app_data: {
             component_parameters: {
               filename: "example.py",
-              runtime_image: "example/runtime:1.2.3",
+              runtime_image: "amancevice/pandas:1.4.1",
             },
             ui_data: {
               label: "Node 1",
