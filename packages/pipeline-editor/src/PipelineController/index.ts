@@ -458,7 +458,7 @@ class PipelineController extends CanvasController {
         const valueIndex = schema.enum.indexOf(propValue);
         const propLabel = schema.enumNames?.[valueIndex] ?? propValue;
         if (propLabel) {
-          draft["ui:placeholder"] = `Use Pipeline Default: [${propLabel}]`;
+          draft["ui:placeholder"] = `Use pipeline default: [${propLabel}]`;
           draft.pipeline_default = true;
         }
       } else if (schema.type === "number") {
