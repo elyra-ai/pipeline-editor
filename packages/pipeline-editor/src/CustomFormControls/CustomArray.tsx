@@ -27,12 +27,26 @@ const renderDefaults = (
     for (const item of items) {
       const itemRendered = [];
       for (const key in props.schema.items.properties ?? {}) {
-        itemRendered.push(
-          <div key={`${key}-defaultValue`} style={{ margin: "5px" }}>
-            <label className="control-label">{`${props.schema.items.properties[key].title}: `}</label>
-            <input readOnly value={item[key]} className="form-control" />
-          </div>
-        );
+        const propertySchema = props.schema.items.properties[key];
+        if (propertySchema.type === "boolean") {
+          itemRendered.push(
+            <div className="checkbox">
+              <label>
+                <input readOnly type="checkbox" checked={item[key]} />
+                <span className="control-label">
+                  {props.schema.items.properties[key].title}
+                </span>
+              </label>
+            </div>
+          );
+        } else {
+          itemRendered.push(
+            <div key={`${key}-defaultValue`} style={{ margin: "5px" }}>
+              <label className="control-label">{`${props.schema.items.properties[key].title}: `}</label>
+              <input readOnly value={item[key]} className="form-control" />
+            </div>
+          );
+        }
       }
       allRendered.push(
         <div key={`${props.id}-defaultValues`} className="array-item">
