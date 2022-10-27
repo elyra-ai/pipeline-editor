@@ -28,7 +28,7 @@ export const CustomOneOf: Field = (props) => {
   const { options, formData, registry } = props;
   const findOption = (): any => {
     // For inputpaths, expect a oneOf that has { value, option } for each entry
-    if ((props.schema as any).uihints?.["inputpath"]) {
+    if (props.uiSchema?.["inputpath"]) {
       for (const i in props.schema.oneOf ?? []) {
         const properties: any = props.schema.oneOf?.[i];
         if (
