@@ -65,4 +65,4 @@ votes, the Contributor is converted into a Committer and given write access to t
 
 |     Name      |  GitHub ID   |
 | :-----------: | :----------: |
-| Rachael House | racharlhouse |
+| Rachael House | rachaelhouse |
