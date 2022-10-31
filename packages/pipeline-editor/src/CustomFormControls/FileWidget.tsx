@@ -21,15 +21,12 @@ import { Widget } from "@rjsf/core";
 // TODO: Make the file clearable
 export const FileWidget: Widget = (props) => {
   const handleChooseFile = useCallback(async () => {
-    const values = await props.formContext.onFileRequested({
+    props.formContext.onFileRequested({
       canSelectMany: false,
       defaultUri: props.value,
       filters: { File: props.uiSchema.extensions },
       propertyID: props.id.replace("root_component_parameters_", ""),
     });
-    if (values?.[0]) {
-      props.onChange(values[0]);
-    }
   }, [props]);
 
   return (

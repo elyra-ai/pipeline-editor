@@ -15,6 +15,7 @@
  */
 
 import { ArrayFieldTemplateProps } from "@rjsf/core";
+import { useCallback } from "react";
 
 const renderDefaults = (
   items: any[],
@@ -86,6 +87,13 @@ export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
     props.uiSchema.pipeline_defaults ?? [],
     props
   );
+  const handleChooseFile = useCallback(async () => {
+    props.formContext.onFileRequested({
+      canSelectMany: true,
+      filters: { File: props.uiSchema.extensions },
+      propertyID: props.idSchema.$id.replace("root_component_parameters_", ""),
+    });
+  }, [props]);
   return (
     <div className={props.className}>
       {props.items.map((item) => {
@@ -122,6 +130,15 @@ export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
           }
         >
           {"Refresh"}
+        </button>
+      )}
+      {props.uiSchema?.files && (
+        <button
+          className="jp-mod-styled jp-mod-reject"
+          style={{ marginLeft: "5px" }}
+          onClick={handleChooseFile}
+        >
+          {"Browse"}
         </button>
       )}
     </div>
