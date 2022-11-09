@@ -54,6 +54,7 @@ interface Props {
   pipeline: any;
   toolbar?: any;
   palette?: any;
+  pipelineParameters?: any;
   pipelineProperties?: any;
   onAction?: (action: { type: string; payload?: any }) => any;
   onChange?: (pipeline: any) => any;
@@ -174,6 +175,7 @@ const PipelineEditor = forwardRef(
       pipeline,
       palette,
       pipelineProperties,
+      pipelineParameters,
       toolbar,
       onAction,
       onChange,
@@ -621,6 +623,18 @@ const PipelineEditor = forwardRef(
       [onChange]
     );
 
+    const handlePipelineParametersChange = useCallback(
+      (data) => {
+        const pipeline = controller.current.getPipelineFlow();
+        if (pipeline?.pipelines?.[0]?.app_data) {
+          pipeline.pipelines[0].app_data.parameters = data;
+          controller.current.setPipelineFlow(pipeline);
+          onChange?.(controller.current.getPipelineFlow());
+        }
+      },
+      [onChange]
+    );
+
     const handleTooltip = (tipType: string, e: TipEvent) => {
       function isNodeTipEvent(type: string, _e: TipEvent): _e is TipNode {
         return type === "tipTypeNode";
@@ -710,6 +724,21 @@ const PipelineEditor = forwardRef(
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePropertiesChange}
+          />
+        ),
+      },
+      {
+        id: "pipeline-parameters",
+        label: "Pipeline Parameters",
+        title: "Edit pipeline parameters",
+        icon: theme.overrides?.pipelineIcon,
+        content: (
+          <PropertiesPanel
+            data={pipeline?.pipelines?.[0]?.app_data?.parameters}
+            schema={pipelineParameters}
+            onFileRequested={onFileRequested}
+            onPropertiesUpdateRequested={onPropertiesUpdateRequested}
+            onChange={handlePipelineParametersChange}
           />
         ),
       },
