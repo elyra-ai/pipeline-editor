@@ -755,6 +755,7 @@ const PipelineEditor = forwardRef(
                 toolbarConfig={toolbar ?? []}
                 config={{
                   enableInternalObjectModel: true,
+                  enableMarkdownInComments: true,
                   emptyCanvasContent: children,
                   enablePaletteLayout: leftPalette ? "Flyout" : "None", // 'Flyout', 'None', 'Modal'
                   enableNodeFormatType: "Horizontal",
