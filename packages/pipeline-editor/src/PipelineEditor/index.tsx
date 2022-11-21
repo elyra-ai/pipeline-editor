@@ -627,7 +627,10 @@ const PipelineEditor = forwardRef(
       (data) => {
         const pipeline = controller.current.getPipelineFlow();
         if (pipeline?.pipelines?.[0]?.app_data) {
-          pipeline.pipelines[0].app_data.parameters = data;
+          pipeline.pipelines[0].app_data.properties = {
+            ...pipeline.pipelines[0].app_data.properties,
+            parameters: data,
+          };
           controller.current.setPipelineFlow(pipeline);
           onChange?.(controller.current.getPipelineFlow());
         }
@@ -727,22 +730,25 @@ const PipelineEditor = forwardRef(
           />
         ),
       },
-      {
+    ];
+
+    if (pipelineParameters) {
+      panelTabs.push({
         id: "pipeline-parameters",
         label: "Pipeline Parameters",
         title: "Edit pipeline parameters",
         icon: theme.overrides?.pipelineIcon,
         content: (
           <PropertiesPanel
-            data={pipeline?.pipelines?.[0]?.app_data?.parameters}
+            data={pipeline?.pipelines?.[0]?.app_data?.properties?.parameters}
             schema={pipelineParameters}
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePipelineParametersChange}
           />
         ),
-      },
-    ];
+      });
+    }
 
     if (!leftPalette) {
       panelTabs.push({
