@@ -44,6 +44,8 @@ interface Props {
   onChange?: (data: any) => any;
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
+  noValidate?: boolean;
+  id?: string;
 }
 
 export function PropertiesPanel({
@@ -52,6 +54,8 @@ export function PropertiesPanel({
   onChange,
   onFileRequested,
   onPropertiesUpdateRequested,
+  noValidate,
+  id,
 }: Props) {
   if (schema === undefined) {
     return <Message>No properties defined.</Message>;
@@ -107,12 +111,12 @@ export function PropertiesPanel({
         },
         formData: data,
       }}
-      id={data?.id}
+      id={id}
       widgets={widgets}
       fields={{
         OneOfField: CustomOneOf,
       }}
-      liveValidate
+      liveValidate={!noValidate}
       ArrayFieldTemplate={ArrayTemplate}
       noHtml5Validate
       FieldTemplate={CustomFieldTemplate}

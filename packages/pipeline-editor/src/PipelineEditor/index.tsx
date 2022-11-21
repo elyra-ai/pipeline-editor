@@ -745,6 +745,8 @@ const PipelineEditor = forwardRef(
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePipelineParametersChange}
+            id="pipeline-parameters"
+            noValidate={true}
           />
         ),
       });
