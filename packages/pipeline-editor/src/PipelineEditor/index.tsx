@@ -727,6 +727,9 @@ const PipelineEditor = forwardRef(
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePropertiesChange}
+            parameters={
+              pipeline?.pipelines?.[0]?.app_data?.properties?.parameters
+            }
           />
         ),
       },
