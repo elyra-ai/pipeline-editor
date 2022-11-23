@@ -28,6 +28,19 @@ export const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
       </div>
     );
   }
+  if (
+    props.schema.uniqueItems &&
+    (props.schema.items as any)?.enum?.length === 0
+  ) {
+    children = <div style={{ paddingTop: "8px" }}>No options to select.</div>;
+  } else if (props.schema.uniqueItems && props.formData) {
+    const filteredItems = props.formData.filter((item: any) => {
+      return (props.schema.items as any)?.enum?.includes(item);
+    });
+    if (filteredItems.length !== props.formData.length) {
+      props.onChange(filteredItems);
+    }
+  }
   const requiredError = props.required && props.formData === undefined;
   const hasError = props.rawErrors || requiredError;
   return (
