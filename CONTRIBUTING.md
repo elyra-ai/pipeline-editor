@@ -24,3 +24,45 @@ the [Code of Conduct](https://github.com/elyra-ai/community/blob/main/CODE_OF_CO
 
 The [Elyra community repo](https://github.com/elyra-ai/community) contains information on how the community
 is organized and other information that is pertinent to contributing.
+
+## Community Roles
+
+### Contributors
+
+Contributors are Members who are active/inactive contributors to the community. They can have issues and Pull Requests assigned to them. Contributors can be active in many ways including but not limited to:
+
+- Authoring or reviewing PRs on GitHub
+- Filing or commenting on issues on GitHub
+- Contributing community discussions (e.g. Slack, meetings, Gitter, email discussion forums, Stack Overflow, etc)
+- Creator of content, promotion and advocating
+
+Active Contributors are defined as anyone from the community with twenty (20) or more measurable contributions
+during the previous 12-month period, inclusive of code merged, code reviews performed, documentation page edits,
+(creation, modification, comments or attachments)
+
+### Committers
+
+Contributors who give frequent and valuable contributions to a subproject of the Project can have their
+status promoted to that of a Committer for that subproject. A Committer has write access to the source code
+repository and gains voting rights allowing them to affect the future of the subproject.
+
+In order for a Contributor to become a Committer, another Committer can nominate that Contributor or the Contributor can ask for it.
+Once a Contributor is nominated, all Committers will be asked to vote. If there are at least 3 positive votes and no negative
+votes, the Contributor is converted into a Committer and given write access to the source code repository.
+
+## Committers
+
+|      Name       | Company |   GitHub ID   |
+| :-------------: | :-----: | :-----------: |
+|    Alan Chin    |   IBM   |   akchinSTC   |
+|  Alex Bozarth   |   IBM   |   ajbozarth   |
+| Karla Spuldaro  |   IBM   | karlaspuldaro |
+| Luciano Resende |  Apple  |   lresende    |
+|  Martha Cryan   |   IBM   |  marthacryan  |
+| Nick Bourdakos  |         |  bourdakos1   |
+
+## Contributors
+
+|     Name      |  GitHub ID   |
+| :-----------: | :----------: |
+| Rachael House | rachaelhouse |
