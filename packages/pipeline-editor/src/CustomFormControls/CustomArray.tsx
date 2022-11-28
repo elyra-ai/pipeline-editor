@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { ArrayFieldTemplateProps } from "@rjsf/core";
 import { useCallback } from "react";
+
+import { ArrayFieldTemplateProps } from "@rjsf/core";
 
 const renderDefaults = (
   items: any[],
