@@ -109,6 +109,7 @@ declare module "@elyra/canvas" {
     toolbarConfig: any[];
     config: {
       enableInternalObjectModel?: boolean;
+      enableMarkdownInComments?: boolean;
       emptyCanvasContent?: any;
       enablePaletteLayout?: "Flyout" | "None" | "Modal";
       enableNodeFormatType?: "Horizontal";
