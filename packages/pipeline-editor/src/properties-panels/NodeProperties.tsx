@@ -226,10 +226,9 @@ function NodeProperties({
                 component_properties[prop].oneOf[i].properties.value.default =
                   "";
               }
-              if (
-                component_properties[prop].oneOf[i].properties.widget
-                  .default === "inputpath"
-              ) {
+              const widget =
+                component_properties[prop].oneOf[i].properties.widget.default;
+              if (widget === "inputpath") {
                 if (nestedOneOf.length > 0) {
                   component_properties[prop].oneOf[
                     i
@@ -239,6 +238,12 @@ function NodeProperties({
                   delete component_properties[prop].oneOf[i].properties.value
                     .enum;
                 }
+              } else if (widget === "parameter") {
+                component_properties[prop].oneOf[
+                  i
+                ].properties.value.enum = parameters?.map(
+                  (param) => param.name
+                );
               }
             }
           }
