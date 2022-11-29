@@ -629,7 +629,7 @@ const PipelineEditor = forwardRef(
         if (pipeline?.pipelines?.[0]?.app_data) {
           pipeline.pipelines[0].app_data.properties = {
             ...pipeline.pipelines[0].app_data.properties,
-            parameters: data,
+            pipeline_parameters: data,
           };
           controller.current.setPipelineFlow(pipeline);
           onChange?.(controller.current.getPipelineFlow());
@@ -728,7 +728,8 @@ const PipelineEditor = forwardRef(
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePropertiesChange}
             parameters={
-              pipeline?.pipelines?.[0]?.app_data?.properties?.parameters
+              pipeline?.pipelines?.[0]?.app_data?.properties
+                ?.pipeline_parameters
             }
           />
         ),
@@ -743,7 +744,10 @@ const PipelineEditor = forwardRef(
         icon: theme.overrides?.pipelineIcon,
         content: (
           <PropertiesPanel
-            data={pipeline?.pipelines?.[0]?.app_data?.properties?.parameters}
+            data={
+              pipeline?.pipelines?.[0]?.app_data?.properties
+                ?.pipeline_parameters
+            }
             schema={pipelineParameters}
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
