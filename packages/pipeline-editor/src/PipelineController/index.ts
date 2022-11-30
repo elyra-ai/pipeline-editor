@@ -22,6 +22,8 @@ import {
   NodeType,
 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
+import { getDefaultFormState } from "@rjsf/utils";
+import validator from "@rjsf/validator-ajv6";
 import produce from "immer";
 
 import {
@@ -29,9 +31,9 @@ import {
   PipelineOutOfDateError,
   InvalidPipelineError,
 } from "./../errors";
-import { getFileName, nestedToPrefixed, prefixedToNested } from "./utils";
+import { getFileName, prefixedToNested } from "./utils";
 
-export const PIPELINE_CURRENT_VERSION = 7;
+export const PIPELINE_CURRENT_VERSION = 8;
 
 // TODO: Experiment with pipeline editor settings.
 const SHOW_EXTENSIONS = true;
@@ -149,7 +151,12 @@ class PipelineController extends CanvasController {
       ...rest
     } = item;
 
-    const nodeTemplate = this.getPaletteNode(op);
+    const nodeTemplate: any = this.getPaletteNode(op);
+    const defaults =
+      getDefaultFormState(validator, nodeTemplate.app_data.properties ?? {}) ??
+      {};
+    defaults.label = "";
+    nodeTemplate.app_data = defaults;
 
     const data = {
       ...rest,
@@ -159,27 +166,16 @@ class PipelineController extends CanvasController {
       nodeTemplate: this.convertNodeTemplate(nodeTemplate),
     };
 
-    const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
-    if (nodeDef?.app_data.properties?.current_parameters) {
-      data.nodeTemplate.app_data = {
-        ...prefixedToNested(nodeDef.app_data.properties.current_parameters),
-      };
-    }
-
     const filenameRef = this.resolveParameterRef(op, "filehandler");
 
     if (path && filenameRef) {
+      if (data.nodeTemplate.app_data.component_parameters === undefined) {
+        data.nodeTemplate.app_data.component_parameters = {};
+      }
       data.nodeTemplate.app_data.component_parameters[filenameRef] = path;
-
       if (typeof onPropertiesUpdateRequested === "function") {
-        // properties should be a flat object with elyra_ prefixed keys
-        // e.g. {
-        //   label: "",
-        //   elyra_filename: ""
-        //   elyra_runtime_image: ""
-        // }
         const properties = await onPropertiesUpdateRequested(
-          nestedToPrefixed(data.nodeTemplate.app_data)
+          data.nodeTemplate.app_data
         );
 
         const {
@@ -190,7 +186,7 @@ class PipelineController extends CanvasController {
         const {
           component_parameters: newComponentParameters,
           ...newAppData
-        } = prefixedToNested(properties);
+        } = properties;
 
         data.nodeTemplate.app_data = {
           ...oldAppData,
@@ -451,36 +447,76 @@ class PipelineController extends CanvasController {
     return nodes;
   }
 
+  // Updates the uihints to include pipeline default
+  addPipelineDefaultUihints(
+    schema: any,
+    propValue: any,
+    existingPlaceholder?: any
+  ) {
+    return produce(schema.uihints ?? {}, (draft: any) => {
+      if (schema.enum) {
+        const valueIndex = schema.enum.indexOf(propValue);
+        const propLabel = schema.enumNames?.[valueIndex] ?? propValue;
+        if (propLabel) {
+          draft["ui:placeholder"] = `Use pipeline default: [${propLabel}]`;
+          draft.pipeline_default = true;
+        }
+      } else if (schema.type === "number") {
+        // If the placeholder is already the value of the pipeline default,
+        // don't add in the pipeline default text
+        if (existingPlaceholder !== propValue) {
+          draft["ui:placeholder"] = `${propValue} (pipeline default)`;
+          draft.pipeline_default = true;
+        } else {
+          // Added this to make sure that the placeholder is given as a string
+          draft["ui:placeholder"] = `${existingPlaceholder}`;
+        }
+      } else if (schema.type === "array") {
+        draft.pipeline_defaults = propValue;
+      } else if (schema.type === "object") {
+        for (const property in schema.properties) {
+          if (propValue[property] !== undefined) {
+            draft[property] = this.addPipelineDefaultUihints(
+              schema.properties[property],
+              propValue[property],
+              schema.uihints?.[property]?.["ui:placeholder"]
+            );
+          }
+        }
+      }
+    });
+  }
+
   propagatePipelineDefaultProperties(
     nodes: NodeType[],
     palette: PaletteV3
   ): NodeType[] {
     return produce(nodes, (draft: any) => {
-      for (const prop of palette.properties?.uihints?.parameter_info ?? []) {
+      const properties =
+        palette.properties?.properties?.pipeline_defaults?.properties ?? {};
+      for (const prop in properties) {
         const propValue = this.getPipelineFlow()?.pipelines?.[0]?.app_data
-          ?.properties?.pipeline_defaults?.[
-          prop.parameter_ref.replace(/^elyra_/, "")
-        ];
-
+          ?.properties?.pipeline_defaults?.[prop];
+        if (propValue === undefined) {
+          // Skip propagation if the pipeline default isn't defined
+          continue;
+        }
         draft.forEach((node: any) => {
-          const propIndex = node.app_data.properties.uihints.parameter_info.findIndex(
-            (p: any) => p.parameter_ref === prop.parameter_ref
-          );
-          const nodeProp =
-            node.app_data.properties.uihints.parameter_info[propIndex];
+          const componentParameters =
+            node.app_data.properties.properties.component_parameters;
+          const nodeProp = componentParameters.properties[prop];
           if (!nodeProp) {
             // skip nodes that dont have the property
             return;
           }
-          if (prop.custom_control_id === "EnumControl") {
-            const propLabel = nodeProp?.data?.labels?.[propValue] ?? propValue;
-            if (propLabel) {
-              nodeProp.data.placeholder = `${propLabel} (pipeline default)`;
-              nodeProp.data.pipeline_default = true;
-            }
-          } else if (prop.custom_control_id === "StringArrayControl") {
-            nodeProp.data.pipeline_defaults = propValue;
+          const requiredIndex = componentParameters.required?.indexOf(prop);
+          if (requiredIndex > -1) {
+            componentParameters.required.splice(requiredIndex, 1);
           }
+          componentParameters.properties[prop].uihints = {
+            ...componentParameters.properties[prop].uihints,
+            ...this.addPipelineDefaultUihints(nodeProp, propValue),
+          };
         });
       }
     });
@@ -529,24 +565,25 @@ class PipelineController extends CanvasController {
       const nodeProblems = [];
 
       const nodeDef = this.getAllPaletteNodes().find((n) => n.op === node.op);
+      if (nodeDef === undefined) {
+        return "Node type not found.";
+      }
+      const componentProperties = nodeDef!.app_data.properties.properties
+        ?.component_parameters?.properties;
 
       for (const p of problems) {
         switch (p.info.type) {
           case "missingProperty":
             if (p.info.nodeID === nodeID) {
               const property = p.info.property;
-              const label = nodeDef!.app_data.properties!.uihints!.parameter_info.find(
-                (info) => info.parameter_ref === property
-              )!.label.default;
+              const label = componentProperties[property].title;
               nodeProblems.push(`property "${label}" is required`);
             }
             break;
           case "invalidProperty":
             if (p.info.nodeID === nodeID) {
               const property = p.info.property;
-              const label = nodeDef!.app_data.properties!.uihints!.parameter_info.find(
-                (info) => info.parameter_ref === property
-              )!.label.default;
+              const label = componentProperties[property].title;
               nodeProblems.push(
                 `property "${label}" is invalid: ${p.info.message}`
               );
@@ -568,61 +605,102 @@ class PipelineController extends CanvasController {
     return "";
   }
 
-  getPropertyValue(value: any, info?: any, label?: string): any {
-    if (info?.data?.format === "inputpath" || info?.format === "inputpath") {
+  getPropertyValue(value: any, key: string, info?: any, label?: string): any {
+    if (value?.widget === "inputpath") {
       // Find the node corresponding to the input node
-      const upstreamNode = this.findExecutionNode(value?.value ?? "");
+      const upstreamNode = this.findExecutionNode(value.value?.value ?? "");
       const upstreamNodeLabel = upstreamNode?.app_data?.ui_data?.label;
       const upstreamNodeDef = this.getAllPaletteNodes().find(
         (nodeDef) => nodeDef.op === upstreamNode?.op
       );
+      if (value.value?.value && value.value.option === "") {
+        return {
+          label: label,
+          value: upstreamNodeLabel,
+        };
+      }
+      const component_parameters =
+        upstreamNodeDef?.app_data?.properties?.properties?.component_parameters
+          ?.properties ?? {};
       // Add each property with a format of outputpath to the options field
-      const upstreamNodeOption = upstreamNodeDef?.app_data?.properties?.uihints?.parameter_info?.find(
-        (prop) => {
-          return prop.parameter_ref === value.option;
+      for (const prop in component_parameters) {
+        if (prop === value.value.option) {
+          const upstreamNodeOption = component_parameters[prop]?.title;
+          return {
+            label: label,
+            value: upstreamNodeLabel
+              ? upstreamNodeOption
+                ? `${upstreamNodeLabel}: ${upstreamNodeOption}`
+                : upstreamNodeLabel
+              : "No value specified.",
+          };
         }
-      )?.label?.default;
+      }
       return {
         label: label,
-        value: upstreamNodeLabel
-          ? upstreamNodeOption
-            ? `${upstreamNodeLabel}: ${upstreamNodeOption}`
-            : upstreamNodeLabel
-          : "No value specified.",
+        value: "No value specified.",
       };
-    } else if (
-      info?.data?.format === "outputpath" ||
-      info?.format === "outputpath"
-    ) {
+    } else if (info?.uihints?.outputpath === true) {
       return {
         label: label,
         value: "This is an output of the component.",
       };
-    } else if (value?.activeControl) {
+    } else if (value?.widget === "file") {
+      return {
+        label: label,
+        value: `Input file: ${value.value}`,
+      };
+    } else if (value?.widget) {
       return this.getPropertyValue(
-        value[value.activeControl],
-        info?.data?.controls?.[value.activeControl],
+        value.value,
+        key,
+        info?.oneOf?.find((def: any) => {
+          return def.properties?.widget?.default === value.widget;
+        })?.properties?.value,
         label
       );
-    } else if (info?.custom_control_id === "EnumControl") {
+    } else if (info?.enum !== undefined) {
       // If no enum value is set show pipeline default value
       return {
         label: label,
-        value: info?.data?.labels?.[value] ?? value ?? info?.data?.placeholder,
+        value:
+          info?.data?.labels?.[value] ??
+          value ??
+          info?.uihints?.["ui:placeholder"],
       };
-    } else if (info?.custom_control_id === "StringArrayControl") {
+    } else if (info?.type === "array") {
       // Merge pipeline defaults prop array with node prop array
-      const pipelineDefaultValue: string[] = this.getPipelineFlow()
-        ?.pipelines?.[0].app_data?.properties?.pipeline_defaults?.[
-        info?.parameter_ref.replace(/^elyra_/, "")
-      ];
+      const pipelineDefaultValue: any[] = this.getPipelineFlow()?.pipelines?.[0]
+        .app_data?.properties?.pipeline_defaults?.[key];
       return {
         label: label,
-        value: value?.concat(
-          pipelineDefaultValue
-            ?.filter((item) => !value.includes(item))
-            ?.map((i) => i + " (pipeline default)") ?? []
-        ),
+        value: value
+          ?.map((i: any) => {
+            if (typeof i === "object") {
+              let rendered = "";
+              for (const key in i) {
+                rendered += `${key}: ${i[key]}\n`;
+              }
+              return rendered;
+            } else {
+              return i;
+            }
+          })
+          ?.concat(
+            pipelineDefaultValue
+              ?.filter((item) => !value.includes(item))
+              ?.map((i) => {
+                if (typeof i === "object") {
+                  let rendered = "(pipeline default)";
+                  for (const key in i) {
+                    rendered += `\n${key}: ${i[key]}`;
+                  }
+                  return rendered;
+                } else {
+                  return i + " (pipeline default)";
+                }
+              }) ?? []
+          ),
       };
     } else {
       return {
@@ -639,19 +717,24 @@ class PipelineController extends CanvasController {
       const { op, app_data } = node;
       const nodeDef = this.getAllPaletteNodes().find((n) => n.op === op);
 
-      const info = nodeDef?.app_data.properties?.uihints?.parameter_info ?? [];
+      const info =
+        (nodeDef?.app_data.properties?.properties as any)?.component_parameters
+          ?.properties ?? {};
 
-      const properties = info.map((i) => {
-        if (i.parameter_ref.startsWith("elyra_")) {
-          const strippedRef = i.parameter_ref.replace(/^elyra_/, "");
-          const value = app_data?.component_parameters?.[strippedRef];
-          return this.getPropertyValue(value, i, i.label.default);
+      const properties = [];
+      for (const prop in info) {
+        if (info[prop].type === "null") {
+          continue;
         }
-        return {
-          label: i.label.default,
-          value: app_data?.[i.parameter_ref],
-        };
-      });
+        properties.push(
+          this.getPropertyValue(
+            app_data?.component_parameters?.[prop],
+            prop,
+            info[prop],
+            info[prop].title
+          )
+        );
+      }
       return properties;
     }
 

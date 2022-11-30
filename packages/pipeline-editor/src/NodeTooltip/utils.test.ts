@@ -32,15 +32,6 @@ describe("toPrettyString", () => {
     expect(result).toEqual("one\ntwo\nthree");
   });
 
-  it("returns a string for a values array", () => {
-    const result = toPrettyString([
-      { value: "one", id: "xxx" },
-      { value: "two", id: "xxx" },
-      { value: "three", id: "xxx" },
-    ]);
-    expect(result).toEqual("one\ntwo\nthree");
-  });
-
   it("returns a string for a simple array with numbers", () => {
     const result = toPrettyString([1, 2, 3]);
     expect(result).toEqual("1\n2\n3");

@@ -17,7 +17,7 @@
 import produce from "immer";
 
 import { ComponentNotFoundError } from "../errors";
-import { mockPalette } from "../utils";
+import { mockPaletteV7 } from "../utils";
 import rawMigrate from "./";
 
 // wrap migrate functions in immer
@@ -86,7 +86,7 @@ it("should update property format for OneOfControl", () => {
     ],
   };
 
-  const actual = migrate(v6, mockPalette);
+  const actual = migrate(v6, mockPaletteV7);
   expect(actual.pipelines[0].nodes[0].app_data.component_parameters).toEqual(
     new_component_parameters
   );

@@ -23,12 +23,13 @@ import migrateV4 from "./migrateV4";
 import migrateV5 from "./migrateV5";
 import migrateV6 from "./migrateV6";
 import migrateV7 from "./migrateV7";
+import migrateV8 from "./migrateV8";
+import { mockPaletteV7 } from "./utils";
 
 export * from "./errors";
 
 export function migrate(
   pipelineJSON: any,
-  palette?: any,
   setNodePathsRelativeToPipelineV2?: (pipeline: any) => any
 ) {
   return produce(pipelineJSON, (draft: any) => {
@@ -53,13 +54,19 @@ export function migrate(
       console.debug("migrating pipeline from v4 to v5");
       migrateV5(draft);
     }
+    // Note: starting with v8 the palette changed, so we now use
+    // a copy of the palette as it was at v7 to migrate to v6/v7
     if (version < 6) {
       console.debug("migrating pipeline from v5 to v6");
-      migrateV6(draft, palette);
+      migrateV6(draft, mockPaletteV7);
     }
     if (version < 7) {
       console.debug("migrating pipeline from v6 to v7");
-      migrateV7(draft, palette);
+      migrateV7(draft, mockPaletteV7);
+    }
+    if (version < 8) {
+      console.debug("migrating pipeline from v7 to v8");
+      migrateV8(draft);
     }
   });
 }

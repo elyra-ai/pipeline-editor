@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-// mock palette created by copying palette content sent to migrate function
-// and merging it into a single json object
+// mock palette created by copying palette content as it was prior
+// to pipeline v8
 
-export const mockPalette: any = {
+export const mockPaletteV7: any = {
   version: "3.0",
   categories: [
     {

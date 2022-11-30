@@ -17,7 +17,7 @@
 import produce from "immer";
 
 import { ComponentNotFoundError } from "../errors";
-import { mockPalette } from "../utils";
+import { mockPaletteV7 } from "../utils";
 import rawMigrate from "./";
 
 // wrap migrate functions in immer
@@ -44,7 +44,7 @@ it("should update old op name to new op name", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].nodes[0].op).toEqual(
     "elyra-kfp-examples-catalog:61e6f4141f65"
   );
@@ -69,7 +69,7 @@ it("should not update op name if already new op name", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].nodes[0].op).toEqual(
     "elyra-airflow-examples-catalog:3a55d015ea96"
   );
@@ -94,7 +94,7 @@ it("should not update op name if not in update list", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].nodes[0].op).toEqual("some_op_name");
 });
 
@@ -116,7 +116,7 @@ it("should not error if op not set", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].nodes[0].op).toBeUndefined();
 });
 
@@ -134,7 +134,7 @@ it("should switch from runtime to runtime_type - kfp", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].app_data.runtime_type).toEqual(
     "KUBEFLOW_PIPELINES"
   );
@@ -154,7 +154,7 @@ it("should switch from runtime to runtime_type - airflow", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].app_data.runtime_type).toEqual("APACHE_AIRFLOW");
 });
 
@@ -172,7 +172,7 @@ it("should switch from runtime to runtime_type - other", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].app_data.runtime_type).toBeUndefined();
 });
 
@@ -189,7 +189,7 @@ it("should switch from runtime to runtime_type - undefined", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].app_data.runtime_type).toBeUndefined();
 });
 
@@ -214,7 +214,7 @@ it("should update component_source to new format", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].nodes[0].app_data.component_source).toEqual(
     '{"catalog_type":"elyra-kfp-examples-catalog","component_ref":{"component-id":"component_source.py"}}'
   );
@@ -241,7 +241,7 @@ it("should update component_source to new format with generic filename", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].nodes[0].app_data.component_source).toEqual(
     '{"catalog_type":"elyra-kfp-examples-catalog","component_ref":{"component-id":"download_data.yaml"}}'
   );
@@ -268,7 +268,7 @@ it("should not update component_source if op is not updated", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].nodes[0].app_data.component_source).toEqual(
     "some/path/to/component_source.py"
   );
@@ -343,7 +343,7 @@ it("should update property format for OneOfControl", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].nodes[0].app_data.component_parameters).toEqual(
     new_component_parameters
   );
@@ -381,7 +381,7 @@ it("should not update property format for kfp controls", () => {
     ],
   };
 
-  const actual = migrate(v5, mockPalette);
+  const actual = migrate(v5, mockPaletteV7);
   expect(actual.pipelines[0].nodes[0].app_data.component_parameters).toEqual(
     component_parameters
   );

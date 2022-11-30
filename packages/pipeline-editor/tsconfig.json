@@ -6,6 +6,8 @@
     "module": "esnext",
     "outDir": "dist",
     "jsx": "react-jsx",
+    "jsxFactory": "",
+    "jsxFragmentFactory": "",
     "declaration": true,
     "downlevelIteration": true,
     "sourceMap": true

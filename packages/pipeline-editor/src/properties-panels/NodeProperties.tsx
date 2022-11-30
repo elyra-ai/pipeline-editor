@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { NodeType } from "@elyra/canvas";
 import produce from "immer";
 import styled from "styled-components";
 
@@ -21,16 +22,7 @@ import { PropertiesPanel, Message } from "./PropertiesPanel";
 
 interface Props {
   selectedNodes?: any[];
-  nodes: {
-    op: string;
-    label?: string;
-    app_data: {
-      properties?: any;
-      parameter_refs?: {
-        filehandler?: string;
-      };
-    };
-  }[];
+  nodes: NodeType[];
   upstreamNodes?: any[];
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
@@ -46,6 +38,32 @@ const Heading = styled.div`
   color: ${({ theme }) => theme.palette.text.primary};
   opacity: 0.5;
 `;
+
+function getOneOfValue(value: string, option: string, label: string) {
+  return {
+    title: label,
+    type: "object",
+    properties: {
+      value: {
+        type: "string",
+        default: value,
+      },
+      option: {
+        type: "string",
+        default: option,
+      },
+    },
+    uihints: {
+      value: {
+        "ui:field": "hidden",
+      },
+      option: {
+        "ui:field": "hidden",
+      },
+      label: "false",
+    },
+  };
+}
 
 function NodeProperties({
   selectedNodes,
@@ -125,71 +143,130 @@ function NodeProperties({
     );
   }
 
-  const refs = nodePropertiesSchema.app_data.parameter_refs;
-
   // returns the node properties for selectedNode with the most recent content
   const getNodeProperties = (): any => {
-    const data: any[] = [];
+    const oneOfValues: any[] = [];
+    const oneOfValuesNoOpt: any[] = [];
 
     // add each upstream node to the data list
     for (const upstreamNode of upstreamNodes ?? []) {
       const nodeDef = nodes.find((n) => n.op === upstreamNode.op);
-      const options = [];
+      const prevLen = oneOfValuesNoOpt.length;
 
+      const nodeProperties =
+        nodeDef?.app_data.properties.properties.component_parameters.properties;
       // Add each property with a format of outputpath to the options field
-      for (const prop of nodeDef?.app_data.properties.uihints.parameter_info ??
-        []) {
-        if (prop.data.format === "outputpath") {
-          options.push({
-            value: prop.parameter_ref,
-            label: prop.label.default,
-          });
+      for (const prop in nodeProperties ?? {}) {
+        const properties = nodeProperties[prop] ?? {};
+        if (properties.uihints?.outputpath) {
+          // Creates a "oneof" object for each node / output pair
+          const oneOfValue = getOneOfValue(
+            upstreamNode.id,
+            prop,
+            `${upstreamNode.app_data?.ui_data?.label}: ${properties.title}`
+          );
+          oneOfValues.push(oneOfValue);
+          oneOfValuesNoOpt.push(oneOfValue);
         }
       }
-      data.push({
-        value: upstreamNode.id,
-        label: upstreamNode.app_data?.ui_data?.label,
-        options: options,
-      });
+      if (oneOfValuesNoOpt.length <= prevLen) {
+        // Add oneOfValue for parent without specified outputs
+        oneOfValuesNoOpt.push(
+          getOneOfValue(
+            upstreamNode.id,
+            "",
+            upstreamNode.app_data?.ui_data?.label
+          )
+        );
+      }
     }
 
     // update property data to include data for properties with inputpath format
-    return produce(nodePropertiesSchema?.app_data.properties, (draft: any) => {
-      for (let prop of draft.uihints.parameter_info) {
-        if (prop.data?.format === "inputpath") {
-          prop.data = {
-            ...prop.data,
-            data,
-            placeholder: "Select an input source",
-          };
-        } else if (prop.data?.controls) {
-          for (const key in prop.data?.controls) {
-            if (prop.data?.controls[key].format === "inputpath") {
-              prop.data.controls[key] = {
-                ...prop.data.controls[key],
-                data,
-                placeholder: "Select an input source",
-              };
+    return produce(
+      nodePropertiesSchema?.app_data?.properties ?? {},
+      (draft: any) => {
+        draft.properties = {
+          label: {
+            title: "Label",
+            description: "A custom label for the node.",
+            type: "string",
+          },
+          ...draft.properties,
+        };
+        const component_properties =
+          draft.properties.component_parameters?.properties ?? {};
+        for (let prop in component_properties) {
+          if (
+            component_properties[prop].properties?.value &&
+            component_properties[prop].properties?.widget
+          ) {
+            const properties = component_properties[prop].properties;
+            const oneOf = properties.value?.uihints?.allownooptions
+              ? oneOfValuesNoOpt
+              : oneOfValues;
+            component_properties[prop].required = ["value"];
+            if (
+              properties?.widget?.default === "inputpath" &&
+              properties.value
+            ) {
+              if (oneOf.length > 0) {
+                properties.value.oneOf = oneOf;
+                delete properties.value.enum;
+                delete properties.value.type;
+              }
+            }
+          } else if (component_properties[prop].oneOf) {
+            for (const i in component_properties[prop].oneOf) {
+              const nestedOneOf = component_properties[prop].oneOf[i].uihints
+                ?.allownooptions
+                ? oneOfValuesNoOpt
+                : oneOfValues;
+              component_properties[prop].oneOf[i].required = ["value"];
+              if (
+                component_properties[prop].oneOf[i].properties?.value
+                  ?.default === undefined &&
+                component_properties[prop].oneOf[i].properties?.value?.type ===
+                  "string"
+              ) {
+                component_properties[prop].oneOf[i].properties.value.default =
+                  "";
+              }
+              if (
+                component_properties[prop].oneOf[i].properties.widget
+                  .default === "inputpath"
+              ) {
+                if (nestedOneOf.length > 0) {
+                  component_properties[prop].oneOf[
+                    i
+                  ].properties.value.oneOf = nestedOneOf;
+                  delete component_properties[prop].oneOf[i].properties.value
+                    .type;
+                  delete component_properties[prop].oneOf[i].properties.value
+                    .enum;
+                }
+              }
             }
           }
         }
       }
-    });
+    );
   };
 
   return (
     <div>
       <Heading>{nodePropertiesSchema.label}</Heading>
+      <span className="nodeDescription">
+        {nodePropertiesSchema.description}
+      </span>
       <PropertiesPanel
-        refs={refs}
-        currentProperties={selectedNode.app_data}
-        onPropertiesUpdateRequested={onPropertiesUpdateRequested}
-        propertiesSchema={getNodeProperties()}
-        onFileRequested={onFileRequested}
+        key={selectedNode.id}
+        schema={getNodeProperties()}
+        data={selectedNode.app_data}
         onChange={(data: any) => {
           onChange?.(selectedNode.id, data);
         }}
-        id={selectedNode.id}
+        onFileRequested={onFileRequested}
+        onPropertiesUpdateRequested={onPropertiesUpdateRequested}
       />
     </div>
   );
