@@ -61,7 +61,7 @@ export function PropertiesPanel({
     return <Message>No properties defined.</Message>;
   }
 
-  const uiSchema: UiSchema = {};
+  let uiSchema: UiSchema = {};
   for (const field in schema.properties) {
     uiSchema[field] = {};
     const properties = schema.properties[field];
@@ -77,6 +77,10 @@ export function PropertiesPanel({
       uiSchema[field] = properties.uihints;
     }
   }
+  uiSchema = {
+    ...uiSchema,
+    ...schema.uihints,
+  };
 
   return (
     <Form

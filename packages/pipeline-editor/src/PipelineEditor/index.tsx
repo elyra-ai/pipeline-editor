@@ -737,7 +737,7 @@ const PipelineEditor = forwardRef(
     ];
 
     if (pipelineParameters) {
-      panelTabs.push({
+      panelTabs.splice(1, 0, {
         id: "pipeline-parameters",
         label: "Pipeline Parameters",
         title: "Edit pipeline parameters",

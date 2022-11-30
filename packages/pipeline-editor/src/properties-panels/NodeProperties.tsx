@@ -181,11 +181,12 @@ function NodeProperties({
         const component_properties =
           draft.properties.component_parameters?.properties ?? {};
         if (component_properties.pipeline_parameters?.items?.enum) {
-          component_properties.pipeline_parameters.items.enum = parameters?.map(
-            (param) => {
-              return param.name;
-            }
-          );
+          component_properties.pipeline_parameters.items.enum =
+            parameters
+              ?.map((param) => {
+                return param.name;
+              })
+              ?.filter((param) => param !== "") ?? [];
           component_properties.pipeline_parameters.uihints = {
             "ui:widget": "checkboxes",
           };
@@ -238,12 +239,18 @@ function NodeProperties({
                   delete component_properties[prop].oneOf[i].properties.value
                     .enum;
                 }
-              } else if (widget === "parameter") {
+              } else if (
+                widget === "parameter" &&
+                parameters &&
+                parameters.length > 0
+              ) {
                 component_properties[prop].oneOf[
                   i
-                ].properties.value.enum = parameters?.map(
-                  (param) => param.name
-                );
+                ].properties.value.enum = parameters
+                  .map((param) => param.name)
+                  .filter((param) => param !== "");
+                component_properties[prop].oneOf[i].properties.value.default =
+                  parameters[0];
               }
             }
           }
