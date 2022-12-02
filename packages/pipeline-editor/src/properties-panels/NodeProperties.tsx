@@ -249,8 +249,17 @@ function NodeProperties({
                 ].properties.value.enum = parameters
                   .map((param) => param.name)
                   .filter((param) => param !== "");
+                component_properties[prop].oneOf[
+                  i
+                ].properties.value.enum.unshift("");
                 component_properties[prop].oneOf[i].properties.value.default =
-                  parameters[0];
+                  "";
+              } else if (widget === "parameter") {
+                component_properties[prop].oneOf[i].properties.value.enum = [
+                  "",
+                ];
+                component_properties[prop].oneOf[i].properties.value.default =
+                  "";
               }
             }
           }
