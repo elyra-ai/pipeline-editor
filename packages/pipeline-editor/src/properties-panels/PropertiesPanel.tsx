@@ -15,6 +15,7 @@
  */
 
 import Form, { UiSchema, Widget, AjvError } from "@rjsf/core";
+import { produce } from "immer";
 import styled from "styled-components";
 
 import {
@@ -103,11 +104,22 @@ export function PropertiesPanel({
         onChange?.(e.formData);
       }}
       formContext={{
-        onFileRequested: async (args: any) => {
-          return await onFileRequested?.({
+        onFileRequested: async (args: any, fieldName: string) => {
+          const values = await onFileRequested?.({
             ...args,
             filename: data.component_parameters.filename,
           });
+          const newFormData = produce(data, (draft: any) => {
+            if (args.canSelectMany) {
+              draft.component_parameters[args.propertyID] = [
+                ...draft.component_parameters[args.propertyID],
+                ...values,
+              ];
+            } else {
+              draft.component_parameters[args.propertyID] = values?.[0];
+            }
+          });
+          onChange?.(newFormData ?? data);
         },
         onPropertiesUpdateRequested: async (args: any) => {
           const newData = await onPropertiesUpdateRequested?.(args);
