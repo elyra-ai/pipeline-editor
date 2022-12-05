@@ -110,14 +110,47 @@ function NodeProperties({
 
   const nodePropertiesSchema = nodes.find((n) => n.op === selectedNode.op);
 
+  const parseComponent = (): any => {
+    const messageBody: Array<any> = [];
+    try {
+      const componentSourceJson = JSON.parse(
+        selectedNode.app_data.component_source
+      );
+      messageBody.push(`catalog_type: ${componentSourceJson.catalog_type}`);
+      for (const [key, value] of Object.entries(
+        componentSourceJson.component_ref
+      )) {
+        messageBody.push(`${key}: ${value}`);
+      }
+    } catch {
+      messageBody.push(selectedNode.app_data.component_source);
+    }
+    return messageBody;
+  };
+
   if (nodePropertiesSchema === undefined) {
     return (
       <Message>
+        Component not found
+        <br />
         This node uses a component that is not stored in your component
         registry.
         {selectedNode.app_data.component_source !== undefined
-          ? ` The component's path is: ${selectedNode.app_data.component_source}`
+          ? parseComponent().map((line: any, i: any) => (
+              <span key={i}>
+                <br />
+                {line}
+              </span>
+            ))
           : ""}
+        <br />
+        <a
+          href="https://elyra.readthedocs.io/en/latest/user_guide/best-practices-custom-pipeline-components.html#troubleshooting-missing-pipeline-components"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Learn more...
+        </a>
       </Message>
     );
   }
