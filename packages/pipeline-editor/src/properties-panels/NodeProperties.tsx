@@ -244,11 +244,18 @@ function NodeProperties({
                 parameters &&
                 parameters.length > 0
               ) {
+                const type =
+                  component_properties[prop].oneOf[i].uihints.value[
+                    "ui:typefilter"
+                  ];
                 component_properties[prop].oneOf[
                   i
                 ].properties.value.enum = parameters
-                  .map((param) => param.name)
-                  .filter((param) => param !== "");
+                  .filter(
+                    (param) =>
+                      param.name !== "" && param.default_value?.type === type
+                  )
+                  .map((param) => param.name);
                 component_properties[prop].oneOf[
                   i
                 ].properties.value.enum.unshift("");
