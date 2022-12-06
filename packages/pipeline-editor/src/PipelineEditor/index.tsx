@@ -753,7 +753,6 @@ const PipelineEditor = forwardRef(
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePipelineParametersChange}
             id="pipeline-parameters"
-            noValidate={true}
           />
         ),
       });
