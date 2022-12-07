@@ -32,7 +32,11 @@ export const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
     props.schema.uniqueItems &&
     (props.schema.items as any)?.enum?.length === 0
   ) {
-    children = <div style={{ paddingTop: "8px" }}>No options to select.</div>;
+    children = (
+      <div style={{ paddingTop: "8px" }}>
+        No pipeline parameters are defined.
+      </div>
+    );
   } else if (props.schema.uniqueItems && props.formData) {
     const filteredItems = props.formData.filter((item: any) => {
       return (props.schema.items as any)?.enum?.includes(item);
