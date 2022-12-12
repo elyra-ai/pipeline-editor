@@ -251,11 +251,11 @@ function NodeProperties({
                 component_properties[prop].oneOf[
                   i
                 ].properties.value.enum = parameters
-                  .filter(
+                  ?.filter(
                     (param) =>
                       param.name !== "" && param.default_value?.type === type
                   )
-                  .map((param) => param.name);
+                  ?.map((param) => param.name);
                 component_properties[prop].oneOf[
                   i
                 ].properties.value.enum.unshift("");
