@@ -632,7 +632,7 @@ const PipelineEditor = forwardRef(
         if (pipeline?.pipelines?.[0]?.app_data) {
           pipeline.pipelines[0].app_data.properties = {
             ...pipeline.pipelines[0].app_data.properties,
-            pipeline_parameters: data,
+            pipeline_parameters: data?.pipeline_parameters ?? data,
           };
           controller.current.setPipelineFlow(pipeline);
           onChange?.(controller.current.getPipelineFlow());
