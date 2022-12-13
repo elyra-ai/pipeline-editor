@@ -27,6 +27,15 @@ interface Props {
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
   onChange?: (nodeID: string, data: any) => any;
+  parameters?: {
+    name: string;
+    default_value?: {
+      type: "str" | "int" | "float" | "bool" | "list" | "dict";
+      value: any;
+    };
+    type?: string;
+    required?: boolean;
+  }[];
 }
 
 const Heading = styled.div`
@@ -72,6 +81,7 @@ function NodeProperties({
   onFileRequested,
   onPropertiesUpdateRequested,
   onChange,
+  parameters,
 }: Props) {
   if (selectedNodes === undefined || selectedNodes.length === 0) {
     return <Message>Select a node to edit its properties.</Message>;
@@ -203,6 +213,17 @@ function NodeProperties({
         };
         const component_properties =
           draft.properties.component_parameters?.properties ?? {};
+        if (component_properties.pipeline_parameters?.items?.enum) {
+          component_properties.pipeline_parameters.items.enum =
+            parameters
+              ?.map((param) => {
+                return param.name;
+              })
+              ?.filter((param) => param !== "") ?? [];
+          component_properties.pipeline_parameters.uihints = {
+            "ui:widget": "checkboxes",
+          };
+        }
         for (let prop in component_properties) {
           if (
             component_properties[prop].properties?.value &&
@@ -239,10 +260,9 @@ function NodeProperties({
                 component_properties[prop].oneOf[i].properties.value.default =
                   "";
               }
-              if (
-                component_properties[prop].oneOf[i].properties.widget
-                  .default === "inputpath"
-              ) {
+              const widget =
+                component_properties[prop].oneOf[i].properties.widget.default;
+              if (widget === "inputpath") {
                 if (nestedOneOf.length > 0) {
                   component_properties[prop].oneOf[
                     i
@@ -252,6 +272,34 @@ function NodeProperties({
                   delete component_properties[prop].oneOf[i].properties.value
                     .enum;
                 }
+              } else if (
+                widget === "parameter" &&
+                parameters &&
+                parameters.length > 0
+              ) {
+                const type =
+                  component_properties[prop].oneOf[i].uihints.value[
+                    "ui:typefilter"
+                  ];
+                component_properties[prop].oneOf[
+                  i
+                ].properties.value.enum = parameters
+                  ?.filter(
+                    (param) =>
+                      param.name !== "" && param.default_value?.type === type
+                  )
+                  ?.map((param) => param.name);
+                component_properties[prop].oneOf[
+                  i
+                ].properties.value.enum.unshift("");
+                component_properties[prop].oneOf[i].properties.value.default =
+                  "";
+              } else if (widget === "parameter") {
+                component_properties[prop].oneOf[i].properties.value.enum = [
+                  "",
+                ];
+                component_properties[prop].oneOf[i].properties.value.default =
+                  "";
               }
             }
           }

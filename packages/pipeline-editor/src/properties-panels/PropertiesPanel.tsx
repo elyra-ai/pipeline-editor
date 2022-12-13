@@ -45,6 +45,8 @@ interface Props {
   onChange?: (data: any) => any;
   onFileRequested?: (options: any) => any;
   onPropertiesUpdateRequested?: (options: any) => any;
+  noValidate?: boolean;
+  id?: string;
 }
 
 export function PropertiesPanel({
@@ -53,12 +55,14 @@ export function PropertiesPanel({
   onChange,
   onFileRequested,
   onPropertiesUpdateRequested,
+  noValidate,
+  id,
 }: Props) {
   if (schema === undefined) {
     return <Message>No properties defined.</Message>;
   }
 
-  const uiSchema: UiSchema = {};
+  let uiSchema: UiSchema = {};
   for (const field in schema.properties) {
     uiSchema[field] = {};
     const properties = schema.properties[field];
@@ -74,6 +78,10 @@ export function PropertiesPanel({
       uiSchema[field] = properties.uihints;
     }
   }
+  uiSchema = {
+    ...uiSchema,
+    ...schema.uihints,
+  };
 
   return (
     <Form
@@ -119,12 +127,12 @@ export function PropertiesPanel({
         },
         formData: data,
       }}
-      id={data?.id}
+      id={id}
       widgets={widgets}
       fields={{
         OneOfField: CustomOneOf,
       }}
-      liveValidate
+      liveValidate={!noValidate}
       ArrayFieldTemplate={ArrayTemplate}
       noHtml5Validate
       FieldTemplate={CustomFieldTemplate}
@@ -135,7 +143,7 @@ export function PropertiesPanel({
         for (const error of errors) {
           if (
             error.message !== "should match exactly one schema in oneOf" &&
-            (error as any).schemaPath?.includes("oneOf") &&
+            !(error as any).schemaPath?.includes("oneOf") &&
             error.message !== "should be object" &&
             error.message !== "should be string"
           ) {

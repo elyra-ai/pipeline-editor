@@ -54,6 +54,7 @@ interface Props {
   pipeline: any;
   toolbar?: any;
   palette?: any;
+  pipelineParameters?: any;
   pipelineProperties?: any;
   onAction?: (action: { type: string; payload?: any }) => any;
   onChange?: (pipeline: any) => any;
@@ -174,6 +175,7 @@ const PipelineEditor = forwardRef(
       pipeline,
       palette,
       pipelineProperties,
+      pipelineParameters,
       toolbar,
       onAction,
       onChange,
@@ -613,7 +615,25 @@ const PipelineEditor = forwardRef(
       (data) => {
         const pipeline = controller.current.getPipelineFlow();
         if (pipeline?.pipelines?.[0]?.app_data) {
-          pipeline.pipelines[0].app_data.properties = data;
+          pipeline.pipelines[0].app_data.properties = {
+            ...pipeline.pipelines[0].app_data.properties,
+            ...data,
+          };
+          controller.current.setPipelineFlow(pipeline);
+          onChange?.(controller.current.getPipelineFlow());
+        }
+      },
+      [onChange]
+    );
+
+    const handlePipelineParametersChange = useCallback(
+      (data) => {
+        const pipeline = controller.current.getPipelineFlow();
+        if (pipeline?.pipelines?.[0]?.app_data) {
+          pipeline.pipelines[0].app_data.properties = {
+            ...pipeline.pipelines[0].app_data.properties,
+            pipeline_parameters: data?.pipeline_parameters ?? data,
+          };
           controller.current.setPipelineFlow(pipeline);
           onChange?.(controller.current.getPipelineFlow());
         }
@@ -710,10 +730,36 @@ const PipelineEditor = forwardRef(
             onFileRequested={onFileRequested}
             onPropertiesUpdateRequested={onPropertiesUpdateRequested}
             onChange={handlePropertiesChange}
+            parameters={
+              pipeline?.pipelines?.[0]?.app_data?.properties
+                ?.pipeline_parameters
+            }
           />
         ),
       },
     ];
+
+    if (pipelineParameters) {
+      panelTabs.splice(1, 0, {
+        id: "pipeline-parameters",
+        label: "Pipeline Parameters",
+        title: "Edit pipeline parameters",
+        icon: theme.overrides?.pipelineIcon,
+        content: (
+          <PropertiesPanel
+            data={
+              pipeline?.pipelines?.[0]?.app_data?.properties
+                ?.pipeline_parameters
+            }
+            schema={pipelineParameters}
+            onFileRequested={onFileRequested}
+            onPropertiesUpdateRequested={onPropertiesUpdateRequested}
+            onChange={handlePipelineParametersChange}
+            id="pipeline-parameters"
+          />
+        ),
+      });
+    }
 
     if (!leftPalette) {
       panelTabs.push({

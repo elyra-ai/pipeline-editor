@@ -57,7 +57,7 @@ export function rangeForLocation(location: Node | undefined) {
 
 export function getValue(app_data: any, key: string, pipelineDefaults?: any) {
   return (
-    app_data.component_parameters?.[key] ??
+    app_data?.component_parameters?.[key] ??
     pipelineDefaults?.[key] ??
     app_data[key]
   );
