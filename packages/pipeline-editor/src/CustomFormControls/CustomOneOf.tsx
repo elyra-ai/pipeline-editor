@@ -89,6 +89,17 @@ export const CustomOneOf: Field = (props) => {
       : Object.assign({}, option, { type: props.baseType });
   }
 
+  optionSchema = {
+    ...optionSchema,
+    uihints: {
+      ...optionSchema.uihints,
+      value: {
+        ...optionSchema.uihints.value,
+        parentID: props.idSchema.$id.replace("root_component_parameters_", ""),
+      },
+    },
+  };
+
   const enumOptions = options.map((option: any, index: number) => ({
     label: option.title || `Option ${index + 1}`,
     value: index,

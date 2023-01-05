@@ -116,7 +116,11 @@ export function PropertiesPanel({
                 ...values,
               ];
             } else {
-              draft.component_parameters[args.propertyID] = values?.[0];
+              if (args.parentID) {
+                draft.component_parameters[args.parentID].value = values?.[0];
+              } else {
+                draft.component_parameters[args.propertyID] = values?.[0];
+              }
             }
           });
           onChange?.(newFormData ?? data);
