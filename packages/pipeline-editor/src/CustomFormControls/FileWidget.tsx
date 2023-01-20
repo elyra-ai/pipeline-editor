@@ -26,6 +26,7 @@ export const FileWidget: Widget = (props) => {
       defaultUri: props.value,
       filters: { File: props.uiSchema.extensions },
       propertyID: props.id.replace("root_component_parameters_", ""),
+      parentID: props.uiSchema?.parentID,
     });
   }, [props]);
 
