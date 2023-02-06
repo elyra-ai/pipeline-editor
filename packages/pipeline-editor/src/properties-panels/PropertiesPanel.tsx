@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { produce } from "immer";
 import {
   transformErrors,
   createCustomValidator,
@@ -22,6 +21,7 @@ import {
 import Form from "@rjsf/core";
 import { UiSchema, Widget } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv6";
+import { produce } from "immer";
 import styled from "styled-components";
 
 import {
