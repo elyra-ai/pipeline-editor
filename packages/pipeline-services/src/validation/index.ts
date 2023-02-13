@@ -114,16 +114,18 @@ export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
       path: error.params,
       info: {
         pipelineID: pipeline.id,
-        property:
-          error.property
-            ?.replace(".properties['", "")
-            ?.replace("'].required", "") ?? "",
+        property: getPropertyName(error.property ?? ""),
         type: "missingProperty",
       },
     });
   }
 
   return problems;
+}
+
+function getPropertyName(property: string) {
+  console.log(property);
+  return property.split(/[\[''\]]+/)[1]?.replace("'", "");
 }
 
 export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
@@ -159,11 +161,7 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       transformErrors
     ).errors;
     for (const error of errorMessages) {
-      const property =
-        error.property
-          ?.replace(".properties['", "")
-          ?.replace("'].required", "")
-          ?.replace(".", "") ?? "";
+      const property = getPropertyName(error.property ?? "");
       problems.push({
         message: error.message ?? "",
         path: error.params,

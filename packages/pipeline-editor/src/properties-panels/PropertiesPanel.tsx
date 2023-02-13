@@ -19,7 +19,7 @@ import {
   createCustomValidator,
 } from "@elyra/pipeline-services";
 import Form from "@rjsf/core";
-import { UiSchema, Widget } from "@rjsf/utils";
+import { UiSchema, RegistryWidgetsType } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv6";
 import { produce } from "immer";
 import styled from "styled-components";
@@ -40,10 +40,6 @@ export const Message = styled.div`
   color: ${({ theme }) => theme.palette.text.primary};
   opacity: 0.5;
 `;
-
-const widgets: { [id: string]: Widget } = {
-  file: FileWidget,
-};
 
 interface Props {
   data: any;
@@ -68,7 +64,7 @@ export function PropertiesPanel({
     return <Message>No properties defined.</Message>;
   }
 
-  let uiSchema: UiSchema = {};
+  let uiSchema: any = {};
   for (const field in schema.properties) {
     uiSchema[field] = {};
     const properties = schema.properties[field];
@@ -99,7 +95,7 @@ export function PropertiesPanel({
         onChange?.(e.formData);
       }}
       formContext={{
-        onFileRequested: async (args: any, fieldName: string) => {
+        onFileRequested: async (args: any) => {
           const values = await onFileRequested?.({
             ...args,
             filename: data.component_parameters.filename,
@@ -127,7 +123,9 @@ export function PropertiesPanel({
         formData: data,
       }}
       id={id}
-      widgets={widgets}
+      widgets={{
+        file: FileWidget,
+      }}
       fields={{
         OneOfField: CustomOneOf,
       }}

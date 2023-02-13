@@ -16,10 +16,10 @@
 
 import { useCallback } from "react";
 
-import { Widget } from "@rjsf/utils";
+import { Widget, WidgetProps } from "@rjsf/utils";
 
 // TODO: Make the file clearable
-export const FileWidget: Widget = (props) => {
+export const FileWidget: Widget = (props: WidgetProps) => {
   const handleChooseFile = useCallback(async () => {
     props.formContext.onFileRequested({
       canSelectMany: false,
