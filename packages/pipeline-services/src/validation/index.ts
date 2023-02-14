@@ -125,7 +125,7 @@ export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
 
 function getPropertyName(property: string) {
   console.log(property);
-  return property.split(/[\[''\]]+/)[1]?.replace("'", "");
+  return property.split(/[[''\]]+/)[1]?.replace("'", "");
 }
 
 export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
