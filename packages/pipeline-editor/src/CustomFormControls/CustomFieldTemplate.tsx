@@ -46,7 +46,9 @@ export const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
     }
   }
   const requiredError = props.required && props.formData === undefined;
-  const hasError = props.rawErrors?.length !== 0 || requiredError;
+  const hasError =
+    (props.rawErrors !== undefined && props.rawErrors.length !== 0) ||
+    requiredError;
   return (
     <div
       className={`${props.classNames} ${
