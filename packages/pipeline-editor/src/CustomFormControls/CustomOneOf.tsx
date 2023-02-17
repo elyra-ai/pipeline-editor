@@ -48,7 +48,7 @@ export const CustomOneOf: Field = (props) => {
       return 0;
     }
     // for other oneOfs, check for widget specified in the "value" uihints to match the saved widget
-    for (const i in options as any[]) {
+    for (let i = 0; i < options.length; i++) {
       const option = options[i];
       if (
         (formData?.widget &&
