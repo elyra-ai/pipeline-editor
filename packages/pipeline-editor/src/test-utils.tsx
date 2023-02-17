@@ -82,6 +82,8 @@ export const samplePalette = {
                     },
                     emptyObjectExample: {
                       type: "object",
+                      properties: {},
+                      default: {},
                     },
                     falseExample: {
                       type: "boolean",
@@ -159,14 +161,8 @@ export const nodeSpec: CustomNodeSpecification = {
           runtime_image: {
             title: "Runtime Image",
             type: "string",
-            enum: ["runtime1, runtime2"],
+            enum: ["runtime1", "runtime2"],
             description: "Docker image used as execution environment.",
-            uihints: {
-              items: [
-                "continuumio/anaconda3:2020.07",
-                "amancevice/pandas:1.0.3",
-              ],
-            },
           },
           dependencies: {
             title: "File Dependencies",
@@ -219,7 +215,7 @@ export const selectedNode = {
     label: "",
     component_parameters: {
       filename: "example.ipynb",
-      runtime_image: "example/runtime:2020.07",
+      runtime_image: "runtime1",
       env_vars: [],
       include_subdirectories: false,
       outputs: ["file1.csv", "file2.zip"],
@@ -321,7 +317,7 @@ export const samplePipeline = {
             label: "",
             component_parameters: {
               filename: "goodbye.ipynb",
-              runtime_image: "continuumio/anaconda3:2020.07",
+              runtime_image: "runtime2",
               dependencies: [],
               include_subdirectories: false,
               env_vars: ["bloop"],

@@ -275,7 +275,6 @@ describe("addNode", () => {
       component_parameters: {
         stringExample: "is-set",
         emptyArrayExample: [],
-        emptyObjectExample: {},
         trueExample: true,
         falseExample: false,
         nullExample: null,
@@ -313,7 +312,6 @@ describe("addNode", () => {
         filename: "fake.py",
         stringExample: "is-set",
         emptyArrayExample: ["one", "two", "three"],
-        emptyObjectExample: {},
         trueExample: true,
         falseExample: false,
         nullExample: null,

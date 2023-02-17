@@ -124,8 +124,15 @@ export function getPipelineProblems(pipeline: any, pipelineProperties: any) {
 }
 
 function getPropertyName(property: string) {
-  console.log(property);
-  return property.split(/[[''\]]+/)[1]?.replace("'", "");
+  // Split out the name without brackets for more complicated property names.
+  // Ex: properties['runtime_image'].items -> you would only want runtime_image
+  const propertyWithoutBrackets = property.split(/[[''\]]+/);
+  if (propertyWithoutBrackets.length === 1) {
+    // Properties that don't have brackets will start with '.', so remove that as well.
+    return propertyWithoutBrackets[0].replace(".", "");
+  } else {
+    return property.split(/[[''\]]+/)[1]?.replace("'", "");
+  }
 }
 
 export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
