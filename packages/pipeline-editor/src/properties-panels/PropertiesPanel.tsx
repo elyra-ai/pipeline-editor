@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-import {
-  transformErrors,
-  createCustomValidator,
-} from "@elyra/pipeline-services";
+import { transformErrors } from "@elyra/pipeline-services";
 import Form from "@rjsf/core";
-import validator from "@rjsf/validator-ajv6";
+import { RegistryFieldsType, RegistryWidgetsType } from "@rjsf/utils";
+import validator from "@rjsf/validator-ajv8";
 import { produce } from "immer";
 import styled from "styled-components";
 
 import {
   FileWidget,
-  CustomFieldTemplate,
-  ArrayTemplate,
-  CustomOneOf,
+  FieldTemplate,
+  ArrayFieldTemplate,
+  OneOfField,
 } from "../CustomFormControls";
 
 export const Message = styled.div`
@@ -49,6 +47,14 @@ interface Props {
   noValidate?: boolean;
   id?: string;
 }
+
+const widgets: RegistryWidgetsType = {
+  FileWidget,
+};
+
+const fields: RegistryFieldsType = {
+  OneOfField,
+};
 
 export function PropertiesPanel({
   data,
@@ -89,7 +95,6 @@ export function PropertiesPanel({
       formData={data}
       uiSchema={uiSchema}
       schema={schema as any}
-      customValidate={createCustomValidator(schema)}
       onChange={(e) => {
         onChange?.(e.formData);
       }}
@@ -122,17 +127,13 @@ export function PropertiesPanel({
         formData: data,
       }}
       id={id}
-      widgets={{
-        file: FileWidget,
-      }}
-      fields={{
-        OneOfField: CustomOneOf,
-      }}
+      widgets={widgets}
+      fields={fields}
       liveValidate={!noValidate}
       validator={validator}
       templates={{
-        ArrayFieldTemplate: ArrayTemplate,
-        FieldTemplate: CustomFieldTemplate,
+        ArrayFieldTemplate,
+        FieldTemplate,
       }}
       noHtml5Validate
       className={"elyra-formEditor"}

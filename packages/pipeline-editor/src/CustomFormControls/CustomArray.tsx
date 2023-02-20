@@ -16,7 +16,7 @@
 
 import { useCallback } from "react";
 
-import { ArrayFieldTemplateProps } from "@rjsf/utils";
+import { ArrayFieldTemplateProps, RJSFSchema } from "@rjsf/utils";
 
 const renderDefaults = (
   items: any[],
@@ -83,7 +83,7 @@ const renderDefaults = (
  * React component that allows for custom add / remove buttons in the array
  * field component.
  */
-export const ArrayTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
+export const ArrayFieldTemplate = (props: ArrayFieldTemplateProps) => {
   const renderedDefaults = renderDefaults(
     props.uiSchema?.pipeline_defaults ?? [],
     props

@@ -23,7 +23,7 @@ import {
 } from "@elyra/canvas";
 import { validate } from "@elyra/pipeline-services";
 import { getDefaultFormState } from "@rjsf/utils";
-import validator from "@rjsf/validator-ajv6";
+import validator from "@rjsf/validator-ajv8";
 import produce from "immer";
 
 import {

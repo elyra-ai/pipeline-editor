@@ -25,7 +25,7 @@
     "@elyra/pipeline-services": "^1.12.1",
     "@rjsf/core": "^5.0.0",
     "@rjsf/utils": "^5.0.0",
-    "@rjsf/validator-ajv6": "^5.0.0",
+    "@rjsf/validator-ajv8": "^5.0.0",
     "carbon-components": "^10.43.0",
     "carbon-components-react": "^7.48.0",
     "carbon-icons": "7.0.7",

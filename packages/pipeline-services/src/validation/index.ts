@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { ErrorTransformer, CustomValidator, FormValidation } from "@rjsf/utils";
-import validator from "@rjsf/validator-ajv6";
+import { CustomValidator, FormValidation } from "@rjsf/utils";
+import validator from "@rjsf/validator-ajv8";
 import { parseTree, findNodeAtLocation } from "jsonc-parser";
 
 import checkCircularReferences from "./check-circular-references";
 import { PartialProblem, Problem } from "./types";
 import { findNode, getLinks, getNodes, rangeForLocation } from "./utils";
 
-export const transformErrors: ErrorTransformer = (errors) => {
+export const transformErrors = (errors: any[]): any[] => {
   const newErrors = [];
   for (const error of errors ?? []) {
     if (

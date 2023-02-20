@@ -20,8 +20,9 @@ import {
   getDefaultFormState,
   getUiOptions,
   getWidget,
+  RJSFSchema,
 } from "@rjsf/utils";
-import validator from "@rjsf/validator-ajv6";
+import validator from "@rjsf/validator-ajv8";
 
 /**
  * A custom oneOf field to handle the 2 custom oneOf cases that Elyra has:
@@ -31,7 +32,7 @@ import validator from "@rjsf/validator-ajv6";
  * 2. "inputpath": Each oneOf entry represents a different set object
  *       Selecting the options based on the default values of the given oneOf object.
  */
-export const CustomOneOf: Field = (props) => {
+export const OneOfField: Field<any, RJSFSchema, any> = (props) => {
   const { options, formData, registry } = props;
   const findOption = (): any => {
     // For inputpaths, expect a oneOf that has { value, option } for each entry

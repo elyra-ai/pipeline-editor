@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-import { FieldTemplateProps } from "@rjsf/utils";
+import { FieldTemplateProps, RJSFSchema } from "@rjsf/utils";
 
-export const CustomFieldTemplate: React.FC<FieldTemplateProps> = (props) => {
+export const FieldTemplate: React.ComponentType<
+  FieldTemplateProps<any, RJSFSchema, any>
+> = (props) => {
   let children = props.children;
   if (props.uiSchema?.["ui:field"] === "hidden") {
     return <div />;
