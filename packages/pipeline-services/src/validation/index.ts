@@ -168,6 +168,9 @@ export function getNodeProblems(pipeline: any, nodeDefinitions: any) {
       transformErrors
     ).errors;
     for (const error of errorMessages) {
+      if (error.stack.includes("schema is invalid")) {
+        continue;
+      }
       const property = getPropertyName(error.property ?? "");
       problems.push({
         message: error.message ?? "",
