@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "@elyra/pipeline-editor": "latest",
-    "react": "latest",
-    "react-dom": "latest",
+    "react": "^18.2.0",
+    "react-dom": "^18.0.9",
     "react-scripts": "latest"
   },
   "scripts": {

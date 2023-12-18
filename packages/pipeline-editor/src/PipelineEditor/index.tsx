@@ -233,7 +233,7 @@ const PipelineEditor = forwardRef(
         } else {
           controller.current.resetStyles();
         }
-        // don't call to persist change because it will cause an infinate loop
+        // don't call to persist change because it will cause an infinity loop
       } catch (e) {
         onError?.(e);
       }
