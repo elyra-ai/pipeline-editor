@@ -75,7 +75,6 @@
     "format:check": "prettier --ignore-path .gitignore --check \"**/*.{tsx,ts,js,css,html,json}\"",
     "preinstall": "npx force-resolutions -y"
   },
-  "dependencies": {},
   "resolutions": {
     "immer": "9.0.7",
     "prismjs": "1.25.0",
