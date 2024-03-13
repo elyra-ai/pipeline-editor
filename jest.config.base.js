@@ -23,4 +23,8 @@ module.exports = {
     // Ignore snapshot tests.
     "!**/*.snap.test.{ts,tsx}",
   ],
+  moduleNameMapper: {
+    "^uuid$": require.resolve("uuid"),
+    "^nanoid$": require.resolve("nanoid"),
+  },
 };
