@@ -1,13 +1,17 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["esnext"],
+    "target": "es2018",
+    "lib": [
+      "esnext"
+    ],
     "module": "commonjs",
     "outDir": "dist",
     "declaration": true,
     "downlevelIteration": true,
     "sourceMap": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
