@@ -25,8 +25,10 @@ const regexMap: { [key: string]: RegExp } = {
   env_vars: /(?<env_var>\w+)=?(?<value>[^,]*?)(?= \w+=|$)/,
   mounted_volumes: /(?<path>[\w/]+)=?(?<pvc_name>[^,]*?)(?= \w+=|$)/,
   kubernetes_pod_annotations: /(?<key>\w+)=?(?<value>[^,]*?)(?= \w+=|$)/,
-  kubernetes_secrets: /(?<env_var>\w+)=?(?<name>[^:,\n\]]*):?(?<key>[^,]*?)(?= \w+=|$)/,
-  kubernetes_tolerations: /\w+=(?<key>.*?):(?<operator>[^,]*?):(?<value>[^,]*?):(?<effect>[^,]*?)(?= \w+=|$)/,
+  kubernetes_secrets:
+    /(?<env_var>\w+)=?(?<name>[^:,\n\]]*):?(?<key>[^,]*?)(?= \w+=|$)/,
+  kubernetes_tolerations:
+    /\w+=(?<key>.*?):(?<operator>[^,]*?):(?<value>[^,]*?):(?<effect>[^,]*?)(?= \w+=|$)/,
 };
 
 function migrate(pipelineFlow: any) {

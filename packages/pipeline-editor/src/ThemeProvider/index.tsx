@@ -95,16 +95,18 @@ function mergeThemes(systemInfo: {
   };
 }
 
-const ThemeProvider: React.FC<{ theme: DeepPartial<Theme>; children: React.ReactNode }> = ({
-  theme,
-  children,
-}) => {
+const ThemeProvider: React.FC<{
+  theme: DeepPartial<Theme>;
+  children: React.ReactNode;
+}> = ({ theme, children }) => {
   return (
     <StyledThemeProvider theme={theme as any}>{children}</StyledThemeProvider>
   );
 };
 
-export const InternalThemeProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+export const InternalThemeProvider: React.FC<{
+  children?: React.ReactNode;
+}> = ({ children }) => {
   const systemInfo = useSystemInfo();
   const theme = useMemo(() => mergeThemes(systemInfo), [systemInfo]);
 

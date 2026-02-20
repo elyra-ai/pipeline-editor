@@ -19,7 +19,6 @@ import ReactDOM from "react-dom";
 
 import styled from "styled-components";
 
-
 interface NodeProps {
   image: string;
   label: string;
@@ -108,26 +107,35 @@ interface Props {
 }
 
 function PalettePanel({ nodes }: Props) {
-  const handleDragStart = useCallback((e: React.DragEvent<HTMLDivElement>, node: PaletteNode) => {
-    const evData = {
-      operation: "addToCanvas",
-      data: {
-        editType: "createExternalNode",
-        nodeTemplate: {
-          op: node.op,
+  const handleDragStart = useCallback(
+    (e: React.DragEvent<HTMLDivElement>, node: PaletteNode) => {
+      const evData = {
+        operation: "addToCanvas",
+        data: {
+          editType: "createExternalNode",
+          nodeTemplate: {
+            op: node.op,
+          },
         },
-      },
-    };
+      };
 
-    const nodeGhost = document.createElement("div");
-    nodeGhost.style.position = "absolute";
-    nodeGhost.style.top = "-100px";
-    document.body.appendChild(nodeGhost);
-    ReactDOM.render(<Node image={node.app_data.ui_data?.image ?? ""} label={node.app_data.ui_data?.label ?? ""} />, nodeGhost);
+      const nodeGhost = document.createElement("div");
+      nodeGhost.style.position = "absolute";
+      nodeGhost.style.top = "-100px";
+      document.body.appendChild(nodeGhost);
+      ReactDOM.render(
+        <Node
+          image={node.app_data.ui_data?.image ?? ""}
+          label={node.app_data.ui_data?.label ?? ""}
+        />,
+        nodeGhost
+      );
 
-    e.dataTransfer.setDragImage(nodeGhost, 86, 20);
-    e.dataTransfer.setData("text", JSON.stringify(evData));
-  }, []);
+      e.dataTransfer.setDragImage(nodeGhost, 86, 20);
+      e.dataTransfer.setData("text", JSON.stringify(evData));
+    },
+    []
+  );
 
   return (
     <Container>

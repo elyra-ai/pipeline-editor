@@ -2,11 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "es2018",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
     "outDir": "dist",
     "jsx": "react-jsx",
@@ -16,7 +12,5 @@
     "downlevelIteration": true,
     "sourceMap": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

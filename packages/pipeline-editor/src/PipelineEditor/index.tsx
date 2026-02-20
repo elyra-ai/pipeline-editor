@@ -71,9 +71,7 @@ interface Props {
 const READ_ONLY_NODE_SVG_PATH =
   "M 0 0 h 160 a 6 6 0 0 1 6 6 v 28 a 6 6 0 0 1 -6 6 h -160 a 6 6 0 0 1 -6 -6 v -28 a 6 6 0 0 1 6 -6 z";
 
-function isCreateNodeEvent(
-  e: CanvasEditEvent
-): e is {
+function isCreateNodeEvent(e: CanvasEditEvent): e is {
   editType: "createNode" | "createAutoNode";
   nodeTemplate: { op: string };
   finalized?: boolean;
@@ -604,7 +602,7 @@ const PipelineEditor = forwardRef(
     );
 
     const handlePropertiesChange = useCallback(
-      (nodeID: string, data: { [key: string]: any; }) => {
+      (nodeID: string, data: { [key: string]: any }) => {
         controller.current.updateProperties(nodeID, data);
         onChange?.(controller.current.getPipelineFlow());
       },
@@ -627,7 +625,7 @@ const PipelineEditor = forwardRef(
     );
 
     const handlePipelineParametersChange = useCallback(
-      (data: { pipeline_parameters: any; }) => {
+      (data: { pipeline_parameters: any }) => {
         const pipeline = controller.current.getPipelineFlow();
         if (pipeline?.pipelines?.[0]?.app_data) {
           pipeline.pipelines[0].app_data.properties = {

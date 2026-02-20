@@ -27,7 +27,7 @@ global.crypto = {
 window.matchMedia = () => {
   return {
     matches: true,
-    addEventListener: () => { },
+    addEventListener: () => {},
   };
 };
 

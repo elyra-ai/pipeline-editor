@@ -181,8 +181,7 @@ export const nodeSpec: CustomNodeSpecification = {
           include_subdirectories: {
             type: "boolean",
             title: "Include Subdirectories",
-            data:
-              "Whether or not to include recursively include subdirectories when submitting a pipeline (This may increase submission time).",
+            data: "Whether or not to include recursively include subdirectories when submitting a pipeline (This may increase submission time).",
           },
           env_vars: {
             title: "Environment Variables",
