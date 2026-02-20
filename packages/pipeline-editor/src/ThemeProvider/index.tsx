@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useMemo, ReactNode } from "react";
+import React, { useMemo } from "react";
 
 import { DeepPartial } from "redux";
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
@@ -87,7 +87,7 @@ function mergeThemes(systemInfo: {
   mode: "dark" | "light";
   platform: "mac" | "win" | "other";
 }) {
-  return (overrides: Partial<Theme>|undefined): Theme => {
+  return (overrides: Partial<Theme> | undefined): Theme => {
     return deepmerge<Theme>(
       { ...defaultTheme, ...systemInfo },
       overrides as DeepPartial<Theme>

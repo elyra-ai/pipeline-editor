@@ -93,7 +93,7 @@ const Label = styled.div`
   color: ${({ theme }) => theme.palette.text.primary};
 `;
 
-interface Node {
+interface PaletteNode {
   op: string;
   app_data: {
     ui_data?: {
@@ -104,11 +104,11 @@ interface Node {
 }
 
 interface Props {
-  nodes: Node[];
+  nodes: PaletteNode[];
 }
 
 function PalettePanel({ nodes }: Props) {
-  const handleDragStart = useCallback((e: React.DragEvent<HTMLDivElement>, node: Node) => {
+  const handleDragStart = useCallback((e: React.DragEvent<HTMLDivElement>, node: PaletteNode) => {
     const evData = {
       operation: "addToCanvas",
       data: {

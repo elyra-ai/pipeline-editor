@@ -7269,10 +7269,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async-function@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "async-function@npm:1.0.0"
-  checksum: 9102e246d1ed9b37ac36f57f0a6ca55226876553251a31fc80677e71471f463a54c872dc78d5d7f80740c8ba624395cccbe8b60f7b690c4418f487d8e9fd1106
+"async-function@npm:0.1.0":
+  version: 0.1.0
+  resolution: "async-function@npm:0.1.0"
+  checksum: 7455bc48882611d1246afd8e793d349eecd68fddf1e9d8fed7aae0d9db10fc88811d1f9e8a8fa8fb7f580f3f26e0ab1d3d50ae91247e2ad7267c34610460d521
   languageName: node
   linkType: hard
 
