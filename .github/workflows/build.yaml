@@ -38,6 +38,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install
         run: |
+          corepack enable
           corepack prepare yarn@3.5.0 --activate
           yarn set version 3.5.0
           yarn --version
@@ -60,7 +61,9 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install
-        run: yarn install
+        run: |
+          corepack enable
+          yarn install
       - name: Lint
         run: yarn lint
       - name: Check format
@@ -82,7 +85,9 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install
-        run: yarn install
+        run: |
+          corepack enable
+          yarn install
       - name: Build
         run: yarn build
       - name: Generate coverage report
@@ -109,7 +114,9 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install
-        run: yarn install
+        run: |
+          corepack enable
+          yarn install
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
@@ -135,7 +142,9 @@ jobs:
             /home/runner/.cache/Cypress
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install
-        run: yarn install
+        run: |
+          corepack enable
+          yarn install
       - name: Build
         run: yarn build
       - name: Cypress
