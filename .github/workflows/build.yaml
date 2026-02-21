@@ -101,12 +101,9 @@ jobs:
     name: Test
     needs: prepare-yarn-cache
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [15, 14, 12]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4 # Install dependencies with latest node version
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - uses: actions/cache@v4
@@ -119,9 +116,6 @@ jobs:
         run: |
           corepack enable
           yarn install
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
       - name: Build
         run: yarn build
       - name: Test
