@@ -178,15 +178,11 @@ class PipelineController extends CanvasController {
           data.nodeTemplate.app_data
         );
 
-        const {
-          component_parameters: oldComponentParameters,
-          ...oldAppData
-        } = data.nodeTemplate.app_data;
+        const { component_parameters: oldComponentParameters, ...oldAppData } =
+          data.nodeTemplate.app_data;
 
-        const {
-          component_parameters: newComponentParameters,
-          ...newAppData
-        } = properties;
+        const { component_parameters: newComponentParameters, ...newAppData } =
+          properties;
 
         data.nodeTemplate.app_data = {
           ...oldAppData,
@@ -495,8 +491,9 @@ class PipelineController extends CanvasController {
       const properties =
         palette.properties?.properties?.pipeline_defaults?.properties ?? {};
       for (const prop in properties) {
-        const propValue = this.getPipelineFlow()?.pipelines?.[0]?.app_data
-          ?.properties?.pipeline_defaults?.[prop];
+        const propValue =
+          this.getPipelineFlow()?.pipelines?.[0]?.app_data?.properties
+            ?.pipeline_defaults?.[prop];
         if (propValue === undefined) {
           // Skip propagation if the pipeline default isn't defined
           continue;
@@ -568,8 +565,9 @@ class PipelineController extends CanvasController {
       if (nodeDef === undefined) {
         return "Node type not found.";
       }
-      const componentProperties = nodeDef!.app_data.properties.properties
-        ?.component_parameters?.properties;
+      const componentProperties =
+        nodeDef!.app_data.properties.properties?.component_parameters
+          ?.properties;
 
       for (const p of problems) {
         switch (p.info.type) {
@@ -670,8 +668,9 @@ class PipelineController extends CanvasController {
       };
     } else if (info?.type === "array") {
       // Merge pipeline defaults prop array with node prop array
-      const pipelineDefaultValue: any[] = this.getPipelineFlow()?.pipelines?.[0]
-        .app_data?.properties?.pipeline_defaults?.[key];
+      const pipelineDefaultValue: any[] =
+        this.getPipelineFlow()?.pipelines?.[0].app_data?.properties
+          ?.pipeline_defaults?.[key];
       return {
         label: label,
         value: value

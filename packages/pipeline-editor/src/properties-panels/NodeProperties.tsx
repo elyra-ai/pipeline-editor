@@ -264,9 +264,8 @@ function NodeProperties({
                 component_properties[prop].oneOf[i].properties.widget.default;
               if (widget === "inputpath") {
                 if (nestedOneOf.length > 0) {
-                  component_properties[prop].oneOf[
-                    i
-                  ].properties.value.oneOf = nestedOneOf;
+                  component_properties[prop].oneOf[i].properties.value.oneOf =
+                    nestedOneOf;
                   delete component_properties[prop].oneOf[i].properties.value
                     .type;
                   delete component_properties[prop].oneOf[i].properties.value
@@ -281,14 +280,13 @@ function NodeProperties({
                   component_properties[prop].oneOf[i].uihints.value[
                     "ui:typefilter"
                   ];
-                component_properties[prop].oneOf[
-                  i
-                ].properties.value.enum = parameters
-                  ?.filter(
-                    (param) =>
-                      param.name !== "" && param.default_value?.type === type
-                  )
-                  ?.map((param) => param.name);
+                component_properties[prop].oneOf[i].properties.value.enum =
+                  parameters
+                    ?.filter(
+                      (param) =>
+                        param.name !== "" && param.default_value?.type === type
+                    )
+                    ?.map((param) => param.name);
                 component_properties[prop].oneOf[
                   i
                 ].properties.value.enum.unshift("");

@@ -20,6 +20,7 @@ import {
   nodeSpec,
   samplePipeline,
   createPalette,
+  waitFor,
 } from "../test-utils";
 import PipelineEditor from "./";
 
@@ -86,5 +87,7 @@ it("can add node through imperative handle", async () => {
     path: "example.ipynb",
   });
 
-  expect(container.getElementsByClassName("d3-node-group")).toHaveLength(3);
+  await waitFor(() => {
+    expect(container.getElementsByClassName("d3-node-group")).toHaveLength(3);
+  });
 });

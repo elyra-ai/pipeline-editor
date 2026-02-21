@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import React from "react";
+
 export interface Theme {
   mode: "dark" | "light";
   platform: "mac" | "win" | "other";

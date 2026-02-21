@@ -71,9 +71,7 @@ interface Props {
 const READ_ONLY_NODE_SVG_PATH =
   "M 0 0 h 160 a 6 6 0 0 1 6 6 v 28 a 6 6 0 0 1 -6 6 h -160 a 6 6 0 0 1 -6 -6 v -28 a 6 6 0 0 1 6 -6 z";
 
-function isCreateNodeEvent(
-  e: CanvasEditEvent
-): e is {
+function isCreateNodeEvent(e: CanvasEditEvent): e is {
   editType: "createNode" | "createAutoNode";
   nodeTemplate: { op: string };
   finalized?: boolean;
@@ -233,9 +231,9 @@ const PipelineEditor = forwardRef(
         } else {
           controller.current.resetStyles();
         }
-        // don't call to persist change because it will cause an infinate loop
+        // don't call to persist change because it will cause an infinity loop
       } catch (e) {
-        onError?.(e);
+        onError?.(e as Error); // Add type assertion to ensure 'e' is of type 'Error'
       }
     }, [palette, onError, pipeline, readOnly, theme.palette.error.main]);
 
@@ -604,7 +602,7 @@ const PipelineEditor = forwardRef(
     );
 
     const handlePropertiesChange = useCallback(
-      (nodeID, data) => {
+      (nodeID: string, data: { [key: string]: any }) => {
         controller.current.updateProperties(nodeID, data);
         onChange?.(controller.current.getPipelineFlow());
       },
@@ -612,7 +610,7 @@ const PipelineEditor = forwardRef(
     );
 
     const handlePipelinePropertiesChange = useCallback(
-      (data) => {
+      (data: any) => {
         const pipeline = controller.current.getPipelineFlow();
         if (pipeline?.pipelines?.[0]?.app_data) {
           pipeline.pipelines[0].app_data.properties = {
@@ -627,7 +625,7 @@ const PipelineEditor = forwardRef(
     );
 
     const handlePipelineParametersChange = useCallback(
-      (data) => {
+      (data: { pipeline_parameters: any }) => {
         const pipeline = controller.current.getPipelineFlow();
         if (pipeline?.pipelines?.[0]?.app_data) {
           pipeline.pipelines[0].app_data.properties = {

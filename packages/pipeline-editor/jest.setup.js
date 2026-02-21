@@ -38,3 +38,6 @@ window.scrollTo = () => {
 window.Element.prototype.getComputedTextLength = () => {
   return 200;
 };
+
+global.clearImmediate = jest.fn();
+global.setImmediate = global.setTimeout;

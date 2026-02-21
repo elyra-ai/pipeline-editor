@@ -32,9 +32,9 @@ export function deepmerge<T>(target: T, source: DeepPartial<T>) {
 
       if (sVal !== undefined) {
         if (isPlainObject(sVal) && tVal !== undefined) {
-          output[key] = deepmerge<typeof tVal>(tVal, sVal);
+          output[key] = deepmerge<typeof tVal>(tVal, sVal as any);
         } else {
-          output[key] = sVal as T[keyof T];
+          output[key] = sVal as any;
         }
       }
     }

@@ -41,7 +41,7 @@ it("should update old op name to new op name", () => {
   };
 
   const actual = migrate(v4);
-  expect(actual.pipelines[0].nodes[0].op).toEqual(
+  expect(actual.pipelines[0].nodes[0].op).toBe(
     "run_notebook_using_papermill_Runnotebookusingpapermill"
   );
 });
@@ -66,7 +66,7 @@ it("should not update op name if already new op name", () => {
   };
 
   const actual = migrate(v4);
-  expect(actual.pipelines[0].nodes[0].op).toEqual(
+  expect(actual.pipelines[0].nodes[0].op).toBe(
     "filter_text_using_shell_and_grep_Filtertext"
   );
 });
@@ -91,7 +91,7 @@ it("should not update op name if not in update list", () => {
   };
 
   const actual = migrate(v4);
-  expect(actual.pipelines[0].nodes[0].op).toEqual("some_op_name");
+  expect(actual.pipelines[0].nodes[0].op).toBe("some_op_name");
 });
 
 it("should not error if op not set", () => {

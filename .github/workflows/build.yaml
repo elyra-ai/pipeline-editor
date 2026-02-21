@@ -19,43 +19,53 @@ on: [push, pull_request]
 
 env:
   FORCE_COLOR: true
+  NODE_VERSION: 22
+  NODE_OPTIONS: '--max_old_space_size=4096'
 
 jobs:
   prepare-yarn-cache:
     name: Prepare Cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "*"
-      - uses: actions/cache@v2
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache@v4
         with:
           path: |
             node_modules
             */*/node_modules
             /home/runner/.cache/Cypress
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: |
+          corepack enable
+          corepack prepare yarn@3.5.0 --activate
+          yarn set version 3.5.0
+          yarn --version
+          yarn install
+          # --frozen-lockfile
 
   lint:
     name: Lint
     needs: prepare-yarn-cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "*"
-      - uses: actions/cache@v2
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache@v4
         with:
           path: |
             node_modules
             */*/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - name: Install
-        run: yarn install
+        run: |
+          corepack enable
+          yarn install
       - name: Lint
         run: yarn lint
       - name: Check format
@@ -66,18 +76,20 @@ jobs:
     needs: prepare-yarn-cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "*"
-      - uses: actions/cache@v2
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache@v4
         with:
           path: |
             node_modules
             */*/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - name: Install
-        run: yarn install
+        run: |
+          corepack enable
+          yarn install
       - name: Build
         run: yarn build
       - name: Generate coverage report
@@ -89,25 +101,21 @@ jobs:
     name: Test
     needs: prepare-yarn-cache
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [15, 14, 12]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2 # Install dependencies with latest node version
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "*"
-      - uses: actions/cache@v2
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache@v4
         with:
           path: |
             node_modules
             */*/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - name: Install
-        run: yarn install
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
+        run: |
+          corepack enable
+          yarn install
       - name: Build
         run: yarn build
       - name: Test
@@ -118,11 +126,11 @@ jobs:
     needs: prepare-yarn-cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "*"
-      - uses: actions/cache@v2
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/cache@v4
         with:
           path: |
             node_modules
@@ -130,7 +138,9 @@ jobs:
             /home/runner/.cache/Cypress
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install
-        run: yarn install
+        run: |
+          corepack enable
+          yarn install
       - name: Build
         run: yarn build
       - name: Cypress
