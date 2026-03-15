@@ -98,7 +98,7 @@ def update_version_to_release() -> None:
 
     try:
         check_run(["lerna", "version", new_version, "--no-git-tag-version", "--no-push", "--yes"], cwd=config.source_dir)
-        check_run(["yarn", "version", "--new-version", new_version, "--no-git-tag-version"], cwd=config.source_dir)
+        check_run(["npm", "version", new_version, "--no-git-tag-version"], cwd=config.source_dir)
 
     except Exception as ex:
         raise UpdateVersionException from ex
