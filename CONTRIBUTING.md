@@ -58,8 +58,8 @@ votes, the Contributor is converted into a Committer and given write access to t
 |  Alex Bozarth   |   IBM   |   ajbozarth   |
 | Karla Spuldaro  |   IBM   | karlaspuldaro |
 | Luciano Resende |  Apple  |   lresende    |
-|  Martha Cryan   |   IBM   |  marthacryan  |
-| Nick Bourdakos  |         |  bourdakos1   |
+|  Martha Cryan   |  Plotly |  marthacryan  |
+| Nick Bourdakos  |  Google |  bourdakos1   |
 
 ## Contributors
 
